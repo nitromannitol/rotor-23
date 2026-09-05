@@ -25,6 +25,7 @@ import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
+import Rotor.Support.CircuitClock
 
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
@@ -54,4 +55,4 @@ theorem Rotor.Frozen.circuit_clock (hFLP : External.OneCircuit G) (π : Mechanis
         (((t : ℝ) ^ (-(1 / 3 : ℝ))) • (emb '' (R π ρ o t : Set V))) (((3 / β) ^ (1 / 3 : ℝ)) • B))
         atTop (𝓝 0))
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= circuit_clock_proof π ρ o hFLP hG hT
