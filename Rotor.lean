@@ -53,3 +53,5 @@ import Rotor.Support.WalkBasics
 import Rotor.Support.Monotone
 import Rotor.Support.CircuitIterate
 import Rotor.Support.Passage
+import Rotor.Support.EulerPath
+import Rotor.Support.DecreasingPositionsI
