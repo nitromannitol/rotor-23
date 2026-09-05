@@ -17,6 +17,7 @@ phase one (ruling X-001): they are not derived here and the certificate lists th
 mechanism and initial rotor configuration are fixed and arbitrary").
 -/
 import Rotor.Traversal
+import Rotor.Support.LiveRecurrence
 import Rotor.External.OneCircuit
 import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
@@ -31,4 +32,4 @@ theorem Rotor.Frozen.live_recurrence (hFLP : External.OneCircuit G) (hAb : Exter
     (ρ : Config G) (o : V) (h : ¬ ∃ x : ℕ → V, IsInfPath G x ∧ IsInfLive π ρ x) :
     AllTerminate π ρ ∧ (∀ n : ℕ, T π ρ o n < ⊤) ∧ Recurrent π ρ o
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= live_recurrence_proof π hFLP hAb hHP hG ρ o h

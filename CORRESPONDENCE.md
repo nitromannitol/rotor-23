@@ -52,7 +52,7 @@ one in a separate project.
 | `prop-monotonicity` | `Rotor.Frozen.monotonicity` | `rotor.tex:801-807`, `prop:monotonicity` | SEALED |
 | `prop-passage` | `Rotor.Frozen.passage` | `rotor.tex:833-847`, `prop:passage` | SEALED |
 | `lem-decreasing-positions` | `Rotor.Frozen.decreasing_positions` | `rotor.tex:883-896`, `lem:decreasing-positions` | SEALED |
-| `prop-live-recurrence` | `Rotor.Frozen.live_recurrence` | `rotor.tex:938-942`, `prop:live-recurrence` | DRAFT_SORRY |
+| `prop-live-recurrence` | `Rotor.Frozen.live_recurrence` | `rotor.tex:938-942`, `prop:live-recurrence` | SEALED |
 | `ext-abelian` | `Rotor.External.Abelian` | external input, HLMPPW Lemma 3.9, the statement of lem:least-action (ruling X-001) | FROZEN |
 | `ext-holroyd-propp` | `Rotor.External.VisitsAllOfVisitsOne` | external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence (ruling X-001) | FROZEN |
 | `ext-kingman` | `Rotor.External.Kingman` | external input, Kingman 1968 Theorems 3 and 5, used in the proof of prop:passage-limit (ruling X-001) | FROZEN |
