@@ -16,6 +16,7 @@ phase one (ruling X-001): they are not derived here and the certificate lists th
 mechanism and initial rotor configuration are fixed and arbitrary").
 -/
 import Rotor.Traversal
+import Rotor.Support.CircuitIterate
 import Rotor.External.OneCircuit
 import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
@@ -31,4 +32,4 @@ theorem Rotor.Frozen.circuit_iterate (hFLP : External.OneCircuit G) (hAb : Exter
     (T π ρ o (n + 1) < ⊤ ↔ Terminates π (A π ρ o n) ρ) ∧
     (T π ρ o (n + 1) < ⊤ → A π ρ o (n + 1) = Φ π ρ (A π ρ o n))
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= circuit_iterate_proof π ρ o hFLP hAb hG n hn

@@ -48,8 +48,8 @@ one in a separate project.
 |---|---|---|---|
 | `lem-least-action` | `Rotor.Frozen.least_action` | `rotor.tex:727-738`, `lem:least-action` | SEALED |
 | `lem-boundary-routing` | `Rotor.Frozen.boundary_routing` | `rotor.tex:747-752`, `lem:boundary-routing` | SEALED |
-| `prop-circuit-iterate` | `Rotor.Frozen.circuit_iterate` | `rotor.tex:774-782`, `prop:circuit-iterate` | DRAFT_SORRY |
-| `prop-monotonicity` | `Rotor.Frozen.monotonicity` | `rotor.tex:801-807`, `prop:monotonicity` | DRAFT_SORRY |
+| `prop-circuit-iterate` | `Rotor.Frozen.circuit_iterate` | `rotor.tex:774-782`, `prop:circuit-iterate` | SEALED |
+| `prop-monotonicity` | `Rotor.Frozen.monotonicity` | `rotor.tex:801-807`, `prop:monotonicity` | SEALED |
 | `prop-passage` | `Rotor.Frozen.passage` | `rotor.tex:833-847`, `prop:passage` | DRAFT_SORRY |
 | `lem-decreasing-positions` | `Rotor.Frozen.decreasing_positions` | `rotor.tex:883-896`, `lem:decreasing-positions` | DRAFT_SORRY |
 | `prop-live-recurrence` | `Rotor.Frozen.live_recurrence` | `rotor.tex:938-942`, `prop:live-recurrence` | DRAFT_SORRY |

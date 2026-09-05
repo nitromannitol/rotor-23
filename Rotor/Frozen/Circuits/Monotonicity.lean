@@ -13,6 +13,7 @@ phase one (ruling X-001): they are not derived here and the certificate lists th
 mechanism and initial rotor configuration are fixed and arbitrary").
 -/
 import Rotor.Traversal
+import Rotor.Support.Monotone
 import Rotor.External.OneCircuit
 import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
@@ -21,10 +22,13 @@ open Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
+-- The paper assumes that both boundary routings terminate; the proof uses only
+-- the termination for `U`, so `hTS` is unused.
+set_option linter.unusedVariables false in
 -- FROZEN-STATEMENT-BEGIN
 theorem Rotor.Frozen.monotonicity (hAb : External.Abelian G) (π : Mechanism G)
     [Infinite V] (hG : G.Connected) (ρ : Config G) (S U : Finset V) (hS : S.Nonempty)
     (hSU : S ⊆ U) (hTS : Terminates π S ρ) (hTU : Terminates π U ρ) :
     Φ π ρ S ⊆ Φ π ρ U
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= Φ_mono π hAb hG ρ S U hS hSU hTU

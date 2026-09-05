@@ -49,3 +49,6 @@ import Rotor.Support.DualGuards
 import Rotor.Support.NoRepeat
 import Rotor.Support.OneParticle
 import Rotor.Support.BoundaryRouting
+import Rotor.Support.WalkBasics
+import Rotor.Support.Monotone
+import Rotor.Support.CircuitIterate
