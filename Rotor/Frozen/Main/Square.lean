@@ -1,5 +1,5 @@
 /-
-Theorem 1.1 of rotor.tex, the square-lattice case, frozen.  `rotor.tex:228-251`
+Theorem 1.1 of rotor.tex, the square-lattice case, frozen.  `rotor.tex:228-250`
 (label `thm:main`):
 
   "Let $G$ be either the square lattice with its clockwise rotor mechanism, or

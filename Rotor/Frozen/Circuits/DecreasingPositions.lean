@@ -1,5 +1,5 @@
 /-
-Lemma 2.7 of rotor.tex, frozen.  `rotor.tex:883-897` (label `lem:decreasing-positions`):
+Lemma 2.7 of rotor.tex, frozen.  `rotor.tex:883-896` (label `lem:decreasing-positions`):
 
   "(i) Let $S\subseteq V$ be nonempty and finite and let $y\notin S$.  If a
    particle in a one-particle-at-a-time boundary routing of $S$ visits $y$,

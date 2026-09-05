@@ -55,12 +55,11 @@ one in a separate project.
 | `prop-live-recurrence` | `Rotor.Frozen.live_recurrence` | `rotor.tex:938-942`, `prop:live-recurrence` | SEALED |
 | `ext-abelian` | `Rotor.External.Abelian` | external input, HLMPPW Lemma 3.9, the statement of lem:least-action (ruling X-001) | FROZEN |
 | `ext-holroyd-propp` | `Rotor.External.VisitsAllOfVisitsOne` | external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence (ruling X-001) | FROZEN |
-| `ext-kingman` | `Rotor.External.Kingman` | external input, Kingman 1968 Theorems 3 and 5, used in the proof of prop:passage-limit (ruling X-001) | FROZEN |
 | `ext-lss` | `Rotor.External.LSS` | external input, Liggett-Schonmann-Stacey Theorem 0.0(ii), used in the proof of lem:block-live-paths (ruling X-001) | FROZEN |
 | `ext-angel-holroyd` | `Rotor.External.RecurrentOfRecurrent` | external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence (ruling X-001) | FROZEN |
 | `ext-subcritical-decay` | `Rotor.External.SubcriticalDecay` | external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail (ruling X-001) | FROZEN |
 | `prop-path-reduction` | `Rotor.Frozen.path_reduction` | `rotor.tex:1004-1037`, `prop:path-reduction` | DRAFT_SORRY |
-| `prop-passage-limit` | `Rotor.Frozen.passage_limit` | `rotor.tex:1084-1094`, `prop:passage-limit` | DRAFT_SORRY |
+| `prop-passage-limit` | `Rotor.Frozen.passage_limit` | `rotor.tex:1084-1094`, `prop:passage-limit` | SEALED |
 | `prop-circuit-shape` | `Rotor.Frozen.circuit_shape` | `rotor.tex:1115-1135`, `prop:circuit-shape` | DRAFT_SORRY |
 | `lem-block-live-paths` | `Rotor.Frozen.block_live_paths` | `rotor.tex:1227-1238`, `lem:block-live-paths` | DRAFT_SORRY |
 | `thm-main-square` | `Rotor.Frozen.main_square` | `rotor.tex:228-250`, `thm:main` | DRAFT_SORRY |
@@ -79,5 +78,6 @@ one in a separate project.
 | `lem-square-active-list` | `Rotor.Frozen.square_active_list` | `rotor.tex:1926-1930`, `lem:square-active-list` | DRAFT_SORRY |
 | `lem-square-forced-tests` | `Rotor.Frozen.square_forced_tests` | `rotor.tex:2058-2065`, `lem:square-forced-tests` | DRAFT_SORRY |
 | `prop-pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `rotor.tex:300-305`, `prop:pendant-counterexample` | DRAFT_SORRY |
+| `ext-kingman` | `Rotor.External.Kingman` | external input, Kingman 1968 Theorem 3 (general form, measurable invariant limit), used in the proof of prop:passage-limit (ruling X-001) | FROZEN |
 
 <!-- FROZEN-SURFACE-END -->

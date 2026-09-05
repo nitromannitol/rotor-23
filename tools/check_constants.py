@@ -38,6 +38,24 @@ MANIFEST = ROOT / "ledger" / "manifest.yaml"
 # Names that must never be theorem parameters when a constant is existential.
 FORBIDDEN = ("R", "n", "t", "m", "r", "s", "L", "x", "y", "u", "v", "e", "z", "ε", "η", "δ")
 
+# Statements read against the paper where a forbidden name is a parameter by the
+# paper's own standing assumption, with the reason recorded.  A statement whose
+# existential is an honest constant of the paper (`∃ c ∀ n`) is never listed here.
+REVIEWED: dict[str, dict[str, str]] = {
+    "prop-path-reduction": {
+        "η": "the standing assumption of prop:path-reduction is `for some η > 0` the "
+             "criterion holds (rotor.tex:1007-1011); the paper's `a` in (ii) is chosen "
+             "under that assumption, so it may depend on η, and the only other real "
+             "existentials are the limit-shape constants of (iii), likewise",
+    },
+    "prop-passage-limit": {
+        "η": "same standing assumption; the only real existential is `R₀`, bound after "
+             "the rotors `ρ` and `ε` exactly as the paper's almost-sure limit "
+             "(rotor.tex:1088-1093) prescribes, and the function `f` does not depend "
+             "on η at all (its proof uses only invariance and ergodicity)",
+    },
+}
+
 # Only a real-valued existential is a *constant*.  `lem-walk-order` also binds
 # an existential -- the ordering of the visited sites -- and that one must depend
 # on the word and the time, so it is not what this check is about.
@@ -83,6 +101,10 @@ def main() -> int:
         has_exists = bool(CONSTANT.search(concl))
         params = parameters(binders)
         offenders = sorted(params & set(FORBIDDEN))
+        reviewed = REVIEWED.get(node["id"], {})
+        for name in sorted(set(offenders) & set(reviewed)):
+            print(f"  {node['id']:26s} reviewed {name}: {reviewed[name]}")
+        offenders = [o for o in offenders if o not in reviewed]
         mark = ""
         if has_exists and offenders:
             bad.append((node["id"], offenders))

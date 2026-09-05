@@ -104,11 +104,14 @@ def lean_exponents(blk: str) -> set[str]:
         e = re.sub(r"\(\s*([a-zA-Zβγ])\s*:\s*ℝ\s*\)", r"\1", e)
         e = re.sub(r"\(\s*(\d+)\s*:\s*ℝ\s*\)", r"\1", e)
         e = re.sub(r"\s+", "", e)
-        # a bracketed literal with a type ascription, `(2 / 3 : ℝ)`, is the literal
-        e = re.sub(r":ℝ$", "", e)
-        e = re.sub(r"^\((.*)\)$", r"\1", e)
-        if e.startswith("-(") and e.endswith(")"):
-            e = "-" + e[2:-1]
+        # a bracketed literal with a type ascription, `(2 / 3 : ℝ)`, is the literal;
+        # `(-(1 / 3 : ℝ))` needs the ascription stripped again after the sign is unwrapped
+        for _ in range(3):
+            e = re.sub(r":ℝ$", "", e)
+            e = re.sub(r"^\((.*)\)$", r"\1", e)
+            if e.startswith("-(") and e.endswith(")"):
+                e = "-" + e[2:-1]
+            e = re.sub(r":ℝ$", "", e)
         cleaned.add(e)
     return cleaned - {"2"}
 

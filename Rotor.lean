@@ -61,3 +61,7 @@ import Rotor.Support.LiveRecurrence
 import Rotor.Support.PathReductionI
 import Rotor.Support.Equivariance
 import Rotor.Support.Measurability
+import Rotor.Support.LatticeGeom
+import Rotor.Support.PassageArray
+import Rotor.Support.PlaneExtension
+import Rotor.Support.PassageUniform

@@ -1,5 +1,5 @@
 /-
-Lemma 5.6 of rotor.tex, frozen.  `rotor.tex:2058-2066` (label `lem:square-forced-tests`):
+Lemma 5.6 of rotor.tex, frozen.  `rotor.tex:2058-2065` (label `lem:square-forced-tests`):
 
   "Let $K$ be the number of forced tests.  There are constants $c,C>0$ such
    that, for every integer $m\geq1$, $\P_0\{K\geq m\}\leq Ce^{-cm}$."

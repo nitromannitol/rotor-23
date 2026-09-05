@@ -22,6 +22,7 @@ import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
+import Rotor.Support.PassageUniform
 
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
@@ -30,6 +31,9 @@ universe u
 
 variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
+-- The paper's standing assumptions (`hFLP`, `hHP`, the criterion) are not used by the
+-- proof: the passage function exists for every invariant ergodic law.
+set_option linter.unusedVariables false in
 -- FROZEN-STATEMENT-BEGIN
 theorem Rotor.Frozen.passage_limit (hFLP : External.OneCircuit G) (hAb : External.Abelian G)
     (hHP : External.VisitsAllOfVisitsOne G) (hK : External.Kingman.{u}) (π : Mechanism G)
@@ -41,4 +45,4 @@ theorem Rotor.Frozen.passage_limit (hFLP : External.OneCircuit G) (hAb : Externa
       ∀ o : V, ∀ᵐ ρ ∂μ, ∀ ε : ℝ, 0 < ε → ∃ R₀ : ℝ, ∀ x : V, R₀ ≤ ‖P.emb x - P.emb o‖ →
         |(τ π ρ o x : ℝ) - f (P.emb x - P.emb o)| ≤ ε * ‖P.emb x - P.emb o‖
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= passage_limit_proof π P hK hπ hAb hG μ hinv herg

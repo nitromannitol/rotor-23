@@ -1,5 +1,5 @@
 /-
-Proposition 5.1 of rotor.tex, frozen.  `rotor.tex:1461-1470` (label `prop:square-passage`):
+Proposition 5.1 of rotor.tex, frozen.  `rotor.tex:1461-1471` (label `prop:square-passage`):
 
   "Let $G$ be the square lattice with the clockwise rotor mechanism and
    independent uniform initial rotors, and let $\P_0$ be their product law.
