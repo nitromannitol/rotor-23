@@ -59,3 +59,4 @@ import Rotor.Support.DecreasingPositionsII
 import Rotor.Support.Konig
 import Rotor.Support.LiveRecurrence
 import Rotor.Support.PathReductionI
+import Rotor.Support.Equivariance
