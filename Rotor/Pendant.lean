@@ -80,9 +80,8 @@ def pendantNbrLeaf (M : ℕ) (w : Site × Fin M) : Unit ≃ (pendantGraph M).nei
   left_inv _ := rfl
   right_inv x := by
     rcases x with ⟨u | u, h⟩
-    · have : w.1 = u := by simpa [pendantGraph, pendantAdj] using h
-      subst this; rfl
-    · simp [pendantGraph, pendantAdj] at h
+    · exact Subtype.ext (congrArg Sum.inl h)
+    · exact h.elim
 
 instance (M : ℕ) : (pendantGraph M).LocallyFinite := fun v =>
   match v with
@@ -117,13 +116,9 @@ def pendantMech (M : ℕ) : Mechanism (pendantGraph M) where
       obtain ⟨j, rfl⟩ := (pendantNbrLattice M v).surjective b
       refine ⟨(j - i).val, ?_⟩
       show ((pendantTurn M v) ^ (j - i).val) _ = _
-      rw [pendantTurn_pow, Fin.cast_val_eq_self]
-      congr 1
-      exact add_sub_cancel i j
+      simp only [pendantTurn_pow, Fin.cast_val_eq_self, add_sub_cancel]
     | .inr w =>
-      refine ⟨0, ?_⟩
-      have : a = b := (pendantNbrLeaf M w).symm.injective rfl
-      simp [this]
+      exact ⟨0, (pendantNbrLeaf M w).symm.injective rfl⟩
   nonempty x := match x with
     | .inl v => ⟨pendantNbrLattice M v (0 : Fin (M + 4))⟩
     | .inr w => ⟨pendantNbrLeaf M w ()⟩
@@ -143,78 +138,37 @@ end Rotor
 namespace Rotor
 
 theorem pendantEmb_injective (M : ℕ) : Function.Injective (pendantEmb M) := by
+  let t (i : Fin M) : ℝ := ((i : ℕ) + 1 : ℝ) / (2 * ((M : ℝ) + 1))
+  have hM : (0 : ℝ) < 2 * ((M : ℝ) + 1) := by positivity
+  have ht (i : Fin M) : 0 < t i ∧ t i < 1 := by
+    constructor
+    · dsimp [t]; positivity
+    · dsimp [t]
+      rw [div_lt_one hM]
+      have hi : (i : ℝ) < M := by exact_mod_cast i.isLt
+      linarith
+  have frac (z : ℤ) (i : Fin M) : Int.fract ((z : ℝ) + t i) = t i := by
+    rw [Int.fract_intCast_add, Int.fract_eq_self.mpr ⟨(ht i).1.le, (ht i).2⟩]
   intro x y h
   rcases x with u | ⟨u, i⟩ <;> rcases y with v | ⟨v, j⟩
-  · exact congrArg Sum.inl (squareEmb_injective (by simpa [pendantEmb] using h))
+  · exact congrArg Sum.inl (squareEmb_injective h)
   all_goals
-    have h' := congrArg WithLp.ofLp h
-    simp only [pendantEmb, squareEmb, WithLp.ofLp_add, WithLp.ofLp_smul, WithLp.ofLp_toLp] at h'
-    have h0 := congrFun h' 0
-    have h1 := congrFun h' 1
-    simp at h0 h1
-  · -- a lattice point against a leaf: the leaf's coordinates are not integers
-    exfalso
-    have hM : (0 : ℝ) < 2 * ((M : ℝ) + 1) := by positivity
-    have hj : (0 : ℝ) < (j : ℝ) + 1 := by positivity
-    have hj' : ((j : ℝ) + 1) / (2 * ((M : ℝ) + 1)) < 1 := by
-      rw [div_lt_one hM]
-      have hjM : ((j : ℕ) : ℝ) < (M : ℝ) := by exact_mod_cast j.2
-      linarith
-    have : (u.1 : ℝ) - v.1 = -(((j : ℝ) + 1) / (2 * ((M : ℝ) + 1))) := by linarith
-    have hint : ∃ k : ℤ, (k : ℝ) = -(((j : ℝ) + 1) / (2 * ((M : ℝ) + 1))) := ⟨u.1 - v.1, by push_cast; linarith⟩
-    obtain ⟨k, hk⟩ := hint
-    have : (-1 : ℝ) < k ∧ (k : ℝ) < 0 := by
-      constructor <;> · rw [hk]; linarith [div_pos hj hM]
-    have : (-1 : ℤ) < k ∧ k < 0 := by exact_mod_cast this
-    omega
-  · exfalso
-    have hM : (0 : ℝ) < 2 * ((M : ℝ) + 1) := by positivity
-    have hi : (0 : ℝ) < (i : ℝ) + 1 := by positivity
-    have hi' : ((i : ℝ) + 1) / (2 * ((M : ℝ) + 1)) < 1 := by
-      rw [div_lt_one hM]
-      have hiM : ((i : ℕ) : ℝ) < (M : ℝ) := by exact_mod_cast i.2
-      linarith
-    have hint : ∃ k : ℤ, (k : ℝ) = ((i : ℝ) + 1) / (2 * ((M : ℝ) + 1)) := ⟨u.1 - v.1, by push_cast; linarith⟩
-    obtain ⟨k, hk⟩ := hint
-    have : (0 : ℝ) < k ∧ (k : ℝ) < 1 := by
-      constructor <;> · rw [hk]; linarith [div_pos hi hM]
-    have : (0 : ℤ) < k ∧ k < 1 := by exact_mod_cast this
-    omega
-  · -- two leaves: the difference of coordinates is an integer of size less than one
-    have hM : (0 : ℝ) < (M : ℝ) + 1 := by positivity
-    have hiM : ((i : ℕ) : ℝ) < M := by exact_mod_cast i.2
-    have hjM : ((j : ℕ) : ℝ) < M := by exact_mod_cast j.2
-    set a : ℝ := ((i : ℝ) + 1) / (2 * ((M : ℝ) + 1)) with ha
-    set b : ℝ := ((j : ℝ) + 1) / (2 * ((M : ℝ) + 1)) with hb
-    have hab : 2 * a - 2 * b = (((i : ℕ) : ℝ) - (j : ℕ)) / ((M : ℝ) + 1) := by
-      rw [ha, hb]; field_simp; ring
-    have hk : (((u.1 - u.2) - (v.1 - v.2) : ℤ) : ℝ) = (((i : ℕ) : ℝ) - (j : ℕ)) / ((M : ℝ) + 1) := by
-      rw [← hab]; push_cast; linarith
-    have hlt : (((i : ℕ) : ℝ) - (j : ℕ)) / ((M : ℝ) + 1) < 1 := by
-      rw [div_lt_one hM]; have : (0 : ℝ) ≤ (j : ℕ) := by positivity
-      linarith
-    have hgt : (-1 : ℝ) < (((i : ℕ) : ℝ) - (j : ℕ)) / ((M : ℝ) + 1) := by
-      rw [lt_div_iff₀ hM]; have : (0 : ℝ) ≤ (i : ℕ) := by positivity
-      linarith
-    have hk0 : ((u.1 - u.2) - (v.1 - v.2) : ℤ) = 0 := by
-      have h1' : (-1 : ℝ) < (((u.1 - u.2) - (v.1 - v.2) : ℤ) : ℝ) := by rw [hk]; exact hgt
-      have h2' : (((u.1 - u.2) - (v.1 - v.2) : ℤ) : ℝ) < 1 := by rw [hk]; exact hlt
-      have h1'' : (-1 : ℤ) < (u.1 - u.2) - (v.1 - v.2) := by exact_mod_cast h1'
-      have h2'' : (u.1 - u.2) - (v.1 - v.2) < (1 : ℤ) := by exact_mod_cast h2'
-      omega
-    have hij : ((i : ℕ) : ℝ) = (j : ℕ) := by
-      have : (((i : ℕ) : ℝ) - (j : ℕ)) / ((M : ℝ) + 1) = 0 := by rw [← hk, hk0]; simp
-      rw [div_eq_zero_iff] at this
-      rcases this with h | h
-      · linarith
-      · linarith
-    have hij' : i = j := Fin.ext (by exact_mod_cast hij)
+    have h1 := congrArg (fun p : Plane => p 1) h
+    simp [pendantEmb, squareEmb] at h1
+  · change (u.2 : ℝ) = (v.2 : ℝ) + t j at h1
+    have hf := congrArg Int.fract h1
+    rw [Int.fract_intCast, frac] at hf
+    exact ((ht j).1.ne' hf.symm).elim
+  · change (u.2 : ℝ) + t i = (v.2 : ℝ) at h1
+    have hf := congrArg Int.fract h1
+    rw [frac, Int.fract_intCast] at hf
+    exact ((ht i).1.ne' hf).elim
+  · change (u.2 : ℝ) + t i = (v.2 : ℝ) + t j at h1
+    have htij := congrArg Int.fract h1
+    rw [frac, frac] at htij
+    have hij : (i : ℝ) + 1 = (j : ℝ) + 1 := (div_left_inj' hM.ne').mp htij
+    have hij' : i = j := Fin.ext (by exact_mod_cast add_right_cancel hij)
     subst hij'
-    have hab' : a = b := by rw [ha, hb]
-    have hu1 : (u.1 : ℝ) = v.1 := by linarith
-    have hu2 : (u.2 : ℝ) = v.2 := by linarith
-    have : u = v := Prod.ext (by exact_mod_cast hu1) (by exact_mod_cast hu2)
-    subst this
-    rfl
+    exact congrArg Sum.inr (Prod.ext (squareEmb_injective (add_right_cancel h)) rfl)
 
 end Rotor

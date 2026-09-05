@@ -122,9 +122,8 @@ in it, that is, when `r_{x_i}(x_{i+1}) < r_{x_i}(x_{i-1})`. -/
 omit [DecidableEq V] [G.LocallyFinite] in
 theorem rank_exists (ρ : Config G) (v : V) (w : G.neighborSet v) :
     ∃ k : ℕ, 0 < k ∧ ((π.next v) ^ k) (ρ v) = w := by
-  obtain ⟨d, hd⟩ := π.cyclic v (((π.next v) ^ 1) (ρ v)) w
-  refine ⟨1 + d, by omega, ?_⟩
-  rw [add_comm, pow_add, Equiv.Perm.mul_apply, hd]
+  obtain ⟨d, hd⟩ := π.cyclic v (π.next v (ρ v)) w
+  exact ⟨d + 1, Nat.succ_pos d, by simpa only [pow_succ, Equiv.Perm.mul_apply] using hd⟩
 
 /-- The number of rotor advances from `ρ v` until the directed edge `v → w` is
 selected: the least `k ≥ 1` with `(next v)^k (ρ v) = w`.  It lies in

@@ -29,7 +29,7 @@ def rightFace (v : Site) (a : Dir) : Site :=
 /-- The face on the left of the directed edge `v → v + dirVec a`. -/
 def leftFace (v : Site) (a : Dir) : Site :=
   let d := dirVec a
-  (rightFace v a).1 - d.2 + 0 * d.1 |> fun x => (x, (rightFace v a).2 + d.1)
+  ((rightFace v a).1 - d.2, (rightFace v a).2 + d.1)
 
 /-- The dual edge of `v → v + dirVec a`, from the right face to the left face. -/
 def dualEdge (v : Site) (a : Dir) : Site × Site := (rightFace v a, leftFace v a)
