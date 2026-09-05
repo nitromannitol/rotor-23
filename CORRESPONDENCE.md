@@ -60,7 +60,7 @@ one in a separate project.
 | `ext-subcritical-decay` | `Rotor.External.SubcriticalDecay` | external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail (ruling X-001) | FROZEN |
 | `prop-path-reduction` | `Rotor.Frozen.path_reduction` | `rotor.tex:1004-1037`, `prop:path-reduction` | DRAFT_SORRY |
 | `prop-passage-limit` | `Rotor.Frozen.passage_limit` | `rotor.tex:1084-1094`, `prop:passage-limit` | SEALED |
-| `prop-circuit-shape` | `Rotor.Frozen.circuit_shape` | `rotor.tex:1115-1135`, `prop:circuit-shape` | DRAFT_SORRY |
+| `prop-circuit-shape` | `Rotor.Frozen.circuit_shape` | `rotor.tex:1115-1135`, `prop:circuit-shape` | SEALED |
 | `lem-block-live-paths` | `Rotor.Frozen.block_live_paths` | `rotor.tex:1227-1238`, `lem:block-live-paths` | DRAFT_SORRY |
 | `thm-main-square` | `Rotor.Frozen.main_square` | `rotor.tex:228-250`, `thm:main` | DRAFT_SORRY |
 | `thm-main-degree-three` | `Rotor.Frozen.main_degree_three` | `rotor.tex:228-250`, `thm:main` | DRAFT_SORRY |

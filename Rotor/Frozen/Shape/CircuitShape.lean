@@ -23,6 +23,7 @@ import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
+import Rotor.Support.CircuitShape
 
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
@@ -31,6 +32,9 @@ universe u
 
 variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
+-- The external inputs, the criterion, invariance and ergodicity enter only through the
+-- hypotheses `hf`, `hball`, `hmin` carried by the statement; they are unused by the proof.
+set_option linter.unusedVariables false in
 -- FROZEN-STATEMENT-BEGIN
 theorem Rotor.Frozen.circuit_shape (hFLP : External.OneCircuit G) (hAb : External.Abelian G)
     (hHP : External.VisitsAllOfVisitsOne G) (hK : External.Kingman.{u}) (π : Mechanism G)
@@ -52,4 +56,4 @@ theorem Rotor.Frozen.circuit_shape (hFLP : External.OneCircuit G) (hAb : Externa
       (∀ x : V, f (P.emb x - P.emb o) ≤ (1 - ε) * n → x ∈ A π ρ o n) ∧
       (∀ x ∈ A π ρ o n, f (P.emb x - P.emb o) ≤ (1 + ε) * n))
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= circuit_shape_proof π P hπ hG μ o f hf hball hmin
