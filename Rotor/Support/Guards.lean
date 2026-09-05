@@ -6,7 +6,7 @@ value that can be checked by hand against the paper.
 -/
 import Rotor.Basic
 
-namespace Rotor
+namespace Rotor.Z2
 
 /-- With every rotor initially pointing north, the first step turns the rotor at
 the origin to east and moves the walker to `(1, 0)`: `rotor.tex:189-201` and
@@ -39,4 +39,4 @@ theorem T_zero (ρ : RotorConfig) (o : Site) : T ρ o 0 = 0 := by
 theorem A_zero (ρ : RotorConfig) (o : Site) : A ρ o 0 = {o} := by
   simp [A, T_zero, R, X, walk]
 
-end Rotor
+end Rotor.Z2

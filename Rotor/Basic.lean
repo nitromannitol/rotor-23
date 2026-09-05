@@ -49,6 +49,11 @@ def dirVec (a : Dir) : Site := ![((0 : ℤ), (1 : ℤ)), (1, 0), (0, -1), (-1, 0
 `N, E, S, W`. -/
 def turn (a : Dir) : Dir := a + 1
 
+/-! The concrete walk on `ℤ²` lives in the namespace `Rotor.Z2`; the general
+model of `Rotor/Model.lean` uses the same names for the general objects, and
+`Rotor/Square.lean` relates the two. -/
+namespace Z2
+
 /-- A rotor configuration: one outgoing directed edge at every site. -/
 abbrev RotorConfig := Site → Dir
 
@@ -97,5 +102,7 @@ noncomputable def A (ρ : RotorConfig) (o : Site) (n : ℕ) : Finset Site :=
 (`rotor.tex:209-210`). -/
 def Recurrent (ρ : RotorConfig) (o : Site) : Prop :=
   ∀ x : Site, Set.Infinite {t : ℕ | X ρ o t = x}
+
+end Z2
 
 end Rotor
