@@ -32,15 +32,12 @@ theorem supNorm_sub_comm (z w : ℤ × ℤ) : supNorm (z - w) = supNorm (w - z) 
   rw [← supNorm_neg, neg_sub]
 
 theorem supNorm_add_le (z w : ℤ × ℤ) : supNorm (z + w) ≤ supNorm z + supNorm w := by
-  rw [supNorm_le_iff]
-  constructor
-  · calc |((z + w).1 : ℝ)| = |(z.1 : ℝ) + w.1| := by simp
-      _ ≤ |(z.1 : ℝ)| + |(w.1 : ℝ)| := abs_add_le _ _
-      _ ≤ supNorm z + supNorm w := add_le_add (abs_fst_le_supNorm z) (abs_fst_le_supNorm w)
-  · calc |((z + w).2 : ℝ)| = |(z.2 : ℝ) + w.2| := by simp
-      _ ≤ |(z.2 : ℝ)| + |(w.2 : ℝ)| := abs_add_le _ _
-      _ ≤ supNorm z + supNorm w := add_le_add (abs_snd_le_supNorm z) (abs_snd_le_supNorm w)
-
+  simpa only [supNorm, Prod.fst_add, Prod.snd_add, Int.cast_add] using
+    max_le
+      ((abs_add_le _ _).trans
+        (add_le_add (abs_fst_le_supNorm z) (abs_fst_le_supNorm w)))
+      ((abs_add_le _ _).trans
+        (add_le_add (abs_snd_le_supNorm z) (abs_snd_le_supNorm w)))
 theorem supNorm_nsmul (n : ℕ) (z : ℤ × ℤ) : supNorm (n • z) = n * supNorm z := by
   unfold supNorm
   rw [Prod.smul_fst, Prod.smul_snd, nsmul_eq_mul, nsmul_eq_mul]
@@ -157,25 +154,21 @@ theorem coords_apply (x : Plane) : P.coords x = P.basis.equivFun x := rfl
 
 omit [DecidableEq V] [G.LocallyFinite] in
 theorem coords_latVec (z : ℤ × ℤ) : P.coords (P.latVec z) = ![(z.1 : ℝ), (z.2 : ℝ)] := by
-  rw [coords_apply]
-  have : P.latVec z = P.basis.equivFun.symm ![(z.1 : ℝ), (z.2 : ℝ)] := by
-    rw [Module.Basis.equivFun_symm_apply, Fin.sum_univ_two]
-    simp [latVec]
-  rw [this, LinearEquiv.apply_symm_apply]
-
+  apply P.basis.equivFun.symm.injective
+  rw [coords_apply, LinearEquiv.symm_apply_apply,
+    Module.Basis.equivFun_symm_apply, Fin.sum_univ_two]
+  simp only [basis_apply, Matrix.cons_val_zero, Matrix.cons_val_one, latVec]
 omit [DecidableEq V] [G.LocallyFinite] in
 /-- The sup norm of a lattice vector is controlled by the Euclidean norm of its image. -/
 theorem supNorm_le_norm_latVec (z : ℤ × ℤ) : supNorm z ≤ ‖P.coords‖ * ‖P.latVec z‖ := by
+  rw [supNorm_le_iff]
   have h := P.coords.le_opNorm (P.latVec z)
   rw [coords_latVec] at h
-  refine le_trans ?_ h
-  rw [supNorm_le_iff]
-  constructor
-  · have := norm_le_pi_norm ![(z.1 : ℝ), (z.2 : ℝ)] 0
-    simpa using this
-  · have := norm_le_pi_norm ![(z.1 : ℝ), (z.2 : ℝ)] 1
-    simpa using this
-
+  exact ⟨
+    (by simpa using
+      (norm_le_pi_norm ![(z.1 : ℝ), (z.2 : ℝ)] 0).trans h),
+    (by simpa using
+      (norm_le_pi_norm ![(z.1 : ℝ), (z.2 : ℝ)] 1).trans h)⟩
 /-! ### Orbit representatives are at bounded distance -/
 
 omit [DecidableEq V] [G.LocallyFinite] in

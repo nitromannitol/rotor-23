@@ -41,14 +41,8 @@ variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite] (π 
 /-- The passage times from a base point are 1-Lipschitz in the graph distance. -/
 theorem abs_τ_sub_le (hAb : External.Abelian G) [Infinite V] (hG : G.Connected) (ρ : Config G)
     (o x y : V) : |(τ π ρ o x : ℝ) - τ π ρ o y| ≤ G.dist x y := by
-  have h1 : (τ π ρ o x : ℝ) ≤ τ π ρ o y + τ π ρ y x := by exact_mod_cast τ_triangle π hAb hG ρ o y x
-  have h2 : (τ π ρ o y : ℝ) ≤ τ π ρ o x + τ π ρ x y := by exact_mod_cast τ_triangle π hAb hG ρ o x y
-  have d1 : (τ π ρ y x : ℝ) ≤ G.dist y x := by exact_mod_cast τ_le_dist π hG ρ y x
-  have d2 : (τ π ρ x y : ℝ) ≤ G.dist x y := by exact_mod_cast τ_le_dist π hG ρ x y
-  have hc : (G.dist x y : ℝ) = G.dist y x := by exact_mod_cast G.dist_comm
-  rw [abs_sub_le_iff]
-  constructor <;> linarith
-
+  simpa only [SimpleGraph.dist_self, Nat.cast_zero, zero_add] using
+    τ_four π hAb hG ρ o o x y
 /-- Uniform convergence over the lattice: almost surely, for every `ε` the passage time to
 `shift w o` is within `ε |w|_∞` of `m w` once `|w|_∞` is large. -/
 theorem uniform_lattice (hπ : P.Periodic π) (hAb : External.Abelian G) [Infinite V]

@@ -14,33 +14,19 @@ namespace Rotor
 /-- Scaling the argument of a floor by `θ` versus by `⌊n θ⌋₊` (drafted by the GLM fleet). -/
 theorem floor_scale_diff (θ x : ℝ) (hθ : 0 < θ) (n : ℕ) :
     |(⌊(n : ℝ) * θ * x⌋ : ℝ) - ⌊(⌊(n : ℝ) * θ⌋₊ : ℝ) * x⌋| ≤ |x| + 1 := by
-  set a : ℝ := ↑n * θ with ha
-  have h0 : 0 ≤ a := by
-    rw [ha]
-    exact mul_nonneg (Nat.cast_nonneg _) hθ.le
-  set b : ℝ := ↑⌊a⌋₊ with hb
-  have hab0 : b ≤ a := by
-    rw [hb]
-    exact Nat.floor_le h0
-  have hab1 : a - b < 1 := by
-    rw [hb]
-    have h := Nat.lt_floor_add_one a
-    linarith
-  have h2 : |a * x - b * x| ≤ |x| := by
-    have he : a * x - b * x = (a - b) * x := by ring
-    have h1 : |a - b| ≤ 1 := abs_le.mpr ⟨by linarith, by linarith⟩
-    calc |a * x - b * x| = |(a - b) * x| := by rw [he]
-      _ = |a - b| * |x| := abs_mul _ _
-      _ ≤ 1 * |x| := mul_le_mul_of_nonneg_right h1 (abs_nonneg x)
-      _ = |x| := one_mul _
-  have f1 := Int.floor_le (a * x)
-  have f2 := Int.lt_floor_add_one (a * x)
-  have f3 := Int.floor_le (b * x)
-  have f4 := Int.lt_floor_add_one (b * x)
-  obtain ⟨hx1, hx2⟩ := abs_le.mp h2
+  have h2 :
+      |(n : ℝ) * θ * x - (⌊(n : ℝ) * θ⌋₊ : ℝ) * x| ≤ |x| := by
+    rw [← sub_mul, abs_mul]
+    simpa only [one_mul] using mul_le_mul_of_nonneg_right
+      (Nat.abs_sub_floor_le (mul_nonneg (Nat.cast_nonneg n) hθ.le))
+      (abs_nonneg x)
+  obtain ⟨hx1, hx2⟩ := abs_le.1 h2
+  have f1 := Int.floor_le ((n : ℝ) * θ * x)
+  have f2 := Int.lt_floor_add_one ((n : ℝ) * θ * x)
+  have f3 := Int.floor_le ((⌊(n : ℝ) * θ⌋₊ : ℝ) * x)
+  have f4 := Int.lt_floor_add_one ((⌊(n : ℝ) * θ⌋₊ : ℝ) * x)
   rw [abs_le]
-  constructor <;> linarith
-
+  constructor <;> linarith only [hx1, hx2, f1, f2, f3, f4]
 /-- The lattice point below a coordinate vector. -/
 noncomputable def latt (c : Fin 2 → ℝ) : ℤ × ℤ := (⌊c 0⌋, ⌊c 1⌋)
 
@@ -76,12 +62,10 @@ theorem supNorm_latt_le (c : Fin 2 → ℝ) : supNorm (latt c) ≤ ‖c‖ + 1 :
 
 theorem latt_natCast_smul (n : ℕ) (z : ℤ × ℤ) :
     latt ((n : ℝ) • ![(z.1 : ℝ), (z.2 : ℝ)]) = n • z := by
-  ext
-  · show ⌊(n : ℝ) * (z.1 : ℝ)⌋ = n • z.1
-    rw [nsmul_eq_mul, ← Int.cast_natCast (R := ℝ) n, ← Int.cast_mul, Int.floor_intCast]
-  · show ⌊(n : ℝ) * (z.2 : ℝ)⌋ = n • z.2
-    rw [nsmul_eq_mul, ← Int.cast_natCast (R := ℝ) n, ← Int.cast_mul, Int.floor_intCast]
-
+  have key (a : ℤ) : ⌊(n : ℝ) * (a : ℝ)⌋ = n • a := by
+    rw [nsmul_eq_mul, ← Int.cast_natCast (R := ℝ) n,
+      ← Int.cast_mul, Int.floor_intCast]
+  exact Prod.ext (key z.1) (key z.2)
 /-- A nonnegative subadditive function on the lattice, scaling linearly along rays and
 bounded by `K` times the sup norm. -/
 structure LatticeSubadditive (m : ℤ × ℤ → ℝ) (K : ℝ) : Prop where
@@ -165,18 +149,19 @@ theorem LatticeSubadditive.tendsto_latSeq (x : Plane) :
     Tendsto (fun n : ℕ => latSeq m ξ x n / n) atTop (𝓝 (planeExt m ξ x)) := by
   apply tendsto_nhds_limUnder
   have hu : Subadditive (fun n => latSeq m ξ x n + K) := fun p q => by
-    have := h.latSeq_add_le ξ x p q
-    linarith
-  have hbdd : BddBelow (Set.range fun n : ℕ => (latSeq m ξ x n + K) / n) := by
+    simpa only [add_assoc, add_left_comm, add_comm] using
+      add_le_add_right (h.latSeq_add_le ξ x p q) K
+  have hbdd :
+      BddBelow (Set.range fun n : ℕ => (latSeq m ξ x n + K) / n) := by
     refine ⟨0, ?_⟩
     rintro _ ⟨n, rfl⟩
-    exact div_nonneg (by linarith [h.latSeq_nonneg ξ x n, h.K_nonneg]) (Nat.cast_nonneg _)
-  have h1 := hu.tendsto_lim hbdd
-  have h2 : Tendsto (fun n : ℕ => K / n) atTop (𝓝 0) := tendsto_const_div_atTop_nhds_zero_nat K
-  refine ⟨hu.lim - 0, ?_⟩
-  refine (h1.sub h2).congr (fun n => ?_)
-  rw [← sub_div, add_sub_cancel_right]
-
+    exact div_nonneg
+      (add_nonneg (h.latSeq_nonneg ξ x n) h.K_nonneg)
+      (Nat.cast_nonneg _)
+  exact ⟨hu.lim, by
+    simpa only [sub_zero, ← sub_div, add_sub_cancel_right] using
+      (hu.tendsto_lim hbdd).sub
+        (tendsto_const_div_atTop_nhds_zero_nat K)⟩
 theorem LatticeSubadditive.planeExt_nonneg (x : Plane) : 0 ≤ planeExt m ξ x :=
   ge_of_tendsto' (h.tendsto_latSeq ξ x)
     (fun n => div_nonneg (h.latSeq_nonneg ξ x n) (Nat.cast_nonneg _))
@@ -213,24 +198,15 @@ theorem LatticeSubadditive.planeExt_add_le (x y : Plane) :
 /-- On a point with integer coordinates `z`, the extension is `m z`. -/
 theorem LatticeSubadditive.planeExt_eq_of_coords (x : Plane) (z : ℤ × ℤ)
     (hx : ξ x = ![(z.1 : ℝ), (z.2 : ℝ)]) : planeExt m ξ x = m z := by
-  refine tendsto_nhds_unique (h.tendsto_latSeq ξ x) ?_
-  have : ∀ n : ℕ, 0 < n → latSeq m ξ x n / n = m z := fun n hn => by
-    unfold latSeq
-    rw [hx, latt_natCast_smul, h.nsmul]
-    have hn' : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
-    field_simp
-  refine tendsto_const_nhds.congr' ?_
-  filter_upwards [eventually_gt_atTop 0] with n hn
-  exact (this n hn).symm
-
+  refine tendsto_nhds_unique (h.tendsto_latSeq ξ x)
+    (tendsto_const_nhds.congr' ?_)
+  filter_upwards [eventually_gt_atTop (0 : ℕ)] with n hn
+  have hn' : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
+  simp only [latSeq, hx, latt_natCast_smul, h.nsmul,
+    mul_div_cancel_left₀ _ hn']
 theorem LatticeSubadditive.planeExt_zero : planeExt m ξ 0 = 0 := by
-  refine tendsto_nhds_unique (h.tendsto_latSeq ξ 0) ?_
-  have : (fun n : ℕ => latSeq m ξ 0 n / n) = fun _ => 0 := by
-    funext n
-    simp [latSeq, latt_zero, h.zero]
-  rw [this]
-  exact tendsto_const_nhds
-
+  simpa only [h.zero] using
+    h.planeExt_eq_of_coords ξ 0 0 (by ext i; fin_cases i <;> simp)
 theorem LatticeSubadditive.planeExt_smul (θ : ℝ) (hθ : 0 ≤ θ) (x : Plane) :
     planeExt m ξ (θ • x) = θ * planeExt m ξ x := by
   rcases hθ.eq_or_lt with rfl | hθ
