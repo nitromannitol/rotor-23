@@ -9,6 +9,7 @@ transported to the neighbor sets of the lattice graph.
 -/
 import Rotor.Model
 import Rotor.Basic
+import Rotor.Periodic
 
 open Fin.NatCast
 
@@ -86,5 +87,48 @@ def clockwise : Mechanism squareGraph where
     congr 1
     exact add_sub_cancel i j
   nonempty v := ⟨nbr v 0⟩
+
+end Rotor
+
+namespace Rotor
+
+/-- The standard embedding of `ℤ²` in the plane. -/
+def squareEmb (v : Site) : Plane := WithLp.toLp 2 ![(v.1 : ℝ), (v.2 : ℝ)]
+
+theorem squareEmb_injective : Function.Injective squareEmb := by
+  intro v w h
+  have h' : (![(v.1 : ℝ), (v.2 : ℝ)] : Fin 2 → ℝ) = ![(w.1 : ℝ), (w.2 : ℝ)] := by
+    have := congrArg WithLp.ofLp h
+    simpa [squareEmb] using this
+  have h0 := congrFun h' 0
+  have h1 := congrFun h' 1
+  simp at h0 h1
+  exact Prod.ext h0 h1
+
+/-- The square lattice as a doubly periodic graph: the lattice `ℤ²` acts on
+itself by translation, with the standard basis. -/
+noncomputable def squarePeriodic : DoublyPeriodic squareGraph where
+  emb := squareEmb
+  emb_injective := squareEmb_injective
+  shift z v := v + z
+  shift_zero v := by simp
+  shift_add z w v := by simp [add_comm, add_left_comm]
+  b := fun i => WithLp.toLp 2 (Pi.single i 1)
+  b_indep := by
+    have := (EuclideanSpace.basisFun (Fin 2) ℝ).toBasis.linearIndependent
+    convert this using 1
+    funext i
+    rw [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply]
+    rfl
+  emb_shift z v := by
+    ext i
+    fin_cases i <;> simp [squareEmb]
+  adj_shift z u v := by
+    simp [squareGraph_adj]
+  rep _ := 0
+  coord v := v
+  shift_coord_rep v := by simp
+  rep_shift _ _ := rfl
+  finite_orbits := by rw [Set.range_const]; exact Set.finite_singleton _
 
 end Rotor

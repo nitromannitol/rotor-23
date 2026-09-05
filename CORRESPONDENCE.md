@@ -57,5 +57,21 @@ one in a separate project.
 | `ext-one-circuit` | `Rotor.External.OneCircuit` | external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit (ruling X-001) | FROZEN |
 | `ext-abelian` | `Rotor.External.Abelian` | external input, HLMPPW Lemma 3.9, the statement of lem:least-action (ruling X-001) | FROZEN |
 | `ext-holroyd-propp` | `Rotor.External.VisitsAllOfVisitsOne` | external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence (ruling X-001) | FROZEN |
+| `ext-kingman` | `Rotor.External.Kingman` | external input, Kingman 1968 Theorems 3 and 5, used in the proof of prop:passage-limit (ruling X-001) | FROZEN |
+| `ext-lss` | `Rotor.External.LSS` | external input, Liggett-Schonmann-Stacey Theorem 0.0(ii), used in the proof of lem:block-live-paths (ruling X-001) | FROZEN |
+| `ext-angel-holroyd` | `Rotor.External.RecurrentOfRecurrent` | external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence (ruling X-001) | FROZEN |
+| `ext-subcritical-decay` | `Rotor.External.SubcriticalDecay` | external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail (ruling X-001) | FROZEN |
+| `prop-path-reduction` | `Rotor.Frozen.path_reduction` | `rotor.tex:1004-1037`, `prop:path-reduction` | DRAFT_SORRY |
+| `prop-passage-limit` | `Rotor.Frozen.passage_limit` | `rotor.tex:1084-1094`, `prop:passage-limit` | DRAFT_SORRY |
+| `prop-circuit-shape` | `Rotor.Frozen.circuit_shape` | `rotor.tex:1115-1135`, `prop:circuit-shape` | DRAFT_SORRY |
+| `prop-circuit-clock` | `Rotor.Frozen.circuit_clock` | `rotor.tex:1148-1176`, `prop:circuit-clock` | DRAFT_SORRY |
+| `lem-block-live-paths` | `Rotor.Frozen.block_live_paths` | `rotor.tex:1227-1238`, `lem:block-live-paths` | DRAFT_SORRY |
+| `thm-main-square` | `Rotor.Frozen.main_square` | `rotor.tex:228-250`, `thm:main` | DRAFT_SORRY |
+| `thm-main-degree-three` | `Rotor.Frozen.main_degree_three` | `rotor.tex:228-250`, `thm:main` | DRAFT_SORRY |
+| `prop-perturbations-square` | `Rotor.Frozen.perturbations_square` | `rotor.tex:263-271`, `prop:small-perturbations` | DRAFT_SORRY |
+| `prop-perturbations-degree-three` | `Rotor.Frozen.perturbations_degree_three` | `rotor.tex:263-271`, `prop:small-perturbations` | DRAFT_SORRY |
+| `prop-subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `rotor.tex:1344-1350`, `prop:subcubic-recurrence` | DRAFT_SORRY |
+| `prop-degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `rotor.tex:1385-1400`, `prop:degree-three-passage` | DRAFT_SORRY |
+| `prop-square-passage` | `Rotor.Frozen.square_passage` | `rotor.tex:1461-1471`, `prop:square-passage` | DRAFT_SORRY |
 
 <!-- FROZEN-SURFACE-END -->

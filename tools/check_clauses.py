@@ -73,6 +73,38 @@ REVIEWED: dict[str, str] = {
     "prop-live-recurrence":
         "three assertions, three conjuncts: AllTerminate, T(n) < ⊤ for all n, Recurrent at the "
         "fixed start o",
+    "prop-path-reduction":
+        "items (i)-(iii), three conjuncts; (i) for every start; (ii) the sup over d(x,y) ≥ R as an "
+        "iSup in ℝ≥0∞; (iii) B, κ, c_* before ∀ᵐ, T(n) < ⊤ added, sets drawn relative to o",
+    "prop-passage-limit":
+        "one display plus continuity, subadditivity, homogeneity, nonnegativity and independence of o "
+        "(∃ f before ∀ o); the uniform limit in ε-R₀ form relative to o",
+    "prop-circuit-shape":
+        "three properties of B, the Hausdorff limit, and the sandwich display: five conjuncts; the "
+        "passage function and the passage-ball identity are hypotheses",
+    "prop-circuit-clock":
+        "the squeeze display, the two asymptotics under (α, β), and the Hausdorff conclusion: "
+        "three conjuncts, the o(·) claims as limits of ratios; emb is any drawing",
+    "lem-block-live-paths":
+        "ε, L₀ first, then L and the strict block hypothesis, then η with the criterion, then δ "
+        "with the perturbed criterion; two conclusions as nested conjuncts",
+    "thm-main-square":
+        "the square case of items (i)-(iii): recurrence, T(n) < ⊤, Hausdorff limit of A_n, the "
+        "sandwich (F-001), Hausdorff limit of R_t, the range limit; B, κ, c before ∀ᵐ",
+    "thm-main-degree-three":
+        "the degree-three case, same six conjuncts with P.emb; split node of thm:main",
+    "prop-perturbations-square":
+        "∃ δ, then for every product law within δ of uniform: (i) for every start, and under "
+        "invariant marginals the (ii)-(iii) conjunction of thm-main-square",
+    "prop-perturbations-degree-three":
+        "the degree-three case of prop:small-perturbations; split node",
+    "prop-subcubic-recurrence":
+        "one assertion: almost surely no infinite live path, for the uniform law",
+    "prop-degree-three-passage":
+        "one display; c, C existential before u → v and R (they depend on the graph)",
+    "prop-square-passage":
+        "one display; c, C existential before u → v and R (they route through the external "
+        "subcritical bound)",
 }
 
 
