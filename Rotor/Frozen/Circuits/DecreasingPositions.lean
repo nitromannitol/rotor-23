@@ -21,6 +21,7 @@ phase one (ruling X-001): they are not derived here and the certificate lists th
 mechanism and initial rotor configuration are fixed and arbitrary").
 -/
 import Rotor.Traversal
+import Rotor.Support.DecreasingPositionsII
 import Rotor.External.OneCircuit
 import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
@@ -42,4 +43,5 @@ theorem Rotor.Frozen.decreasing_positions (hAb : External.Abelian G) (π : Mecha
         ∃ l : List V, IsPath G l ∧ l.head? = some x ∧ l.getLast? = some y ∧
           (∀ v ∈ l, v ∈ (Φ π ρ)^[n] {x}) ∧ (liveFailures π ρ l).card ≤ n - 1)
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= ⟨fun S _ y hy es hes hvis => decreasing_positions_i π S ρ y hy es hes hvis,
+    fun x y n _ hdef hy => decreasing_positions_ii π hAb hG ρ x n y hdef hy⟩

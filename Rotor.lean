@@ -55,3 +55,4 @@ import Rotor.Support.CircuitIterate
 import Rotor.Support.Passage
 import Rotor.Support.EulerPath
 import Rotor.Support.DecreasingPositionsI
+import Rotor.Support.DecreasingPositionsII
