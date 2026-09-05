@@ -16,6 +16,7 @@ phase one (ruling X-001): they are not derived here and the certificate lists th
 mechanism and initial rotor configuration are fixed and arbitrary").
 -/
 import Rotor.Traversal
+import Rotor.Support.Passage
 import Rotor.External.OneCircuit
 import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
@@ -31,4 +32,4 @@ theorem Rotor.Frozen.passage (hFLP : External.OneCircuit G) (hAb : External.Abel
     (∀ x y : V, τ π ρ x y ≤ G.dist x y) ∧
     (AllTerminate π ρ → ∀ n : ℕ, T π ρ o n < ⊤ ∧ ∀ x : V, x ∈ A π ρ o n ↔ τ π ρ o x ≤ n)
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= passage_proof π hFLP hAb hG ρ o

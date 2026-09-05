@@ -52,3 +52,4 @@ import Rotor.Support.BoundaryRouting
 import Rotor.Support.WalkBasics
 import Rotor.Support.Monotone
 import Rotor.Support.CircuitIterate
+import Rotor.Support.Passage
