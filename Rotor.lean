@@ -46,3 +46,4 @@ import Rotor.Frozen.Main.Pendant
 import Rotor.Support.RoutingBasics
 import Rotor.Support.ParticleCount
 import Rotor.Support.DualGuards
+import Rotor.Support.NoRepeat
