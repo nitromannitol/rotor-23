@@ -105,6 +105,22 @@ REVIEWED: dict[str, str] = {
     "prop-square-passage":
         "one display; c, C existential before u → v and R (they route through the external "
         "subcritical bound)",
+    "lem-square-dual-path":
+        "one assertion: an open dual path from the right face of the first edge to the right "
+        "face of the last edge, with distinct faces as 'path' requires",
+    "lem-square-constrained-bonds":
+        "one display; c, C existential (they route through the external subcritical bound); "
+        "the pattern P⋆ is the explicit six-vertex list",
+    "lem-square-exploration":
+        "items (i)-(iii), three conjuncts; (iii) is three conditional-probability identities "
+        "given a history, one per case",
+    "lem-square-active-list":
+        "two sentences, two conjuncts, at every stage with a current edge",
+    "lem-square-forced-tests":
+        "one display with the explicit constants C = 4/3, e^{-c} = (3/4)^{1/3} (ruling F-003)",
+    "prop-pendant-counterexample":
+        "one assertion: almost-sure transience for every start and every M ≥ 50331645, the "
+        "explicit M₀ (ruling F-003); see ERRATA E-001 for the almost-sure reading",
 }
 
 

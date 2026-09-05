@@ -2,6 +2,8 @@
 Proposition 1.2 of rotor.tex, the degree-three case, frozen.
 `rotor.tex:263-271` (label `prop:small-perturbations`); see
 `Rotor/Frozen/Main/PerturbSquare.lean`.
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
+phase one (ruling X-001): they are not derived here and the certificate lists them.
 -/
 import Rotor.Events
 import Rotor.Percolation

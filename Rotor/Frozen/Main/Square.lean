@@ -23,6 +23,8 @@ asserted so that `A_n` is never its junk value (M-008); (ii) is frozen both as
 Hausdorff limits and as the sandwich of `prop:circuit-shape` (F-001); the
 lattice is drawn by `squareEmb` relative to `o`.  The external inputs are
 those of Sections 2, 3 and 5 (ruling X-001).
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
+phase one (ruling X-001): they are not derived here and the certificate lists them.
 -/
 import Rotor.Events
 import Rotor.Percolation

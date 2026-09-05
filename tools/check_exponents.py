@@ -48,6 +48,12 @@ NOISE = {"2", "+", "-1", "\Z", "\R", "\infty", "\ast", "\star", "j", "n", "m", "
 # Per node: exponents present in the paper's line range but legitimately absent
 # from this node's Lean statement, with the reason.
 EXPECTED_ABSENT: dict[str, dict[str, str]] = {
+    "thm-main-square": {"-2/3": "notation: the paper's |R_t| t^{-2/3} is Lean's |R_t| / t^(2/3)"},
+    "thm-main-degree-three": {"-2/3": "notation: the paper's |R_t| t^{-2/3} is Lean's |R_t| / t^(2/3)"},
+    "prop-degree-three-passage": {"-cR": "notation: the paper's e^{-cR} is Lean's Real.exp (-c * R)"},
+    "prop-square-passage": {"-cR": "notation: the paper's e^{-cR} is Lean's Real.exp (-c * R)"},
+    "lem-square-constrained-bonds": {"-cr": "notation: the paper's e^{-cr} is Lean's Real.exp (-c * r)"},
+    "lem-square-forced-tests": {"-cm": "notation: the paper's e^{-cm} is Lean's explicit (3/4)^(m/3)"},
 }
 
 
@@ -98,6 +104,9 @@ def lean_exponents(blk: str) -> set[str]:
         e = re.sub(r"\(\s*([a-zA-Zβγ])\s*:\s*ℝ\s*\)", r"\1", e)
         e = re.sub(r"\(\s*(\d+)\s*:\s*ℝ\s*\)", r"\1", e)
         e = re.sub(r"\s+", "", e)
+        # a bracketed literal with a type ascription, `(2 / 3 : ℝ)`, is the literal
+        e = re.sub(r":ℝ$", "", e)
+        e = re.sub(r"^\((.*)\)$", r"\1", e)
         if e.startswith("-(") and e.endswith(")"):
             e = "-" + e[2:-1]
         cleaned.add(e)

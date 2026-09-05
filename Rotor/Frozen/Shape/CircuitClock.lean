@@ -13,7 +13,11 @@ Proposition 3.4 of rotor.tex, frozen.  `rotor.tex:1148-1174` (label `prop:circui
 
 Deterministic; `emb` is any drawing of the vertices in the plane.  Three
 sentences of conclusions, three conjuncts; the `o(·)` statements are limits
-of ratios.
+of ratios.  The graph is connected and locally finite, finite or infinite, as
+the paper says.  The proof uses `lem:one-circuit`, hence the external input
+`hFLP` (ruling X-001).
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
+phase one (ruling X-001): they are not derived here and the certificate lists them.
 -/
 import Rotor.Events
 import Rotor.External.OneCircuit
@@ -31,7 +35,7 @@ variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
 -- FROZEN-STATEMENT-BEGIN
 theorem Rotor.Frozen.circuit_clock (hFLP : External.OneCircuit G) (π : Mechanism G)
-    [Infinite V] (hG : G.Connected) (ρ : Config G) (o : V) (hT : ∀ n : ℕ, T π ρ o n < ⊤) :
+    (hG : G.Connected) (ρ : Config G) (o : V) (hT : ∀ n : ℕ, T π ρ o n < ⊤) :
     (∀ n : ℕ, ∑ x ∈ A π ρ o n, G.degree x ≤ (T π ρ o (n + 1)).toNat - (T π ρ o n).toNat ∧
       (T π ρ o (n + 1)).toNat - (T π ρ o n).toNat ≤ ∑ x ∈ A π ρ o (n + 1), G.degree x) ∧
     (∀ α β : ℝ, 0 < α → 0 < β →

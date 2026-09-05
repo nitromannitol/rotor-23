@@ -38,7 +38,7 @@ def _paper_path() -> Path:
 
 PAPER = _paper_path()
 
-SOURCE_RE = re.compile(r"^orrw\.tex:(?P<a>\d+)-(?P<b>\d+)\s*(?P<rest>.*)$")
+SOURCE_RE = re.compile(r"^rotor\.tex:(?P<a>\d+)-(?P<b>\d+)\s*(?P<rest>.*)$")
 LABEL_RE = re.compile(r"label\s+([A-Za-z][A-Za-z0-9:_-]*)")
 BEGIN_RE = re.compile(r"\\begin\{([A-Za-z*]+)\}")
 END_RE = re.compile(r"\\end\{([A-Za-z*]+)\}")

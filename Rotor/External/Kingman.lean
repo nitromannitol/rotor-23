@@ -10,8 +10,10 @@ proof of `prop:passage-limit` (`rotor.tex:1096-1113`):
 
 Assumed in the form used: for an ergodic measure-preserving map `θ` and a
 nonnegative stationary subadditive array `X m n` with a linear bound on its
-expectations, `X 0 n / n` converges almost surely to a constant.
-Ruling X-001.
+expectations, `X 0 n / n` converges almost surely to a constant.  Kingman's
+theorem also gives convergence in `L¹`; the paper's proof uses only the
+almost-sure limit (through convergence in probability), so the `L¹` clause is
+deliberately not assumed.  Ruling X-001.
 -/
 import Mathlib
 

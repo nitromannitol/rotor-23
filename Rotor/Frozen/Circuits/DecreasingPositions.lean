@@ -14,6 +14,11 @@ Lemma 2.7 of rotor.tex, frozen.  `rotor.tex:883-897` (label `lem:decreasing-posi
 In (i) the path has at least two vertices, since $y\notin S$ while $x_0\in S$.
 The proof of (ii) uses complete one-particle-at-a-time routings, hence
 `lem:boundary-routing` and `External.Abelian`.
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
+phase one (ruling X-001): they are not derived here and the certificate lists them.
+`[Infinite V]` and `hG` are the standing assumptions of Section 2 (`rotor.tex:678-680`:
+"Throughout this section, `G` is infinite, connected, and locally finite, the rotor
+mechanism and initial rotor configuration are fixed and arbitrary").
 -/
 import Rotor.Traversal
 import Rotor.External.OneCircuit

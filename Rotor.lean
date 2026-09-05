@@ -35,3 +35,11 @@ import Rotor.Frozen.Main.PerturbDegreeThree
 import Rotor.Frozen.DegreeThree.SubcubicRecurrence
 import Rotor.Frozen.DegreeThree.Passage
 import Rotor.Frozen.Square.Passage
+import Rotor.Pendant
+import Rotor.Exploration
+import Rotor.Frozen.Square.DualPath
+import Rotor.Frozen.Square.ConstrainedBonds
+import Rotor.Frozen.Square.Exploration
+import Rotor.Frozen.Square.ActiveList
+import Rotor.Frozen.Square.ForcedTests
+import Rotor.Frozen.Main.Pendant

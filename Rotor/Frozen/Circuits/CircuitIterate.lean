@@ -9,6 +9,11 @@ Proposition 2.4 of rotor.tex, frozen.  `rotor.tex:774-782` (label `prop:circuit-
 `ρ`, as the paper's boundary routing is ("with the fixed initial rotors on
 `V ∖ S`", `rotor.tex:717-719`).  The proof uses `lem:one-circuit`,
 `lem:boundary-routing` and `lem:least-action`.
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
+phase one (ruling X-001): they are not derived here and the certificate lists them.
+`[Infinite V]` and `hG` are the standing assumptions of Section 2 (`rotor.tex:678-680`:
+"Throughout this section, `G` is infinite, connected, and locally finite, the rotor
+mechanism and initial rotor configuration are fixed and arbitrary").
 -/
 import Rotor.Traversal
 import Rotor.External.OneCircuit

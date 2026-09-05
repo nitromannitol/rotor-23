@@ -11,6 +11,8 @@ external input `External.OneCircuit` (ruling X-001) is its hypothesis.  The
 standing assumptions of Section 2 (`rotor.tex:678-680`) are the binders
 `[Infinite V]` and `hG`.  "During `T(n) ≤ t < T(n+1)`" with `T(n+1) = ∞`
 is the half-line, which the `ℕ∞` comparison expresses.
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
+phase one (ruling X-001): they are not derived here and the certificate lists them.
 -/
 import Rotor.Traversal
 import Rotor.External.OneCircuit
@@ -29,4 +31,4 @@ theorem Rotor.Frozen.one_circuit (hFLP : External.OneCircuit G) (π : Mechanism 
     (T π ρ o (n + 1) < ⊤ → ∀ x ∈ A π ρ o n,
         departures π ρ o x (T π ρ o n).toNat (T π ρ o (n + 1)).toNat = G.degree x)
 -- FROZEN-STATEMENT-END
-:= hFLP π inferInstance hG ρ o n hn
+:= hFLP π hG ρ o n hn

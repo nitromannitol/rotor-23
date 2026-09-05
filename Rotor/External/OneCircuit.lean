@@ -9,9 +9,11 @@ Lemmas 2.1 and 2.4, as the paper states them in `lem:one-circuit`
    vertex `x ∈ A_n` exactly `deg(x)` times."
 
 Ruling X-001: this is assumed in phase one.  It is a `Prop` and enters only as
-an explicit hypothesis.  The standing assumptions of Section 2
-(`rotor.tex:678-680`: `G` infinite, connected, locally finite; mechanism and
-rotors arbitrary) are part of the assumed statement.
+an explicit hypothesis.  FLP state their lemmas for connected locally finite
+graphs, finite or infinite, and `prop:circuit-clock` (`rotor.tex:1148-1151`)
+uses `lem:one-circuit` on "a connected locally finite graph", so infinitude is
+not assumed here; the node `lem-one-circuit` adds Section 2's standing
+assumption `[Infinite V]` when it restates the lemma.
 -/
 import Rotor.Traversal
 
@@ -22,7 +24,7 @@ variable {V : Type*} [DecidableEq V] (G : SimpleGraph V) [G.LocallyFinite]
 -- FROZEN-STATEMENT-BEGIN
 /-- FLP Lemmas 2.1 and 2.4 (`lem:one-circuit`), assumed. -/
 def Rotor.External.OneCircuit : Prop :=
-  ∀ (π : Mechanism G), Infinite V → G.Connected →
+  ∀ (π : Mechanism G), G.Connected →
     ∀ (ρ : Config G) (o : V) (n : ℕ), T π ρ o n < ⊤ →
       (∀ s t : ℕ, T π ρ o n ≤ (s : ℕ∞) → s < t → (t : ℕ∞) < T π ρ o (n + 1) →
           traversal π ρ o s ≠ traversal π ρ o t) ∧

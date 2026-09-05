@@ -13,6 +13,8 @@ mechanism, `ν` the one-vertex laws, `ℙ_0` their product.  Quantifier order
 as in the paper: `ε, L₀` first, then `L` and the block hypothesis, then `η`,
 then `δ`; `ε, L₀` are bound before `ν`, which the proof supports.  The
 proof uses LSS domination (`External.LSS`).
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
+phase one (ruling X-001): they are not derived here and the certificate lists them.
 -/
 import Rotor.Events
 import Rotor.External.OneCircuit
