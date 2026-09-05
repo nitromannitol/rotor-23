@@ -67,3 +67,4 @@ import Rotor.Support.PlaneExtension
 import Rotor.Support.PassageUniform
 import Rotor.Support.CircuitShape
 import Rotor.Support.CircuitClock
+import Rotor.Support.PathReductionIII

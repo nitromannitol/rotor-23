@@ -33,6 +33,7 @@ import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
+import Rotor.Support.PathReductionIII
 
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
@@ -62,4 +63,4 @@ theorem Rotor.Frozen.path_reduction (hFLP : External.OneCircuit G) (hAb : Extern
               (κ • B)) atTop (𝓝 0) ∧
           Tendsto (fun t : ℕ => ((R π ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c))
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= path_reduction_proof π hFLP hAb hHP hK hG hdeg μ η hη hcrit
