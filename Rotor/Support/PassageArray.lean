@@ -74,14 +74,13 @@ theorem arr_shift (hπ : P.Periodic π) (hAb : External.Abelian G) [Infinite V] 
     arr π P (P.shiftConfig (-z) ρ) o z m n = arr π P ρ o z (m + 1) (n + 1) := by
   unfold arr
   rw [← P.mechAut_act π hπ (-z)]
-  have h1 : P.shift (m • z) o = (P.mechAut π hπ (-z)).σ (P.shift ((m + 1) • z) o) := by
-    rw [P.mechAut_σ, ← P.shift_add]; congr 1
-    rw [succ_nsmul]; abel
-  have h2 : P.shift (n • z) o = (P.mechAut π hπ (-z)).σ (P.shift ((n + 1) • z) o) := by
-    rw [P.mechAut_σ, ← P.shift_add]; congr 1
-    rw [succ_nsmul]; abel
-  rw [h1, h2, (P.mechAut π hπ (-z)).τ_act hAb hG]
-
+  have hs (k : ℕ) :
+      P.shift (k • z) o =
+        (P.mechAut π hπ (-z)).σ (P.shift ((k + 1) • z) o) := by
+    rw [P.mechAut_σ, ← P.shift_add, succ_nsmul]
+    congr 1
+    abel
+  rw [hs m, hs n, (P.mechAut π hπ (-z)).τ_act hAb hG]
 theorem arr_subadd (hAb : External.Abelian G) [Infinite V] (hG : G.Connected)
     (o : V) (z : ℤ × ℤ) (l m n : ℕ) (ρ : Config G) :
     arr π P ρ o z l n ≤ arr π P ρ o z l m + arr π P ρ o z m n := by
@@ -152,75 +151,59 @@ theorem exists_dirLimit (hK : External.Kingman.{u}) (hπ : P.Periodic π) (hAb :
 theorem τ_four (hAb : External.Abelian G) [Infinite V] (hG : G.Connected) (ρ : Config G)
     (x₁ x₂ y₁ y₂ : V) :
     |(τ π ρ x₁ y₁ : ℝ) - τ π ρ x₂ y₂| ≤ G.dist x₁ x₂ + G.dist y₁ y₂ := by
-  have h1 := τ_triangle π hAb hG ρ x₁ x₂ y₁
-  have h2 := τ_triangle π hAb hG ρ x₂ y₂ y₁
-  have h3 := τ_triangle π hAb hG ρ x₂ x₁ y₂
-  have h4 := τ_triangle π hAb hG ρ x₁ y₁ y₂
-  have d1 := τ_le_dist π hG ρ x₁ x₂
-  have d2 := τ_le_dist π hG ρ y₂ y₁
-  have d3 := τ_le_dist π hG ρ x₂ x₁
-  have d4 := τ_le_dist π hG ρ y₁ y₂
-  have s1 := G.dist_comm (u := x₁) (v := x₂)
-  have s2 := G.dist_comm (u := y₁) (v := y₂)
-  have h1' : (τ π ρ x₁ y₁ : ℝ) ≤ τ π ρ x₁ x₂ + τ π ρ x₂ y₁ := by exact_mod_cast h1
-  have h2' : (τ π ρ x₂ y₁ : ℝ) ≤ τ π ρ x₂ y₂ + τ π ρ y₂ y₁ := by exact_mod_cast h2
-  have h3' : (τ π ρ x₂ y₂ : ℝ) ≤ τ π ρ x₂ x₁ + τ π ρ x₁ y₂ := by exact_mod_cast h3
-  have h4' : (τ π ρ x₁ y₂ : ℝ) ≤ τ π ρ x₁ y₁ + τ π ρ y₁ y₂ := by exact_mod_cast h4
-  have d1' : (τ π ρ x₁ x₂ : ℝ) ≤ G.dist x₁ x₂ := by exact_mod_cast d1
-  have d2' : (τ π ρ y₂ y₁ : ℝ) ≤ G.dist y₂ y₁ := by exact_mod_cast d2
-  have d3' : (τ π ρ x₂ x₁ : ℝ) ≤ G.dist x₂ x₁ := by exact_mod_cast d3
-  have d4' : (τ π ρ y₁ y₂ : ℝ) ≤ G.dist y₁ y₂ := by exact_mod_cast d4
-  have s1' : (G.dist x₁ x₂ : ℝ) = G.dist x₂ x₁ := by exact_mod_cast s1
-  have s2' : (G.dist y₁ y₂ : ℝ) = G.dist y₂ y₁ := by exact_mod_cast s2
+  have key (x x' y y' : V) :
+      (τ π ρ x y : ℝ) ≤ τ π ρ x' y' + G.dist x x' + G.dist y y' := by
+    have ht := (τ_triangle π hAb hG ρ x x' y).trans
+      (add_le_add le_rfl (τ_triangle π hAb hG ρ x' y' y))
+    have hd := add_le_add (τ_le_dist π hG ρ x x')
+      (add_le_add (le_refl (τ π ρ x' y')) (τ_le_dist π hG ρ y' y))
+    have hb := ht.trans hd
+    rw [G.dist_comm (u := y') (v := y)] at hb
+    exact_mod_cast (by
+      simpa only [add_assoc, add_comm, add_left_comm] using hb :
+      τ π ρ x y ≤ τ π ρ x' y' + G.dist x x' + G.dist y y')
   rw [abs_le]
-  constructor <;> linarith
-
+  have h₁ := key x₁ x₂ y₁ y₂
+  have h₂ := key x₂ x₁ y₂ y₁
+  rw [G.dist_comm (u := x₂), G.dist_comm (u := y₂)] at h₂
+  constructor <;> linarith only [h₁, h₂]
 /-- The array from `o` at the shifted rotors is the array from `shift (-w) o`. -/
 theorem arr_shiftConfig (hπ : P.Periodic π) (hAb : External.Abelian G) [Infinite V]
     (hG : G.Connected) (ρ : Config G) (o : V) (z w : ℤ × ℤ) (n : ℕ) :
     arr π P (P.shiftConfig w ρ) o z 0 n = arr π P ρ (P.shift (-w) o) z 0 n := by
   unfold arr
   rw [← P.mechAut_act π hπ w]
-  have e1 : P.shift (0 • z) o = (P.mechAut π hπ w).σ (P.shift (0 • z) (P.shift (-w) o)) := by
-    rw [P.mechAut_σ, ← P.shift_add, ← P.shift_add]; congr 1; abel
-  have e2 : P.shift (n • z) o = (P.mechAut π hπ w).σ (P.shift (n • z) (P.shift (-w) o)) := by
-    rw [P.mechAut_σ, ← P.shift_add, ← P.shift_add]; congr 1; abel
-  rw [e1, e2, (P.mechAut π hπ w).τ_act hAb hG]
-
+  have hs (u : ℤ × ℤ) :
+      P.shift u o = (P.mechAut π hπ w).σ (P.shift u (P.shift (-w) o)) := by
+    rw [P.mechAut_σ, ← P.shift_add, ← P.shift_add]
+    congr 1
+    abel
+  rw [hs (0 • z), hs (n • z), (P.mechAut π hπ w).τ_act hAb hG]
 /-- The arrays from two base points differ by a bounded amount. -/
 theorem arr_base_diff (hπ : P.Periodic π) (hAb : External.Abelian G) [Infinite V]
     (hG : G.Connected) (ρ : Config G) (o o' : V) (z : ℤ × ℤ) (n : ℕ) :
     |arr π P ρ o z 0 n - arr π P ρ o' z 0 n| ≤ 2 * G.dist o o' := by
-  unfold arr
-  have := τ_four π hAb hG ρ (P.shift (0 • z) o) (P.shift (0 • z) o') (P.shift (n • z) o)
-    (P.shift (n • z) o')
-  have h0 : G.dist (P.shift (0 • z) o) (P.shift (0 • z) o') = G.dist o o' := by
-    simp [P.shift_zero]
-  have hn : G.dist (P.shift (n • z) o) (P.shift (n • z) o') = G.dist o o' := by
-    have := (P.mechAut π hπ (n • z)).dist_act hG o o'
-    simpa [P.mechAut_σ] using this
-  rw [h0, hn] at this
-  linarith
-
+  simpa only [arr, zero_smul, P.shift_zero,
+    ← P.mechAut_σ π hπ (n • z),
+    (P.mechAut π hπ (n • z)).dist_act hG, two_mul] using
+    τ_four π hAb hG ρ o o'
+      (P.shift (n • z) o) (P.shift (n • z) o')
 /-- The limit of the array from any base point is the same. -/
 theorem tendsto_arr_of_base (hπ : P.Periodic π) (hAb : External.Abelian G) [Infinite V]
     (hG : G.Connected) (ρ : Config G) (o o' : V) (z : ℤ × ℤ) (c : ℝ)
     (h : Tendsto (fun n : ℕ => (arr π P ρ o z 0 n : ℝ) / n) atTop (𝓝 c)) :
     Tendsto (fun n : ℕ => (arr π P ρ o' z 0 n : ℝ) / n) atTop (𝓝 c) := by
-  have hdiff : Tendsto (fun n : ℕ => ((arr π P ρ o' z 0 n : ℝ) - arr π P ρ o z 0 n) / n) atTop
-      (𝓝 0) := by
-    refine squeeze_zero_norm (fun n => ?_) (tendsto_const_div_atTop_nhds_zero_nat (2 * (G.dist o o' : ℝ)))
-    rw [Real.norm_eq_abs, abs_div, abs_of_nonneg (Nat.cast_nonneg (α := ℝ) n)]
-    rcases Nat.eq_zero_or_pos n with rfl | hn
-    · simp
-    · rw [div_le_div_iff_of_pos_right (by exact_mod_cast hn)]
-      have := arr_base_diff π P hπ hAb hG ρ o' o z n
-      rwa [G.dist_comm] at this
-  have := h.add hdiff
-  rw [add_zero] at this
-  refine this.congr (fun n => ?_)
-  rw [← add_div]; ring_nf
-
+  have hdiff : Tendsto
+      (fun n : ℕ => (arr π P ρ o' z 0 n - arr π P ρ o z 0 n) / n)
+      atTop (𝓝 0) := by
+    refine squeeze_zero_norm (fun n => ?_)
+      (tendsto_const_div_atTop_nhds_zero_nat (2 * (G.dist o o' : ℝ)))
+    rw [Real.norm_eq_abs, abs_div,
+      abs_of_nonneg (Nat.cast_nonneg (α := ℝ) n)]
+    apply div_le_div_of_nonneg_right _ (Nat.cast_nonneg _)
+    simpa only [abs_sub_comm] using
+      arr_base_diff π P hπ hAb hG ρ o o' z n
+  simpa only [sub_div, add_sub_cancel, add_zero] using h.add hdiff
 theorem dirLimit_shift_invariant (hπ : P.Periodic π) (hAb : External.Abelian G) [Infinite V]
     (hG : G.Connected) (μ : Measure (Config G)) (hinv : P.Invariant μ) (o : V) (z w : ℤ × ℤ)
     (γ : Config G → ℝ)
@@ -241,139 +224,32 @@ theorem ae_const_of_shift_invariant (μ : Measure (Config G)) [IsProbabilityMeas
     (herg : P.Ergodic μ) (γ : Config G → ℝ) (hγ : Measurable γ)
     (hinvγ : ∀ w : ℤ × ℤ, ∀ᵐ ρ ∂μ, γ (P.shiftConfig w ρ) = γ ρ) :
     ∃ c : ℝ, ∀ᵐ ρ ∂μ, γ ρ = c := by
-  -- the exactly invariant version of `{γ ≤ q}`
-  let A : ℚ → Set (Config G) := fun q => ⋂ w : ℤ × ℤ, (γ ∘ P.shiftConfig w) ⁻¹' Set.Iic (q : ℝ)
-  have hAmem : ∀ q ρ, ρ ∈ A q ↔ ∀ w : ℤ × ℤ, γ (P.shiftConfig w ρ) ≤ q := fun q ρ => by
-    simp only [A, Set.mem_iInter, Set.mem_preimage, Function.comp, Set.mem_Iic]
-  have hAmeas : ∀ q, MeasurableSet (A q) := fun q =>
-    MeasurableSet.iInter (fun w => (hγ.comp (P.measurable_shiftConfig w)) measurableSet_Iic)
-  have hAinv : ∀ q u, P.shiftConfig u ⁻¹' A q = A q := by
-    intro q u
+  refine Filter.exists_eventuallyEq_const_of_forall_separating MeasurableSet ?_
+  intro U hU
+  let A : Set (Config G) := ⋂ w : ℤ × ℤ, (γ ∘ P.shiftConfig w) ⁻¹' U
+  have hAm : MeasurableSet A :=
+    MeasurableSet.iInter fun w => (hγ.comp (P.measurable_shiftConfig w)) hU
+  have hAi : ∀ u, P.shiftConfig u ⁻¹' A = A := by
+    intro u
     ext ρ
-    simp only [Set.mem_preimage, hAmem]
+    simp only [A, Set.mem_preimage, Set.mem_iInter, Function.comp_apply]
     constructor
     · intro h w
-      have := h (w - u)
-      rwa [P.shiftConfig_add, sub_add_cancel] at this
+      simpa only [P.shiftConfig_add, sub_add_cancel] using h (w - u)
     · intro h w
-      rw [P.shiftConfig_add]
-      exact h _
-  have hall : ∀ᵐ ρ ∂μ, ∀ w : ℤ × ℤ, γ (P.shiftConfig w ρ) = γ ρ := ae_all_iff.2 hinvγ
-  have hAeq : ∀ q : ℚ, μ {ρ | γ ρ ≤ q} = μ (A q) := by
-    intro q
-    apply measure_congr
-    filter_upwards [hall] with ρ hρ
-    show (γ ρ ≤ q) = (ρ ∈ A q)
-    rw [hAmem]
-    apply propext
-    exact ⟨fun h w => by rw [hρ w]; exact h, fun h => by have := h 0; rwa [hρ 0] at this⟩
-  have F01 : ∀ q : ℚ, μ {ρ | γ ρ ≤ q} = 0 ∨ μ {ρ | γ ρ ≤ q} = 1 := fun q => by
-    rw [hAeq]; exact herg (A q) (hAmeas q) (hAinv q)
-  have Fmono : ∀ q q' : ℚ, q ≤ q' → μ {ρ | γ ρ ≤ q} ≤ μ {ρ | γ ρ ≤ q'} := fun q q' h =>
-    measure_mono (fun ρ (hρ : γ ρ ≤ q) => show γ ρ ≤ q' from le_trans hρ (by exact_mod_cast h))
-  -- some threshold has full measure, some has measure zero
-  have hex1 : ∃ q : ℚ, μ {ρ | γ ρ ≤ q} = 1 := by
-    by_contra hcon
-    push_neg at hcon
-    have h0 : ∀ q : ℚ, μ {ρ | γ ρ ≤ q} = 0 := fun q => (F01 q).resolve_right (hcon q)
-    have : μ (⋃ q : ℚ, {ρ | γ ρ ≤ q}) = 0 := measure_iUnion_null h0
-    have huniv : (⋃ q : ℚ, {ρ | γ ρ ≤ q}) = Set.univ := by
-      ext ρ
-      simp only [Set.mem_iUnion, Set.mem_setOf_eq, Set.mem_univ, iff_true]
-      obtain ⟨q, hq⟩ := exists_rat_gt (γ ρ)
-      exact ⟨q, hq.le⟩
-    rw [huniv, measure_univ] at this
-    exact one_ne_zero this
-  have hex0 : ∃ q : ℚ, μ {ρ | γ ρ ≤ q} = 0 := by
-    by_contra hcon
-    push_neg at hcon
-    have h1 : ∀ q : ℚ, μ {ρ | γ ρ ≤ q} = 1 := fun q => (F01 q).resolve_left (hcon q)
-    -- the sets `{γ ≤ -n}` decrease to `∅`
-    have hanti : Antitone (fun n : ℕ => {ρ : Config G | γ ρ ≤ ((-(n : ℚ) : ℚ) : ℝ)}) := by
-      intro m n hmn ρ hρ
-      simp only [Set.mem_setOf_eq] at hρ ⊢
-      have : ((-(n : ℚ) : ℚ) : ℝ) ≤ ((-(m : ℚ) : ℚ) : ℝ) := by push_cast; linarith [(Nat.cast_le (α := ℝ)).2 hmn]
-      linarith
-    have hinter : (⋂ n : ℕ, {ρ : Config G | γ ρ ≤ ((-(n : ℚ) : ℚ) : ℝ)}) = ∅ := by
-      ext ρ
-      simp only [Set.mem_iInter, Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false, not_forall,
-        not_le]
-      obtain ⟨n, hn⟩ := exists_nat_gt (-(γ ρ))
-      exact ⟨n, by push_cast; linarith⟩
-    have := tendsto_measure_iInter_atTop (μ := μ)
-      (s := fun n : ℕ => {ρ : Config G | γ ρ ≤ ((-(n : ℚ) : ℚ) : ℝ)})
-      (fun n => (measurableSet_le hγ measurable_const).nullMeasurableSet) hanti
-      ⟨0, measure_ne_top _ _⟩
-    rw [hinter, measure_empty] at this
-    have hconst : (⇑μ ∘ fun n : ℕ => {ρ : Config G | γ ρ ≤ ((-(n : ℚ) : ℚ) : ℝ)}) = fun _ => 1 :=
-      funext (fun n => h1 _)
-    rw [hconst] at this
-    exact one_ne_zero (tendsto_nhds_unique tendsto_const_nhds this)
-  obtain ⟨q₁, hq₁⟩ := hex1
-  obtain ⟨q₀, hq₀⟩ := hex0
-  -- the threshold
-  set Q : Set ℝ := {x | ∃ q : ℚ, x = q ∧ μ {ρ | γ ρ ≤ q} = 1} with hQ
-  have hQne : Q.Nonempty := ⟨q₁, q₁, rfl, hq₁⟩
-  have hQbdd : BddBelow Q := by
-    refine ⟨q₀, ?_⟩
-    rintro x ⟨q, rfl, hq⟩
-    by_contra hlt
-    push_neg at hlt
-    have hle : q ≤ q₀ := by exact_mod_cast hlt.le
-    have := Fmono q q₀ hle
-    rw [hq, hq₀] at this
-    exact absurd this (by simp)
-  refine ⟨sInf Q, ?_⟩
-  -- a.s. `γ ≤ sInf Q`: for every rational `q > sInf Q`, a.s. `γ ≤ q`
-  have hup : ∀ q : ℚ, sInf Q < q → μ {ρ | γ ρ ≤ q} = 1 := by
-    intro q hq
-    obtain ⟨x, ⟨q', rfl, hq'⟩, hlt⟩ := exists_lt_of_csInf_lt hQne hq
-    have hle : q' ≤ q := by exact_mod_cast hlt.le
-    have := Fmono q' q hle
-    rw [hq'] at this
-    exact le_antisymm prob_le_one this
-  have hdown : ∀ q : ℚ, (q : ℝ) < sInf Q → μ {ρ | γ ρ ≤ q} = 0 := by
-    intro q hq
-    rcases F01 q with h | h
-    · exact h
-    · exfalso
-      have : sInf Q ≤ q := csInf_le hQbdd ⟨q, rfl, h⟩
-      linarith
-  have hae1 : ∀ᵐ ρ ∂μ, ∀ q : ℚ, sInf Q < q → γ ρ ≤ q := by
-    rw [ae_all_iff]
-    intro q
-    by_cases hq : sInf Q < q
-    · have := hup q hq
-      have h0 : μ {ρ | γ ρ ≤ q}ᶜ = 0 :=
-        (prob_compl_eq_zero_iff (measurableSet_le hγ measurable_const)).2 this
-      rw [ae_iff]
-      refine measure_mono_null ?_ h0
-      intro ρ hρ
-      simp only [Set.mem_setOf_eq, Classical.not_imp, not_le] at hρ
-      exact fun h => absurd h (not_le.2 hρ.2)
-    · exact ae_of_all _ (fun ρ h => absurd h hq)
-  have hae0 : ∀ᵐ ρ ∂μ, ∀ q : ℚ, (q : ℝ) < sInf Q → (q : ℝ) < γ ρ := by
-    rw [ae_all_iff]
-    intro q
-    by_cases hq : (q : ℝ) < sInf Q
-    · have := hdown q hq
-      rw [ae_iff]
-      refine measure_mono_null ?_ this
-      intro ρ hρ
-      simp only [Set.mem_setOf_eq, Classical.not_imp, not_lt] at hρ
-      exact hρ.2
-    · exact ae_of_all _ (fun ρ h => absurd h hq)
-  filter_upwards [hae1, hae0] with ρ h1 h0
-  apply le_antisymm
-  · by_contra hlt
-    push_neg at hlt
-    obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn hlt
-    exact absurd (h1 q hq1) (not_le.2 hq2)
-  · by_contra hlt
-    push_neg at hlt
-    obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn hlt
-    exact absurd (h0 q hq2) (not_lt.2 hq1.le)
-
+      simpa only [P.shiftConfig_add] using h (w + u)
+  rcases herg A hAm hAi with h0 | h1
+  · right
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 h0,
+      ae_all_iff.2 hinvγ] with ρ hn hρ
+    intro hmem
+    apply hn
+    exact Set.mem_iInter.2 fun w => by
+      simpa only [Set.mem_preimage, Function.comp_apply, hρ w] using hmem
+  · left
+    filter_upwards [(mem_ae_iff_prob_eq_one hAm).2 h1] with ρ hρ
+    simpa only [Set.mem_preimage, Function.comp_apply, P.shiftConfig_zero] using
+      Set.mem_iInter.1 hρ (0 : ℤ × ℤ)
 /-! ### The directional constants -/
 
 /-- `c` is the almost sure directional limit of the passage time in the lattice direction `z`,
@@ -385,26 +261,20 @@ def IsDirLimit (μ : Measure (Config G)) (z : ℤ × ℤ) (c : ℝ) : Prop :=
 theorem exists_isDirLimit (hK : External.Kingman.{u}) (hπ : P.Periodic π) (hAb : External.Abelian G)
     [Infinite V] (hG : G.Connected) (μ : Measure (Config G)) [IsProbabilityMeasure μ]
     (hinv : P.Invariant μ) (herg : P.Ergodic μ) (z : ℤ × ℤ) : ∃ c : ℝ, IsDirLimit π P μ z c := by
-  haveI : Countable V := countable_of_connected hG
   obtain ⟨o₀⟩ : Nonempty V := inferInstance
-  obtain ⟨γ, hγm, -, hγlim⟩ := exists_dirLimit π P hK hπ hAb hG μ hinv o₀ z
-  have hinvw : ∀ w, ∀ᵐ ρ ∂μ, γ (P.shiftConfig w ρ) = γ ρ := fun w =>
-    dirLimit_shift_invariant π P hπ hAb hG μ hinv o₀ z w γ hγlim
-  obtain ⟨c, hc⟩ := ae_const_of_shift_invariant P μ herg γ hγm hinvw
+  obtain ⟨γ, hγm, -, hγlim⟩ :=
+    exists_dirLimit π P hK hπ hAb hG μ hinv o₀ z
+  obtain ⟨c, hc⟩ := ae_const_of_shift_invariant P μ herg γ hγm
+    (fun w => dirLimit_shift_invariant π P hπ hAb hG μ hinv o₀ z w γ hγlim)
   refine ⟨c, ?_⟩
-  rw [IsDirLimit, ae_all_iff]
-  intro o
   filter_upwards [hγlim, hc] with ρ hρ hρc
   rw [hρc] at hρ
-  exact tendsto_arr_of_base π P hπ hAb hG ρ o₀ o z c hρ
-
+  exact fun o => tendsto_arr_of_base π P hπ hAb hG ρ o₀ o z c hρ
 omit [DecidableEq V] [G.LocallyFinite] in
 /-- A property holding almost surely holds at some point. -/
 theorem exists_of_ae (μ : Measure (Config G)) [IsProbabilityMeasure μ] {p : Config G → Prop}
     (h : ∀ᵐ ρ ∂μ, p ρ) : ∃ ρ, p ρ := by
-  haveI : (ae μ).NeBot := ae_neBot.2 (IsProbabilityMeasure.ne_zero μ)
   exact h.exists
-
 omit [G.LocallyFinite] in
 theorem IsDirLimit.unique [Infinite V] (μ : Measure (Config G)) [IsProbabilityMeasure μ]
     {z : ℤ × ℤ} {c c' : ℝ} (h : IsDirLimit π P μ z c) (h' : IsDirLimit π P μ z c') : c = c' := by
@@ -443,13 +313,11 @@ theorem τ_self (hG : G.Connected) (ρ : Config G) (x : V) : τ π ρ x x = 0 :=
 
 omit [G.LocallyFinite] in
 theorem isDirLimit_zero (hG : G.Connected) (μ : Measure (Config G)) : IsDirLimit π P μ 0 0 := by
-  refine ae_of_all _ (fun ρ o => ?_)
-  have : (fun n : ℕ => (arr π P ρ o 0 0 n : ℝ) / n) = fun _ => 0 := by
-    funext n
-    simp [arr, P.shift_zero, τ_self π hG]
-  rw [this]
-  exact tendsto_const_nhds
-
+  refine ae_of_all _ fun ρ o => ?_
+  simpa only [arr, smul_zero, P.shift_zero, τ_self π hG,
+    Nat.cast_zero, zero_div] using
+    (tendsto_const_nhds :
+      Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0))
 omit [G.LocallyFinite] in
 theorem arr_nsmul (o : V) (z : ℤ × ℤ) (k n : ℕ) (ρ : Config G) :
     arr π P ρ o (k • z) 0 n = arr π P ρ o z 0 (k * n) := by
@@ -527,36 +395,29 @@ theorem IsDirLimit.add_le [Infinite V] (hπ : P.Periodic π) (hAb : External.Abe
     (hzw : IsDirLimit π P μ (z + w) e) : e ≤ c + d := by
   obtain ⟨o⟩ : Nonempty V := inferInstance
   refine le_of_tendsto_of_tendsto' (hzw.tendsto_integral π P hπ hAb hG μ o)
-    ((hz.tendsto_integral π P hπ hAb hG μ o).add (hw.tendsto_integral π P hπ hAb hG μ o))
-    (fun n => ?_)
-  -- the `w`-part from the translated base point has the same expectation
-  have hw' : ∫ ρ, (arr π P ρ o w 0 n : ℝ) / n ∂μ =
-      ∫ ρ, (τ π ρ (P.shift (n • z) o) (P.shift (n • z) (P.shift (n • w) o)) : ℝ) / n ∂μ := by
-    rw [← integral_shiftConfig P μ hinv (-(n • z))]
-    congr 1
-    funext ρ
-    rw [τ_shift_shift π P hπ hAb hG ρ o (n • z) (n • w)]
-    simp only [arr, zero_smul, P.shift_zero]
-  have hint : Integrable
-      (fun ρ => (τ π ρ (P.shift (n • z) o) (P.shift (n • z) (P.shift (n • w) o)) : ℝ) / n) μ := by
-    have := integrable_arr_div π P hπ hAb hG μ o w n
-    rw [← integral_shiftConfig P μ hinv (-(n • z))] at hw'
-    have h2 : (fun ρ => (τ π ρ (P.shift (n • z) o) (P.shift (n • z) (P.shift (n • w) o)) : ℝ) / n) =
-        (fun ρ => (arr π P ρ o w 0 n : ℝ) / n) ∘ P.shiftConfig (-(n • z)) := by
-      funext ρ
-      simp only [Function.comp, arr, zero_smul, P.shift_zero]
-      rw [τ_shift_shift π P hπ hAb hG ρ o (n • z) (n • w)]
-    rw [h2]
-    exact ((hinv _).integrable_comp this.aestronglyMeasurable).2 this
-  rw [hw', ← integral_add (integrable_arr_div π P hπ hAb hG μ o z n) hint]
-  refine integral_mono (integrable_arr_div π P hπ hAb hG μ o (z + w) n)
-    ((integrable_arr_div π P hπ hAb hG μ o z n).add hint) (fun ρ => ?_)
-  simp only [arr, zero_smul, P.shift_zero, ← add_div]
-  apply div_le_div_of_nonneg_right _ (Nat.cast_nonneg _)
-  have := τ_triangle π hAb hG ρ o (P.shift (n • z) o) (P.shift (n • (z + w)) o)
-  rw [smul_add, P.shift_add]
-  rw [smul_add, P.shift_add] at this
-  exact_mod_cast this
-
+    ((hz.tendsto_integral π P hπ hAb hG μ o).add
+      (hw.tendsto_integral π P hπ hAb hG μ o)) fun n => ?_
+  have iz := integrable_arr_div π P hπ hAb hG μ o z n
+  have iw : Integrable
+      (fun ρ => arr π P (P.shiftConfig (-(n • z)) ρ) o w 0 n / n) μ :=
+    (hinv (-(n • z))).integrable_comp_of_integrable
+      (integrable_arr_div π P hπ hAb hG μ o w n)
+  calc
+    ∫ ρ, arr π P ρ o (z + w) 0 n / n ∂μ
+        ≤ ∫ ρ, arr π P ρ o z 0 n / n +
+          arr π P (P.shiftConfig (-(n • z)) ρ) o w 0 n / n ∂μ := by
+      refine integral_mono
+        (integrable_arr_div π P hπ hAb hG μ o (z + w) n)
+        (iz.add iw) fun ρ => ?_
+      simp only [arr, zero_smul, P.shift_zero, ← add_div]
+      apply div_le_div_of_nonneg_right _ (Nat.cast_nonneg _)
+      rw [← τ_shift_shift π P hπ hAb hG ρ o (n • z) (n • w),
+        smul_add, P.shift_add]
+      exact_mod_cast τ_triangle π hAb hG ρ o (P.shift (n • z) o)
+        (P.shift (n • z) (P.shift (n • w) o))
+    _ = _ := by
+      rw [integral_add iz iw,
+        integral_shiftConfig P μ hinv (-(n • z))
+          (fun ρ => arr π P ρ o w 0 n / n)]
 end Rotor
 
