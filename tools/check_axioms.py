@@ -62,6 +62,10 @@ if "--emit" in sys.argv:
         # SEALED: axiom-clean.  CONDITIONAL: a proof is written, but it leans on a
         # node that is still a draft, so `sorryAx` is in its closure.  DRAFT_SORRY:
         # no proof yet.
+        kind = re.search(r"kind: (\S+)", b).group(1)
+        if kind == "definition":
+            # a frozen definition (an external input) has no proof to seal
+            out.append(b); continue
         st = "SEALED" if nid in clean else ("DRAFT_SORRY" if own else "CONDITIONAL")
         out.append(re.sub(r"state: \w+", "state: " + st, b))
     io.open(ROOT / "ledger/manifest.yaml", "w", encoding="utf-8").write(

@@ -29,7 +29,7 @@ def traversed (S : Finset V) : RState G → List V → List (V × V)
 /-- The edges traversed by a boundary routing of `S`, counting the initial edges
 from `S`: the boundary edges (in any fixed enumeration) followed by the edges of
 the actuations. -/
-def boundaryTraversed (S : Finset V) (ρ : Config G) (es : List (V × V)) (vs : List V) :
+noncomputable def boundaryTraversed (S : Finset V) (ρ : Config G) (es : List (V × V)) (vs : List V) :
     List (V × V) :=
   es ++ traversed π S (boundaryInit S ρ) vs
 

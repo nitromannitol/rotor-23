@@ -5,3 +5,14 @@ import Rotor.Model
 import Rotor.Square
 import Rotor.Routing
 import Rotor.Traversal
+import Rotor.External.OneCircuit
+import Rotor.External.Abelian
+import Rotor.External.HolroydPropp
+import Rotor.Frozen.Circuits.OneCircuit
+import Rotor.Frozen.Circuits.LeastAction
+import Rotor.Frozen.Circuits.BoundaryRouting
+import Rotor.Frozen.Circuits.CircuitIterate
+import Rotor.Frozen.Circuits.Monotonicity
+import Rotor.Frozen.Circuits.Passage
+import Rotor.Frozen.Circuits.DecreasingPositions
+import Rotor.Frozen.Circuits.LiveRecurrence

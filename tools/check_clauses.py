@@ -47,6 +47,32 @@ MANIFEST = ROOT / "ledger" / "manifest.yaml"
 # the paper and the reading is written down.  A node missing from this table
 # fails the check.
 REVIEWED: dict[str, str] = {
+    "lem-one-circuit":
+        "two sentences, two conjuncts: no repeated traversal on [T(n), T(n+1)), rendered as "
+        "distinct times give distinct directed edges with the half-line case through ℕ∞; and "
+        "deg(x) departures from each x in A_n when T(n+1) < ∞",
+    "lem-least-action":
+        "items (a) and (b), two conjuncts; routings are (initial state, actuated-vertex list) "
+        "by ruling M-010; m ≤ n is ws.length ≤ vs.length; actuation counts are List.count",
+    "lem-boundary-routing":
+        "three sentences, three conjuncts: no repeated edge counting the initial edges "
+        "(Nodup of boundaryTraversed); finite iff terminates, for every ordering; if so, the "
+        "actuated list at any finishing stage is complete and has every complete routing's counts",
+    "prop-circuit-iterate":
+        "'iff' and 'in that case', two conjuncts; Terminates and Φ are taken with the initial "
+        "rotors, as the paper's boundary routing is",
+    "prop-monotonicity":
+        "one display; the paper's T is U because T is the circuit time",
+    "prop-passage":
+        "three displays, three conjuncts; the third adds T(n) < ⊤ so that A_n is never read at "
+        "its junk value, which is stronger than the paper's identity",
+    "lem-decreasing-positions":
+        "items (i) and (ii), two conjuncts; in (i) the live path has x_0 ∈ S, x_i ∉ S for i ≥ 1, "
+        "ends at y, hence length ≥ 2; in (ii) the path lies in Φ^n({x}) and fails the live "
+        "condition at ≤ n-1 internal vertices (liveFailures)",
+    "prop-live-recurrence":
+        "three assertions, three conjuncts: AllTerminate, T(n) < ⊤ for all n, Recurrent at the "
+        "fixed start o",
 }
 
 

@@ -174,14 +174,29 @@ the order `es`, after `n` moves. -/
 noncomputable def oneRouting (S : Finset V) (ρ : Config G) (es : List (V × V)) (n : ℕ) : OneState G :=
   (oneStep π S)^[n] { ξ := boundaryInit S ρ, queue := es, tracked := none, acted := [], route := [] }
 
+variable (G) in
 /-- `es` is an ordering of the directed edges from `S` to `V ∖ S`: it lists each
 such edge exactly once. -/
 def IsBoundaryOrder (S : Finset V) (es : List (V × V)) : Prop :=
   es.Nodup ∧ ∀ e : V × V, e ∈ es ↔ e.1 ∈ S ∧ e.2 ∉ S ∧ G.Adj e.1 e.2
 
-/-- The one-particle-at-a-time routing is finite: at some stage the queue is
-empty and no particle is being routed. -/
+/-- The routing has finished at stage `n`: the queue is empty and no particle is
+being routed. -/
+def OneDone (S : Finset V) (ρ : Config G) (es : List (V × V)) (n : ℕ) : Prop :=
+  (oneRouting π S ρ es n).queue = [] ∧ (oneRouting π S ρ es n).tracked = none
+
+/-- The one-particle-at-a-time routing is finite: it finishes at some stage. -/
 def OneFinite (S : Finset V) (ρ : Config G) (es : List (V × V)) : Prop :=
-  ∃ n, (oneRouting π S ρ es n).queue = [] ∧ (oneRouting π S ρ es n).tracked = none
+  ∃ n, OneDone π S ρ es n
+
+/-- The vertices actuated by the one-particle-at-a-time routing up to stage `n`,
+in order of actuation. -/
+noncomputable def oneActed (S : Finset V) (ρ : Config G) (es : List (V × V)) (n : ℕ) : List V :=
+  (oneRouting π S ρ es n).acted.reverse
+
+/-- Some particle of the one-particle-at-a-time routing visits `y` by stage `n`,
+counting the head of its initial boundary edge as its first vertex. -/
+def OneVisits (S : Finset V) (ρ : Config G) (es : List (V × V)) (y : V) : Prop :=
+  ∃ n, y ∈ (oneRouting π S ρ es n).route
 
 end Rotor

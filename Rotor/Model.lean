@@ -148,9 +148,11 @@ internal vertex."
 
 A finite path is a `List V`; an infinite path is a function `ℕ → V`. -/
 
+variable (G) in
 /-- A finite path: distinct vertices, consecutive ones adjacent. -/
 def IsPath (l : List V) : Prop := l.Nodup ∧ l.IsChain G.Adj
 
+variable (G) in
 /-- An infinite path: distinct vertices, consecutive ones adjacent. -/
 def IsInfPath (x : ℕ → V) : Prop := Function.Injective x ∧ ∀ i, G.Adj (x i) (x (i + 1))
 
