@@ -19,6 +19,8 @@ phase one (ruling X-001): they are not derived here and the certificate lists th
 mechanism and initial rotor configuration are fixed and arbitrary").
 -/
 import Rotor.Traversal
+import Rotor.Support.NoRepeat
+import Rotor.Support.BoundaryRouting
 import Rotor.External.OneCircuit
 import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
@@ -38,4 +40,9 @@ theorem Rotor.Frozen.boundary_routing (hAb : External.Abelian G) (π : Mechanism
         ∀ ws : List V, IsComplete π S (boundaryInit S ρ) ws →
           ∀ v, (oneActed π S ρ es n).count v = ws.count v)
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= by
+  refine ⟨fun es vs hes hleg => boundaryTraversed_nodup π S ρ es vs hes hleg,
+    fun es hes => ?_, fun hT es hes n hd => ?_⟩
+  · exact ⟨terminates_of_oneFinite π S ρ es hes, oneFinite_of_terminates π hAb hG S hS ρ es hes⟩
+  · exact ⟨oneDone_complete π S ρ es hes n hd,
+      fun ws hws => oneActed_count_eq π hAb hG S hS ρ es hes n hd ws hws⟩
