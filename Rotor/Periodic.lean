@@ -82,9 +82,20 @@ def Periodic (π : Mechanism G) : Prop :=
   ∀ (z : ℤ × ℤ) (v : V) (a : G.neighborSet v),
     π.next (P.shift z v) (P.shiftNbr z a) = P.shiftNbr z (π.next v a)
 
-/-- The lattice acting on rotor configurations: `(z • ρ) (shift z v) = shift z (ρ v)`. -/
+omit [DecidableEq V] [G.LocallyFinite] in
+theorem shift_neg_shift (z : ℤ × ℤ) (v : V) : P.shift z (P.shift (-z) v) = v := by
+  rw [← P.shift_add, add_neg_cancel, P.shift_zero]
+
+omit [DecidableEq V] [G.LocallyFinite] in
+theorem shift_shift_neg (z : ℤ × ℤ) (v : V) : P.shift (-z) (P.shift z v) = v := by
+  rw [← P.shift_add, neg_add_cancel, P.shift_zero]
+
+/-- The lattice acting on rotor configurations: `(z • ρ) (shift z v) = shift z (ρ v)`;
+at `v` the rotor points to the shift of where the rotor at `shift (-z) v` points. -/
 def shiftConfig (z : ℤ × ℤ) (ρ : Config G) : Config G := fun v =>
-  cast (by rw [← P.shift_add, add_neg_cancel, P.shift_zero]) (P.shiftNbr z (ρ (P.shift (-z) v)))
+  ⟨P.shift z (ρ (P.shift (-z) v)).1, by
+    have := (P.adj_shift z _ _).2 (ρ (P.shift (-z) v)).2
+    rwa [P.shift_neg_shift] at this⟩
 
 /-- The law `μ` is invariant under the lattice (ruling M-015). -/
 def Invariant (μ : Measure (Config G)) : Prop :=
