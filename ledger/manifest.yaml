@@ -12,7 +12,7 @@
 version: 1
 source_pin:
   file: paper/rotor.tex
-  sha256: 2d33e6029607e2bedfc296b147b0f4b82d59e5945f4d563ebe7e2abdbce48953
+  sha256: 5aaf87310c50f4056a3db6a8f099adbfc565ab91b99f30f81257921e28cd3a6b
 
 nodes:
 
