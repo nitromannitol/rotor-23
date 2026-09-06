@@ -61,7 +61,7 @@ one in a separate project.
 | `prop-path-reduction` | `Rotor.Frozen.path_reduction` | `rotor.tex:1004-1037`, `prop:path-reduction` | SEALED |
 | `prop-passage-limit` | `Rotor.Frozen.passage_limit` | `rotor.tex:1084-1094`, `prop:passage-limit` | SEALED |
 | `prop-circuit-shape` | `Rotor.Frozen.circuit_shape` | `rotor.tex:1115-1135`, `prop:circuit-shape` | SEALED |
-| `lem-block-live-paths` | `Rotor.Frozen.block_live_paths` | `rotor.tex:1227-1238`, `lem:block-live-paths` | DRAFT_SORRY |
+| `lem-block-live-paths` | `Rotor.Frozen.block_live_paths` | `rotor.tex:1227-1238`, `lem:block-live-paths` | SEALED |
 | `thm-main-square` | `Rotor.Frozen.main_square` | `rotor.tex:228-250`, `thm:main` | DRAFT_SORRY |
 | `thm-main-degree-three` | `Rotor.Frozen.main_degree_three` | `rotor.tex:228-250`, `thm:main` | DRAFT_SORRY |
 | `prop-perturbations-square` | `Rotor.Frozen.perturbations_square` | `rotor.tex:263-271`, `prop:small-perturbations` | DRAFT_SORRY |

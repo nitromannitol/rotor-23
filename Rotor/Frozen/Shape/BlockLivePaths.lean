@@ -22,6 +22,7 @@ import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
+import Rotor.Support.BlockFinalC
 
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
@@ -42,4 +43,4 @@ theorem Rotor.Frozen.block_live_paths (hLSS : External.LSS) (P : DoublyPeriodic 
             ∀ (ν' : ∀ v : V, Measure (G.neighborSet v)) [∀ v, IsProbabilityMeasure (ν' v)],
               (∀ v, tvDist (ν' v) (ν v) ≤ δ) → Criterion π (productLaw ν') η
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= block_live_paths_proof π P hLSS hG

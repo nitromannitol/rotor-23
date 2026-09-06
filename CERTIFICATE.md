@@ -19,8 +19,8 @@ in prose are included, against a measure on infinite paths built here.
 | Lean toolchain | `leanprover/lean4:v4.26.0` |
 | Mathlib revision | `2df2f0150c275ad53cb3c90f7c98ec15a56a1a67` |
 | Paper (`paper/rotor.tex`) SHA-256 | `47ab86259c7e22b0a0c58ec44095e945c0cda1e4ef91f1767ba808849fb0d1dd` |
-| Build | succeeded, 7823 jobs |
-| Build warnings | 14 |
+| Build | succeeded, 7827 jobs |
+| Build warnings | 13 |
 | Generated | 2026-09-05 |
 
 ## Reproducing it
@@ -61,7 +61,7 @@ nowhere below.
 | 13 | `prop-path-reduction` | `Rotor.Frozen.path_reduction` | `prop:path-reduction` | classical only |
 | 14 | `prop-passage-limit` | `Rotor.Frozen.passage_limit` | `prop:passage-limit` | classical only |
 | 15 | `prop-circuit-shape` | `Rotor.Frozen.circuit_shape` | `prop:circuit-shape` | classical only |
-| 16 | `lem-block-live-paths` | `Rotor.Frozen.block_live_paths` | `lem:block-live-paths` | **sorryAx** |
+| 16 | `lem-block-live-paths` | `Rotor.Frozen.block_live_paths` | `lem:block-live-paths` | classical only |
 | 17 | `thm-main-square` | `Rotor.Frozen.main_square` | `thm:main` | **sorryAx** |
 | 18 | `thm-main-degree-three` | `Rotor.Frozen.main_degree_three` | `thm:main` | **sorryAx** |
 | 19 | `prop-perturbations-square` | `Rotor.Frozen.perturbations_square` | `prop:small-perturbations` | **sorryAx** |
@@ -80,7 +80,7 @@ nowhere below.
 | 32 | `prop-pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `prop:pendant-counterexample` | **sorryAx** |
 | 33 | `ext-kingman` | `Rotor.External.Kingman` | — | classical only |
 
-19 of 33 nodes depend on nothing beyond the three classical
+20 of 33 nodes depend on nothing beyond the three classical
 axioms.  Every node's state in `ledger/manifest.yaml` is `SEALED`.
 
 ## Frozen statements

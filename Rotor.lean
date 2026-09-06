@@ -77,3 +77,7 @@ import Rotor.Support.PathBlocks
 import Rotor.Support.BlockChain
 import Rotor.Support.Witness
 import Rotor.Support.BlockAssembly
+import Rotor.Support.BlockFinalA
+import Rotor.Support.BlockFinalB
+import Rotor.Support.LatticeGeom0
+import Rotor.Support.BlockFinalC
