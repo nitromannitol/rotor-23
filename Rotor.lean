@@ -71,3 +71,4 @@ import Rotor.Support.PathReductionIII
 import Rotor.Support.BlockGeom
 import Rotor.Support.ProductTools
 import Rotor.Support.TVTools
+import Rotor.Support.BlockField
