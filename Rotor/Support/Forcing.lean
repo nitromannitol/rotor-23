@@ -9,7 +9,7 @@ If every internal vertex of the path `q` has only its two `q`-bonds open, and ne
 the open path `p` is an internal vertex of `q`, then `p` contains `q` consecutively as soon as it
 uses one bond of `q`. -/
 
-/-- Every internal vertex of `q` has only its two `q`-bonds open in `ω`. -/
+/-- Every bond open in `ω` at an internal vertex of `q` is one of the two `q`-bonds there. -/
 def ForcedPath (ω : BondConfig) (q : List Site) : Prop :=
   ∀ i, 0 < i → i + 1 < q.length → ∀ u w, q[i]? = some u → squareGraph.Adj u w →
     ω s(u, w) = true → q[i - 1]? = some w ∨ q[i + 1]? = some w
