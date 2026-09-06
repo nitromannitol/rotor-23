@@ -68,3 +68,6 @@ import Rotor.Support.PassageUniform
 import Rotor.Support.CircuitShape
 import Rotor.Support.CircuitClock
 import Rotor.Support.PathReductionIII
+import Rotor.Support.BlockGeom
+import Rotor.Support.ProductTools
+import Rotor.Support.TVTools
