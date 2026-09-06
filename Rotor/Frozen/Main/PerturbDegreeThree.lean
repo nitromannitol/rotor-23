@@ -13,6 +13,7 @@ import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
 import Rotor.External.SubcriticalDecay
+import Rotor.Support.MainDegreeThree
 
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
@@ -44,4 +45,4 @@ theorem Rotor.Frozen.perturbations_degree_three (hFLP : External.OneCircuit G)
           (κ • B)) atTop (𝓝 0) ∧
         Tendsto (fun t : ℕ => ((R π ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c))
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= perturbations_degree_three_proof π P hFLP hAb hHP hK hLSS hG hπ h3

@@ -93,3 +93,8 @@ import Rotor.Support.Exploration4
 import Rotor.Support.FreshTime
 import Rotor.Support.Extinction
 import Rotor.Support.SubcubicRecurrence
+import Rotor.Support.ProductErgodic
+import Rotor.Support.MainShape
+import Rotor.Support.BlockReach
+import Rotor.Support.MainDegreeThree
+import Rotor.Support.SquareBasics
