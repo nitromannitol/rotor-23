@@ -11,7 +11,7 @@ open Filter Topology
 
 namespace Rotor
 
-/-- Scaling the argument of a floor by `θ` versus by `⌊n θ⌋₊` (drafted by the GLM fleet). -/
+/-- Scaling the argument of a floor by `θ` versus by `⌊n θ⌋₊`. -/
 theorem floor_scale_diff (θ x : ℝ) (hθ : 0 < θ) (n : ℕ) :
     |(⌊(n : ℝ) * θ * x⌋ : ℝ) - ⌊(⌊(n : ℝ) * θ⌋₊ : ℝ) * x⌋| ≤ |x| + 1 := by
   have h2 :
@@ -89,7 +89,7 @@ theorem K_nonneg : 0 ≤ K := by
   simp [supNorm] at h1
   linarith
 
-/-- Lipschitz in the sup norm (drafted by the GLM fleet). -/
+/-- Lipschitz in the sup norm. -/
 theorem lip (z w : ℤ × ℤ) : |m z - m w| ≤ K * supNorm (z - w) := by
   have hm1 : m (z - w) ≤ K * supNorm (z - w) := h.le (z - w)
   have hm2 : m (w - z) ≤ K * supNorm (z - w) := by
