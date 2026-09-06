@@ -111,3 +111,9 @@ import Rotor.Support.ShiftAut
 import Rotor.Support.Excursion
 import Rotor.Support.PendantProb
 import Rotor.Support.MainPendant
+import Rotor.Support.DualGeom
+import Rotor.Support.ExplInv
+import Rotor.Support.SideCount
+import Rotor.Support.ExplCover
+import Rotor.Support.ExplProb
+import Rotor.Support.ExplorationLemma

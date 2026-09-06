@@ -17,6 +17,7 @@ M-021), and the three cases are three conjuncts: on the event that the first
 `1`, `0`, or `1/2` of that event.
 -/
 import Rotor.Exploration
+import Rotor.Support.ExplorationLemma
 
 open Rotor MeasureTheory
 
@@ -39,4 +40,4 @@ theorem Rotor.Frozen.square_exploration (f d : Site) (hd : squareGraph.Adj f (f 
           uniformLaw clockwise {ρ | history ρ f d h.length = h ∧ DualOpen ρ e.1 e.2} =
             (1 / 2) * uniformLaw clockwise {ρ | history ρ f d h.length = h}))
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= square_exploration_proof f d hd
