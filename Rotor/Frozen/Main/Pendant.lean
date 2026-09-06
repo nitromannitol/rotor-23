@@ -20,6 +20,7 @@ phase one (ruling X-001): they are not derived here and the certificate lists th
 import Rotor.Pendant
 import Rotor.External.OneCircuit
 import Rotor.External.AngelHolroyd
+import Rotor.Support.MainPendant
 
 open Rotor MeasureTheory
 
@@ -30,4 +31,4 @@ theorem Rotor.Frozen.pendant_counterexample
     ∀ M : ℕ, 50331645 ≤ M → ∀ o : PVertex M,
       ∀ᵐ ρ ∂(uniformLaw (pendantMech M)), ¬ Recurrent (pendantMech M) ρ o
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= pendant_counterexample_proof hFLP hAH

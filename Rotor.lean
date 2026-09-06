@@ -100,3 +100,14 @@ import Rotor.Support.MainDegreeThree
 import Rotor.Support.SquareBasics
 import Rotor.Support.MainSquare
 import Rotor.Support.SquareDual
+import Rotor.Support.PendantBasics
+import Rotor.Support.PendantInduced
+import Rotor.Support.PendantCircuit
+import Rotor.Support.SquareExits
+import Rotor.Support.Boundary
+import Rotor.Support.KingWalks
+import Rotor.Support.WalkMeasurable
+import Rotor.Support.ShiftAut
+import Rotor.Support.Excursion
+import Rotor.Support.PendantProb
+import Rotor.Support.MainPendant
