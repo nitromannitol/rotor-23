@@ -132,3 +132,8 @@ import Rotor.Support.ContourCases
 import Rotor.Support.ActiveListLemma
 import Rotor.Support.HistoryProb
 import Rotor.Support.ForcedCascade
+import Rotor.Support.PatternFree
+import Rotor.Support.BondFinite
+import Rotor.Support.IntervalDomination
+import Rotor.Support.IntervalTree
+import Rotor.Support.IntervalReach
