@@ -19,8 +19,8 @@ in prose are included, against a measure on infinite paths built here.
 | Lean toolchain | `leanprover/lean4:v4.26.0` |
 | Mathlib revision | `2df2f0150c275ad53cb3c90f7c98ec15a56a1a67` |
 | Paper (`paper/rotor.tex`) SHA-256 | `47ab86259c7e22b0a0c58ec44095e945c0cda1e4ef91f1767ba808849fb0d1dd` |
-| Build | succeeded, 7863 jobs |
-| Build warnings | 5 |
+| Build | succeeded, 7876 jobs |
+| Build warnings | 4 |
 | Generated | 2026-09-06 |
 
 ## Reproducing it
@@ -75,12 +75,12 @@ nowhere below.
 | 27 | `lem-one-circuit` | `Rotor.Frozen.one_circuit` | `lem:one-circuit` | classical only |
 | 28 | `prop-circuit-clock` | `Rotor.Frozen.circuit_clock` | `prop:circuit-clock` | classical only |
 | 29 | `lem-square-exploration` | `Rotor.Frozen.square_exploration` | `lem:square-exploration` | classical only |
-| 30 | `lem-square-active-list` | `Rotor.Frozen.square_active_list` | `lem:square-active-list` | **sorryAx** |
+| 30 | `lem-square-active-list` | `Rotor.Frozen.square_active_list` | `lem:square-active-list` | classical only |
 | 31 | `lem-square-forced-tests` | `Rotor.Frozen.square_forced_tests` | `lem:square-forced-tests` | **sorryAx** |
 | 32 | `prop-pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `prop:pendant-counterexample` | classical only |
 | 33 | `ext-kingman` | `Rotor.External.Kingman` | — | classical only |
 
-27 of 33 nodes depend on nothing beyond the three classical
+28 of 33 nodes depend on nothing beyond the three classical
 axioms.  Every node's state in `ledger/manifest.yaml` is `SEALED`.
 
 ## Frozen statements

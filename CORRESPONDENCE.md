@@ -75,7 +75,7 @@ one in a separate project.
 | `lem-one-circuit` | `Rotor.Frozen.one_circuit` | `rotor.tex:691-697`, `lem:one-circuit` | SEALED |
 | `prop-circuit-clock` | `Rotor.Frozen.circuit_clock` | `rotor.tex:1148-1176`, `prop:circuit-clock` | SEALED |
 | `lem-square-exploration` | `Rotor.Frozen.square_exploration` | `rotor.tex:1902-1913`, `lem:square-exploration` | SEALED |
-| `lem-square-active-list` | `Rotor.Frozen.square_active_list` | `rotor.tex:1926-1930`, `lem:square-active-list` | DRAFT_SORRY |
+| `lem-square-active-list` | `Rotor.Frozen.square_active_list` | `rotor.tex:1926-1930`, `lem:square-active-list` | SEALED |
 | `lem-square-forced-tests` | `Rotor.Frozen.square_forced_tests` | `rotor.tex:2058-2065`, `lem:square-forced-tests` | DRAFT_SORRY |
 | `prop-pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `rotor.tex:300-305`, `prop:pendant-counterexample` | SEALED |
 | `ext-kingman` | `Rotor.External.Kingman` | external input, Kingman 1968 Theorem 3 (general form, measurable invariant limit), used in the proof of prop:passage-limit (ruling X-001) | FROZEN |

@@ -9,6 +9,7 @@ Two sentences, two conjuncts, for every stage `n` at which a current edge `E`
 exists; `sideW` and `sideS` are the sides `W` and `S` of the square of `E`.
 -/
 import Rotor.Exploration
+import Rotor.Support.ActiveListLemma
 
 open Rotor
 
@@ -21,4 +22,4 @@ theorem Rotor.Frozen.square_active_list (f d : Site) (hd : squareGraph.Adj f (f 
     ¬ (TestedAs (explore ρ f d n).tested (sideW e.1 e.2) false ∧
         TestedAs (explore ρ f d n).tested (sideS e.1 e.2) false)
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= square_active_list_proof f d hd ρ n e rest he
