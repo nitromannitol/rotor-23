@@ -88,3 +88,8 @@ import Rotor.Support.SelfAvoiding
 import Rotor.Support.BallGrowth
 import Rotor.Support.StuckWalk
 import Rotor.Support.DegreeThreePassage
+import Rotor.Support.QueryAtoms
+import Rotor.Support.Exploration4
+import Rotor.Support.FreshTime
+import Rotor.Support.Extinction
+import Rotor.Support.SubcubicRecurrence

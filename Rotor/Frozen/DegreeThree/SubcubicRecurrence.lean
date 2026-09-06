@@ -13,6 +13,7 @@ import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
 import Rotor.External.SubcriticalDecay
+import Rotor.Support.SubcubicRecurrence
 
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
@@ -26,4 +27,4 @@ theorem Rotor.Frozen.subcubic_recurrence (π : Mechanism G) [Infinite V] (hG : G
     (h3 : ∀ v : V, G.degree v ≤ 3) :
     ∀ᵐ ρ ∂(uniformLaw π), ¬ HasInfLivePath π ρ
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= subcubic_recurrence_proof π hG h3

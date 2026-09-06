@@ -66,7 +66,7 @@ one in a separate project.
 | `thm-main-degree-three` | `Rotor.Frozen.main_degree_three` | `rotor.tex:228-250`, `thm:main` | DRAFT_SORRY |
 | `prop-perturbations-square` | `Rotor.Frozen.perturbations_square` | `rotor.tex:263-271`, `prop:small-perturbations` | DRAFT_SORRY |
 | `prop-perturbations-degree-three` | `Rotor.Frozen.perturbations_degree_three` | `rotor.tex:263-271`, `prop:small-perturbations` | DRAFT_SORRY |
-| `prop-subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `rotor.tex:1344-1350`, `prop:subcubic-recurrence` | DRAFT_SORRY |
+| `prop-subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `rotor.tex:1344-1350`, `prop:subcubic-recurrence` | SEALED |
 | `prop-degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `rotor.tex:1385-1400`, `prop:degree-three-passage` | SEALED |
 | `prop-square-passage` | `Rotor.Frozen.square_passage` | `rotor.tex:1461-1471`, `prop:square-passage` | DRAFT_SORRY |
 | `lem-square-dual-path` | `Rotor.Frozen.square_dual_path` | `rotor.tex:1638-1644`, `lem:square-dual-path` | DRAFT_SORRY |
