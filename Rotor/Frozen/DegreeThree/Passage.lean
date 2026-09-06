@@ -19,6 +19,7 @@ import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
 import Rotor.External.SubcriticalDecay
+import Rotor.Support.DegreeThreePassage
 
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
@@ -33,4 +34,4 @@ theorem Rotor.Frozen.degree_three_passage (P : DoublyPeriodic G) (π : Mechanism
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ (u v : V), G.Adj u v → ∀ R : ℕ, 1 ≤ R →
       uniformLaw π (liveReachEvent π u v R) ≤ ENNReal.ofReal (C * Real.exp (-c * R))
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= degree_three_passage_proof π P hG h3

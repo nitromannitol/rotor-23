@@ -81,3 +81,10 @@ import Rotor.Support.BlockFinalA
 import Rotor.Support.BlockFinalB
 import Rotor.Support.LatticeGeom0
 import Rotor.Support.BlockFinalC
+import Rotor.Support.CyclicRank
+import Rotor.Support.StepProb
+import Rotor.Support.ChainWeight
+import Rotor.Support.SelfAvoiding
+import Rotor.Support.BallGrowth
+import Rotor.Support.StuckWalk
+import Rotor.Support.DegreeThreePassage

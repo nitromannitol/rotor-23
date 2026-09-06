@@ -19,8 +19,8 @@ in prose are included, against a measure on infinite paths built here.
 | Lean toolchain | `leanprover/lean4:v4.26.0` |
 | Mathlib revision | `2df2f0150c275ad53cb3c90f7c98ec15a56a1a67` |
 | Paper (`paper/rotor.tex`) SHA-256 | `47ab86259c7e22b0a0c58ec44095e945c0cda1e4ef91f1767ba808849fb0d1dd` |
-| Build | succeeded, 7827 jobs |
-| Build warnings | 13 |
+| Build | succeeded, 7834 jobs |
+| Build warnings | 12 |
 | Generated | 2026-09-05 |
 
 ## Reproducing it
@@ -67,7 +67,7 @@ nowhere below.
 | 19 | `prop-perturbations-square` | `Rotor.Frozen.perturbations_square` | `prop:small-perturbations` | **sorryAx** |
 | 20 | `prop-perturbations-degree-three` | `Rotor.Frozen.perturbations_degree_three` | `prop:small-perturbations` | **sorryAx** |
 | 21 | `prop-subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `prop:subcubic-recurrence` | **sorryAx** |
-| 22 | `prop-degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `prop:degree-three-passage` | **sorryAx** |
+| 22 | `prop-degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `prop:degree-three-passage` | classical only |
 | 23 | `prop-square-passage` | `Rotor.Frozen.square_passage` | `prop:square-passage` | **sorryAx** |
 | 24 | `lem-square-dual-path` | `Rotor.Frozen.square_dual_path` | `lem:square-dual-path` | **sorryAx** |
 | 25 | `lem-square-constrained-bonds` | `Rotor.Frozen.square_constrained_bonds` | `lem:square-constrained-bonds` | **sorryAx** |
@@ -80,7 +80,7 @@ nowhere below.
 | 32 | `prop-pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `prop:pendant-counterexample` | **sorryAx** |
 | 33 | `ext-kingman` | `Rotor.External.Kingman` | — | classical only |
 
-20 of 33 nodes depend on nothing beyond the three classical
+21 of 33 nodes depend on nothing beyond the three classical
 axioms.  Every node's state in `ledger/manifest.yaml` is `SEALED`.
 
 ## Frozen statements
