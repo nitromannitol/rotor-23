@@ -176,8 +176,6 @@ def build() -> str:
     A("")
     A("- The paper's open questions (Section 7) are questions; nothing there is")
     A("  formalized, and nothing here bears on them.")
-    A("- The scope rulings `S-***` in `the rulings` say which parts of the")
-    A("  paper are outside this formalization and why.")
     A("- The figures, the simulations and the survey in Section 1.4 are outside")
     A("  the formalization.")
     A("")

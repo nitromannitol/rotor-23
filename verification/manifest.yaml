@@ -97,7 +97,7 @@ nodes:
   - id: ext-abelian
     version: 3
     kind: definition
-    source: external input, HLMPPW Lemma 3.9, the statement of lem:least-action (ruling X-001)
+    source: external input, HLMPPW Lemma 3.9, the statement of lem:least-action
     file: Rotor/External/Abelian.lean
     export: Rotor.External.Abelian
     state: FROZEN
@@ -108,7 +108,7 @@ nodes:
   - id: ext-holroyd-propp
     version: 3
     kind: definition
-    source: external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence (ruling X-001)
+    source: external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence
     file: Rotor/External/HolroydPropp.lean
     export: Rotor.External.VisitsAllOfVisitsOne
     state: FROZEN
@@ -119,7 +119,7 @@ nodes:
   - id: ext-lss
     version: 1
     kind: definition
-    source: external input, Liggett-Schonmann-Stacey Theorem 0.0(ii), used in the proof of lem:block-live-paths (ruling X-001)
+    source: external input, Liggett-Schonmann-Stacey Theorem 0.0(ii), used in the proof of lem:block-live-paths
     file: Rotor/External/LSS.lean
     export: Rotor.External.LSS
     state: FROZEN
@@ -130,7 +130,7 @@ nodes:
   - id: ext-angel-holroyd
     version: 1
     kind: definition
-    source: external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence (ruling X-001)
+    source: external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence
     file: Rotor/External/AngelHolroyd.lean
     export: Rotor.External.RecurrentOfRecurrent
     state: FROZEN
@@ -141,7 +141,7 @@ nodes:
   - id: ext-subcritical-decay
     version: 1
     kind: definition
-    source: external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail (ruling X-001)
+    source: external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail
     file: Rotor/External/SubcriticalDecay.lean
     export: Rotor.External.SubcriticalDecay
     state: FROZEN
@@ -295,7 +295,7 @@ nodes:
   - id: ext-one-circuit
     version: 4
     kind: definition
-    source: external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit (ruling X-001)
+    source: external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit
     file: Rotor/External/OneCircuit.lean
     export: Rotor.External.OneCircuit
     state: FROZEN
@@ -372,7 +372,7 @@ nodes:
   - id: ext-kingman
     version: 2
     kind: definition
-    source: external input, Kingman 1968 Theorem 3 (general form, measurable invariant limit), used in the proof of prop:passage-limit (ruling X-001)
+    source: external input, Kingman 1968 Theorem 3 (general form, measurable invariant limit), used in the proof of prop:passage-limit
     file: Rotor/External/Kingman.lean
     export: Rotor.External.Kingman
     state: FROZEN

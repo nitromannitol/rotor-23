@@ -12,19 +12,13 @@ Maps every frozen declaration to *Eulerian walkers on `ℤ²` have range exponen
   are the contract.  `python3 tools/check_manifest.py` is the authority on the
   hash recipe.
 
-## Modelling rulings
-
-The numbered modelling rulings: `M-001` to `M-005` (the square lattice and the
-sample space), `M-006` to `M-009` (the general graph model), `M-010` to `M-013`
-(routings, `Φ`, `τ`), `S-001` to `S-003` (scope), `X-001` (external inputs),
-`F-001` to `F-003` (transcription conventions).
-
-## External inputs (ruling X-001)
+## External inputs
 
 Every cited result the paper uses without proof is a `Prop` in
 `Rotor/External/`, frozen and pinned like a statement, and enters only as an
-explicit hypothesis of the nodes whose proofs use it.  Phase two proves each
-one in a separate project.
+explicit hypothesis of the nodes whose proofs use it.  One of them, subcritical
+exponential decay for percolation, is now proved rather than assumed: see
+`Rotor/Bridge/`.
 
 | node | cited result | used by |
 |---|---|---|
@@ -36,8 +30,8 @@ one in a separate project.
 
 | paper | how the Lean statement differs | why |
 |---|---|---|
-| `lem:least-action`, `lem:boundary-routing` | a routing is its initial state and its list of actuated vertices, not a sequence of states | ruling M-010; the two records determine each other |
-| `prop:passage` | the passage-ball identity is conjoined with `T(n) < ⊤` | ruling M-008; `A_n` must never be read at its junk value |
+| `lem:least-action`, `lem:boundary-routing` | a routing is its initial state and its list of actuated vertices, not a sequence of states | the two records determine each other |
+| `prop:passage` | the passage-ball identity is conjoined with `T(n) < ⊤` | `A_n` must never be read at its junk value |
 | `prop:live-recurrence` | recurrence is asserted for the fixed start `o` | the paper's remark that recurrence does not depend on the start (Angel–Holroyd) is not needed for the statement |
 
 ## Frozen surface
@@ -53,11 +47,11 @@ one in a separate project.
 | `prop-passage` | `Rotor.Frozen.passage` | `rotor.tex:833-847`, `prop:passage` | SEALED |
 | `lem-decreasing-positions` | `Rotor.Frozen.decreasing_positions` | `rotor.tex:883-896`, `lem:decreasing-positions` | SEALED |
 | `prop-live-recurrence` | `Rotor.Frozen.live_recurrence` | `rotor.tex:938-942`, `prop:live-recurrence` | SEALED |
-| `ext-abelian` | `Rotor.External.Abelian` | external input, HLMPPW Lemma 3.9, the statement of lem:least-action (ruling X-001) | FROZEN |
-| `ext-holroyd-propp` | `Rotor.External.VisitsAllOfVisitsOne` | external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence (ruling X-001) | FROZEN |
-| `ext-lss` | `Rotor.External.LSS` | external input, Liggett-Schonmann-Stacey Theorem 0.0(ii), used in the proof of lem:block-live-paths (ruling X-001) | FROZEN |
-| `ext-angel-holroyd` | `Rotor.External.RecurrentOfRecurrent` | external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence (ruling X-001) | FROZEN |
-| `ext-subcritical-decay` | `Rotor.External.SubcriticalDecay` | external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail (ruling X-001) | FROZEN |
+| `ext-abelian` | `Rotor.External.Abelian` | external input, HLMPPW Lemma 3.9, the statement of lem:least-action | FROZEN |
+| `ext-holroyd-propp` | `Rotor.External.VisitsAllOfVisitsOne` | external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence | FROZEN |
+| `ext-lss` | `Rotor.External.LSS` | external input, Liggett-Schonmann-Stacey Theorem 0.0(ii), used in the proof of lem:block-live-paths | FROZEN |
+| `ext-angel-holroyd` | `Rotor.External.RecurrentOfRecurrent` | external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence | FROZEN |
+| `ext-subcritical-decay` | `Rotor.External.SubcriticalDecay` | external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail | FROZEN |
 | `prop-path-reduction` | `Rotor.Frozen.path_reduction` | `rotor.tex:1004-1037`, `prop:path-reduction` | SEALED |
 | `prop-passage-limit` | `Rotor.Frozen.passage_limit` | `rotor.tex:1084-1094`, `prop:passage-limit` | SEALED |
 | `prop-circuit-shape` | `Rotor.Frozen.circuit_shape` | `rotor.tex:1115-1135`, `prop:circuit-shape` | SEALED |
@@ -71,13 +65,13 @@ one in a separate project.
 | `prop-square-passage` | `Rotor.Frozen.square_passage` | `rotor.tex:1461-1471`, `prop:square-passage` | SEALED |
 | `lem-square-dual-path` | `Rotor.Frozen.square_dual_path` | `rotor.tex:1638-1644`, `lem:square-dual-path` | SEALED |
 | `lem-square-constrained-bonds` | `Rotor.Frozen.square_constrained_bonds` | `rotor.tex:1677-1692`, `lem:square-constrained-bonds` | SEALED |
-| `ext-one-circuit` | `Rotor.External.OneCircuit` | external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit (ruling X-001) | FROZEN |
+| `ext-one-circuit` | `Rotor.External.OneCircuit` | external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit | FROZEN |
 | `lem-one-circuit` | `Rotor.Frozen.one_circuit` | `rotor.tex:691-697`, `lem:one-circuit` | SEALED |
 | `prop-circuit-clock` | `Rotor.Frozen.circuit_clock` | `rotor.tex:1148-1176`, `prop:circuit-clock` | SEALED |
 | `lem-square-exploration` | `Rotor.Frozen.square_exploration` | `rotor.tex:1902-1913`, `lem:square-exploration` | SEALED |
 | `lem-square-active-list` | `Rotor.Frozen.square_active_list` | `rotor.tex:1926-1930`, `lem:square-active-list` | SEALED |
 | `lem-square-forced-tests` | `Rotor.Frozen.square_forced_tests` | `rotor.tex:2058-2065`, `lem:square-forced-tests` | SEALED |
 | `prop-pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `rotor.tex:300-305`, `prop:pendant-counterexample` | SEALED |
-| `ext-kingman` | `Rotor.External.Kingman` | external input, Kingman 1968 Theorem 3 (general form, measurable invariant limit), used in the proof of prop:passage-limit (ruling X-001) | FROZEN |
+| `ext-kingman` | `Rotor.External.Kingman` | external input, Kingman 1968 Theorem 3 (general form, measurable invariant limit), used in the proof of prop:passage-limit | FROZEN |
 
 <!-- FROZEN-SURFACE-END -->

@@ -3,7 +3,7 @@
 A complete Lean 4 formalization of
 
 > **Eulerian walkers on `ℤ²` have range exponent `2/3`**
-> Ahmed Bou-Rabee and Yuval Peres
+> Ahmed Bou-Rabee and Yuval Peres, [arXiv:2608.23545](https://arxiv.org/abs/2608.23545)
 
 Every statement of the paper is formalized and proved: Theorem 1.1 for the
 square lattice with the clockwise rotor mechanism and independent uniform
@@ -15,9 +15,8 @@ closure contains `sorryAx`.
 
 The results the paper cites rather than proves are assumed, each as one frozen
 `Prop` in `Rotor/External/` that the theorems using it take as a hypothesis:
-the abelian property, Angel-Holroyd,
-Holroyd-Propp, Florescu-Levine-Peres, Kingman's subadditive ergodic theorem, and
-Liggett-Schonmann-Stacey domination.
+the abelian property, Angel-Holroyd, Holroyd-Propp, Florescu-Levine-Peres,
+Kingman's subadditive ergodic theorem, and Liggett-Schonmann-Stacey domination.
 
 The seventh cited input, subcritical exponential decay for percolation, is no
 longer assumed: `Rotor/Bridge/SubcriticalDecay.lean` proves
@@ -37,6 +36,9 @@ edit them by hand and do not trust a count in prose that the checkers
 have not confirmed.
 
 <!-- STATUS-END -->
+
+The `SEALED` nodes are the paper's statements, each proved; the `FROZEN` nodes
+are the cited results listed above, each a `Prop` with no proof obligation here.
 
 ## The model
 
