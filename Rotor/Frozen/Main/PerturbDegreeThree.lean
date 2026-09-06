@@ -1,6 +1,6 @@
 /-
 Proposition 1.2 of rotor.tex, the degree-three case, frozen.
-`rotor.tex:263-271` (label `prop:small-perturbations`); see
+`rotor.tex:272-280` (label `prop:small-perturbations`); see
 `Rotor/Frozen/Main/PerturbSquare.lean`.
 The `External.*` hypotheses are the cited results the paper's proof uses, assumed
 here: they are not derived in this repository and the certificate lists them.

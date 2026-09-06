@@ -1,5 +1,5 @@
 /-
-Theorem 1.1 of rotor.tex, the degree-three case, frozen.  `rotor.tex:228-250`
+Theorem 1.1 of rotor.tex, the degree-three case, frozen.  `rotor.tex:237-259`
 (label `thm:main`); see `Rotor/Frozen/Main/Square.lean` for the statement
 and the conventions.  Here `G` is a doubly periodic graph in the plane of
 maximum degree three with a doubly periodic mechanism, drawn by `P.emb`

@@ -1,5 +1,5 @@
 /-
-Proposition 3.1 of rotor.tex, frozen.  `rotor.tex:1004-1037` (label `prop:path-reduction`):
+Proposition 3.1 of rotor.tex, frozen.  `rotor.tex:1023-1056` (label `prop:path-reduction`):
 
   "Let $G$ be an infinite connected graph of bounded degree with an arbitrary
    rotor mechanism, and let $\P$ be a law for the initial rotors.  Suppose

@@ -12,14 +12,14 @@
 version: 1
 source_pin:
   file: paper/rotor.tex
-  sha256: 47ab86259c7e22b0a0c58ec44095e945c0cda1e4ef91f1767ba808849fb0d1dd
+  sha256: efded000a7ce82ef0de98111287d7e4bdd033e109e72446400bfce9ce87d2711
 
 nodes:
 
   - id: lem-least-action
     version: 2
     kind: theorem
-    source: rotor.tex:727-738 (label lem:least-action)
+    source: rotor.tex:746-757 (label lem:least-action)
     file: Rotor/Frozen/Circuits/LeastAction.lean
     export: Rotor.Frozen.least_action
     state: SEALED
@@ -30,7 +30,7 @@ nodes:
   - id: lem-boundary-routing
     version: 2
     kind: theorem
-    source: rotor.tex:747-752 (label lem:boundary-routing)
+    source: rotor.tex:766-771 (label lem:boundary-routing)
     file: Rotor/Frozen/Circuits/BoundaryRouting.lean
     export: Rotor.Frozen.boundary_routing
     state: SEALED
@@ -41,7 +41,7 @@ nodes:
   - id: prop-circuit-iterate
     version: 2
     kind: theorem
-    source: rotor.tex:774-782 (label prop:circuit-iterate)
+    source: rotor.tex:793-801 (label prop:circuit-iterate)
     file: Rotor/Frozen/Circuits/CircuitIterate.lean
     export: Rotor.Frozen.circuit_iterate
     state: SEALED
@@ -52,7 +52,7 @@ nodes:
   - id: prop-monotonicity
     version: 2
     kind: theorem
-    source: rotor.tex:801-807 (label prop:monotonicity)
+    source: rotor.tex:820-826 (label prop:monotonicity)
     file: Rotor/Frozen/Circuits/Monotonicity.lean
     export: Rotor.Frozen.monotonicity
     state: SEALED
@@ -63,7 +63,7 @@ nodes:
   - id: prop-passage
     version: 2
     kind: theorem
-    source: rotor.tex:833-847 (label prop:passage)
+    source: rotor.tex:852-866 (label prop:passage)
     file: Rotor/Frozen/Circuits/Passage.lean
     export: Rotor.Frozen.passage
     state: SEALED
@@ -74,7 +74,7 @@ nodes:
   - id: lem-decreasing-positions
     version: 2
     kind: theorem
-    source: rotor.tex:883-896 (label lem:decreasing-positions)
+    source: rotor.tex:902-915 (label lem:decreasing-positions)
     file: Rotor/Frozen/Circuits/DecreasingPositions.lean
     export: Rotor.Frozen.decreasing_positions
     state: SEALED
@@ -85,7 +85,7 @@ nodes:
   - id: prop-live-recurrence
     version: 2
     kind: theorem
-    source: rotor.tex:938-942 (label prop:live-recurrence)
+    source: rotor.tex:957-961 (label prop:live-recurrence)
     file: Rotor/Frozen/Circuits/LiveRecurrence.lean
     export: Rotor.Frozen.live_recurrence
     state: SEALED
@@ -151,7 +151,7 @@ nodes:
   - id: prop-path-reduction
     version: 1
     kind: theorem
-    source: rotor.tex:1004-1037 (label prop:path-reduction)
+    source: rotor.tex:1023-1056 (label prop:path-reduction)
     file: Rotor/Frozen/Shape/PathReduction.lean
     export: Rotor.Frozen.path_reduction
     state: SEALED
@@ -162,7 +162,7 @@ nodes:
   - id: prop-passage-limit
     version: 1
     kind: theorem
-    source: rotor.tex:1084-1094 (label prop:passage-limit)
+    source: rotor.tex:1103-1113 (label prop:passage-limit)
     file: Rotor/Frozen/Shape/PassageLimit.lean
     export: Rotor.Frozen.passage_limit
     state: SEALED
@@ -173,7 +173,7 @@ nodes:
   - id: prop-circuit-shape
     version: 1
     kind: theorem
-    source: rotor.tex:1115-1135 (label prop:circuit-shape)
+    source: rotor.tex:1134-1154 (label prop:circuit-shape)
     file: Rotor/Frozen/Shape/CircuitShape.lean
     export: Rotor.Frozen.circuit_shape
     state: SEALED
@@ -184,7 +184,7 @@ nodes:
   - id: lem-block-live-paths
     version: 1
     kind: theorem
-    source: rotor.tex:1227-1238 (label lem:block-live-paths)
+    source: rotor.tex:1246-1257 (label lem:block-live-paths)
     file: Rotor/Frozen/Shape/BlockLivePaths.lean
     export: Rotor.Frozen.block_live_paths
     state: SEALED
@@ -195,7 +195,7 @@ nodes:
   - id: thm-main-square
     version: 1
     kind: theorem
-    source: rotor.tex:228-250 (label thm:main, the square-lattice case)
+    source: rotor.tex:237-259 (label thm:main, the square-lattice case)
     file: Rotor/Frozen/Main/Square.lean
     export: Rotor.Frozen.main_square
     state: SEALED
@@ -206,7 +206,7 @@ nodes:
   - id: thm-main-degree-three
     version: 1
     kind: theorem
-    source: rotor.tex:228-250 (label thm:main, the degree-three case)
+    source: rotor.tex:237-259 (label thm:main, the degree-three case)
     file: Rotor/Frozen/Main/DegreeThree.lean
     export: Rotor.Frozen.main_degree_three
     state: SEALED
@@ -217,7 +217,7 @@ nodes:
   - id: prop-perturbations-square
     version: 1
     kind: theorem
-    source: rotor.tex:263-271 (label prop:small-perturbations, the square-lattice case)
+    source: rotor.tex:272-280 (label prop:small-perturbations, the square-lattice case)
     file: Rotor/Frozen/Main/PerturbSquare.lean
     export: Rotor.Frozen.perturbations_square
     state: SEALED
@@ -228,7 +228,7 @@ nodes:
   - id: prop-perturbations-degree-three
     version: 1
     kind: theorem
-    source: rotor.tex:263-271 (label prop:small-perturbations, the degree-three case)
+    source: rotor.tex:272-280 (label prop:small-perturbations, the degree-three case)
     file: Rotor/Frozen/Main/PerturbDegreeThree.lean
     export: Rotor.Frozen.perturbations_degree_three
     state: SEALED
@@ -239,7 +239,7 @@ nodes:
   - id: prop-subcubic-recurrence
     version: 1
     kind: theorem
-    source: rotor.tex:1344-1350 (label prop:subcubic-recurrence)
+    source: rotor.tex:1363-1369 (label prop:subcubic-recurrence)
     file: Rotor/Frozen/DegreeThree/SubcubicRecurrence.lean
     export: Rotor.Frozen.subcubic_recurrence
     state: SEALED
@@ -250,7 +250,7 @@ nodes:
   - id: prop-degree-three-passage
     version: 1
     kind: theorem
-    source: rotor.tex:1385-1400 (label prop:degree-three-passage)
+    source: rotor.tex:1404-1419 (label prop:degree-three-passage)
     file: Rotor/Frozen/DegreeThree/Passage.lean
     export: Rotor.Frozen.degree_three_passage
     state: SEALED
@@ -261,7 +261,7 @@ nodes:
   - id: prop-square-passage
     version: 1
     kind: theorem
-    source: rotor.tex:1461-1471 (label prop:square-passage)
+    source: rotor.tex:1480-1490 (label prop:square-passage)
     file: Rotor/Frozen/Square/Passage.lean
     export: Rotor.Frozen.square_passage
     state: SEALED
@@ -272,7 +272,7 @@ nodes:
   - id: lem-square-dual-path
     version: 1
     kind: theorem
-    source: rotor.tex:1638-1644 (label lem:square-dual-path)
+    source: rotor.tex:1657-1663 (label lem:square-dual-path)
     file: Rotor/Frozen/Square/DualPath.lean
     export: Rotor.Frozen.square_dual_path
     state: SEALED
@@ -283,7 +283,7 @@ nodes:
   - id: lem-square-constrained-bonds
     version: 1
     kind: theorem
-    source: rotor.tex:1677-1692 (label lem:square-constrained-bonds)
+    source: rotor.tex:1696-1711 (label lem:square-constrained-bonds)
     file: Rotor/Frozen/Square/ConstrainedBonds.lean
     export: Rotor.Frozen.square_constrained_bonds
     state: SEALED
@@ -305,7 +305,7 @@ nodes:
   - id: lem-one-circuit
     version: 3
     kind: theorem
-    source: rotor.tex:691-697 (label lem:one-circuit)
+    source: rotor.tex:710-716 (label lem:one-circuit)
     file: Rotor/Frozen/Circuits/OneCircuit.lean
     export: Rotor.Frozen.one_circuit
     state: SEALED
@@ -316,7 +316,7 @@ nodes:
   - id: prop-circuit-clock
     version: 2
     kind: theorem
-    source: rotor.tex:1148-1176 (label prop:circuit-clock)
+    source: rotor.tex:1167-1195 (label prop:circuit-clock)
     file: Rotor/Frozen/Shape/CircuitClock.lean
     export: Rotor.Frozen.circuit_clock
     state: SEALED
@@ -327,7 +327,7 @@ nodes:
   - id: lem-square-exploration
     version: 1
     kind: theorem
-    source: rotor.tex:1902-1913 (label lem:square-exploration)
+    source: rotor.tex:1921-1932 (label lem:square-exploration)
     file: Rotor/Frozen/Square/Exploration.lean
     export: Rotor.Frozen.square_exploration
     state: SEALED
@@ -338,7 +338,7 @@ nodes:
   - id: lem-square-active-list
     version: 1
     kind: theorem
-    source: rotor.tex:1926-1930 (label lem:square-active-list)
+    source: rotor.tex:1945-1949 (label lem:square-active-list)
     file: Rotor/Frozen/Square/ActiveList.lean
     export: Rotor.Frozen.square_active_list
     state: SEALED
@@ -349,7 +349,7 @@ nodes:
   - id: lem-square-forced-tests
     version: 1
     kind: theorem
-    source: rotor.tex:2058-2065 (label lem:square-forced-tests)
+    source: rotor.tex:2077-2084 (label lem:square-forced-tests)
     file: Rotor/Frozen/Square/ForcedTests.lean
     export: Rotor.Frozen.square_forced_tests
     state: SEALED
@@ -360,7 +360,7 @@ nodes:
   - id: prop-pendant-counterexample
     version: 1
     kind: theorem
-    source: rotor.tex:300-305 (label prop:pendant-counterexample)
+    source: rotor.tex:309-314 (label prop:pendant-counterexample)
     file: Rotor/Frozen/Main/Pendant.lean
     export: Rotor.Frozen.pendant_counterexample
     state: SEALED

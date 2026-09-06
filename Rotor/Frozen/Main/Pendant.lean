@@ -1,5 +1,5 @@
 /-
-Proposition 1.3 of rotor.tex, frozen.  `rotor.tex:300-305` (label `prop:pendant-counterexample`):
+Proposition 1.3 of rotor.tex, frozen.  `rotor.tex:309-314` (label `prop:pendant-counterexample`):
 
   "There exists $M_0<\infty$ such that for every $M\geq M_0$, the rotor walk on
    $G_M$ with the clockwise rotor mechanism and independent uniform initial

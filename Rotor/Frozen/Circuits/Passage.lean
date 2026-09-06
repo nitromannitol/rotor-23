@@ -1,5 +1,5 @@
 /-
-Proposition 2.6 of rotor.tex, frozen.  `rotor.tex:833-847` (label `prop:passage`):
+Proposition 2.6 of rotor.tex, frozen.  `rotor.tex:852-866` (label `prop:passage`):
 
   "For all vertices $x$, $y$, and $z$, $\tau(x,z)\leq\tau(x,y)+\tau(y,z)$,
    and $\tau(x,y)\leq d_G(x,y)$.  If the boundary routing of every nonempty

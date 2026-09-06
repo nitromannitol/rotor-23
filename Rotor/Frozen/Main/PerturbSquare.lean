@@ -1,6 +1,6 @@
 /-
 Proposition 1.2 of rotor.tex, the square-lattice case, frozen.
-`rotor.tex:263-271` (label `prop:small-perturbations`):
+`rotor.tex:272-280` (label `prop:small-perturbations`):
 
   "Fix a graph and rotor mechanism satisfying the hypotheses of Theorem 1.1.
    There is $\delta>0$ with the following property.  Suppose that the initial

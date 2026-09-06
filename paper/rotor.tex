@@ -58,7 +58,16 @@ urlcolor=BrickRed
 
 \title{Eulerian walkers on $\Z^2$ have range exponent $2/3$}
 \author{Ahmed Bou-Rabee}
+\address{Department of Mathematics, University of Pennsylvania,
+	Philadelphia, PA 19104, USA}
+\email{ahmedmb@gmail.com}
 \author{Yuval Peres}
+\address{Beijing Institute of Mathematical Sciences and Applications,
+	Beijing 101408, China}
+\email{yperes@bimsa.cn}
+\subjclass[2020]{Primary 60K35; Secondary 05C81, 82C20, 60G50, 82B43}
+\keywords{Rotor walk, Eulerian walker, rotor-router, self-organized
+	criticality, limit shape, recurrence, critical percolation}
 
 \begin{document}
 	
@@ -346,6 +355,16 @@ urlcolor=BrickRed
 	\smallskip
 	We collect several open questions raised by these results in
 	Section~\ref{sec:further-questions}.
+
+	\smallskip
+	The proofs in this paper have been formalized in the Lean~4 proof
+	assistant, with six cited results taken as hypotheses: the abelian property
+	\citep[Lemma~3.9]{HolroydLevineMeszarosPeresProppWilson2008},
+	\citet[Lemmas~2.1 and~2.4]{FlorescuLevinePeres2016},
+	\citet[Lemma~6]{HolroydPropp2010}, \citet[Theorem~1]{AngelHolroyd2012},
+	the subadditive ergodic theorem \citep{Kingman1968}, and the domination
+	theorem of \citet[Theorem~0.0]{LiggettSchonmannStacey1997}.  The
+	formalization is available at \url{https://github.com/nitromannitol/rotor-23}.
 	
 	\subsection{Proof overview}\label{ssec:proof-overview}
 	
@@ -1059,7 +1078,7 @@ urlcolor=BrickRed
 	\end{proof}
 	
 	Parts~\textup{(i)} and~\textup{(ii)} do not require periodicity of the graph.
-	Part~\textup{(iii)} does, and the rest of this subsection is devoted to its
+	Part~\textup{(iii)} does.  The rest of this subsection is devoted to its
 	proof, and we assume the additional hypotheses of
 	Proposition~\ref{prop:path-reduction}\textup{(iii)}: the graph and the rotor
 	mechanism are doubly periodic, and the rotor law is invariant and ergodic
@@ -1219,7 +1238,7 @@ urlcolor=BrickRed
 	\begin{equation}\label{eq:block-definitions}
 		Q_z^+\coloneqq\bigcup_{|w-z|_\infty\leq1}Q_w\, .
 	\end{equation}
-	Denote the law of the initial rotor at each vertex $x$ by law $\nu_x$ and write $\P_0$ for the
+	Denote the law of the initial rotor at each vertex $x$ by $\nu_x$ and write $\P_0$ for the
 	resulting product law.  Let $\mathcal C_z$ be the event that a live path
 	starts in $Q_z$, stays in $Q_z^+$ except for its last vertex, and ends
 	outside $Q_z^+$.
@@ -1284,8 +1303,8 @@ urlcolor=BrickRed
 	Throughout this section the initial rotors are independent and uniform.  We
 	show that on every graph of maximum degree three there is no infinite live
 	path (Proposition~\ref{prop:subcubic-recurrence}), so the walk is recurrent by
-	Proposition~\ref{prop:live-recurrence}.  We also show that under the additional condition 
-	the graph is doubly periodic and embedded in $\R^2$,  a live path reaches distance $R$ from its first vertex with
+	Proposition~\ref{prop:live-recurrence}.  We also show that under the additional condition that the graph is doubly periodic and
+	embedded in $\R^2$, a live path reaches distance $R$ from its first vertex with
 	probability at most $Ce^{-cR}$
 	(Proposition~\ref{prop:degree-three-passage}).  Together with
 	Lemma~\ref{lem:block-live-paths}, this verifies
@@ -1380,7 +1399,7 @@ urlcolor=BrickRed
 		Galton--Watson tree with offspring uniform on $\{0,1,2\}$. This completes the proof. 
 	\end{proof}
 	
-	We next show exponential decay under the extra hypothesis of doubly periodic.
+	We next show exponential decay under the extra hypothesis that $G$ is doubly periodic.
 	
 	\begin{proposition}[Exponential decay of live paths]
 		\label{prop:degree-three-passage}
@@ -2238,7 +2257,7 @@ urlcolor=BrickRed
 		\]
 		The idea now is that a return of this walk to $o$ would produce a
 		finite set $U$ at which the steps of the walk sum to
-		zero, forcing at least one third of the rotors in $U$ to not point west.  For large $M$ a counting estimate rules this out:
+		zero, forcing at least one third of the rotors in $U$ not to point west.  For large $M$ a counting estimate rules this out:
 		\[
 		\P\left\{\begin{array}{c}
 			\text{some finite $\ell^\infty$-connected set $U$ containing $o$}\\
@@ -2247,8 +2266,7 @@ urlcolor=BrickRed
 		\leq\sum_{n\geq1}
 		\left(128\left(\frac{3}{M+4}\right)^{1/3}\right)^n<1\, .
 		\]
-		Fix a rotor configuration in the complement of the event in the above display and suppose for sake 
-		of contradiction that the induced walk returns to $o$.  Let $F$ be the directed edges traversed up to and including
+		Fix a rotor configuration in the complement of the event in the above display and suppose for the sake of contradiction that the induced walk returns to $o$.  Let $F$ be the directed edges traversed up to and including
 		its first return, and set
 		$k(v)\coloneqq\#\{v\to w\in F\}$
 		(Figure~\ref{fig:rotor-excursion}).  By

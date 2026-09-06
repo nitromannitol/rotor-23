@@ -1,5 +1,5 @@
 /-
-Lemma 5.3 of rotor.tex, frozen.  `rotor.tex:1677-1692` (label `lem:square-constrained-bonds`):
+Lemma 5.3 of rotor.tex, frozen.  `rotor.tex:1696-1711` (label `lem:square-constrained-bonds`):
 
   "There are constants $c,C>0$ such that the following holds for every
    $x\in\Z^2$ and every integer $r\geq1$.  For bond percolation on $\Z^2$ with

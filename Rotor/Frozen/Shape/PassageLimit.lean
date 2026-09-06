@@ -1,5 +1,5 @@
 /-
-Proposition 3.2 of rotor.tex, frozen.  `rotor.tex:1084-1094` (label `prop:passage-limit`):
+Proposition 3.2 of rotor.tex, frozen.  `rotor.tex:1103-1113` (label `prop:passage-limit`):
 
   "There is a deterministic continuous subadditive function
    $\mu:\R^2\to[0,\infty)$ such that $\mu(\theta x)=\theta\mu(x)$ for every
