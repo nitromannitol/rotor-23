@@ -34,6 +34,7 @@ import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
 import Rotor.External.SubcriticalDecay
+import Rotor.Support.MainSquare
 
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
@@ -60,4 +61,4 @@ theorem Rotor.Frozen.main_square (hFLP : External.OneCircuit squareGraph)
           (κ • B)) atTop (𝓝 0) ∧
         Tendsto (fun t : ℕ => ((R clockwise ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c)
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= main_square_proof hFLP hAb hHP hK hLSS hSub o

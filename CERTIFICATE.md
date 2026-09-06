@@ -19,8 +19,8 @@ in prose are included, against a measure on infinite paths built here.
 | Lean toolchain | `leanprover/lean4:v4.26.0` |
 | Mathlib revision | `2df2f0150c275ad53cb3c90f7c98ec15a56a1a67` |
 | Paper (`paper/rotor.tex`) SHA-256 | `47ab86259c7e22b0a0c58ec44095e945c0cda1e4ef91f1767ba808849fb0d1dd` |
-| Build | succeeded, 7844 jobs |
-| Build warnings | 9 |
+| Build | succeeded, 7845 jobs |
+| Build warnings | 7 |
 | Generated | 2026-09-05 |
 
 ## Reproducing it

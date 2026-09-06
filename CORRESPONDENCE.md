@@ -62,9 +62,9 @@ one in a separate project.
 | `prop-passage-limit` | `Rotor.Frozen.passage_limit` | `rotor.tex:1084-1094`, `prop:passage-limit` | SEALED |
 | `prop-circuit-shape` | `Rotor.Frozen.circuit_shape` | `rotor.tex:1115-1135`, `prop:circuit-shape` | SEALED |
 | `lem-block-live-paths` | `Rotor.Frozen.block_live_paths` | `rotor.tex:1227-1238`, `lem:block-live-paths` | SEALED |
-| `thm-main-square` | `Rotor.Frozen.main_square` | `rotor.tex:228-250`, `thm:main` | DRAFT_SORRY |
+| `thm-main-square` | `Rotor.Frozen.main_square` | `rotor.tex:228-250`, `thm:main` | CONDITIONAL |
 | `thm-main-degree-three` | `Rotor.Frozen.main_degree_three` | `rotor.tex:228-250`, `thm:main` | SEALED |
-| `prop-perturbations-square` | `Rotor.Frozen.perturbations_square` | `rotor.tex:263-271`, `prop:small-perturbations` | DRAFT_SORRY |
+| `prop-perturbations-square` | `Rotor.Frozen.perturbations_square` | `rotor.tex:263-271`, `prop:small-perturbations` | CONDITIONAL |
 | `prop-perturbations-degree-three` | `Rotor.Frozen.perturbations_degree_three` | `rotor.tex:263-271`, `prop:small-perturbations` | SEALED |
 | `prop-subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `rotor.tex:1344-1350`, `prop:subcubic-recurrence` | SEALED |
 | `prop-degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `rotor.tex:1385-1400`, `prop:degree-three-passage` | SEALED |
