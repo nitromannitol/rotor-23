@@ -1,5 +1,5 @@
 /-
-Proposition 4.2 of rotor.tex, frozen.  `rotor.tex:1404-1419` (label `prop:degree-three-passage`):
+Proposition 4.2 of rotor.tex, frozen.  `rotor.tex:1414-1429` (label `prop:degree-three-passage`):
 
   "Let $G$ be a doubly periodic graph in $\R^2$ of maximum degree three,
    equipped with an arbitrary rotor mechanism and independent uniform initial

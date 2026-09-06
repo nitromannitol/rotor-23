@@ -1,5 +1,5 @@
 /-
-Proposition 3.4 of rotor.tex, frozen.  `rotor.tex:1167-1195` (label `prop:circuit-clock`):
+Proposition 3.4 of rotor.tex, frozen.  `rotor.tex:1177-1205` (label `prop:circuit-clock`):
 
   "Suppose $T(n)<\infty$ for every $n$ for a rotor walk on a connected locally
    finite graph.  Then, for every integer $n\geq0$,

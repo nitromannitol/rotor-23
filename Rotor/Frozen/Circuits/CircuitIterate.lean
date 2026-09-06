@@ -1,5 +1,5 @@
 /-
-Proposition 2.4 of rotor.tex, frozen.  `rotor.tex:793-801` (label `prop:circuit-iterate`):
+Proposition 2.4 of rotor.tex, frozen.  `rotor.tex:803-811` (label `prop:circuit-iterate`):
 
   "Let $n\geq0$ and suppose that $T(n)<\infty$.  Then $T(n+1)<\infty$ if and
    only if the boundary routing of $A_n$ terminates, and in that case

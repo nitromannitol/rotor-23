@@ -19,7 +19,7 @@ in `Rotor/Bridge/`.  No statement rests on an added axiom or a `sorry`.
 |---|---|
 | Lean toolchain | `leanprover/lean4:v4.32.0` |
 | Mathlib revision | `81a5d257c8e410db227a6665ed08f64fea08e997` |
-| Paper (`paper/rotor.tex`) SHA-256 | `efded000a7ce82ef0de98111287d7e4bdd033e109e72446400bfce9ce87d2711` |
+| Paper (`paper/rotor.tex`) SHA-256 | `2d33e6029607e2bedfc296b147b0f4b82d59e5945f4d563ebe7e2abdbce48953` |
 | Build | succeeded, 8852 jobs |
 | Build warnings | 0 |
 | Generated | 2026-09-06 |

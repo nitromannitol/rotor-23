@@ -1,5 +1,5 @@
 /-
-Proposition 3.3 of rotor.tex, frozen.  `rotor.tex:1134-1154` (label `prop:circuit-shape`):
+Proposition 3.3 of rotor.tex, frozen.  `rotor.tex:1144-1164` (label `prop:circuit-shape`):
 
   "Let $\mu$ be the passage function from Proposition 3.2.  Suppose that the
    passage-ball identity holds almost surely for every $n\geq0$ and that

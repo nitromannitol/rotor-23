@@ -1,5 +1,5 @@
 /-
-Proposition 2.5 of rotor.tex, frozen.  `rotor.tex:820-826` (label `prop:monotonicity`):
+Proposition 2.5 of rotor.tex, frozen.  `rotor.tex:830-836` (label `prop:monotonicity`):
 
   "Let $S\subseteq T$ be nonempty finite sets whose boundary routings
    terminate.  Then $\Phi(S)\subseteq\Phi(T)$."

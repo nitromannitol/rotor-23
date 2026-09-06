@@ -1,5 +1,5 @@
 /-
-Lemma 5.2 of rotor.tex, frozen.  `rotor.tex:1657-1663` (label `lem:square-dual-path`):
+Lemma 5.2 of rotor.tex, frozen.  `rotor.tex:1667-1673` (label `lem:square-dual-path`):
 
   "Let $m\geq1$ be an integer and let $x_0,\ldots,x_m$ be a live
    nearest-neighbor path in $\Z^2$.  Then there is a directed path of open dual

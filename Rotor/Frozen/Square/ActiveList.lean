@@ -1,5 +1,5 @@
 /-
-Lemma 5.5 of rotor.tex, frozen.  `rotor.tex:1945-1949` (label `lem:square-active-list`):
+Lemma 5.5 of rotor.tex, frozen.  `rotor.tex:1955-1959` (label `lem:square-active-list`):
 
   "If $W$ or $S$ was tested closed before $E$ is tested, then the active list
    is $(E)$ immediately before $E$ is selected for testing.  At most one of $W$

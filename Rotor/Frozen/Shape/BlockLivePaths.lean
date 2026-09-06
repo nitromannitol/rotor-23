@@ -1,5 +1,5 @@
 /-
-Lemma 3.5 of rotor.tex, frozen.  `rotor.tex:1246-1257` (label `lem:block-live-paths`):
+Lemma 3.5 of rotor.tex, frozen.  `rotor.tex:1256-1267` (label `lem:block-live-paths`):
 
   "There are $\varepsilon>0$ and $L_0\geq1$ with the following property.  Let
    $L\geq L_0$ and suppose that $\sup_{z\in\Z^2}\P_0(\mathcal C_z)<\varepsilon$.
