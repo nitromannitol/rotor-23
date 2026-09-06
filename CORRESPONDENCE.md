@@ -69,7 +69,7 @@ one in a separate project.
 | `prop-subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `rotor.tex:1344-1350`, `prop:subcubic-recurrence` | SEALED |
 | `prop-degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `rotor.tex:1385-1400`, `prop:degree-three-passage` | SEALED |
 | `prop-square-passage` | `Rotor.Frozen.square_passage` | `rotor.tex:1461-1471`, `prop:square-passage` | DRAFT_SORRY |
-| `lem-square-dual-path` | `Rotor.Frozen.square_dual_path` | `rotor.tex:1638-1644`, `lem:square-dual-path` | DRAFT_SORRY |
+| `lem-square-dual-path` | `Rotor.Frozen.square_dual_path` | `rotor.tex:1638-1644`, `lem:square-dual-path` | SEALED |
 | `lem-square-constrained-bonds` | `Rotor.Frozen.square_constrained_bonds` | `rotor.tex:1677-1692`, `lem:square-constrained-bonds` | DRAFT_SORRY |
 | `ext-one-circuit` | `Rotor.External.OneCircuit` | external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit (ruling X-001) | FROZEN |
 | `lem-one-circuit` | `Rotor.Frozen.one_circuit` | `rotor.tex:691-697`, `lem:one-circuit` | SEALED |

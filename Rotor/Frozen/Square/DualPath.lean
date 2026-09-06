@@ -11,6 +11,7 @@ last edges are read off through `l[i]?`.  The dual path has distinct faces
 (`IsOpenDualPath`), as the word "path" requires (`rotor.tex:405-407`).
 -/
 import Rotor.Dual
+import Rotor.Support.SquareDual
 
 open Rotor
 
@@ -23,4 +24,4 @@ theorem Rotor.Frozen.square_dual_path (ρ : Config squareGraph) (l : List Site)
       q.head? = some (rightFace x₀ (dirOf (x₁ - x₀))) ∧
       q.getLast? = some (rightFace y₀ (dirOf (y₁ - y₀)))
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= square_dual_path_proof ρ l hl hlive hm x₀ x₁ y₀ y₁ h0 h1 hy0 hy1

@@ -99,3 +99,4 @@ import Rotor.Support.BlockReach
 import Rotor.Support.MainDegreeThree
 import Rotor.Support.SquareBasics
 import Rotor.Support.MainSquare
+import Rotor.Support.SquareDual
