@@ -7,12 +7,12 @@ Lemma 2.1 of rotor.tex, frozen.  `rotor.tex:691-697` (label `lem:one-circuit`):
    vertex $x\in A_n$ exactly $\deg(x)$ times."
 
 The paper cites FLP Lemmas 2.1 and 2.4 for this and gives no proof; the
-external input `External.OneCircuit` (ruling X-001) is its hypothesis.  The
+external input `External.OneCircuit` is its hypothesis.  The
 standing assumptions of Section 2 (`rotor.tex:678-680`) are the binders
 `[Infinite V]` and `hG`.  "During `T(n) ≤ t < T(n+1)`" with `T(n+1) = ∞`
 is the half-line, which the `ℕ∞` comparison expresses.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
-phase one (ruling X-001): they are not derived here and the certificate lists them.
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed
+here: they are not derived in this repository and the certificate lists them.
 -/
 import Rotor.Traversal
 import Rotor.External.OneCircuit

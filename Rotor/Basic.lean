@@ -18,18 +18,18 @@ Section 1.1 (`ssec:main-results`), `rotor.tex:179-225`:
    When `T(n) < ∞`, let `A_n := R_{T(n)}`, the range after `n` circuits, and
    let `A_0 := {o}`."
 
-Modelling decisions are numbered `M-***` and recorded in the modelling rulings.
+How the paper's objects are modelled here:
 
-  M-001  The graph is the square lattice only: a site is `ℤ × ℤ`, a directed
-         edge out of a site is a direction `Fin 4`, and `deg ≡ 4`.
-  M-002  Directions are numbered in the clockwise order of the paper:
-         `0 = N`, `1 = E`, `2 = S`, `3 = W`; the clockwise mechanism is `+ 1`
-         in `Fin 4`.
-  M-003  `T n` takes values in `ℕ∞`, with `⊤` when no such time exists.  This
-         is the paper's `inf ∅ = ∞`.  `A n` is defined through `(T n).toNat`,
-         so when `T n = ⊤` it is the junk value `R 0 = {o}`; every statement
-         about `A n` therefore carries `T n < ⊤`, or almost-sure recurrence,
-         as a hypothesis.
+- The graph is the square lattice only: a site is `ℤ × ℤ`, a directed
+  edge out of a site is a direction `Fin 4`, and `deg ≡ 4`.
+- Directions are numbered in the clockwise order of the paper:
+  `0 = N`, `1 = E`, `2 = S`, `3 = W`; the clockwise mechanism is `+ 1`
+  in `Fin 4`.
+- `T n` takes values in `ℕ∞`, with `⊤` when no such time exists.  This
+  is the paper's `inf ∅ = ∞`.  `A n` is defined through `(T n).toNat`,
+  so when `T n = ⊤` it is the junk value `R 0 = {o}`; every statement
+  about `A n` therefore carries `T n < ⊤`, or almost-sure recurrence,
+  as a hypothesis.
 -/
 import Mathlib
 
@@ -39,7 +39,7 @@ namespace Rotor
 abbrev Site := ℤ × ℤ
 
 /-- A direction out of a site; equivalently the directed edge it names.  The
-numbering is the paper's clockwise order `N, E, S, W` (ruling M-002). -/
+numbering is the paper's clockwise order `N, E, S, W`. -/
 abbrev Dir := Fin 4
 
 /-- The unit step `N, E, S, W` in direction `a`. -/
@@ -88,13 +88,13 @@ def visits (ρ : RotorConfig) (o : Site) (t : ℕ) : ℕ :=
   ((Finset.range t).filter (fun s => X ρ o s = o)).card
 
 /-- `T(n)`: the completion time of the first `n` circuits, `eq:circ-time`,
-with `deg(o) = 4` (ruling M-001) and value `⊤` when no such time exists
-(ruling M-003). -/
+with `deg(o) = 4` and value `⊤` when no such time exists
+. -/
 noncomputable def T (ρ : RotorConfig) (o : Site) (n : ℕ) : ℕ∞ :=
   ⨅ t ∈ {t : ℕ | X ρ o t = o ∧ 4 * n ≤ visits ρ o t}, (t : ℕ∞)
 
 /-- `A_n = R_{T(n)}`, the range after `n` circuits; meaningful only when
-`T n < ⊤` (ruling M-003). -/
+`T n < ⊤`. -/
 noncomputable def A (ρ : RotorConfig) (o : Site) (n : ℕ) : Finset Site :=
   R ρ o (T ρ o n).toNat
 

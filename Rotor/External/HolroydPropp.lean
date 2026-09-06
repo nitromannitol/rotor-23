@@ -5,7 +5,7 @@ the paper uses it in the proof of `prop:live-recurrence` (`rotor.tex:966-969`):
   "A rotor walk that visits one vertex infinitely often visits every vertex
    infinitely often."
 
-Ruling X-001: assumed in phase one, with the standing assumptions of Section 2.
+Assumed here, with the standing assumptions of Section 2.
 -/
 import Rotor.Model
 

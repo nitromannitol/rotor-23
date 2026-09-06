@@ -33,7 +33,7 @@ except ImportError:
     sys.exit("check_constants.py: PyYAML is required (pip install pyyaml)")
 
 ROOT = Path(__file__).resolve().parent.parent
-MANIFEST = ROOT / "verification" / "manifest.yaml"
+MANIFEST = ROOT / "ledger" / "manifest.yaml"
 
 # Names that must never be theorem parameters when a constant is existential.
 FORBIDDEN = ("R", "n", "t", "m", "r", "s", "L", "x", "y", "u", "v", "e", "z", "ε", "η", "δ")

@@ -9,7 +9,7 @@ paper states it in `lem:least-action` (`rotor.tex:727-741`):
    (b) If `ξ_n` and `ξ̂_m` are both stable, then `m = n`, their final states
    agree, and each vertex is actuated equally often in the two routings."
 
-Ruling X-001: assumed in phase one.  Ruling M-010: a routing is its initial
+Assumed here.  A routing is its initial
 state and its list of actuated vertices; `n` and `m` are the lengths of those
 lists and actuation counts are `List.count`.
 -/

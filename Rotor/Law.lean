@@ -7,10 +7,10 @@ uniform among the directed edges out of each vertex."  `rotor.tex:1215-1217`:
 for the resulting product law."  `rotor.tex:1455-1459`: on the square lattice
 `ℙ_0` is the product of uniform laws.
 
-  M-004  The sample space is `Config G = ∀ v, G.neighborSet v` with the product
-         σ-algebra, each finite factor carrying the discrete σ-algebra, and a
-         product law is Mathlib's countable product `Measure.infinitePi` of the
-         one-vertex laws.  Almost-sure statements are `∀ᵐ ρ ∂μ`.  CONFIRMED.
+- The sample space is `Config G = ∀ v, G.neighborSet v` with the product
+  σ-algebra, each finite factor carrying the discrete σ-algebra, and a
+  product law is Mathlib's countable product `Measure.infinitePi` of the
+  one-vertex laws.  Almost-sure statements are `∀ᵐ ρ ∂μ`.  CONFIRMED.
 -/
 import Rotor.Model
 import Rotor.Basic

@@ -34,26 +34,26 @@ Boundary routings and the circuit map, `rotor.tex:700-810` (Section 2.1).
    y ∈ Φⁿ({x})}` if the boundary routing of every nonempty finite set
    terminates, and `d_G(x, y)` otherwise."
 
-Rulings:
+How the paper's objects are modelled here:
 
-  M-010  A particle configuration is `σ : V → ℕ` and a state carries a full
-         rotor configuration; values on the sink set `S` are never read, which
-         is the paper's "on `V ∖ S`".  A legal routing is recorded by its
-         initial state and the list (or, if infinite, the sequence) of
-         actuated vertices; the paper's sequence of states is `run` of that
-         list.  The two records determine each other, because an actuation
-         moves one particle from the actuated vertex, which the loopless graph
-         makes identifiable from the pair of states.  Actuation counts are
-         `List.count`.
-  M-011  `Φ S` is total: it chooses a complete boundary routing when one exists
-         and returns `S` otherwise.  Every statement about `Φ S` carries
-         `Terminates S`.  Independence of the choice is `lem:least-action`.
-  M-012  "`Φⁿ(S)` is defined" is `IteratesDefined S n`: every intervening
-         boundary routing terminates.
-  M-013  `τ x y` is `sInf` over `ℕ` in the terminating case, so it would be the
-         junk value `0` if `y` were in no iterate; under `AllTerminate` the set
-         is nonempty (`prop:passage`, `eq:passage-upper`), so the junk value
-         never arises.
+- A particle configuration is `σ : V → ℕ` and a state carries a full
+  rotor configuration; values on the sink set `S` are never read, which
+  is the paper's "on `V ∖ S`".  A legal routing is recorded by its
+  initial state and the list (or, if infinite, the sequence) of
+  actuated vertices; the paper's sequence of states is `run` of that
+  list.  The two records determine each other, because an actuation
+  moves one particle from the actuated vertex, which the loopless graph
+  makes identifiable from the pair of states.  Actuation counts are
+  `List.count`.
+- `Φ S` is total: it chooses a complete boundary routing when one exists
+  and returns `S` otherwise.  Every statement about `Φ S` carries
+  `Terminates S`.  Independence of the choice is `lem:least-action`.
+- "`Φⁿ(S)` is defined" is `IteratesDefined S n`: every intervening
+  boundary routing terminates.
+- `τ x y` is `sInf` over `ℕ` in the terminating case, so it would be the
+  junk value `0` if `y` were in no iterate; under `AllTerminate` the set
+  is nonempty (`prop:passage`, `eq:passage-upper`), so the junk value
+  never arises.
 -/
 import Rotor.Model
 
@@ -64,7 +64,7 @@ namespace Rotor
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 variable (π : Mechanism G)
 
-/-- A particle-and-rotor state `ξ = (σ, ρ)` (ruling M-010). -/
+/-- A particle-and-rotor state `ξ = (σ, ρ)`. -/
 structure RState (G : SimpleGraph V) where
   /-- The particle configuration `σ`. -/
   σ : V → ℕ
@@ -115,12 +115,12 @@ def Terminates (S : Finset V) (ρ : Config G) : Prop :=
   ∃ vs : List V, IsComplete π S (boundaryInit S ρ) vs
 
 open Classical in
-/-- The circuit map `Φ` (`eq:phi-definition`), total by ruling M-011. -/
+/-- The circuit map `Φ` (`eq:phi-definition`), total. -/
 noncomputable def Φ (ρ : Config G) (S : Finset V) : Finset V :=
   if h : Terminates π S ρ then S ∪ (Classical.choose h).toFinset else S
 
 /-- `Φⁿ(S)` is defined: every intervening boundary routing terminates
-(ruling M-012). -/
+. -/
 def IteratesDefined (ρ : Config G) (S : Finset V) (n : ℕ) : Prop :=
   ∀ i < n, Terminates π ((Φ π ρ)^[i] S) ρ
 
@@ -128,7 +128,7 @@ def IteratesDefined (ρ : Config G) (S : Finset V) (n : ℕ) : Prop :=
 def AllTerminate (ρ : Config G) : Prop :=
   ∀ S : Finset V, S.Nonempty → Terminates π S ρ
 
-/-- The passage time `τ(x, y)`, `eq:passage-definition` (ruling M-013). -/
+/-- The passage time `τ(x, y)`, `eq:passage-definition`. -/
 noncomputable def τ (ρ : Config G) (x y : V) : ℕ :=
   by classical exact
     if AllTerminate π ρ then sInf {n : ℕ | y ∈ (Φ π ρ)^[n] {x}} else G.dist x y

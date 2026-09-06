@@ -15,9 +15,9 @@ Deterministic; `emb` is any drawing of the vertices in the plane.  Three
 sentences of conclusions, three conjuncts; the `o(·)` statements are limits
 of ratios.  The graph is connected and locally finite, finite or infinite, as
 the paper says.  The proof uses `lem:one-circuit`, hence the external input
-`hFLP` (ruling X-001).
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
-phase one (ruling X-001): they are not derived here and the certificate lists them.
+`hFLP`.
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed
+here: they are not derived in this repository and the certificate lists them.
 -/
 import Rotor.Events
 import Rotor.External.OneCircuit

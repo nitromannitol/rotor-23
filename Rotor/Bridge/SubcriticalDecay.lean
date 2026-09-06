@@ -4,7 +4,7 @@ import Percolation.Literature.SharpnessDCTProofs
 import Percolation.Literature.BondPercolationSymmetry
 
 /-!
-Phase two: `External.SubcriticalDecay` proved from the percolation library
+`External.SubcriticalDecay` proved from the percolation library
 (`anthropics/formal-math`, subdirectory `percolation`, commit 795efb86): Kesten's
 `p_c(ℤ²) = 1/2` (`kesten_criticalProb_Z2_holds`) and the sharpness of the phase transition
 (`perc_sharpness_holds`).  The bridge identifies our bond field `Sym2 (ℤ × ℤ) → Bool` under

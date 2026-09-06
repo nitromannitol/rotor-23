@@ -23,7 +23,7 @@ except ImportError:
     sys.exit("certificate.py: PyYAML is required (pip install pyyaml)")
 
 ROOT = Path(__file__).resolve().parent.parent
-MANIFEST = ROOT / "verification" / "manifest.yaml"
+MANIFEST = ROOT / "ledger" / "manifest.yaml"
 OUT = ROOT / "CERTIFICATE.md"
 ELAN = str(Path.home() / ".elan" / "bin")
 
@@ -157,7 +157,7 @@ def build() -> str:
         A(f"| {i} | `{n['id']}` | `{e}` | {paper_cell} | {verdict} |")
     A("")
     A(f"{clean} of {len(nodes)} nodes depend on nothing beyond the three classical")
-    A("axioms.  Every node's state in `verification/manifest.yaml` is `SEALED`.")
+    A("axioms.  Every node's state in `ledger/manifest.yaml` is `SEALED`.")
     A("")
     A("## Frozen statements")
     A("")

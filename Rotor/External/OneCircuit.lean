@@ -8,7 +8,7 @@ Lemmas 2.1 and 2.4, as the paper states them in `lem:one-circuit`
    If `T(n+1) < ∞`, then during this interval the walk departs from every
    vertex `x ∈ A_n` exactly `deg(x)` times."
 
-Ruling X-001: this is assumed in phase one.  It is a `Prop` and enters only as
+This is assumed here.  It is a `Prop` and enters only as
 an explicit hypothesis.  FLP state their lemmas for connected locally finite
 graphs, finite or infinite, and `prop:circuit-clock` (`rotor.tex:1148-1151`)
 uses `lem:one-circuit` on "a connected locally finite graph", so infinitude is

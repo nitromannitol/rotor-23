@@ -20,14 +20,14 @@ The depth-first exploration of the dual configuration, `rotor.tex:1870-1900`
    at an earlier step.  In that case `E` is necessarily open.  Let
    `K ∈ ℤ_{≥0} ∪ {∞}` be the number of forced tests."
 
-  M-021  The exploration is a deterministic state machine driven by the test
-         outcomes; `explore ρ f e₀ n` is its state after `n` tests with the
-         outcomes read from `ρ`, and `replay f e₀ h` is the state after the
-         prescribed outcomes `h`, so that `explore ρ f e₀ n = replay f e₀
-         (history ρ n)`.  Conditional probabilities given the earlier outcomes
-         are stated through these histories.  "Lies in a finite component of
-         the complement of the visited set" is reachability in the subgraph of
-         the dual lattice induced on the unvisited faces.
+- The exploration is a deterministic state machine driven by the test
+  outcomes; `explore ρ f e₀ n` is its state after `n` tests with the
+  outcomes read from `ρ`, and `replay f e₀ h` is the state after the
+  prescribed outcomes `h`, so that `explore ρ f e₀ n = replay f e₀
+  (history ρ n)`.  Conditional probabilities given the earlier outcomes
+  are stated through these histories.  "Lies in a finite component of
+  the complement of the visited set" is reachability in the subgraph of
+  the dual lattice induced on the unvisited faces.
 -/
 import Rotor.Dual
 

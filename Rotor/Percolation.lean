@@ -6,10 +6,10 @@ Bernoulli bond percolation on `ℤ²`, `rotor.tex:1658-1668`:
    Theorem 3.4]: for each `p < 1/2`, uniformly in `x` and `r ≥ 1`,
    `ℙ_p{x is joined to {y : |y-x|_∞ = r} inside {y : |y-x|_∞ ≤ r}} ≤ Ce^{-cr}`."
 
-  M-018  A bond configuration is a function `Sym2 Site → Bool`; the coordinates
-         at non-edges are never read, so the product of Bernoulli(`p`) laws
-         over `Sym2 Site` is Bernoulli bond percolation on the bonds of `ℤ²`
-         with independent unused coins elsewhere.
+- A bond configuration is a function `Sym2 Site → Bool`; the coordinates
+  at non-edges are never read, so the product of Bernoulli(`p`) laws
+  over `Sym2 Site` is Bernoulli bond percolation on the bonds of `ℤ²`
+  with independent unused coins elsewhere.
 -/
 import Rotor.Square
 import Rotor.External.LSS
@@ -18,7 +18,7 @@ open MeasureTheory
 
 namespace Rotor
 
-/-- A bond configuration on `ℤ²` (ruling M-018). -/
+/-- A bond configuration on `ℤ²`. -/
 abbrev BondConfig := Sym2 Site → Bool
 
 /-- Bernoulli bond percolation `ℙ_p`. -/

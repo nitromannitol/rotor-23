@@ -18,13 +18,13 @@ Theorem 1.1 of rotor.tex, the square-lattice case, frozen.  `rotor.tex:228-250`
 
 The theorem is split into two nodes, one per case (`thm-main-square`,
 `thm-main-degree-three`).  Conventions: `B`, `κ` and the limit `c` are
-bound before the almost-sure quantifier (ruling F-002); `T(n) < ∞` is
-asserted so that `A_n` is never its junk value (M-008); (ii) is frozen both as
-Hausdorff limits and as the sandwich of `prop:circuit-shape` (F-001); the
+bound before the almost-sure quantifier; `T(n) < ∞` is
+asserted so that `A_n` is never its junk value; (ii) is frozen both as
+Hausdorff limits and as the sandwich of `prop:circuit-shape`; the
 lattice is drawn by `squareEmb` relative to `o`.  The external inputs are
-those of Sections 2, 3 and 5 (ruling X-001).
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
-phase one (ruling X-001): they are not derived here and the certificate lists them.
+those of Sections 2, 3 and 5.
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed
+here: they are not derived in this repository and the certificate lists them.
 -/
 import Rotor.Events
 import Rotor.Percolation

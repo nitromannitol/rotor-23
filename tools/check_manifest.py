@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Frozen-statement manifest checker for the Rotor formalization.
 
-Verifies, against verification/manifest.yaml:
+Verifies, against ledger/manifest.yaml:
   1. every manifest node's file exists and contains exactly one
      FROZEN-STATEMENT-BEGIN/END block;
   2. the sha256 of the block's bytes (marker lines excluded) matches the
@@ -69,7 +69,7 @@ except ImportError:
     sys.exit("check_manifest.py: PyYAML is required (pip install pyyaml)")
 
 ROOT = Path(__file__).resolve().parent.parent
-MANIFEST = ROOT / "verification" / "manifest.yaml"
+MANIFEST = ROOT / "ledger" / "manifest.yaml"
 BEGIN = "-- FROZEN-STATEMENT-BEGIN"
 END = "-- FROZEN-STATEMENT-END"
 THEOREM_STATES = {"DRAFT_SORRY", "SEALED", "PROVED", "CONDITIONAL"}

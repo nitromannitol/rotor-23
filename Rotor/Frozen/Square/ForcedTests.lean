@@ -4,7 +4,7 @@ Lemma 5.6 of rotor.tex, frozen.  `rotor.tex:2058-2065` (label `lem:square-forced
   "Let $K$ be the number of forced tests.  There are constants $c,C>0$ such
    that, for every integer $m\geq1$, $\P_0\{K\geq m\}\leq Ce^{-cm}$."
 
-The constants are explicit (ruling F-003): the proof gives
+The constants are explicit: the proof gives
 $\P_0\{K\geq3k+1\}\leq(3/4)^k$, hence $\P_0\{K\geq m\}\leq(4/3)(3/4)^{m/3}$,
 that is $C = 4/3$ and $e^{-c} = (3/4)^{1/3}$.
 -/

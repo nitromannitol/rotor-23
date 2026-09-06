@@ -4,7 +4,7 @@ import Rotor.Support.DualGeom
 Invariants of the depth-first exploration (`rotor.tex:1885-1913`): tails of tested and active
 edges are visited, heads of active edges are unvisited, the active list has no repeated edge,
 no active bond has been tested, and no bond is tested twice (Lemma 5.4 (i)).  Also the
-bookkeeping of ruling M-021: `explore ρ f d n = replay f d (history ρ f d n)`.
+bookkeeping: `explore ρ f d n = replay f d (history ρ f d n)`.
 -/
 
 open Finset
@@ -227,7 +227,7 @@ theorem tested_bonds_nodup (ρ : Config squareGraph) (f : Site) {d : Site} (hd :
     ((explore ρ f d n).tested.map (fun t => s(t.1, t.2.1))).Nodup :=
   (explInv_explore ρ f hd n).tested_nodup
 
-/-! ### The history (ruling M-021) -/
+/-! ### The history -/
 
 theorem history_succ_nil (ρ : Config squareGraph) (f d : Site) (n : ℕ)
     (h : (explore ρ f d n).active = []) : history ρ f d (n + 1) = history ρ f d n := by

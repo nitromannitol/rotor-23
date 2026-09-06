@@ -32,7 +32,7 @@ except ImportError:
     sys.exit("check_exponents.py: PyYAML is required (pip install pyyaml)")
 
 ROOT = Path(__file__).resolve().parent.parent
-MANIFEST = ROOT / "verification" / "manifest.yaml"
+MANIFEST = ROOT / "ledger" / "manifest.yaml"
 
 
 def paper_path() -> Path:

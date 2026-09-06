@@ -81,7 +81,7 @@ nowhere below.
 | 33 | `ext-kingman` | `Rotor.External.Kingman` | — | classical only |
 
 33 of 33 nodes depend on nothing beyond the three classical
-axioms.  Every node's state in `verification/manifest.yaml` is `SEALED`.
+axioms.  Every node's state in `ledger/manifest.yaml` is `SEALED`.
 
 ## Frozen statements
 

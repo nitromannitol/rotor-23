@@ -4,8 +4,8 @@ Theorem 1.1 of rotor.tex, the degree-three case, frozen.  `rotor.tex:228-250`
 and the conventions.  Here `G` is a doubly periodic graph in the plane of
 maximum degree three with a doubly periodic mechanism, drawn by `P.emb`
 relative to `o`.  The external inputs are those of Sections 2, 3 and 4.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
-phase one (ruling X-001): they are not derived here and the certificate lists them.
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed
+here: they are not derived in this repository and the certificate lists them.
 -/
 import Rotor.Events
 import Rotor.Percolation

@@ -17,7 +17,7 @@ map `θ`; version 1 of this file assumed ergodicity of `θ` and a constant limit
 which the paper's hypotheses cannot supply (an ergodic `ℤ²`-action need not
 have ergodic generators).  Kingman's theorem also gives convergence in `L¹`;
 the paper's proof uses only the almost-sure limit, so the `L¹` clause is
-deliberately not assumed.  Ruling X-001.
+deliberately not assumed.
 -/
 import Mathlib
 

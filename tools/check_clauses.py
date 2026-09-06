@@ -36,7 +36,7 @@ except ImportError:
     sys.exit("check_clauses.py: PyYAML is required (pip install pyyaml)")
 
 ROOT = Path(__file__).resolve().parent.parent
-MANIFEST = ROOT / "verification" / "manifest.yaml"
+MANIFEST = ROOT / "ledger" / "manifest.yaml"
 
 # Nodes whose count mismatch has been looked at and explained.  The value is the
 # reason, which is printed, so a stale entry is visible rather than silent.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Register (or refresh) a frozen node in verification/manifest.yaml.
+"""Register (or refresh) a frozen node in ledger/manifest.yaml.
 
     python3 tools/freeze.py ID FILE EXPORT KIND STATE "SOURCE"
 
@@ -13,7 +13,7 @@ change is visible in the manifest history.
 import hashlib, re, sys, pathlib, datetime
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-MAN = ROOT / "verification" / "manifest.yaml"
+MAN = ROOT / "ledger" / "manifest.yaml"
 BEGIN, END = "-- FROZEN-STATEMENT-BEGIN", "-- FROZEN-STATEMENT-END"
 
 def frozen_hash(path: pathlib.Path) -> str:

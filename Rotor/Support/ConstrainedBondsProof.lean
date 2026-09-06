@@ -62,7 +62,7 @@ theorem bondLaw_pf_le {ε : ℝ} (hε : 0 < ε) (hε' : ε ≤ 1 / 4)
 end Final
 
 /-- Lemma 5.3 (`lem:square-constrained-bonds`), modulo the assumed subcritical decay
-`External.SubcriticalDecay` at `1/2 - ε` (ruling X-001). -/
+`External.SubcriticalDecay` at `1/2 - ε`. -/
 theorem square_constrained_bonds_proof (hSub : External.SubcriticalDecay) :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ (x : Site) (r : ℕ), 1 ≤ r →
       bondLaw (1 / 2) Rotor.half_le_one (constrainedCrossing x r) ≤

@@ -21,11 +21,11 @@ Three items, three conjuncts.  In (i) the walk from every start is recurrent
 (the paper fixes no start there).  In (iii) the start `o` is arbitrary, the
 sets are drawn through `P.emb` relative to `o` (the paper identifies `o` with
 the origin), `T(n) < ∞` is asserted so that `A_n` is
-never its junk value (ruling M-008), and `B`, `κ`, `c_*` are bound before
-the almost-sure quantifier (ruling F-002).  The proof uses Sections 2 and 3,
+never its junk value, and `B`, `κ`, `c_*` are bound before
+the almost-sure quantifier.  The proof uses Sections 2 and 3,
 hence the external inputs of Section 2 and Kingman's theorem.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
-phase one (ruling X-001): they are not derived here and the certificate lists them.
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed
+here: they are not derived in this repository and the certificate lists them.
 -/
 import Rotor.Events
 import Rotor.External.OneCircuit

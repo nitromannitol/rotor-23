@@ -15,24 +15,24 @@ and ergodic under the translation lattice".
 integer `L ≥ 1` and `z ∈ ℤ²`, let the block `Q_z` be the union of the sets
 indexed by `Lz + {0, …, L-1}²`, and let `Q_z⁺ := ⋃_{|w-z|_∞ ≤ 1} Q_w`."
 
-Rulings:
+How the paper's objects are modelled here:
 
-  M-014  A doubly periodic graph is the data `P : DoublyPeriodic G`: an
-         injective embedding `emb : V → ℝ²`, a `ℤ²`-action `shift` by graph
-         automorphisms, two `ℝ`-independent vectors `b 0, b 1` spanning the
-         lattice `Λ` with `emb (shift z v) = emb v + z₁ b₀ + z₂ b₁`, and a
-         choice of orbit representatives `rep` with coordinates `coord`, so
-         that `v = shift (coord v) (rep v)`; "finitely many orbits" is
-         `(Set.range rep).Finite`.  The representatives are a choice, not a
-         restriction: every graph the paper calls doubly periodic admits one.
-         `coord` is the paper's identification of `V` with finite sets indexed
-         by `ℤ²`.
-  M-015  A law `μ` on `Config G` is invariant when every lattice shift is
-         measure preserving, and ergodic when every measurable shift-invariant
-         set is null or conull.  Connectedness and infinitude of `V` are
-         hypotheses of the statements, as in the paper, not fields.
-  M-016  The total variation distance between two laws on a finite set is
-         `sup_s |μ s - ν s|` over all subsets, as a real number.
+- A doubly periodic graph is the data `P : DoublyPeriodic G`: an
+  injective embedding `emb : V → ℝ²`, a `ℤ²`-action `shift` by graph
+  automorphisms, two `ℝ`-independent vectors `b 0, b 1` spanning the
+  lattice `Λ` with `emb (shift z v) = emb v + z₁ b₀ + z₂ b₁`, and a
+  choice of orbit representatives `rep` with coordinates `coord`, so
+  that `v = shift (coord v) (rep v)`; "finitely many orbits" is
+  `(Set.range rep).Finite`.  The representatives are a choice, not a
+  restriction: every graph the paper calls doubly periodic admits one.
+  `coord` is the paper's identification of `V` with finite sets indexed
+  by `ℤ²`.
+- A law `μ` on `Config G` is invariant when every lattice shift is
+  measure preserving, and ergodic when every measurable shift-invariant
+  set is null or conull.  Connectedness and infinitude of `V` are
+  hypotheses of the statements, as in the paper, not fields.
+- The total variation distance between two laws on a finite set is
+  `sup_s |μ s - ν s|` over all subsets, as a real number.
 -/
 import Rotor.Law
 
@@ -45,7 +45,7 @@ abbrev Plane := EuclideanSpace ℝ (Fin 2)
 
 variable {V : Type*} [DecidableEq V] (G : SimpleGraph V) [G.LocallyFinite]
 
-/-- A doubly periodic graph in the plane (ruling M-014). -/
+/-- A doubly periodic graph in the plane. -/
 structure DoublyPeriodic where
   /-- The vertex set drawn in the plane: `V ⊂ ℝ²`. -/
   emb : V → Plane
@@ -97,7 +97,7 @@ def shiftConfig (z : ℤ × ℤ) (ρ : Config G) : Config G := fun v =>
     have := (P.adj_shift z _ _).2 (ρ (P.shift (-z) v)).2
     rwa [P.shift_neg_shift] at this⟩
 
-/-- The law `μ` is invariant under the lattice (ruling M-015). -/
+/-- The law `μ` is invariant under the lattice. -/
 def Invariant (μ : Measure (Config G)) : Prop :=
   ∀ z : ℤ × ℤ, MeasurePreserving (P.shiftConfig z) μ μ
 
@@ -106,7 +106,7 @@ def Invariant (μ : Measure (Config G)) : Prop :=
 def InvariantMarginals (ν : ∀ v : V, Measure (G.neighborSet v)) : Prop :=
   ∀ (z : ℤ × ℤ) (v : V), Measure.map (P.shiftNbr z) (ν v) = ν (P.shift z v)
 
-/-- The law `μ` is ergodic under the lattice (ruling M-015). -/
+/-- The law `μ` is ergodic under the lattice. -/
 def Ergodic (μ : Measure (Config G)) : Prop :=
   ∀ s : Set (Config G), MeasurableSet s → (∀ z, P.shiftConfig z ⁻¹' s = s) → μ s = 0 ∨ μ s = 1
 
@@ -121,7 +121,7 @@ def blockPlus (L : ℕ) (z : ℤ × ℤ) : Set V :=
 
 end DoublyPeriodic
 
-/-- Total variation distance between two laws on a finite type (ruling M-016). -/
+/-- Total variation distance between two laws on a finite type. -/
 noncomputable def tvDist {α : Type*} [MeasurableSpace α] (μ ν : Measure α) : ℝ :=
   ⨆ s : Set α, |(μ s).toReal - (ν s).toReal|
 

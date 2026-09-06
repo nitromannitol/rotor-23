@@ -9,9 +9,9 @@ Lemma 5.3 of rotor.tex, frozen.  `rotor.tex:1677-1692` (label `lem:square-constr
    direction, as a consecutive subpath$\}\leq Ce^{-cr}$."
 
 The constants route through `External.SubcriticalDecay` (the subcritical bound
-at `1/2 - ε`), so they are existential (ruling F-003).
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
-phase one (ruling X-001): they are not derived here and the certificate lists them.
+at `1/2 - ε`), so they are existential.
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed
+here: they are not derived in this repository and the certificate lists them.
 -/
 import Rotor.Dual
 import Rotor.External.SubcriticalDecay

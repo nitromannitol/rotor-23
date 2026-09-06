@@ -15,7 +15,7 @@ from u, and the live condition fails at no more than ηR internal vertices}`."
 `rotor.tex:1385-1393` and `rotor.tex:1461-1468`: the event that a live path
 starts with `u → v` and contains a vertex at graph distance `R` from `u`.
 
-Ruling M-017: "reaches graph distance `R`" is "contains a vertex at graph
+"reaches graph distance `R`" is "contains a vertex at graph
 distance exactly `R`"; on a path from `u` this is the same as reaching
 distance at least `R`, since consecutive vertices are at distance at most one
 apart, and the first is the paper's wording in Section 4.

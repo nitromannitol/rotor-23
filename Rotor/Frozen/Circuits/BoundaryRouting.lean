@@ -12,8 +12,8 @@ determined by an ordering `es` of the boundary edges (`IsBoundaryOrder`); it
 is finite when it finishes at some stage (`OneFinite`), and "each is complete"
 says that its list of actuated vertices at any finishing stage is a complete
 boundary routing.  The proof uses `lem:least-action`, hence `External.Abelian`.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
-phase one (ruling X-001): they are not derived here and the certificate lists them.
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed
+here: they are not derived in this repository and the certificate lists them.
 `[Infinite V]` and `hG` are the standing assumptions of Section 2 (`rotor.tex:678-680`:
 "Throughout this section, `G` is infinite, connected, and locally finite, the rotor
 mechanism and initial rotor configuration are fixed and arbitrary").

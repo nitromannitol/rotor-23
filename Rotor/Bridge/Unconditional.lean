@@ -5,11 +5,11 @@ import Rotor.Frozen.Main.Square
 import Rotor.Frozen.Main.PerturbSquare
 
 /-!
-Phase two: the paper's statements with `External.SubcriticalDecay` discharged by
-`Rotor.Bridge.subcriticalDecay_holds`.  The frozen statements themselves are untouched (ruling
-X-001 and the frozen-statement contract); these are corollaries of them.  Lemma 5.3 and
-Proposition 5.1 become unconditional; Theorem 1.1 and Proposition 1.2 keep the five inputs the
-percolation library does not provide (FLP, HLMPPW, Holroyd-Propp, Kingman, LSS).
+The paper's statements with `External.SubcriticalDecay` discharged by
+`Rotor.Bridge.subcriticalDecay_holds`.  The frozen statements themselves keep that hypothesis;
+these are corollaries of them.  Lemma 5.3 and Proposition 5.1 become unconditional; Theorem 1.1
+and Proposition 1.2 keep the five inputs the percolation library does not provide
+(Florescu-Levine-Peres, the abelian property, Holroyd-Propp, Kingman, Liggett-Schonmann-Stacey).
 -/
 
 open Rotor MeasureTheory Filter Topology

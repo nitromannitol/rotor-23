@@ -1,7 +1,7 @@
 /-
 External input: Angel--Holroyd, *Recurrent rotor-router configurations*
 (2012), Theorem 1, as the paper uses it (`rotor.tex:968-969`): "recurrence
-does not depend on the starting vertex".  Ruling X-001, with the standing
+does not depend on the starting vertex".  With the standing
 assumptions of Section 2.
 -/
 import Rotor.Model

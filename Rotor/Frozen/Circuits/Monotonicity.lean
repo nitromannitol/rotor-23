@@ -6,8 +6,8 @@ Proposition 2.5 of rotor.tex, frozen.  `rotor.tex:801-807` (label `prop:monotoni
 
 The paper's $T$ is `U` here, $T$ being the circuit time.  The paper derives
 this from `lem:boundary-routing` and `lem:least-action`.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
-phase one (ruling X-001): they are not derived here and the certificate lists them.
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed
+here: they are not derived in this repository and the certificate lists them.
 `[Infinite V]` and `hG` are the standing assumptions of Section 2 (`rotor.tex:678-680`:
 "Throughout this section, `G` is infinite, connected, and locally finite, the rotor
 mechanism and initial rotor configuration are fixed and arbitrary").

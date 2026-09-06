@@ -10,8 +10,8 @@ Three assertions, three conjuncts.  The proof uses König's lemma (Mathlib),
 and Holroyd--Propp Lemma 6 (`External.VisitsAllOfVisitsOne`).  The paper also
 cites Angel--Holroyd Theorem 1 (recurrence does not depend on the starting
 vertex); the statement as frozen is for the fixed start `o` and does not need it.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
-phase one (ruling X-001): they are not derived here and the certificate lists them.
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed
+here: they are not derived in this repository and the certificate lists them.
 `[Infinite V]` and `hG` are the standing assumptions of Section 2 (`rotor.tex:678-680`:
 "Throughout this section, `G` is infinite, connected, and locally finite, the rotor
 mechanism and initial rotor configuration are fixed and arbitrary").

@@ -5,10 +5,9 @@
 # marker, never touch the statement.  `frozen_sha256` is the SHA-256 of exactly
 # those bytes.
 #
-# States: DRAFT_SORRY (statement frozen, proof is a registered `sorry`),
-#         SEALED (a proof exists and its axiom closure is clean),
-#         PROVED (an independent instance has audited it as well).
-# A statement being frozen is not a proof claim.
+# States: FROZEN (a statement with no proof obligation here, such as a cited
+#           result taken as a hypothesis),
+#         SEALED (a proof exists and its axiom closure is clean).
 
 version: 1
 source_pin:

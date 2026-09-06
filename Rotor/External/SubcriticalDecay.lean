@@ -7,7 +7,7 @@ the paper states them (`rotor.tex:1658-1668`, `eq:square-subcritical-tail`):
   "for each `p < 1/2`, uniformly in `x` and `r ≥ 1`,
    `ℙ_p{x is joined to {y : |y-x|_∞ = r} inside {y : |y-x|_∞ ≤ r}} ≤ Ce^{-cr}`."
 
-Ruling X-001.
+Assumed here.
 -/
 import Rotor.Percolation
 

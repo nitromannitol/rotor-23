@@ -21,23 +21,23 @@ Section 1.1 (`ssec:main-results`), `rotor.tex:179-225`:
    When `T(n) < ∞`, let `A_n := R_{T(n)}`, the range after `n` circuits, and
    let `A_0 := {o}`."
 
-Rulings (the modelling rulings):
+How the paper's objects are modelled here:
 
-  M-006  A graph is a Mathlib `SimpleGraph V` (loopless, no multiple edges,
-         undirected), locally finite through `[G.LocallyFinite]`.  A directed
-         edge out of `v` is an element of `G.neighborSet v`; the directed edge
-         `x → y` of the paper is the pair `(x, y)` with `G.Adj x y`.
-  M-007  A rotor mechanism is a family of permutations `next v` of
-         `G.neighborSet v`, one per vertex, each cyclic: the powers of `next v`
-         carry every neighbor to every other.  It also records that every
-         vertex has a neighbor, which the paper's rotor configuration
-         presupposes; on an infinite connected graph this is automatic.
-  M-008  `T n : ℕ∞`, `⊤` when the defining set is empty; `A n` is defined
-         through `(T n).toNat` and is the junk value `{o}` when `T n = ⊤`
-         (ruling M-003, confirmed).
-  M-009  Graph distance is Mathlib's `G.dist`, which is `0` between
-         unreachable vertices; every statement that uses it assumes `G` is
-         connected, so the junk value never arises.
+- A graph is a Mathlib `SimpleGraph V` (loopless, no multiple edges,
+  undirected), locally finite through `[G.LocallyFinite]`.  A directed
+  edge out of `v` is an element of `G.neighborSet v`; the directed edge
+  `x → y` of the paper is the pair `(x, y)` with `G.Adj x y`.
+- A rotor mechanism is a family of permutations `next v` of
+  `G.neighborSet v`, one per vertex, each cyclic: the powers of `next v`
+  carry every neighbor to every other.  It also records that every
+  vertex has a neighbor, which the paper's rotor configuration
+  presupposes; on an infinite connected graph this is automatic.
+- `T n : ℕ∞`, `⊤` when the defining set is empty; `A n` is defined
+  through `(T n).toNat` and is the junk value `{o}` when `T n = ⊤`
+ .
+- Graph distance is Mathlib's `G.dist`, which is `0` between
+  unreachable vertices; every statement that uses it assumes `G` is
+  connected, so the junk value never arises.
 -/
 import Mathlib
 
@@ -48,7 +48,7 @@ namespace Rotor
 variable {V : Type*} [DecidableEq V] (G : SimpleGraph V) [G.LocallyFinite]
 
 /-- A rotor mechanism on `G`: at each vertex `v`, a cyclic permutation `next v`
-of the neighbors of `v` (ruling M-007).  `cyclic` says the powers of `next v`
+of the neighbors of `v`.  `cyclic` says the powers of `next v`
 act transitively, which for a finite set is exactly "a single cycle". -/
 structure Mechanism where
   /-- `π_v`: the next directed edge out of `v` after a given one. -/
@@ -96,12 +96,12 @@ def visits (ρ : Config G) (o : V) (t : ℕ) : ℕ :=
   ((range t).filter (fun s => X π ρ o s = o)).card
 
 /-- `T(n)`, the completion time of the first `n` circuits, `eq:circ-time`, with
-value `⊤` when no such time exists (ruling M-008). -/
+value `⊤` when no such time exists. -/
 noncomputable def T (ρ : Config G) (o : V) (n : ℕ) : ℕ∞ :=
   ⨅ t ∈ {t : ℕ | X π ρ o t = o ∧ G.degree o * n ≤ visits π ρ o t}, (t : ℕ∞)
 
 /-- `A_n = R_{T(n)}`, the range after `n` circuits; meaningful only when
-`T n < ⊤` (ruling M-008). -/
+`T n < ⊤`. -/
 noncomputable def A (ρ : Config G) (o : V) (n : ℕ) : Finset V :=
   R π ρ o (T π ρ o n).toNat
 

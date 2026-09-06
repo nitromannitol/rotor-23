@@ -9,13 +9,13 @@ The dual configuration on the square lattice, `rotor.tex:1517-1556`
    runs from the face on the right of `e` to the face on its left, and is open
    when `r_v(w) ∈ {2, 3}`."
 
-  M-019  Faces are indexed by `Site`; the face on the right of `v → v + d`,
-         `d = (dx, dy)`, is `v + ((dx + dy - 1)/2, (dy - dx - 1)/2)` and the
-         face on the left is that face moved across the edge, `- (dy, -dx)`.
-         Every directed dual edge `f → g` between adjacent faces is the
-         rotation of exactly one directed primal edge, `primalTail f g →
-         primalTail f g + dirVec (primalDir f g)`, and it is open when the rank
-         of that primal edge is `2` or `3`.
+- Faces are indexed by `Site`; the face on the right of `v → v + d`,
+  `d = (dx, dy)`, is `v + ((dx + dy - 1)/2, (dy - dx - 1)/2)` and the
+  face on the left is that face moved across the edge, `- (dy, -dx)`.
+  Every directed dual edge `f → g` between adjacent faces is the
+  rotation of exactly one directed primal edge, `primalTail f g →
+  primalTail f g + dirVec (primalDir f g)`, and it is open when the rank
+  of that primal edge is `2` or `3`.
 -/
 import Rotor.Percolation
 
@@ -46,7 +46,7 @@ def primalDir (f g : Site) : Dir :=
   dirOf (δ.2, -δ.1)
 
 /-- The dual edge `f → g` is open: the primal edge it rotates has rank `2` or
-`3` after the initial rotor (ruling M-019). -/
+`3` after the initial rotor. -/
 def DualOpen (ρ : Config squareGraph) (f g : Site) : Prop :=
   let v := primalTail f g
   let a := primalDir f g

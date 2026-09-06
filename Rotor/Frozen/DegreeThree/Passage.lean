@@ -9,7 +9,7 @@ Proposition 4.2 of rotor.tex, frozen.  `rotor.tex:1385-1400` (label `prop:degree
    distance $R$ from $u$}\}\leq Ce^{-cR}$."
 
 The constants depend on the graph (through the growth of its balls), so they
-are existential (ruling F-003).
+are existential.
 -/
 import Rotor.Events
 import Rotor.Percolation

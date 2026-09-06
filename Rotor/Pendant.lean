@@ -7,11 +7,11 @@ vertex, `rotor.tex:291-299` and Section 6:
    west and the edge to the north, so that the clockwise order at a lattice
    vertex is `N, E, S, W, L_1, …, L_M`."
 
-  M-020  The vertices of `G_M` are `Site ⊕ (Site × Fin M)`: lattice sites and
-         the leaves `(v, i)` attached to `v`.  The leaf `(v, i)` is drawn at
-         `v + ((i+1)/(2(M+1))) • (-1, 1)`, in the open quadrant between the
-         west and north edges of `v`, which makes the drawing injective.  At a
-         leaf the mechanism is the identity on its single neighbor.
+- The vertices of `G_M` are `Site ⊕ (Site × Fin M)`: lattice sites and
+  the leaves `(v, i)` attached to `v`.  The leaf `(v, i)` is drawn at
+  `v + ((i+1)/(2(M+1))) • (-1, 1)`, in the open quadrant between the
+  west and north edges of `v`, which makes the drawing injective.  At a
+  leaf the mechanism is the identity on its single neighbor.
 -/
 import Rotor.Dual
 
@@ -123,7 +123,7 @@ def pendantMech (M : ℕ) : Mechanism (pendantGraph M) where
     | .inl v => ⟨pendantNbrLattice M v (0 : Fin (M + 4))⟩
     | .inr w => ⟨pendantNbrLeaf M w ()⟩
 
-/-- The drawing of `G_M` in the plane (ruling M-020). -/
+/-- The drawing of `G_M` in the plane. -/
 noncomputable def pendantEmb (M : ℕ) : PVertex M → Plane
   | .inl v => squareEmb v
   | .inr (v, i) => squareEmb v + (((i : ℕ) + 1 : ℝ) / (2 * ((M : ℝ) + 1))) • WithLp.toLp 2 ![(-1 : ℝ), 1]

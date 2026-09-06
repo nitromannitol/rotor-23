@@ -11,8 +11,8 @@ Lemma 5.4 of rotor.tex, frozen.  `rotor.tex:1902-1913` (label `lem:square-explor
 
 The exploration starts at the face `f` along the dual edge `f → f + d`.  In
 (i) a bond is the undirected dual edge `s(a, b)`.  In (iii) the earlier
-outcomes are a history `h`, the state given `h` is `replay f d h` (ruling
-M-021), and the three cases are three conjuncts: on the event that the first
+outcomes are a history `h`, the state given `h` is `replay f d h`, and the
+three cases are three conjuncts: on the event that the first
 `h.length` outcomes are `h`, the current edge `E` is open with probability
 `1`, `0`, or `1/2` of that event.
 -/

@@ -6,7 +6,7 @@ Maps every frozen declaration to *Eulerian walkers on `ℤ²` have range exponen
 ## Conventions
 
 - The paper is pinned at `paper/rotor.tex`; its SHA-256 is in
-  `verification/manifest.yaml`.  Source locations are `rotor.tex:<line range>` plus
+  `ledger/manifest.yaml`.  Source locations are `rotor.tex:<line range>` plus
   the LaTeX `\label` name.  Never cite an equation numeral.
 - The bytes between `-- FROZEN-STATEMENT-BEGIN` and `-- FROZEN-STATEMENT-END`
   are the contract.  `python3 tools/check_manifest.py` is the authority on the

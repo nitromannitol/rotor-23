@@ -31,7 +31,7 @@ unconditional; Theorem 1.1 and Proposition 1.2 keep the six remaining inputs.
 Status: **33 frozen nodes — 7 `FROZEN`, 26 `SEALED`.**  Every node's proof is machine-checked and its axiom closure contains
 no `sorryAx`.  Run
 `python3 tools/check_axioms.py` to confirm.  Counts here are generated
-from `verification/manifest.yaml` by `python3 tools/sync_docs.py`; do not
+from `ledger/manifest.yaml` by `python3 tools/sync_docs.py`; do not
 edit them by hand and do not trust a count in prose that the checkers
 have not confirmed.
 
@@ -57,12 +57,12 @@ and follows it.  `R_t` is the set of sites visited in the first `t` steps.
 | `CORRESPONDENCE.md` | paper ↔ Lean |
 | `paper/rotor.tex` | the paper this formalizes, pinned by hash |
 | `Rotor/Bridge/` | the percolation library linked in, and the statements it makes unconditional |
-| `verification/manifest.yaml` | one row per frozen statement: its hash, its paper label, its state |
+| `ledger/manifest.yaml` | one row per frozen statement: its hash, its paper label, its state |
 
 ## How a statement is tied to the paper
 
 Each theorem in `Rotor/Frozen/` sits between `-- FROZEN-STATEMENT-BEGIN` and
-`-- FROZEN-STATEMENT-END`.  Those bytes are the contract: `verification/manifest.yaml`
+`-- FROZEN-STATEMENT-END`.  Those bytes are the contract: `ledger/manifest.yaml`
 records their SHA-256 and the paper `\label` they transcribe.  The proof follows
 the end marker and may be rewritten freely.  Every frozen statement is read
 against the paper clause by clause before it is proved, and the reading is

@@ -13,8 +13,8 @@ origin, so `|x|` is `‖emb x - emb o‖` and `μ` is evaluated at
 `emb x - emb o`; the uniform limit is written in `ε`-`R₀` form.  That `μ`
 does not depend on `o` is the position of `∃ μ` before `∀ o`.  The paper
 writes `μ` for both the law and the function; the function is `f` here.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
-phase one (ruling X-001): they are not derived here and the certificate lists them.
+The `External.*` hypotheses are the cited results the paper's proof uses, assumed
+here: they are not derived in this repository and the certificate lists them.
 -/
 import Rotor.Events
 import Rotor.External.OneCircuit

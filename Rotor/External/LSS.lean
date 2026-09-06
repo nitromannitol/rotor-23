@@ -9,7 +9,7 @@ External input: Liggett--Schonmann--Stacey, *Domination by product measures*
 
 Domination is stated through increasing events: every increasing measurable
 event has no larger probability under the field than under the product of
-Bernoulli(1/8) laws.  Ruling X-001.
+Bernoulli(1/8) laws.
 -/
 import Mathlib
 
