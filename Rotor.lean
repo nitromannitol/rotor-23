@@ -72,3 +72,7 @@ import Rotor.Support.BlockGeom
 import Rotor.Support.ProductTools
 import Rotor.Support.TVTools
 import Rotor.Support.BlockField
+import Rotor.Support.KingPaths
+import Rotor.Support.PathBlocks
+import Rotor.Support.BlockChain
+import Rotor.Support.Witness
