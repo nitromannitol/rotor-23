@@ -1,5 +1,5 @@
 /-
-Lemma 2.2 of rotor.tex, frozen.  `rotor.tex:756-767` (label `lem:least-action`):
+Lemma 2.2 of rotor.tex, frozen.  `rotor.tex:746-757` (label `lem:least-action`):
 
   "Let $\xi_0,\ldots,\xi_n$ and $\widehat\xi_0,\ldots,\widehat\xi_m$ be legal
    routings with $\widehat\xi_0=\xi_0$.

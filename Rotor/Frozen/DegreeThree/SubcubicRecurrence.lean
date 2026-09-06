@@ -1,5 +1,5 @@
 /-
-Proposition 4.1 of rotor.tex, frozen.  `rotor.tex:1373-1379` (label `prop:subcubic-recurrence`):
+Proposition 4.1 of rotor.tex, frozen.  `rotor.tex:1363-1369` (label `prop:subcubic-recurrence`):
 
   "Let $G$ be an infinite connected graph of maximum degree three, equipped
    with an arbitrary rotor mechanism.  If the initial rotors are independent

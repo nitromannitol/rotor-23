@@ -1,5 +1,5 @@
 /-
-Proposition 2.8 of rotor.tex, frozen.  `rotor.tex:967-971` (label `prop:live-recurrence`):
+Proposition 2.8 of rotor.tex, frozen.  `rotor.tex:957-961` (label `prop:live-recurrence`):
 
   "If $G$ contains no infinite live path, then the boundary routing of every
    nonempty finite set terminates, $T(n)<\infty$ for every $n$, and the rotor

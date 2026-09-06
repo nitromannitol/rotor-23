@@ -1,5 +1,5 @@
 /-
-Lemma 2.1 of rotor.tex, frozen.  `rotor.tex:720-726` (label `lem:one-circuit`):
+Lemma 2.1 of rotor.tex, frozen.  `rotor.tex:710-716` (label `lem:one-circuit`):
 
   "For every integer $n\geq0$ such that $T(n)<\infty$, the walk traverses each
    directed edge at most once during the time interval $T(n)\leq t<T(n+1)$.

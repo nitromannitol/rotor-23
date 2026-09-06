@@ -40,37 +40,37 @@ exponential decay for percolation, is now proved rather than assumed: see
 
 | id | Lean | paper | state |
 |---|---|---|---|
-| `lem-least-action` | `Rotor.Frozen.least_action` | `rotor.tex:756-767`, `lem:least-action` | SEALED |
-| `lem-boundary-routing` | `Rotor.Frozen.boundary_routing` | `rotor.tex:776-781`, `lem:boundary-routing` | SEALED |
-| `prop-circuit-iterate` | `Rotor.Frozen.circuit_iterate` | `rotor.tex:803-811`, `prop:circuit-iterate` | SEALED |
-| `prop-monotonicity` | `Rotor.Frozen.monotonicity` | `rotor.tex:830-836`, `prop:monotonicity` | SEALED |
-| `prop-passage` | `Rotor.Frozen.passage` | `rotor.tex:862-876`, `prop:passage` | SEALED |
-| `lem-decreasing-positions` | `Rotor.Frozen.decreasing_positions` | `rotor.tex:912-925`, `lem:decreasing-positions` | SEALED |
-| `prop-live-recurrence` | `Rotor.Frozen.live_recurrence` | `rotor.tex:967-971`, `prop:live-recurrence` | SEALED |
+| `lem-least-action` | `Rotor.Frozen.least_action` | `rotor.tex:746-757`, `lem:least-action` | SEALED |
+| `lem-boundary-routing` | `Rotor.Frozen.boundary_routing` | `rotor.tex:766-771`, `lem:boundary-routing` | SEALED |
+| `prop-circuit-iterate` | `Rotor.Frozen.circuit_iterate` | `rotor.tex:793-801`, `prop:circuit-iterate` | SEALED |
+| `prop-monotonicity` | `Rotor.Frozen.monotonicity` | `rotor.tex:820-826`, `prop:monotonicity` | SEALED |
+| `prop-passage` | `Rotor.Frozen.passage` | `rotor.tex:852-866`, `prop:passage` | SEALED |
+| `lem-decreasing-positions` | `Rotor.Frozen.decreasing_positions` | `rotor.tex:902-915`, `lem:decreasing-positions` | SEALED |
+| `prop-live-recurrence` | `Rotor.Frozen.live_recurrence` | `rotor.tex:957-961`, `prop:live-recurrence` | SEALED |
 | `ext-abelian` | `Rotor.External.Abelian` | external input, HLMPPW Lemma 3.9, the statement of lem:least-action | FROZEN |
 | `ext-holroyd-propp` | `Rotor.External.VisitsAllOfVisitsOne` | external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence | FROZEN |
 | `ext-lss` | `Rotor.External.LSS` | external input, Liggett-Schonmann-Stacey Theorem 0.0(ii), used in the proof of lem:block-live-paths | FROZEN |
 | `ext-angel-holroyd` | `Rotor.External.RecurrentOfRecurrent` | external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence | FROZEN |
 | `ext-subcritical-decay` | `Rotor.External.SubcriticalDecay` | external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail | FROZEN |
-| `prop-path-reduction` | `Rotor.Frozen.path_reduction` | `rotor.tex:1033-1066`, `prop:path-reduction` | SEALED |
-| `prop-passage-limit` | `Rotor.Frozen.passage_limit` | `rotor.tex:1113-1123`, `prop:passage-limit` | SEALED |
-| `prop-circuit-shape` | `Rotor.Frozen.circuit_shape` | `rotor.tex:1144-1164`, `prop:circuit-shape` | SEALED |
-| `lem-block-live-paths` | `Rotor.Frozen.block_live_paths` | `rotor.tex:1256-1267`, `lem:block-live-paths` | SEALED |
+| `prop-path-reduction` | `Rotor.Frozen.path_reduction` | `rotor.tex:1023-1056`, `prop:path-reduction` | SEALED |
+| `prop-passage-limit` | `Rotor.Frozen.passage_limit` | `rotor.tex:1103-1113`, `prop:passage-limit` | SEALED |
+| `prop-circuit-shape` | `Rotor.Frozen.circuit_shape` | `rotor.tex:1134-1154`, `prop:circuit-shape` | SEALED |
+| `lem-block-live-paths` | `Rotor.Frozen.block_live_paths` | `rotor.tex:1246-1257`, `lem:block-live-paths` | SEALED |
 | `thm-main-square` | `Rotor.Frozen.main_square` | `rotor.tex:237-259`, `thm:main` | SEALED |
 | `thm-main-degree-three` | `Rotor.Frozen.main_degree_three` | `rotor.tex:237-259`, `thm:main` | SEALED |
 | `prop-perturbations-square` | `Rotor.Frozen.perturbations_square` | `rotor.tex:272-280`, `prop:small-perturbations` | SEALED |
 | `prop-perturbations-degree-three` | `Rotor.Frozen.perturbations_degree_three` | `rotor.tex:272-280`, `prop:small-perturbations` | SEALED |
-| `prop-subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `rotor.tex:1373-1379`, `prop:subcubic-recurrence` | SEALED |
-| `prop-degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `rotor.tex:1414-1429`, `prop:degree-three-passage` | SEALED |
-| `prop-square-passage` | `Rotor.Frozen.square_passage` | `rotor.tex:1490-1500`, `prop:square-passage` | SEALED |
-| `lem-square-dual-path` | `Rotor.Frozen.square_dual_path` | `rotor.tex:1667-1673`, `lem:square-dual-path` | SEALED |
-| `lem-square-constrained-bonds` | `Rotor.Frozen.square_constrained_bonds` | `rotor.tex:1706-1721`, `lem:square-constrained-bonds` | SEALED |
+| `prop-subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `rotor.tex:1363-1369`, `prop:subcubic-recurrence` | SEALED |
+| `prop-degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `rotor.tex:1404-1419`, `prop:degree-three-passage` | SEALED |
+| `prop-square-passage` | `Rotor.Frozen.square_passage` | `rotor.tex:1480-1490`, `prop:square-passage` | SEALED |
+| `lem-square-dual-path` | `Rotor.Frozen.square_dual_path` | `rotor.tex:1657-1663`, `lem:square-dual-path` | SEALED |
+| `lem-square-constrained-bonds` | `Rotor.Frozen.square_constrained_bonds` | `rotor.tex:1696-1711`, `lem:square-constrained-bonds` | SEALED |
 | `ext-one-circuit` | `Rotor.External.OneCircuit` | external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit | FROZEN |
-| `lem-one-circuit` | `Rotor.Frozen.one_circuit` | `rotor.tex:720-726`, `lem:one-circuit` | SEALED |
-| `prop-circuit-clock` | `Rotor.Frozen.circuit_clock` | `rotor.tex:1177-1205`, `prop:circuit-clock` | SEALED |
-| `lem-square-exploration` | `Rotor.Frozen.square_exploration` | `rotor.tex:1931-1942`, `lem:square-exploration` | SEALED |
-| `lem-square-active-list` | `Rotor.Frozen.square_active_list` | `rotor.tex:1955-1959`, `lem:square-active-list` | SEALED |
-| `lem-square-forced-tests` | `Rotor.Frozen.square_forced_tests` | `rotor.tex:2087-2094`, `lem:square-forced-tests` | SEALED |
+| `lem-one-circuit` | `Rotor.Frozen.one_circuit` | `rotor.tex:710-716`, `lem:one-circuit` | SEALED |
+| `prop-circuit-clock` | `Rotor.Frozen.circuit_clock` | `rotor.tex:1167-1195`, `prop:circuit-clock` | SEALED |
+| `lem-square-exploration` | `Rotor.Frozen.square_exploration` | `rotor.tex:1921-1932`, `lem:square-exploration` | SEALED |
+| `lem-square-active-list` | `Rotor.Frozen.square_active_list` | `rotor.tex:1945-1949`, `lem:square-active-list` | SEALED |
+| `lem-square-forced-tests` | `Rotor.Frozen.square_forced_tests` | `rotor.tex:2077-2084`, `lem:square-forced-tests` | SEALED |
 | `prop-pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `rotor.tex:309-314`, `prop:pendant-counterexample` | SEALED |
 | `ext-kingman` | `Rotor.External.Kingman` | external input, Kingman 1968 Theorem 3 (general form, measurable invariant limit), used in the proof of prop:passage-limit | FROZEN |
 

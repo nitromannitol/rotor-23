@@ -1,5 +1,5 @@
 /-
-Lemma 2.3 of rotor.tex, frozen.  `rotor.tex:776-781` (label `lem:boundary-routing`):
+Lemma 2.3 of rotor.tex, frozen.  `rotor.tex:766-771` (label `lem:boundary-routing`):
 
   "No legal boundary routing traverses a directed edge more than once, counting
    the initial edges from $S$.  Every one-particle-at-a-time boundary routing is

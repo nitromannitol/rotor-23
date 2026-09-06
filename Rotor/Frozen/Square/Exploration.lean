@@ -1,5 +1,5 @@
 /-
-Lemma 5.4 of rotor.tex, frozen.  `rotor.tex:1931-1942` (label `lem:square-exploration`):
+Lemma 5.4 of rotor.tex, frozen.  `rotor.tex:1921-1932` (label `lem:square-exploration`):
 
   "(i) No bond is tested twice.
    (ii) If the exploration terminates, then every face reachable from $f$ by
