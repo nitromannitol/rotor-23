@@ -47,7 +47,7 @@ theorem exists_dist_eq_of_infPath [G.LocallyFinite] (hG : G.Connected) (x : ℕ 
   -- unbounded distances: otherwise the injective `x` lands in a finite ball
   have hunb : ∃ k, R ≤ G.dist (x 0) (x k) := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     have hsub : Set.range x ⊆ ball G {x 0} R := by
       rintro _ ⟨k, rfl⟩
       exact ⟨x 0, by simp, (hcon k).le⟩
@@ -115,7 +115,7 @@ theorem measure_infLiveFrom_eq_zero [G.LocallyFinite] (hG : G.Connected)
     refine ⟨1, fun R hR => ?_⟩
     exact (measure_mono (infLiveFrom_subset π hG η hη.le _ _ R hR)).trans
       (le_iSup (fun e' : G.Dart => μ (almostLiveEvent π η e'.fst e'.snd R)) e)
-  exact le_antisymm (ge_of_tendsto hcrit hle) (zero_le _)
+  exact le_antisymm (ge_of_tendsto hcrit hle) zero_le
 
 theorem ae_no_infLivePath [G.LocallyFinite] (hG : G.Connected) (μ : Measure (Config G))
     (η : ℝ) (hη : 0 < η) (hcrit : Criterion π μ η) : ∀ᵐ ρ ∂μ, ¬ HasInfLivePath π ρ := by

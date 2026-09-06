@@ -41,7 +41,7 @@ theorem destutter'_lazy : ∀ (l : List (ℤ × ℤ)) (a : ℤ × ℤ), (a :: l)
         · rw [hd] at hl
           rw [List.getLast?_cons_cons, List.getLast?_cons_cons]
           exact hl
-    · push_neg at h
+    · push Not at h
       subst h
       rw [List.destutter'_cons_neg _ (by simp)]
       have hrest' : (a :: l).IsChain LazyKingStep := hrest

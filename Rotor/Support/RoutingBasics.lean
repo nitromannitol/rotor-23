@@ -79,6 +79,6 @@ theorem next_head_ne (ξ : RState G) (v : V) : (π.next v (ξ.ρ v)).1 ≠ v := 
   intro h
   have := (π.next v (ξ.ρ v)).2
   rw [h] at this
-  exact G.loopless v this
+  exact G.irrefl this
 
 end Rotor

@@ -277,7 +277,8 @@ theorem LatticeSubadditive.planeExt_continuous : Continuous (planeExt m ξ) := b
   have hK := h.K_nonneg
   refine LipschitzWith.continuous (K := ⟨K * ‖ξ‖, by positivity⟩)
     (LipschitzWith.of_dist_le_mul (fun x y => ?_))
-  rw [Real.dist_eq, dist_eq_norm, NNReal.coe_mk]
+  rw [Real.dist_eq, dist_eq_norm]
+  show |planeExt m ξ x - planeExt m ξ y| ≤ K * ‖ξ‖ * ‖x - y‖
   exact h.planeExt_lip ξ x y
 
 /-- The extension theorem. -/

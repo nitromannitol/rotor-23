@@ -105,7 +105,7 @@ theorem exists_far_of_not_inFiniteComponent {V : Finset Site} {y : Site} (hy : y
   rw [inFiniteComponent_iff, not_and] at h
   have hinf := h hy
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   apply hinf
   refine (Set.finite_Icc ((-M, -M) : Site) (M, M)).subset ?_
   intro z hz

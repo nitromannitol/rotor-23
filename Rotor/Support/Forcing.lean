@@ -23,7 +23,7 @@ section Forcing
 variable (ω : BondConfig) {q p : List Site}
 
 theorem forced_forward (hq : ForcedPath ω q) (hp : IsOpenPath ω p) (he : EndsOff q p)
-    {i j : ℕ} (hi : i + 1 < p.length) (hj : j + 1 < q.length)
+    {i j : ℕ} (hi : i + 1 < p.length) (_hj : j + 1 < q.length)
     (h0 : p[i]? = q[j]?) (h1 : p[i + 1]? = q[j + 1]?) :
     ∀ m, j + m + 1 < q.length → i + m + 1 < p.length ∧ p[i + m]? = q[j + m]? ∧
       p[i + m + 1]? = q[j + m + 1]? := by
@@ -51,7 +51,7 @@ theorem forced_forward (hq : ForcedPath ω q) (hp : IsOpenPath ω p) (he : EndsO
     · exfalso
       rw [show j + m + 1 - 1 = j + m by omega] at h
       have : i + m = i + m + 1 + 1 :=
-        List.getElem?_inj (by omega) hp.1.1 (e0.trans (h.trans hw.symm))
+        (List.getElem?_inj (by omega) hp.1.1).1 (e0.trans (h.trans hw.symm))
       omega
     · exact ⟨hlt, e1, hw.trans h.symm⟩
 
@@ -87,7 +87,7 @@ theorem forced_backward (hq : ForcedPath ω q) (hp : IsOpenPath ω p) (he : Ends
         exact e0
     · exfalso
       have : i - m - 1 = i - m + 1 :=
-        List.getElem?_inj (by omega) hp.1.1 (hw.trans (h.symm.trans e1.symm))
+        (List.getElem?_inj (by omega) hp.1.1).1 (hw.trans (h.symm.trans e1.symm))
       omega
 
 theorem segment_of_forced (hq : ForcedPath ω q) (hp : IsOpenPath ω p) (he : EndsOff q p)

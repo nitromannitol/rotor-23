@@ -64,7 +64,7 @@ theorem dist_getElem_le (hG : G.Connected) : ∀ (l : List V), l.IsChain G.Adj �
       calc G.dist a ((b :: rest)[k]'hk) ≤ G.dist a b + G.dist b ((b :: rest)[k]'hk) :=
           hG.dist_triangle
         _ ≤ 1 + k := by
-            rw [SimpleGraph.dist_eq_one_iff_adj.2 hch.rel_head]
+            rw [SimpleGraph.dist_eq_one_iff_adj.2 hch.rel]
             omega
         _ = k + 1 := by ring
 

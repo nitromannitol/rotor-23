@@ -35,7 +35,7 @@ theorem nbrIdx_nbrLattice (v : Site) (k : Fin (M + 4)) :
 
 theorem pendantMech_next_inl (v : Site) (k : Fin (M + 4)) :
     (pendantMech M).next (.inl v) (pendantNbrLattice M v k) = pendantNbrLattice M v (k + 1) := by
-  simpa using pendantTurn_pow M v 1 k
+  simpa [pendantMech] using pendantTurn_pow M v 1 k
 
 theorem pendantNbrLattice_val_lattice (v : Site) (k : Fin (M + 4)) (h : (k : ℕ) < 4) :
     (pendantNbrLattice M v k).1 = .inl (v + dirVec ⟨k, h⟩) := by
@@ -251,7 +251,7 @@ theorem leaf_phase_at (t : ℕ) (v : Site) (hpos : Xpend M ρ o t = .inl v) :
     have : j = 0 := by omega
     subst this
     exact Or.inl (by simpa using hpos)
-  · push_neg at hk
+  · push Not at hk
     have hn : (k : ℕ) + (M + 3 - k) = M + 3 := by
       have := k.isLt; omega
     have hlv : leafVisits M k = M + 3 - k := by simp [leafVisits]; omega
@@ -286,8 +286,11 @@ theorem sim : ∀ s : ℕ,
     ∃ k : Fin (M + 4), ρpend M ρ o (latTime M ρ o s) (.inl (Ysq M ρ o s)) = pendantNbrLattice M (Ysq M ρ o s) k ∧
       ((k : ℕ) ≤ 2 ∨ (k : ℕ) = M + 3)
   | 0 => by
-    have := (leaf_phase_at M ρ o 0 o rfl).1
-    simpa [latTime] using this
+    obtain ⟨h1, h2, k, hk, hk2⟩ := (leaf_phase_at M ρ o 0 o rfl).1
+    have e : 0 + 2 * leafVisits M (nbrIdx M (ρpend M ρ o 0 (Sum.inl o))) = latTime M ρ o 0 := by
+      simp [latTime]
+    rw [e] at h1 h2 hk
+    exact ⟨h1, h2, k, hk, hk2⟩
   | s + 1 => by
     obtain ⟨hpos, hind, k, hk, hk2⟩ := sim s
     obtain ⟨hlt, hstep⟩ := step_lattice M (ρpend M ρ o (latTime M ρ o s)) (Ysq M ρ o s) k hk hk2
@@ -391,7 +394,7 @@ theorem exists_between (t : ℕ) (ht : latTime M ρ o 0 < t) :
   · rw [h0]; exact ht
   · obtain ⟨s', hs'⟩ := Nat.exists_eq_succ_of_ne_zero hpos.ne'
     have := Nat.find_min hex (show s' < Nat.find hex by omega)
-    rw [hs']; push_neg at this; exact this
+    rw [hs']; push Not at this; exact this
 
 /-- If the induced walk never returns to `o`, the walk on `G_M` visits `o` only during the
 initial leaf phase, hence finitely often. -/

@@ -58,7 +58,7 @@ theorem exists_nodup_chain {α : Type*} (R : α → α → Prop) :
       · exact List.nodup_cons.2 ⟨fun hmem => hx (hsub.subset hmem), hnd⟩
       · rw [List.getLast?_cons_cons, hlast]
         rfl
-      · exact hsub.cons₂ x
+      · exact hsub.cons_cons x
 
 /-! ### King steps and non-backtracking king sequences -/
 
@@ -71,7 +71,7 @@ theorem KingStep.symm {a b : ℤ × ℤ} (h : KingStep a b) : KingStep b a :=
   ⟨h.1.symm, by rw [linf_sub_comm]; exact h.2⟩
 
 /-- The eight king neighbors of a point. -/
-def kingNbrs (a : ℤ × ℤ) : Finset (ℤ × ℤ) :=
+noncomputable def kingNbrs (a : ℤ × ℤ) : Finset (ℤ × ℤ) :=
   ((Finset.Icc (-1 : ℤ) 1) ×ˢ (Finset.Icc (-1 : ℤ) 1)).image (fun d => a + d) \ {a}
 
 theorem mem_kingNbrs {a b : ℤ × ℤ} : b ∈ kingNbrs a ↔ KingStep a b := by
@@ -97,7 +97,7 @@ theorem card_kingNbrs (a : ℤ × ℤ) : (kingNbrs a).card = 8 := by
 /-- The non-backtracking king sequences of `m` steps from `a`, stored most recent first: lists
 of length `m + 1` ending in `a`, consecutive king steps, never returning to the point before
 the last. -/
-def kingSeqs (a : ℤ × ℤ) : ℕ → Finset (List (ℤ × ℤ))
+noncomputable def kingSeqs (a : ℤ × ℤ) : ℕ → Finset (List (ℤ × ℤ))
   | 0 => {[a]}
   | m + 1 => (kingSeqs a m).biUnion (fun p =>
       ((kingNbrs (p.headD a)).filter (fun b => ∀ c ∈ p.tail.head?, b ≠ c)).image

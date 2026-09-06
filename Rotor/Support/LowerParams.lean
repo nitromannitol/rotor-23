@@ -127,7 +127,8 @@ theorem fpr_inl {ι₁ ι₂ : Type*} [Fintype ι₁] [Fintype ι₂] [Decidable
     intro f g
     unfold fpw
     rw [Fintype.prod_sum_type]
-    simp [Equiv.sumArrowEquivProdArrow]
+    simp only [Equiv.sumArrowEquivProdArrow, Equiv.coe_fn_symm_mk, Sum.elim_inl, Sum.elim_inr]
+    rfl
   simp only [hw]
   refine Finset.sum_congr rfl (fun f _ => ?_)
   have hmem : ∀ g : ι₂ → Bool,

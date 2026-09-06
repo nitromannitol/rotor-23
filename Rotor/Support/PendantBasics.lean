@@ -25,7 +25,7 @@ theorem pendantGraph_reachable (x y : PVertex M) : (pendantGraph M).Reachable x 
   have key : ∀ x : PVertex M, ∃ v : Site, (pendantGraph M).Reachable x (.inl v) := by
     rintro (v | ⟨v, i⟩)
     · exact ⟨v, SimpleGraph.Reachable.refl _⟩
-    · exact ⟨v, ((pendantGraph M).symm (pendantGraph_adj_inl_inr M v i)).reachable⟩
+    · exact ⟨v, (pendantGraph_adj_inl_inr M v i).symm.reachable⟩
   obtain ⟨u, hu⟩ := key x
   obtain ⟨v, hv⟩ := key y
   refine hu.trans (SimpleGraph.Reachable.trans ?_ hv.symm)
@@ -80,11 +80,13 @@ noncomputable def pendantPeriodic : DoublyPeriodic (pendantGraph M) where
   shift_add := pendantShift_add M
   b := fun i => WithLp.toLp 2 (Pi.single i 1)
   b_indep := by
-    have := (EuclideanSpace.basisFun (Fin 2) ℝ).toBasis.linearIndependent
-    convert this using 1
-    funext i
-    rw [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply]
-    rfl
+    have hb : (fun i => WithLp.toLp 2 (Pi.single i 1) : Fin 2 → EuclideanSpace ℝ (Fin 2)) =
+        ⇑(EuclideanSpace.basisFun (Fin 2) ℝ).toBasis := by
+      funext i
+      rw [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply]
+      rfl
+    rw [hb]
+    exact (EuclideanSpace.basisFun (Fin 2) ℝ).toBasis.linearIndependent
   emb_shift z x := by
     rcases x with v | ⟨v, i⟩
     · ext k

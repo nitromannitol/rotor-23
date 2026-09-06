@@ -115,7 +115,7 @@ theorem faces_getLast (v : Site) (c : Dir) : ∀ n : ℕ,
     rw [List.getLast_cons (faces_ne_nil v (c - 1) n), faces_getLast]
     congr 1
     apply Fin.ext
-    simp only [Fin.coe_sub, Fin.val_natCast, Fin.val_one]
+    simp only [Fin.val_sub, Fin.val_natCast, Fin.val_one]
     omega
 
 theorem faces_getLast? (v : Site) (c : Dir) (n : ℕ) :
@@ -142,7 +142,7 @@ theorem faces_chain (ρ : Config squareGraph) (v : Site) : ∀ (c : Dir) (n : �
     · have := h (j + 1) (by omega)
       have e : c - ((j + 1 : ℕ) : Dir) = c - 1 - (j : Dir) := by
         apply Fin.ext
-        simp only [Fin.coe_sub, Fin.val_natCast, Fin.val_one]
+        simp only [Fin.val_sub, Fin.val_natCast, Fin.val_one]
         omega
       rwa [e] at this
 
@@ -168,7 +168,7 @@ theorem segAt_getLast (ρ : Config squareGraph) (v : Site) {a_p a_w : Dir}
   have hp4 := rank_le_four ρ v a_p
   rw [Fin.val_natCast] at h1 h2
   apply Fin.ext
-  simp only [Fin.coe_sub, Fin.val_natCast, Fin.val_one] at h1 h2 ⊢
+  simp only [Fin.val_sub, Fin.val_natCast, Fin.val_one] at h1 h2 ⊢
   omega
 
 theorem segAt_chain (ρ : Config squareGraph) (v : Site) {a_p a_w : Dir}
@@ -183,7 +183,7 @@ theorem segAt_chain (ρ : Config squareGraph) (v : Site) {a_p a_w : Dir}
   set r_w := rank clockwise ρ v (nbr v a_w) with hr_w
   have hdir : a_p - 1 - (j : Dir) = (nbr v).symm (ρ v) + ((r_p - 1 - j : ℕ) : Dir) := by
     apply Fin.ext
-    simp only [Fin.coe_sub, Fin.val_add, Fin.val_natCast, Fin.val_one] at h1 ⊢
+    simp only [Fin.val_sub, Fin.val_add, Fin.val_natCast, Fin.val_one] at h1 ⊢
     omega
   rw [hdir, rank_add ρ v (r_p - 1 - j) (by omega) (by omega)]
   omega
@@ -208,6 +208,7 @@ theorem liveFwd_of_isLive {ρ : Config squareGraph} {l : List Site}
   refine liveFwd_of_forall ρ l (fun i hi => ?_)
   have := liveAt_of_isLive clockwise hl (j := i + 1) (by omega) (by omega)
   convert this using 2
+  all_goals omega
 
 /-- The rank of the edge from `v` to an adjacent vertex, as a direction. -/
 theorem rank'_eq (ρ : Config squareGraph) {v w : Site} (h : squareGraph.Adj v w) :
@@ -267,7 +268,7 @@ theorem dualWalk_head (ρ : Config squareGraph) : ∀ (p v : Site) (rest : List 
     obtain ⟨hl, hlive'⟩ := hlive
     obtain ⟨hw, hp, hlt⟩ := hl
     rw [rank'_eq ρ hw, rank'_eq ρ hp] at hlt
-    have hpv : squareGraph.Adj p v := hch.rel_head
+    have hpv : squareGraph.Adj p v := hch.rel
     rw [dualWalk, rightFace_rev hpv]
     have hhead := segAt_head ρ v (dirOf (p - v)) (dirOf (w - v))
     have hlast := segAt_getLast ρ v hlt

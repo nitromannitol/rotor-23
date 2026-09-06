@@ -81,7 +81,7 @@ theorem exists_acted_notMem [G.LocallyFinite] (S : Finset V) (ρ : Config G)
   set m := 2 * (D + 1) + es.length with hm
   refine ⟨m, ?_⟩
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   have hlen := oneRouting_length π S ρ es hes m (fun k _ => hnd k)
   have hleg := (oneInv_all π S ρ es hes m).legal
   -- the actuations are all inside `W`, hence at most `D` of them
@@ -236,8 +236,10 @@ theorem hasInfLivePath_of_prefixes (ρ : Config G) (S : Finset V) (x : ℕ → V
     by_contra hne
     have hnd := (hP (max i j + 1) (by omega)).1.1
     rw [List.nodup_iff_injective_get] at hnd
-    have hi : i < ((List.range (max i j + 1)).map x).length := by simp; omega
-    have hj : j < ((List.range (max i j + 1)).map x).length := by simp; omega
+    have hi : i < ((List.range (max i j + 1)).map x).length := by
+      simp only [List.length_map, List.length_range]; omega
+    have hj : j < ((List.range (max i j + 1)).map x).length := by
+      simp only [List.length_map, List.length_range]; omega
     have := @hnd ⟨i, hi⟩ ⟨j, hj⟩ (by simp [hij])
     simp only [Fin.mk.injEq] at this
     exact hne this

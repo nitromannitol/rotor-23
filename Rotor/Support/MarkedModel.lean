@@ -140,9 +140,9 @@ theorem traverses_append_of_disjoint {l₁ l₂ l₃ w : List Site} (h : Travers
     exfalso
     obtain ⟨m, hm1, hm2, hm3, hm4⟩ : ∃ m, i ≤ m ∧ m < i + w.length ∧ l₁.length ≤ m ∧
         m < l₁.length + l₂.length := by
-      rcases le_or_lt i l₁.length with hil | hil
-      · exact ⟨l₁.length, hil, by omega, le_rfl, by omega⟩
+      rcases Nat.lt_or_ge l₁.length i with hil | hil
       · exact ⟨i, le_rfl, by omega, hil.le, by omega⟩
+      · exact ⟨l₁.length, hil, by omega, le_rfl, by omega⟩
     have hv := hwin (m - i) (by omega)
     rw [show i + (m - i) = m by omega,
       List.getElem?_append_left (by rw [List.length_append]; omega),
@@ -180,7 +180,7 @@ theorem exists_used_of_update {ω : BondConfig} {e : Sym2 Site} {l : List Site}
     (hno : ¬ IsOpenPath (Function.update ω e false) l) :
     ∃ i, ∃ hi : i + 1 < l.length, s(l[i], l[i + 1]) = e := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   apply hno
   refine isOpenPath_of_agree h (fun i hi => ?_)
   rw [Function.update_of_ne (hcon i hi), Function.update_of_ne (hcon i hi)]
@@ -231,8 +231,8 @@ theorem surgeryConfig_true_iff {ω : BondConfig} {q : List Site} {e b : Sym2 Sit
   unfold surgeryConfig
   split_ifs with h1 h2
   · simp [h1]
-  · simp only [Bool.false_eq_true, false_iff]; tauto
-  · push_neg at h2; simp [h1, h2]
+  · simp only [false_iff]; tauto
+  · push Not at h2; simp [h1, h2]
 
 theorem qbond_mem {q : List Site} {b : Sym2 Site} (h : QBond q b) {v : Site} (hv : v ∈ b) :
     v ∈ q := by
@@ -253,10 +253,10 @@ theorem forcedPath_surgery (ω : BondConfig) {q : List Site} (hq : q.Nodup) (e :
   rw [surgeryConfig_true_iff] at hop
   rcases hop with ⟨j, u', v', hj, hj', hb⟩ | ⟨hnt, -, -⟩
   · rcases Sym2.eq_iff.1 hb with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
-    · have : i = j := List.getElem?_inj (by omega) hq (hu.trans hj.symm)
+    · have : i = j := (List.getElem?_inj (by omega) hq).1 (hu.trans hj.symm)
       subst this
       exact Or.inr hj'
-    · have : i = j + 1 := List.getElem?_inj (by omega) hq (hu.trans hj'.symm)
+    · have : i = j + 1 := (List.getElem?_inj (by omega) hq).1 (hu.trans hj'.symm)
       subst this
       exact Or.inl (by simpa using hj)
   · exact absurd ⟨i, hi, hi', u, hu, Sym2.mem_mk_left _ _⟩ hnt

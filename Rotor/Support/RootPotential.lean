@@ -41,7 +41,7 @@ theorem minF_structure (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {j
     · rfl
   subst ho
   have hpos₁ : Pm f d h₁ ≠ 0 := fun h0 => hpos (le_antisymm
-    ((Pm_append_le f d h₁ true).trans (le_of_eq h0)) (zero_le _))
+    ((Pm_append_le f d h₁ true).trans (le_of_eq h0)) (zero_le))
   obtain ⟨-, -, -, hL55⟩ := state_facts hd hpos₁
   have hrest : rest = [] := (hL55 g rest hact).1 (Or.inl hforced)
   subst hrest
@@ -398,9 +398,9 @@ theorem Tpot_succ_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {c C
       exact ⟨hS'root h' hh'.1, hh'.2 ▸ rootPrefix_prefix f d j h'⟩
     by_cases hpos : Pm f d h₀ = 0
     · have : ∀ h' ∈ S'.filter (fun h' => rootPrefix f d j h' = h₀), Pm f d h' = 0 := fun h' hh' =>
-        le_antisymm (le_trans (Pm_le_of_prefix f d (hF h' hh').2) (le_of_eq hpos)) (zero_le _)
+        le_antisymm (le_trans (Pm_le_of_prefix f d (hF h' hh').2) (le_of_eq hpos)) (zero_le)
       rw [Finset.sum_eq_zero (fun h' hh' => by rw [this h' hh', zero_mul])]
-      exact zero_le _
+      exact zero_le
     have hs0 := intervalStart_of_root f hd hr0 hpos
     have hroot : rootOf f d h₀ ∈ (replay f d h₀).visited := hs0.1
     calc ∑ h' ∈ S'.filter (fun h' => rootPrefix f d j h' = h₀), Pm f d h' * a ^ reachN f d h'
@@ -410,7 +410,7 @@ theorem Tpot_succ_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {c C
           have hne : h' ≠ [] := by
             intro h; have := (hF h' hh').1.1; rw [h] at this; simp [replay, explInit] at this
           exact mul_le_mul_of_nonneg_left
-            (pow_le_pow_right₀ ha (reachN_succ_le f hdu hroot (hF h' hh').2 hne)) (zero_le _)
+            (pow_le_pow_right₀ ha (reachN_succ_le f hdu hroot (hF h' hh').2 hne)) (zero_le)
       _ = a ^ (reachN f d h₀ + 1) * ∑ h' ∈ S'.filter (fun h' => rootPrefix f d j h' = h₀),
           Pm f d h' * a ^ intD f d h₀ h' := by
           rw [Finset.mul_sum]
@@ -508,7 +508,7 @@ theorem exists_root_of_stage (f d : Site) (ρ : Config squareGraph) (n : ℕ) : 
     obtain ⟨h₀, hm, hρ0⟩ := minF_exists f d (by omega) hK
     have hlen : h₀.length ≤ n := by
       by_contra hlt
-      push_neg at hlt
+      push Not at hlt
       have hne : (explore ρ f d n).active ≠ [] := by
         intro hs
         have := explore_stuck ρ f d hlt.le hs
@@ -598,9 +598,9 @@ theorem reachEvent_measure_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f +
   -- the null part
   have hnull : uniformLaw clockwise (⋃ j ∈ Finset.range n₀,
       ⋃ h₀ : {h₀ // IsRoot f d j h₀ ∧ Pm f d h₀ = 0}, {ρ | history ρ f d h₀.1.length = h₀.1}) = 0 := by
-    refine le_antisymm ((measure_biUnion_finset_le _ _).trans ?_) (zero_le _)
+    refine le_antisymm ((measure_biUnion_finset_le _ _).trans ?_) (zero_le)
     refine le_of_eq (Finset.sum_eq_zero (fun j _ => ?_))
-    refine le_antisymm ((measure_iUnion_le _).trans ?_) (zero_le _)
+    refine le_antisymm ((measure_iUnion_le _).trans ?_) (zero_le)
     refine le_of_eq (ENNReal.tsum_eq_zero.2 (fun h₀ => h₀.2.2))
   -- the big part
   have hbig : ∀ j, uniformLaw clockwise (⋃ h₀ : {h₀ // IsRoot f d j h₀ ∧ R / 2 ≤ reachN f d h₀},
@@ -615,7 +615,7 @@ theorem reachEvent_measure_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f +
           rw [ENNReal.tsum_mul_right]
       _ ≤ ∑' h₀ : {h₀ // IsRoot f d j h₀ ∧ R / 2 ≤ reachN f d h₀}, Pm f d h₀.1 * a ^ reachN f d h₀.1 :=
           ENNReal.tsum_le_tsum (fun x =>
-            mul_le_mul_of_nonneg_left (pow_le_pow_right₀ ha x.2.2) (zero_le _))
+            mul_le_mul_of_nonneg_left (pow_le_pow_right₀ ha x.2.2) (zero_le))
       _ ≤ ∑' h₀ : {h₀ // IsRoot f d j h₀}, Pm f d h₀.1 * a ^ reachN f d h₀.1 :=
           ENNReal.tsum_comp_le_tsum_of_injective
             (f := fun x : {h₀ // IsRoot f d j h₀ ∧ R / 2 ≤ reachN f d h₀} =>
@@ -634,7 +634,7 @@ theorem reachEvent_measure_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f +
     · calc uniformLaw clockwise ({ρ | history ρ f d h₀.1.length = h₀.1} ∩ IntReach f d h₀.1 (R - R / 2))
           ≤ Pm f d h₀.1 := measure_mono Set.inter_subset_left
         _ = 0 := hpos
-        _ ≤ _ := zero_le _
+        _ ≤ _ := zero_le
     · rw [mul_comm]
       exact intReach_measure_le f hd hCB (intervalStart_of_root f hd h₀.2 hpos) (by omega)
   rw [hnull, add_zero]

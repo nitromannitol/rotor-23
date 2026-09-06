@@ -32,14 +32,14 @@ def pendantAdj (M : ℕ) : PVertex M → PVertex M → Prop
 /-- The graph `G_M`. -/
 def pendantGraph (M : ℕ) : SimpleGraph (PVertex M) where
   Adj := pendantAdj M
-  symm x y h := by
+  symm := ⟨fun x y h => by
     cases x <;> cases y <;> simp only [pendantAdj] at h ⊢
-    · exact squareGraph.symm h
     · exact h.symm
     · exact h.symm
-  loopless x h := by
+    · exact h.symm⟩
+  loopless := ⟨fun x h => by
     cases x <;> simp only [pendantAdj] at h
-    exact squareGraph.loopless _ h
+    exact squareGraph.irrefl h⟩
 
 /-- The neighbors of a lattice vertex of `G_M`: the four lattice directions and
 the `M` leaves, in the clockwise order `N, E, S, W, L_1, …, L_M`. -/

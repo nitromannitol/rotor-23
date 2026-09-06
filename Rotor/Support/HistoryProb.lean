@@ -142,7 +142,7 @@ theorem measurableSet_history_len (f : Site) {d : Site} (hd : IsUnit d) (h : Lis
   by_cases hpre : ∀ i < h.length, (replay f d (h.take i)).active ≠ []
   · rw [history_event f d h hpre]
     exact measurableSet_testEvent _ (explInv_replay f hd h).tested_adj
-  · push_neg at hpre
+  · push Not at hpre
     obtain ⟨i, hi, hstuck⟩ := hpre
     have : {ρ : Config squareGraph | history ρ f d h.length = h} = ∅ := by
       ext ρ
@@ -360,7 +360,7 @@ theorem le_forcedCount_iff (ρ : Config squareGraph) (f d : Site) (N : ℕ) :
   constructor
   · intro hN
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     rcases N with _ | N
     · exact absurd (hcon 0) (Nat.not_lt_zero _)
     have hle : forcedCount ρ f d ≤ (N : ℕ∞) := by
@@ -444,7 +444,7 @@ theorem minF_exists (f d : Site) {N : ℕ} (hN : 1 ≤ N) {ρ : Config squareGra
     have := Nat.find_min hex hm; omega
   have hpos : 0 < n₀ := by
     by_contra h0
-    push_neg at h0
+    push Not at h0
     have h00 : n₀ = 0 := by omega
     rw [h00] at hn₀
     simp [explore_zero, explInit] at hn₀

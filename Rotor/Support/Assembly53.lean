@@ -53,7 +53,7 @@ theorem boxCrossing_of_path {ω : BondConfig} {x : Site} {r : ℕ} {l : List Sit
 /-! ### The sphere -/
 
 /-- The `ℓ^∞` sphere of radius `r` about `x`. -/
-def sphere (x : Site) (r : ℕ) : Finset Site :=
+noncomputable def sphere (x : Site) (r : ℕ) : Finset Site :=
   ((Icc (x.1 - r) (x.1 + r)) ×ˢ (Icc (x.2 - r) (x.2 + r))).filter (fun y => linfDist y x = r)
 
 theorem mem_sphere {x : Site} {r : ℕ} {y : Site} : y ∈ sphere x r ↔ linfDist y x = r := by

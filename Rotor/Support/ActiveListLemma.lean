@@ -101,7 +101,7 @@ theorem not_both (f : Site) {d : Site} (hd : IsUnit d) (ρ : Config squareGraph)
     hinvm'.active_head _ (by rw [hmW]; exact List.mem_cons_self)
   have hlt : m' < m := by
     by_contra h
-    push_neg at h
+    push Not at h
     exact hSWnot (hSWeq ▸ visited_mono ρ f d h hSWvis)
   have hWm : TestedAs (explore ρ f d m).tested (sideW e.1 e.2) false := by
     have h1 : ((sideW e.1 e.2).1, (sideW e.1 e.2).2, false) ∈ (explore ρ f d (m' + 1)).tested := by

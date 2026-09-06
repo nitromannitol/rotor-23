@@ -32,7 +32,7 @@ theorem isLiveUnmarked_of_covers {p : MPair G} {l : List V} (h : CoversFailures 
 theorem exists_far_of_nine {z : ℤ × ℤ} {l : List (ℤ × ℤ)} (hnd : l.Nodup) (hlen : 9 ≤ l.length)
     (hne : ∀ x ∈ l, x ≠ z) : ∃ x ∈ l, 2 ≤ linf (x - z) := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   have hsub : l.toFinset ⊆ kingNbrs z := by
     intro x hx
     rw [List.mem_toFinset] at hx

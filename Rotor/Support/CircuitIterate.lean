@@ -422,7 +422,7 @@ theorem T_lt_of_terminates (hFLP : External.OneCircuit G) (hAb : External.Abelia
     have h1 := ((hAb π inferInstance hG _ hS _ ws _ hws.1 hinv.legal).1 hws.2).1
     have h2 := inside_le π ρ o hFLP hG n hn t ht'
     have h3 := length_outs π ρ o (A π ρ o n) _ t ht
-    have h4 := Finset.filter_card_add_filter_neg_card_eq_card
+    have h4 := Finset.card_filter_add_card_filter_not
       (s := Finset.Ico (T π ρ o n).toNat t) (fun s => X π ρ o s ∈ A π ρ o n)
     rw [Nat.card_Ico] at h4
     omega

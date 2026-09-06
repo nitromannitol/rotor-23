@@ -79,7 +79,7 @@ theorem intervalHist_of_minF (f d : Site) {j : ℕ} {h₀ h' : List Bool}
     refine List.prefix_of_prefix_length_le hp (List.dropLast_prefix _) ?_
     rw [hlen]
     by_contra hlt
-    push_neg at hlt
+    push Not at hlt
     have : h₀ = h' := hp.eq_of_length (by have := hp.length_le; omega)
     subst this
     have := hm1.1; omega

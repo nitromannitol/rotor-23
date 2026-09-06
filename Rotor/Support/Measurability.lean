@@ -234,7 +234,7 @@ theorem measurable_τ (hAb : External.Abelian G) [Infinite V] (hG : G.Connected)
       · rintro ⟨hy, hmin⟩
         apply le_antisymm (Nat.sInf_le hy)
         by_contra hlt
-        push_neg at hlt
+        push Not at hlt
         have hne : {m : ℕ | y ∈ (Φ π ρ)^[m] {x}}.Nonempty := ⟨n, hy⟩
         exact hmin _ hlt (Nat.sInf_mem hne)
     · simp only [hall, false_and, not_false_eq_true, true_and, false_or]

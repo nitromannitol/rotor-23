@@ -111,11 +111,11 @@ theorem dir_lower (hAb : External.Abelian G) [Infinite V] (hG : G.Connected)
     (o : V) {z : ℤ × ℤ} {c : ℝ} (hc : IsDirLimit π P μ z c) :
     a / ℓ * ‖P.latVec z‖ ≤ c := by
   by_contra hlt
-  push_neg at hlt
+  push Not at hlt
   have hc0 := hc.nonneg π P μ
   have hpos : 0 < ‖P.latVec z‖ := by
     by_contra h
-    push_neg at h
+    push Not at h
     have := norm_nonneg (P.latVec z)
     have h0 : ‖P.latVec z‖ = 0 := le_antisymm h this
     rw [h0, mul_zero] at hlt
@@ -552,8 +552,9 @@ omit [DecidableEq V] in
 /-- Degrees are constant on orbits. -/
 theorem degree_shift (hπ : P.Periodic π) (z : ℤ × ℤ) (v : V) :
     G.degree (P.shift z v) = G.degree v := by
-  have := (P.mechAut π hπ z).degree_act v
-  simpa [P.mechAut_σ] using this
+  have h := (P.mechAut π hπ z).degree_act v
+  rw [P.mechAut_σ] at h
+  exact h
 
 omit [DecidableEq V] in
 theorem degree_eq_rep (hπ : P.Periodic π) (v : V) : G.degree v = G.degree (P.rep v) := by
@@ -614,7 +615,7 @@ theorem tendsto_card_A {R : Finset V} (hR : (R : Set V) = Set.range P.rep) (ρ :
     intro n
     rw [card_A_eq_sum π P hR ρ o n, Nat.cast_sum, Finset.sum_div]
   simp_rw [h]
-  have := tendsto_finset_sum R (fun r hr =>
+  have := tendsto_finsetSum R (fun r hr =>
     tendsto_fiber π P hfc hfadd hfsmul hl hmin ρ o r (rep_eq_of_mem P hR hr) hC hsand)
   simpa [Finset.sum_const, nsmul_eq_mul] using this
 
@@ -636,7 +637,7 @@ theorem tendsto_deg_A (hπ : P.Periodic π) {R : Finset V} (hR : (R : Set V) = S
     push_cast
     ring
   simp_rw [h]
-  have := tendsto_finset_sum R (fun r hr =>
+  have := tendsto_finsetSum R (fun r hr =>
     (tendsto_fiber π P hfc hfadd hfsmul hl hmin ρ o r (rep_eq_of_mem P hR hr) hC hsand).const_mul
       (G.degree r : ℝ))
   rw [← Finset.sum_mul] at this

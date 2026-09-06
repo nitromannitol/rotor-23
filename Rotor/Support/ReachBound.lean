@@ -267,7 +267,7 @@ theorem reach_exp_bound {c C : ℝ} (hc : 0 < c) (hC : 0 < C)
   have hq : ENNReal.ofReal (Real.exp (c / 2)) * Mconst (ENNReal.ofReal (Real.exp (c / 2))) c C ≤
       ENNReal.ofReal Q := by
     rw [hQdef, ENNReal.ofReal_mul (Real.exp_pos _).le]
-    exact mul_le_mul_of_nonneg_left hM (zero_le _)
+    exact mul_le_mul_of_nonneg_left hM (zero_le)
   have hlogQ : 0 ≤ Real.log Q := Real.log_nonneg hQ1
   obtain ⟨ε, hεdef⟩ : ∃ ε : ℝ, ε = c / (8 * (Real.log Q + 1)) := ⟨_, rfl⟩
   have hεpos : 0 < ε := by rw [hεdef]; positivity

@@ -245,7 +245,7 @@ theorem setLIntegral_atomF_Nxt (ν : ∀ v : V, Measure (G.neighborSet v))
   simp_rw [hpt]
   have hms : ∀ a : G.neighborSet v, MeasurableSet ((fun ρ : Config G => ρ v) ⁻¹' {a}) :=
     fun a => (measurable_pi_apply v) (measurableSet_singleton a)
-  rw [lintegral_finset_sum _ (fun a _ => measurable_const.indicator (hms a)), Finset.mul_sum]
+  rw [lintegral_finsetSum _ (fun a _ => measurable_const.indicator (hms a)), Finset.mul_sum]
   refine Finset.sum_congr rfl (fun a _ => ?_)
   rw [lintegral_indicator (hms a), setLIntegral_const, Measure.restrict_apply (hms a),
     Set.inter_comm, ← Q.atomF_append, Q.productLaw_atomF_append ν hv a]

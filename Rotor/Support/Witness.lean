@@ -81,6 +81,7 @@ theorem almostLiveEvent_measurableSet [Countable V] (η : ℝ) (u v : V) (R : �
 /-! ### The marks lower bound -/
 
 omit [DecidableEq V] [G.LocallyFinite] in
+set_option linter.deprecated false in
 /-- The probability that a finite set of vertices is entirely marked. -/
 theorem marksLaw_all (s : NNReal) (hs : s ≤ 1) (F : Finset V) :
     marksLaw s hs {m : V → Bool | ∀ x ∈ F, m x = true} = (s : ℝ≥0∞) ^ F.card := by

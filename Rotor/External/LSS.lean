@@ -17,6 +17,10 @@ open MeasureTheory ProbabilityTheory
 
 namespace Rotor.External
 
+-- `PMF.bernoulli` is deprecated in favour of `ProbabilityTheory.bernoulliMeasure`, but this
+-- definition is read by the frozen statement of `External.LSS` and by `bondLaw`, so it is kept
+-- verbatim (changing it would change what those statements say).
+set_option linter.deprecated false in
 /-- The Bernoulli law on `Bool` with success probability `p`. -/
 noncomputable def bernoulli (p : NNReal) (hp : p ≤ 1) : Measure Bool := (PMF.bernoulli p hp).toMeasure
 

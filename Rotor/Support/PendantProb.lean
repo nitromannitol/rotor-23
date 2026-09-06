@@ -175,7 +175,7 @@ theorem term_le (hM : 50331645 ≤ M) (n : ℕ) :
           pow_le_pow_left' (three_div_le M hM) _
       _ = (2⁻¹ : ℝ≥0∞) ^ (24 * ((n + 3) / 3)) := by rw [← pow_mul]
       _ ≤ (2⁻¹ : ℝ≥0∞) ^ (8 * n + 8) :=
-          pow_le_pow_of_le_one (zero_le _) (ENNReal.inv_le_one.2 one_le_two) (by omega)
+          pow_le_pow_of_le_one (zero_le) (ENNReal.inv_le_one.2 one_le_two) (by omega)
   calc (64 : ℝ≥0∞) ^ n * 2 ^ (n + 1) * (3 / ((M : ℝ≥0∞) + 4)) ^ ((n + 3) / 3)
       ≤ (64 : ℝ≥0∞) ^ n * 2 ^ (n + 1) * (2⁻¹ : ℝ≥0∞) ^ (8 * n + 8) := mul_le_mul' le_rfl hq
     _ = (2 : ℝ≥0∞) ^ (7 * n + 1) * ((2⁻¹ : ℝ≥0∞) ^ (7 * n + 1) * (2⁻¹ : ℝ≥0∞) ^ (n + 7)) := by
@@ -203,7 +203,7 @@ theorem measure_badEvent_le (hM : 50331645 ≤ M) (o : Site) :
 theorem measure_badEvent_lt_one (hM : 50331645 ≤ M) (o : Site) :
     uniformLaw (pendantMech M) (badEvent M o) < 1 :=
   (measure_badEvent_le M hM o).trans_lt
-    (pow_lt_one₀ (zero_le _) (ENNReal.inv_lt_one.2 one_lt_two) (by norm_num))
+    (pow_lt_one₀ (zero_le) (ENNReal.inv_lt_one.2 one_lt_two) (by norm_num))
 
 
 end Rotor

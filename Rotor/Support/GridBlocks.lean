@@ -144,14 +144,14 @@ theorem block_route (c : Site) {s t : Site} (hs : OnBdry c s) (ht : OnBdry c t) 
 /-! ### The box `D`, the block indices `Z`, the bonds `F` -/
 
 /-- The block indices. -/
-def Zset (r : ℕ) : Finset (ℤ × ℤ) := Icc (-(r : ℤ)) (r - 1) ×ˢ Icc (-(r : ℤ)) (r - 1)
+noncomputable def Zset (r : ℕ) : Finset (ℤ × ℤ) := Icc (-(r : ℤ)) (r - 1) ×ˢ Icc (-(r : ℤ)) (r - 1)
 
 /-- The box tiled by the blocks. -/
-def Dset (x y : Site) (r : ℕ) : Finset Site :=
+noncomputable def Dset (x y : Site) (r : ℕ) : Finset Site :=
   Icc (x.1 - 4 * r) (x.1 + 4 * r) ×ˢ Icc (y.2 - 4 * r) (y.2 + 4 * r)
 
 /-- The bonds of the box. -/
-def Fset (x y : Site) (r : ℕ) : Finset (Sym2 Site) :=
+noncomputable def Fset (x y : Site) (r : ℕ) : Finset (Sym2 Site) :=
   ((Dset x y r ×ˢ Dset x y r).filter (fun p => squareGraph.Adj p.1 p.2)).image
     (fun p => s(p.1, p.2))
 

@@ -123,14 +123,12 @@ theorem exists_far_visited {V : Finset Site} {g f₀ : Site} (h : InFiniteCompon
   by_cases hz'V : z' ∈ V
   · refine ⟨z', hz'V, ?_⟩
     have := hmax g hgS
-    simp only at this
     omega
   · exfalso
     have hz'S : z' ∈ hfin.toFinset := by
       simp only [Set.Finite.mem_toFinset, Set.mem_setOf_eq]
       exact Relation.ReflTransGen.tail hz ⟨hzV, hz'V, hadj⟩
     have := hmax z' hz'S
-    simp only at this
     omega
 
 /-! ### An infinite exploration is unbounded -/
@@ -243,7 +241,7 @@ theorem liveReach_subset (u v : Site) (R : ℕ) (hR : 8 ≤ R) :
     · obtain ⟨g', hg', hle⟩ := exists_far_visited (f₀ := f₀) hfin
       exact ⟨n, g', hg', hgfar.trans hle⟩
   · right
-    push_neg at hterm
+    push Not at hterm
     exact hterm
 
 /-! ### Non-termination has probability zero -/
@@ -253,7 +251,7 @@ theorem nonTerm_measure_zero (f : Site) {d : Site} (hd : IsUnit d) {C' c' : ℝ}
     (hR : ∀ R' : ℕ, 1 ≤ R' →
       uniformLaw clockwise (ReachEvent f d R') ≤ ENNReal.ofReal (C' * Real.exp (-c' * R'))) :
     uniformLaw clockwise (NonTerm f d) = 0 := by
-  refine le_antisymm ?_ (zero_le _)
+  refine le_antisymm ?_ (zero_le)
   refine ENNReal.le_of_forall_pos_le_add (fun ε hε _ => ?_)
   rw [zero_add]
   have hεpos : (0 : ℝ) < ε := by exact_mod_cast hε

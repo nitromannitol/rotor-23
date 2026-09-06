@@ -18,11 +18,11 @@ namespace Rotor
 /-- The square lattice as a simple graph on `ℤ × ℤ`: `x ∼ y` when they differ
 by a unit step. -/
 def squareGraph : SimpleGraph Site where
-  Adj x y := |x.1 - y.1| + |x.2 - y.2| = 1
-  symm x y h := by
+  Adj := fun x y : Site => |x.1 - y.1| + |x.2 - y.2| = 1
+  symm := ⟨fun x y h => by
     show |y.1 - x.1| + |y.2 - x.2| = 1
-    rw [abs_sub_comm y.1, abs_sub_comm y.2]; exact h
-  loopless x h := by simp at h
+    rw [abs_sub_comm y.1, abs_sub_comm y.2]; exact h⟩
+  loopless := ⟨fun x h => by simp at h⟩
 
 theorem squareGraph_adj (x y : Site) : squareGraph.Adj x y ↔ |x.1 - y.1| + |x.2 - y.2| = 1 :=
   Iff.rfl
@@ -115,11 +115,13 @@ noncomputable def squarePeriodic : DoublyPeriodic squareGraph where
   shift_add z w v := by simp [add_comm, add_left_comm]
   b := fun i => WithLp.toLp 2 (Pi.single i 1)
   b_indep := by
-    have := (EuclideanSpace.basisFun (Fin 2) ℝ).toBasis.linearIndependent
-    convert this using 1
-    funext i
-    rw [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply]
-    rfl
+    have hb : (fun i => WithLp.toLp 2 (Pi.single i 1) : Fin 2 → EuclideanSpace ℝ (Fin 2)) =
+        ⇑(EuclideanSpace.basisFun (Fin 2) ℝ).toBasis := by
+      funext i
+      rw [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply]
+      rfl
+    rw [hb]
+    exact (EuclideanSpace.basisFun (Fin 2) ℝ).toBasis.linearIndependent
   emb_shift z v := by
     ext i
     fin_cases i <;> simp [squareEmb]

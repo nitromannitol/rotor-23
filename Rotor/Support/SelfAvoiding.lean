@@ -149,7 +149,7 @@ theorem W_one_le (h3 : ∀ v : V, G.degree v ≤ 3) {q : List V} (hq : Adm G q) 
   | [_] => simp at hlen
   | b :: a :: rest =>
     rw [W_one]
-    have hab : G.Adj b a := hch.rel_head
+    have hab : G.Adj b a := hch.rel
     calc wt π (b :: a :: rest) * ∑ c ∈ (G.neighborFinset b).filter (fun c => c ∉ b :: a :: rest),
           pStep π a b c ≤ wt π (b :: a :: rest) * 1 :=
           mul_le_mul_of_nonneg_left (sum_pStep_filter_le π (h3 b) hab _) (wt_nonneg π _)
@@ -185,7 +185,7 @@ theorem wt_ge_of_mem_NodupExt (h3 : ∀ v : V, G.degree v ≤ 3) {l : List V} (h
     | [] => simp at hlen
     | a :: rest =>
       rw [wt_cons₃, pow_succ]
-      have hab : G.Adj b a := hch.rel_head
+      have hab : G.Adj b a := hch.rel
       have hne : c ≠ a := fun h => hc (by simp [h])
       have hp : (1 / 3 : ℝ) ≤ pStep π a b c := by
         refine le_trans ?_ (one_div_degree_le_pStep π hab hadj hne)
