@@ -3,6 +3,7 @@ import Rotor.Support.LiveRecurrence
 import Rotor.Support.SquareBasics
 import Rotor.Frozen.Square.DualPath
 import Rotor.Frozen.Square.Exploration
+import Rotor.Frozen.Square.ConstrainedBonds
 
 /-!
 Proposition 5.1 (`prop:square-passage`), part 8: from live paths to the reach event.  A live

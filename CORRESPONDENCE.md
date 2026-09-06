@@ -62,15 +62,15 @@ one in a separate project.
 | `prop-passage-limit` | `Rotor.Frozen.passage_limit` | `rotor.tex:1084-1094`, `prop:passage-limit` | SEALED |
 | `prop-circuit-shape` | `Rotor.Frozen.circuit_shape` | `rotor.tex:1115-1135`, `prop:circuit-shape` | SEALED |
 | `lem-block-live-paths` | `Rotor.Frozen.block_live_paths` | `rotor.tex:1227-1238`, `lem:block-live-paths` | SEALED |
-| `thm-main-square` | `Rotor.Frozen.main_square` | `rotor.tex:228-250`, `thm:main` | CONDITIONAL |
+| `thm-main-square` | `Rotor.Frozen.main_square` | `rotor.tex:228-250`, `thm:main` | SEALED |
 | `thm-main-degree-three` | `Rotor.Frozen.main_degree_three` | `rotor.tex:228-250`, `thm:main` | SEALED |
-| `prop-perturbations-square` | `Rotor.Frozen.perturbations_square` | `rotor.tex:263-271`, `prop:small-perturbations` | CONDITIONAL |
+| `prop-perturbations-square` | `Rotor.Frozen.perturbations_square` | `rotor.tex:263-271`, `prop:small-perturbations` | SEALED |
 | `prop-perturbations-degree-three` | `Rotor.Frozen.perturbations_degree_three` | `rotor.tex:263-271`, `prop:small-perturbations` | SEALED |
 | `prop-subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `rotor.tex:1344-1350`, `prop:subcubic-recurrence` | SEALED |
 | `prop-degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `rotor.tex:1385-1400`, `prop:degree-three-passage` | SEALED |
-| `prop-square-passage` | `Rotor.Frozen.square_passage` | `rotor.tex:1461-1471`, `prop:square-passage` | CONDITIONAL |
+| `prop-square-passage` | `Rotor.Frozen.square_passage` | `rotor.tex:1461-1471`, `prop:square-passage` | SEALED |
 | `lem-square-dual-path` | `Rotor.Frozen.square_dual_path` | `rotor.tex:1638-1644`, `lem:square-dual-path` | SEALED |
-| `lem-square-constrained-bonds` | `Rotor.Frozen.square_constrained_bonds` | `rotor.tex:1677-1692`, `lem:square-constrained-bonds` | DRAFT_SORRY |
+| `lem-square-constrained-bonds` | `Rotor.Frozen.square_constrained_bonds` | `rotor.tex:1677-1692`, `lem:square-constrained-bonds` | SEALED |
 | `ext-one-circuit` | `Rotor.External.OneCircuit` | external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit (ruling X-001) | FROZEN |
 | `lem-one-circuit` | `Rotor.Frozen.one_circuit` | `rotor.tex:691-697`, `lem:one-circuit` | SEALED |
 | `prop-circuit-clock` | `Rotor.Frozen.circuit_clock` | `rotor.tex:1148-1176`, `prop:circuit-clock` | SEALED |

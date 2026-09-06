@@ -28,6 +28,10 @@ noncomputable def bondLaw (p : NNReal) (hp : p ≤ 1) : Measure BondConfig :=
 instance (p : NNReal) (hp : p ≤ 1) : IsProbabilityMeasure (bondLaw p hp) := by
   unfold bondLaw; infer_instance
 
+/-- `1/2` is a probability. -/
+theorem half_le_one : (1 / 2 : NNReal) ≤ 1 := by
+  rw [div_le_one (by norm_num)]; norm_num
+
 /-- The `ℓ^∞` distance on `ℤ²`. -/
 def linfDist (x y : Site) : ℤ := max |x.1 - y.1| |x.2 - y.2|
 

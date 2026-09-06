@@ -1,5 +1,5 @@
 import Rotor.Support.ExplProb
-import Rotor.Frozen.Square.ConstrainedBonds
+import Rotor.Dual
 
 /-!
 Proposition 5.1 (`prop:square-passage`), part 2: Bernoulli(1/2) bond percolation on finitely

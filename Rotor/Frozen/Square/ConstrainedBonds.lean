@@ -15,11 +15,9 @@ phase one (ruling X-001): they are not derived here and the certificate lists th
 -/
 import Rotor.Dual
 import Rotor.External.SubcriticalDecay
+import Rotor.Support.ConstrainedBondsProof
 
 open Rotor
-
-theorem Rotor.half_le_one : (1 / 2 : NNReal) ≤ 1 := by
-  rw [div_le_one (by norm_num)]; norm_num
 
 -- FROZEN-STATEMENT-BEGIN
 theorem Rotor.Frozen.square_constrained_bonds (hSub : External.SubcriticalDecay) :
@@ -27,4 +25,4 @@ theorem Rotor.Frozen.square_constrained_bonds (hSub : External.SubcriticalDecay)
       bondLaw (1 / 2) Rotor.half_le_one (constrainedCrossing x r) ≤
         ENNReal.ofReal (C * Real.exp (-c * r))
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= square_constrained_bonds_proof hSub
