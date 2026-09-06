@@ -140,3 +140,4 @@ import Rotor.Support.IntervalReach
 import Rotor.Support.RootPotential
 import Rotor.Support.ReachBound
 import Rotor.Support.PassageAssembly
+import Rotor.Support.FiniteProduct
