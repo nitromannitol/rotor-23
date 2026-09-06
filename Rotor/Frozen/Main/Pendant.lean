@@ -13,7 +13,7 @@ $M+4>3\cdot256^3$, that is $M\geq3\cdot256^3-3=50331645$.  The proof uses
 probability of $T(1)=\infty$ to almost-sure transience, uses that recurrence
 does not depend on the starting vertex (`External.RecurrentOfRecurrent`)
 together with ergodicity of the uniform law, which the paper's proof leaves
-implicit; see `ledger/ERRATA.md`, E-001.
+implicit; see the errata, E-001.
 The `External.*` hypotheses are the cited results the paper's proof uses, assumed in
 phase one (ruling X-001): they are not derived here and the certificate lists them.
 -/

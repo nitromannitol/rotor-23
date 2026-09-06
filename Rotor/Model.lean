@@ -21,7 +21,7 @@ Section 1.1 (`ssec:main-results`), `rotor.tex:179-225`:
    When `T(n) < ∞`, let `A_n := R_{T(n)}`, the range after `n` circuits, and
    let `A_0 := {o}`."
 
-Rulings (`ledger/decisions.md`):
+Rulings (the modelling rulings):
 
   M-006  A graph is a Mathlib `SimpleGraph V` (loopless, no multiple edges,
          undirected), locally finite through `[G.LocallyFinite]`.  A directed

@@ -1,0 +1,382 @@
+# Rotor frozen-statement manifest.
+#
+# One entry per frozen declaration.  The bytes between the FROZEN-STATEMENT
+# markers are the contract: a proof attempt may fill in the proof after the end
+# marker, never touch the statement.  `frozen_sha256` is the SHA-256 of exactly
+# those bytes.
+#
+# States: DRAFT_SORRY (statement frozen, proof is a registered `sorry`),
+#         SEALED (a proof exists and its axiom closure is clean),
+#         PROVED (an independent instance has audited it as well).
+# A statement being frozen is not a proof claim.
+
+version: 1
+source_pin:
+  file: paper/rotor.tex
+  sha256: 47ab86259c7e22b0a0c58ec44095e945c0cda1e4ef91f1767ba808849fb0d1dd
+
+nodes:
+
+  - id: lem-least-action
+    version: 2
+    kind: theorem
+    source: rotor.tex:727-738 (label lem:least-action)
+    file: Rotor/Frozen/Circuits/LeastAction.lean
+    export: Rotor.Frozen.least_action
+    state: SEALED
+    frozen_sha256: 68868114ebd0b960cd14e67d8a8e114c5de6b9ae357000382efcbe7d9660f919
+    provider: Rotor.Frozen.least_action
+    approved: "2026-09-05"
+
+  - id: lem-boundary-routing
+    version: 2
+    kind: theorem
+    source: rotor.tex:747-752 (label lem:boundary-routing)
+    file: Rotor/Frozen/Circuits/BoundaryRouting.lean
+    export: Rotor.Frozen.boundary_routing
+    state: SEALED
+    frozen_sha256: 46b14f86c3d38129bf144926eb471eeec6f415ee67f3a1e9a476d1c18e9d5e4d
+    provider: Rotor.Frozen.boundary_routing
+    approved: "2026-09-05"
+
+  - id: prop-circuit-iterate
+    version: 2
+    kind: theorem
+    source: rotor.tex:774-782 (label prop:circuit-iterate)
+    file: Rotor/Frozen/Circuits/CircuitIterate.lean
+    export: Rotor.Frozen.circuit_iterate
+    state: SEALED
+    frozen_sha256: 2f6bf56d2de866d9738d8b476d169b3f4123648b266a63cadbb71b0772f17318
+    provider: Rotor.Frozen.circuit_iterate
+    approved: "2026-09-05"
+
+  - id: prop-monotonicity
+    version: 2
+    kind: theorem
+    source: rotor.tex:801-807 (label prop:monotonicity)
+    file: Rotor/Frozen/Circuits/Monotonicity.lean
+    export: Rotor.Frozen.monotonicity
+    state: SEALED
+    frozen_sha256: 8332aa8c4e37db9baf61257bfaa75cfc202fc11797c333823ab89b5e6b2a2936
+    provider: Rotor.Frozen.monotonicity
+    approved: "2026-09-05"
+
+  - id: prop-passage
+    version: 2
+    kind: theorem
+    source: rotor.tex:833-847 (label prop:passage)
+    file: Rotor/Frozen/Circuits/Passage.lean
+    export: Rotor.Frozen.passage
+    state: SEALED
+    frozen_sha256: 069a4ff096575cb0bee1e65a93fe66b5e2db4930d7e69f74971ffc3ed54a1b5f
+    provider: Rotor.Frozen.passage
+    approved: "2026-09-05"
+
+  - id: lem-decreasing-positions
+    version: 2
+    kind: theorem
+    source: rotor.tex:883-896 (label lem:decreasing-positions)
+    file: Rotor/Frozen/Circuits/DecreasingPositions.lean
+    export: Rotor.Frozen.decreasing_positions
+    state: SEALED
+    frozen_sha256: 6c7e704aa3cf8a6847d993e3bc951d433b7ddae001140148ddd3a3c3c997bf51
+    provider: Rotor.Frozen.decreasing_positions
+    approved: "2026-09-05"
+
+  - id: prop-live-recurrence
+    version: 2
+    kind: theorem
+    source: rotor.tex:938-942 (label prop:live-recurrence)
+    file: Rotor/Frozen/Circuits/LiveRecurrence.lean
+    export: Rotor.Frozen.live_recurrence
+    state: SEALED
+    frozen_sha256: b5474429111fccf9b4176f4b7502ba213577f4e32cd9e28129d50b66d0cc854f
+    provider: Rotor.Frozen.live_recurrence
+    approved: "2026-09-05"
+
+  - id: ext-abelian
+    version: 3
+    kind: definition
+    source: external input, HLMPPW Lemma 3.9, the statement of lem:least-action (ruling X-001)
+    file: Rotor/External/Abelian.lean
+    export: Rotor.External.Abelian
+    state: FROZEN
+    frozen_sha256: c0d83e13b688419da997c7a4dbdd78c98b50387e6dc9cc04e7ee2c22a81503a6
+    provider: Rotor.External.Abelian
+    approved: "2026-09-05"
+
+  - id: ext-holroyd-propp
+    version: 3
+    kind: definition
+    source: external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence (ruling X-001)
+    file: Rotor/External/HolroydPropp.lean
+    export: Rotor.External.VisitsAllOfVisitsOne
+    state: FROZEN
+    frozen_sha256: 1d9bd3d9563700959c606b70575cc18d3719acda6e3654bb4e502fda5ec4052c
+    provider: Rotor.External.VisitsAllOfVisitsOne
+    approved: "2026-09-05"
+
+  - id: ext-lss
+    version: 1
+    kind: definition
+    source: external input, Liggett-Schonmann-Stacey Theorem 0.0(ii), used in the proof of lem:block-live-paths (ruling X-001)
+    file: Rotor/External/LSS.lean
+    export: Rotor.External.LSS
+    state: FROZEN
+    frozen_sha256: a9d090913b002a564b4642649bfe3b32520831d2ffd1b5cff70e159b9fb2e0bc
+    provider: Rotor.External.LSS
+    approved: "2026-09-05"
+
+  - id: ext-angel-holroyd
+    version: 1
+    kind: definition
+    source: external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence (ruling X-001)
+    file: Rotor/External/AngelHolroyd.lean
+    export: Rotor.External.RecurrentOfRecurrent
+    state: FROZEN
+    frozen_sha256: 798919095ca52e96180cea29f9557ff8b5d6817e6759befca9a41324759eb068
+    provider: Rotor.External.RecurrentOfRecurrent
+    approved: "2026-09-05"
+
+  - id: ext-subcritical-decay
+    version: 1
+    kind: definition
+    source: external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail (ruling X-001)
+    file: Rotor/External/SubcriticalDecay.lean
+    export: Rotor.External.SubcriticalDecay
+    state: FROZEN
+    frozen_sha256: 91cf2b38392188c44f404e23be502f1144ee36be9f58d482a5368668b5b0eca4
+    provider: Rotor.External.SubcriticalDecay
+    approved: "2026-09-05"
+
+  - id: prop-path-reduction
+    version: 1
+    kind: theorem
+    source: rotor.tex:1004-1037 (label prop:path-reduction)
+    file: Rotor/Frozen/Shape/PathReduction.lean
+    export: Rotor.Frozen.path_reduction
+    state: SEALED
+    frozen_sha256: 61b5b79240cacbb8dec7947ef9a139b2f23fb0392575e68cf0b859391b89df66
+    provider: Rotor.Frozen.path_reduction
+    approved: "2026-09-05"
+
+  - id: prop-passage-limit
+    version: 1
+    kind: theorem
+    source: rotor.tex:1084-1094 (label prop:passage-limit)
+    file: Rotor/Frozen/Shape/PassageLimit.lean
+    export: Rotor.Frozen.passage_limit
+    state: SEALED
+    frozen_sha256: c662d0a3b5ee38dcf6e5b69210cf141e36670df3aca22d31ac11bd3179d8d3ce
+    provider: Rotor.Frozen.passage_limit
+    approved: "2026-09-05"
+
+  - id: prop-circuit-shape
+    version: 1
+    kind: theorem
+    source: rotor.tex:1115-1135 (label prop:circuit-shape)
+    file: Rotor/Frozen/Shape/CircuitShape.lean
+    export: Rotor.Frozen.circuit_shape
+    state: SEALED
+    frozen_sha256: 1464abd94afe17ec7941bfadf5f5560b4940a175082201235d00fad01835cdfc
+    provider: Rotor.Frozen.circuit_shape
+    approved: "2026-09-05"
+
+  - id: lem-block-live-paths
+    version: 1
+    kind: theorem
+    source: rotor.tex:1227-1238 (label lem:block-live-paths)
+    file: Rotor/Frozen/Shape/BlockLivePaths.lean
+    export: Rotor.Frozen.block_live_paths
+    state: SEALED
+    frozen_sha256: 132ba277ad6631d8dbce032517ce913bcc4be5d78bd00117c5c69ee1c24b2d41
+    provider: Rotor.Frozen.block_live_paths
+    approved: "2026-09-05"
+
+  - id: thm-main-square
+    version: 1
+    kind: theorem
+    source: rotor.tex:228-250 (label thm:main, the square-lattice case)
+    file: Rotor/Frozen/Main/Square.lean
+    export: Rotor.Frozen.main_square
+    state: SEALED
+    frozen_sha256: accea74870d023ae13e00bcae9e028ceba12e7bc13c773dec292f79fb198ef8f
+    provider: Rotor.Frozen.main_square
+    approved: "2026-09-05"
+
+  - id: thm-main-degree-three
+    version: 1
+    kind: theorem
+    source: rotor.tex:228-250 (label thm:main, the degree-three case)
+    file: Rotor/Frozen/Main/DegreeThree.lean
+    export: Rotor.Frozen.main_degree_three
+    state: SEALED
+    frozen_sha256: fe6b9b01b7a7955306df92af59e81762b6052eb1000f6e1c7a0b602b0ff93e1c
+    provider: Rotor.Frozen.main_degree_three
+    approved: "2026-09-05"
+
+  - id: prop-perturbations-square
+    version: 1
+    kind: theorem
+    source: rotor.tex:263-271 (label prop:small-perturbations, the square-lattice case)
+    file: Rotor/Frozen/Main/PerturbSquare.lean
+    export: Rotor.Frozen.perturbations_square
+    state: SEALED
+    frozen_sha256: 01221f20143d7b83462aa243e0e2fc8a5865c4324bb981bd379283b8cd2a2ded
+    provider: Rotor.Frozen.perturbations_square
+    approved: "2026-09-05"
+
+  - id: prop-perturbations-degree-three
+    version: 1
+    kind: theorem
+    source: rotor.tex:263-271 (label prop:small-perturbations, the degree-three case)
+    file: Rotor/Frozen/Main/PerturbDegreeThree.lean
+    export: Rotor.Frozen.perturbations_degree_three
+    state: SEALED
+    frozen_sha256: 8df50adfd6739954fc7b9e1d69398344e8394f60155ab0e4c5cdc555ac6ea665
+    provider: Rotor.Frozen.perturbations_degree_three
+    approved: "2026-09-05"
+
+  - id: prop-subcubic-recurrence
+    version: 1
+    kind: theorem
+    source: rotor.tex:1344-1350 (label prop:subcubic-recurrence)
+    file: Rotor/Frozen/DegreeThree/SubcubicRecurrence.lean
+    export: Rotor.Frozen.subcubic_recurrence
+    state: SEALED
+    frozen_sha256: 6fe16ac985883a225f0c064ac88d9239e4b7b27d6641e2f447fdb2b489f65e5e
+    provider: Rotor.Frozen.subcubic_recurrence
+    approved: "2026-09-05"
+
+  - id: prop-degree-three-passage
+    version: 1
+    kind: theorem
+    source: rotor.tex:1385-1400 (label prop:degree-three-passage)
+    file: Rotor/Frozen/DegreeThree/Passage.lean
+    export: Rotor.Frozen.degree_three_passage
+    state: SEALED
+    frozen_sha256: 5822a99fc7c1e7db2ce05320c0aff2dc42bb5f70d1420570a7b45bffbf229be2
+    provider: Rotor.Frozen.degree_three_passage
+    approved: "2026-09-05"
+
+  - id: prop-square-passage
+    version: 1
+    kind: theorem
+    source: rotor.tex:1461-1471 (label prop:square-passage)
+    file: Rotor/Frozen/Square/Passage.lean
+    export: Rotor.Frozen.square_passage
+    state: SEALED
+    frozen_sha256: c30d0e0b3a944cfb37416f3cacf1667fc8c57c4a365c8ebc66f1d5f4542895ae
+    provider: Rotor.Frozen.square_passage
+    approved: "2026-09-05"
+
+  - id: lem-square-dual-path
+    version: 1
+    kind: theorem
+    source: rotor.tex:1638-1644 (label lem:square-dual-path)
+    file: Rotor/Frozen/Square/DualPath.lean
+    export: Rotor.Frozen.square_dual_path
+    state: SEALED
+    frozen_sha256: 2bc0634c1d4e585969e95f90af2eb6b1fe30698603caf9581bc0c418bd69e345
+    provider: Rotor.Frozen.square_dual_path
+    approved: "2026-09-05"
+
+  - id: lem-square-constrained-bonds
+    version: 1
+    kind: theorem
+    source: rotor.tex:1677-1692 (label lem:square-constrained-bonds)
+    file: Rotor/Frozen/Square/ConstrainedBonds.lean
+    export: Rotor.Frozen.square_constrained_bonds
+    state: SEALED
+    frozen_sha256: 2f356470ab7adc44a2175651db286fb74ce81ada4e9a4db780f581cafee931a8
+    provider: Rotor.Frozen.square_constrained_bonds
+    approved: "2026-09-05"
+
+  - id: ext-one-circuit
+    version: 4
+    kind: definition
+    source: external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit (ruling X-001)
+    file: Rotor/External/OneCircuit.lean
+    export: Rotor.External.OneCircuit
+    state: FROZEN
+    frozen_sha256: 9595078feae90719f59738a3a50b03c1f70ecb64e4ad889e01a082b8a748a941
+    provider: Rotor.External.OneCircuit
+    approved: "2026-09-05"
+
+  - id: lem-one-circuit
+    version: 3
+    kind: theorem
+    source: rotor.tex:691-697 (label lem:one-circuit)
+    file: Rotor/Frozen/Circuits/OneCircuit.lean
+    export: Rotor.Frozen.one_circuit
+    state: SEALED
+    frozen_sha256: de30aac41c2d292bc5ce382b305dde5873ce7f8df8053f617c5468a1ecfb2b96
+    provider: Rotor.Frozen.one_circuit
+    approved: "2026-09-05"
+
+  - id: prop-circuit-clock
+    version: 2
+    kind: theorem
+    source: rotor.tex:1148-1176 (label prop:circuit-clock)
+    file: Rotor/Frozen/Shape/CircuitClock.lean
+    export: Rotor.Frozen.circuit_clock
+    state: SEALED
+    frozen_sha256: 920122aaf6875b74d2a02358ad07cfc05b0804f3402f436f7289872d2aa4d399
+    provider: Rotor.Frozen.circuit_clock
+    approved: "2026-09-05"
+
+  - id: lem-square-exploration
+    version: 1
+    kind: theorem
+    source: rotor.tex:1902-1913 (label lem:square-exploration)
+    file: Rotor/Frozen/Square/Exploration.lean
+    export: Rotor.Frozen.square_exploration
+    state: SEALED
+    frozen_sha256: 571205e8b2202e4a7bb8c3c9e822da164cbede5cecf808663ecdfce9cf0e4c87
+    provider: Rotor.Frozen.square_exploration
+    approved: "2026-09-05"
+
+  - id: lem-square-active-list
+    version: 1
+    kind: theorem
+    source: rotor.tex:1926-1930 (label lem:square-active-list)
+    file: Rotor/Frozen/Square/ActiveList.lean
+    export: Rotor.Frozen.square_active_list
+    state: SEALED
+    frozen_sha256: 4d2f113b250d3728ed4607f88549a497ca1b1b9dc26ea509445422bdcbb7068e
+    provider: Rotor.Frozen.square_active_list
+    approved: "2026-09-05"
+
+  - id: lem-square-forced-tests
+    version: 1
+    kind: theorem
+    source: rotor.tex:2058-2065 (label lem:square-forced-tests)
+    file: Rotor/Frozen/Square/ForcedTests.lean
+    export: Rotor.Frozen.square_forced_tests
+    state: SEALED
+    frozen_sha256: bd218f336c17da837e9a7b583b0b412fbcbc4e93c91d9587d3f200c6e072ac79
+    provider: Rotor.Frozen.square_forced_tests
+    approved: "2026-09-05"
+
+  - id: prop-pendant-counterexample
+    version: 1
+    kind: theorem
+    source: rotor.tex:300-305 (label prop:pendant-counterexample)
+    file: Rotor/Frozen/Main/Pendant.lean
+    export: Rotor.Frozen.pendant_counterexample
+    state: SEALED
+    frozen_sha256: 56a694dfe131f30dd9bacfc49dc92e0b71efe120c8fe3d919875eb6fd44d0418
+    provider: Rotor.Frozen.pendant_counterexample
+    approved: "2026-09-05"
+
+  - id: ext-kingman
+    version: 2
+    kind: definition
+    source: external input, Kingman 1968 Theorem 3 (general form, measurable invariant limit), used in the proof of prop:passage-limit (ruling X-001)
+    file: Rotor/External/Kingman.lean
+    export: Rotor.External.Kingman
+    state: FROZEN
+    frozen_sha256: 725b3140a79a1f0681dd88cafc52b98e50cdaf81beafb3af65eacbdf72732a63
+    provider: Rotor.External.Kingman
+    approved: "2026-09-05"
+

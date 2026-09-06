@@ -18,7 +18,7 @@ Section 1.1 (`ssec:main-results`), `rotor.tex:179-225`:
    When `T(n) < ∞`, let `A_n := R_{T(n)}`, the range after `n` circuits, and
    let `A_0 := {o}`."
 
-Modelling decisions are numbered `M-***` and recorded in `ledger/decisions.md`.
+Modelling decisions are numbered `M-***` and recorded in the modelling rulings.
 
   M-001  The graph is the square lattice only: a site is `ℤ × ℤ`, a directed
          edge out of a site is a direction `Fin 4`, and `deg ≡ 4`.

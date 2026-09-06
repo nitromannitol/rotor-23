@@ -23,7 +23,7 @@ except ImportError:
     sys.exit("certificate.py: PyYAML is required (pip install pyyaml)")
 
 ROOT = Path(__file__).resolve().parent.parent
-MANIFEST = ROOT / "ledger" / "manifest.yaml"
+MANIFEST = ROOT / "verification" / "manifest.yaml"
 OUT = ROOT / "CERTIFICATE.md"
 ELAN = str(Path.home() / ".elan" / "bin")
 
@@ -157,7 +157,7 @@ def build() -> str:
         A(f"| {i} | `{n['id']}` | `{e}` | {paper_cell} | {verdict} |")
     A("")
     A(f"{clean} of {len(nodes)} nodes depend on nothing beyond the three classical")
-    A("axioms.  Every node's state in `ledger/manifest.yaml` is `SEALED`.")
+    A("axioms.  Every node's state in `verification/manifest.yaml` is `SEALED`.")
     A("")
     A("## Frozen statements")
     A("")
@@ -176,7 +176,7 @@ def build() -> str:
     A("")
     A("- The paper's open questions (Section 7) are questions; nothing there is")
     A("  formalized, and nothing here bears on them.")
-    A("- The scope rulings `S-***` in `ledger/decisions.md` say which parts of the")
+    A("- The scope rulings `S-***` in `the rulings` say which parts of the")
     A("  paper are outside this formalization and why.")
     A("- The figures, the simulations and the survey in Section 1.4 are outside")
     A("  the formalization.")

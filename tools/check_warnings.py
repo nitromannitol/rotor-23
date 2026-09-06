@@ -21,7 +21,7 @@ except ImportError:
 
 
 ROOT = Path(__file__).resolve().parent.parent
-MANIFEST = ROOT / "ledger" / "manifest.yaml"
+MANIFEST = ROOT / "verification" / "manifest.yaml"
 ANSI_RE = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
 WARNING_RE = re.compile(r"^warning:\s*(.*)$", re.IGNORECASE)
 SORRY_WARNING_RE = re.compile(

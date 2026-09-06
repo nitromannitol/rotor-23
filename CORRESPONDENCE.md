@@ -6,7 +6,7 @@ Maps every frozen declaration to *Eulerian walkers on `ℤ²` have range exponen
 ## Conventions
 
 - The paper is pinned at `paper/rotor.tex`; its SHA-256 is in
-  `ledger/manifest.yaml`.  Source locations are `rotor.tex:<line range>` plus
+  `verification/manifest.yaml`.  Source locations are `rotor.tex:<line range>` plus
   the LaTeX `\label` name.  Never cite an equation numeral.
 - The bytes between `-- FROZEN-STATEMENT-BEGIN` and `-- FROZEN-STATEMENT-END`
   are the contract.  `python3 tools/check_manifest.py` is the authority on the
@@ -14,7 +14,7 @@ Maps every frozen declaration to *Eulerian walkers on `ℤ²` have range exponen
 
 ## Modelling rulings
 
-See `ledger/decisions.md`: `M-001` to `M-005` (the square lattice and the
+The numbered modelling rulings: `M-001` to `M-005` (the square lattice and the
 sample space), `M-006` to `M-009` (the general graph model), `M-010` to `M-013`
 (routings, `Φ`, `τ`), `S-001` to `S-003` (scope), `X-001` (external inputs),
 `F-001` to `F-003` (transcription conventions).

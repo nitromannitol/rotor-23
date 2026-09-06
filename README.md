@@ -15,10 +15,9 @@ closure contains `sorryAx`.
 
 The results the paper cites rather than proves are assumed, each as one frozen
 `Prop` in `Rotor/External/` that the theorems using it take as a hypothesis
-(ruling X-001 in `ledger/decisions.md`): the abelian property, Angel-Holroyd,
+(ruling X-001): the abelian property, Angel-Holroyd,
 Holroyd-Propp, Florescu-Levine-Peres, Kingman's subadditive ergodic theorem, and
-Liggett-Schonmann-Stacey domination.  The questions put to the authors and their
-answers are in `ledger/QUESTIONS.md`.
+Liggett-Schonmann-Stacey domination.
 
 The seventh cited input, subcritical exponential decay for percolation, is no
 longer assumed: `Rotor/Bridge/SubcriticalDecay.lean` proves
@@ -34,7 +33,7 @@ See ruling X-004.
 Status: **33 frozen nodes — 7 `FROZEN`, 26 `SEALED`.**  Every node's proof is machine-checked and its axiom closure contains
 no `sorryAx`.  Run
 `python3 tools/check_axioms.py` to confirm.  Counts here are generated
-from `ledger/manifest.yaml` by `python3 tools/sync_docs.py`; do not
+from `verification/manifest.yaml` by `python3 tools/sync_docs.py`; do not
 edit them by hand and do not trust a count in prose that the checkers
 have not confirmed.
 
@@ -54,16 +53,15 @@ and follows it.  `R_t` is the set of sites visited in the first `t` steps.
 | `Rotor/Law.lean` | `ℙ₀`, the product of uniform laws on the four directions |
 | `Rotor/Support/Guards.lean` | computable witnesses that the model says what the paper says |
 | `Rotor/Frozen/` | one frozen statement per file, the contract with the paper |
-| `ledger/decisions.md` | every modelling decision, numbered |
-| `ledger/QUESTIONS.md` | the open questions to the authors and their answers |
 | `CORRESPONDENCE.md` | paper ↔ Lean |
 | `paper/rotor.tex` | the paper this formalizes, pinned by hash |
 | `Rotor/Bridge/` | the percolation library linked in, and the statements it makes unconditional |
+| `verification/manifest.yaml` | one row per frozen statement: its hash, its paper label, its state |
 
 ## How a statement is tied to the paper
 
 Each theorem in `Rotor/Frozen/` sits between `-- FROZEN-STATEMENT-BEGIN` and
-`-- FROZEN-STATEMENT-END`.  Those bytes are the contract: `ledger/manifest.yaml`
+`-- FROZEN-STATEMENT-END`.  Those bytes are the contract: `verification/manifest.yaml`
 records their SHA-256 and the paper `\label` they transcribe.  The proof follows
 the end marker and may be rewritten freely.  Every frozen statement is read
 against the paper clause by clause before it is proved, and the reading is
@@ -75,9 +73,14 @@ paper's (`tools/check_exponents.py`).
 
 ```
 elan toolchain install $(cat lean-toolchain)
-lake exe cache get      # optional: prebuilt Mathlib
-lake build Rotor
+./bootstrap.sh          # fetches the pinned percolation dependency, then builds
 python3 tools/check_manifest.py
 python3 tools/check_axioms.py
 python3 tools/check_warnings.py
 ```
+
+`bootstrap.sh` is needed because `lake update` cannot check out the percolation dependency by
+itself: the pinned commit `795efb86` of `anthropics/formal-math` is not reachable from any branch
+tip of that repository, so Lake's clone does not contain it and the checkout fails with `fatal:
+reference is not a tree`.  The script fetches that object by hash and then runs `lake exe cache
+get` and `lake build`.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check (or repair) the paper line ranges recorded in ledger/manifest.yaml.
+"""Check (or repair) the paper line ranges recorded in verification/manifest.yaml.
 
 Each manifest node names the paper statement it formalizes as
 
@@ -29,7 +29,7 @@ except ImportError:
     sys.exit("paper_anchors.py: PyYAML is required (pip install pyyaml)")
 
 ROOT = Path(__file__).resolve().parent.parent
-MANIFEST = ROOT / "ledger" / "manifest.yaml"
+MANIFEST = ROOT / "verification" / "manifest.yaml"
 def _paper_path() -> Path:
     """The paper: the copy pinned in this repository, or `$ROTOR_PAPER`."""
     env = os.environ.get("ROTOR_PAPER")

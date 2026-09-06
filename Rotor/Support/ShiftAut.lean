@@ -8,7 +8,7 @@ The lattice shift of a doubly periodic graph with a periodic mechanism is a mech
 automorphism, so recurrence from `shift z o` for the shifted configuration is recurrence from
 `o` for the original one.  With recurrence independent of the starting vertex (Angel-Holroyd,
 `External.RecurrentOfRecurrent`), the recurrence event is shift-invariant, and ergodicity of
-the uniform law makes its probability `0` or `1` (`ledger/ERRATA.md`, E-001).
+the uniform law makes its probability `0` or `1` (the errata, E-001).
 -/
 
 open MeasureTheory

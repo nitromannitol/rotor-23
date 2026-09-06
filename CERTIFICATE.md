@@ -81,7 +81,7 @@ nowhere below.
 | 33 | `ext-kingman` | `Rotor.External.Kingman` | — | classical only |
 
 33 of 33 nodes depend on nothing beyond the three classical
-axioms.  Every node's state in `ledger/manifest.yaml` is `SEALED`.
+axioms.  Every node's state in `verification/manifest.yaml` is `SEALED`.
 
 ## Frozen statements
 
@@ -129,7 +129,7 @@ verifies these; the recipe is in `CORRESPONDENCE.md`.
 
 - The paper's open questions (Section 7) are questions; nothing there is
   formalized, and nothing here bears on them.
-- The scope rulings `S-***` in `ledger/decisions.md` say which parts of the
+- The scope rulings `S-***` in `the rulings` say which parts of the
   paper are outside this formalization and why.
 - The figures, the simulations and the survey in Section 1.4 are outside
   the formalization.
