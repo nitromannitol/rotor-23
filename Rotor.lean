@@ -137,3 +137,6 @@ import Rotor.Support.BondFinite
 import Rotor.Support.IntervalDomination
 import Rotor.Support.IntervalTree
 import Rotor.Support.IntervalReach
+import Rotor.Support.RootPotential
+import Rotor.Support.ReachBound
+import Rotor.Support.PassageAssembly

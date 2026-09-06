@@ -21,6 +21,7 @@ import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
 import Rotor.External.SubcriticalDecay
+import Rotor.Support.PassageAssembly
 
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
@@ -35,4 +36,4 @@ theorem Rotor.Frozen.square_passage (hSub : External.SubcriticalDecay) :
       uniformLaw clockwise (liveReachEvent clockwise u v R) ≤
         ENNReal.ofReal (C * Real.exp (-c * R))
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= square_passage_proof hSub
