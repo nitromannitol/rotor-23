@@ -9,6 +9,7 @@ $\P_0\{K\geq3k+1\}\leq(3/4)^k$, hence $\P_0\{K\geq m\}\leq(4/3)(3/4)^{m/3}$,
 that is $C = 4/3$ and $e^{-c} = (3/4)^{1/3}$.
 -/
 import Rotor.Exploration
+import Rotor.Support.ForcedCascade
 
 open Rotor MeasureTheory
 
@@ -18,4 +19,4 @@ theorem Rotor.Frozen.square_forced_tests (f d : Site) (hd : squareGraph.Adj f (f
       uniformLaw clockwise {ρ | (m : ℕ∞) ≤ forcedCount ρ f d} ≤
         ENNReal.ofReal ((4 / 3) * (3 / 4) ^ ((m : ℝ) / 3))
 -- FROZEN-STATEMENT-END
-:= by sorry
+:= square_forced_tests_proof f d hd

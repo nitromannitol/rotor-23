@@ -130,3 +130,5 @@ import Rotor.Support.ContourPath
 import Rotor.Support.ContourCtx
 import Rotor.Support.ContourCases
 import Rotor.Support.ActiveListLemma
+import Rotor.Support.HistoryProb
+import Rotor.Support.ForcedCascade
