@@ -326,6 +326,7 @@ theorem mLaw_fst (ν : ∀ v : V, Measure (G.neighborSet v)) [∀ v, IsProbabili
   rw [← Measure.map_apply measurable_fst hC, Measure.map_fst_prod, measure_univ, one_smul]
 
 omit [DecidableEq V] [G.LocallyFinite] in
+set_option linter.deprecated false in
 theorem marksLaw_mark (s : NNReal) (hs : s ≤ 1) (v : V) :
     marksLaw s hs {m : V → Bool | m v = true} = s := by
   unfold marksLaw
@@ -470,7 +471,7 @@ theorem mLaw_markedBlockEvent_le (z : ℤ × ℤ) :
     intro p hp
     by_cases h : ∀ v ∈ P.blockPlus L z, p.2 v = false
     · exact Or.inl (blockEvent_of_marked π P L z hp h)
-    · push_neg at h
+    · push Not at h
       obtain ⟨v, hv, hne⟩ := h
       refine Or.inr (Set.mem_iUnion₂.2 ⟨v, (Set.Finite.mem_toFinset _).2 hv, ?_⟩)
       simpa using hne
@@ -484,6 +485,7 @@ theorem mLaw_markedBlockEvent_le (z : ℤ × ℤ) :
         add_le_add (le_of_eq (mLaw_fst ν s hs (blockEvent_measurableSet π P L z)))
           (mLaw_marks_le ν s hs _)
 
+set_option linter.deprecated false in
 /-- The product Bernoulli(`1/8`) field on a finite set of sites. -/
 theorem bernoulliField_all (Z : Finset (ℤ × ℤ)) :
     External.bernoulliField (1 / 8) External.eighth_le_one {ω | ∀ z ∈ Z, ω z = true} =

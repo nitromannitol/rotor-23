@@ -23,6 +23,7 @@ noncomputable def fpw (par : ι → ℝ) (ω : ι → Bool) : ℝ :=
 /-- Parameters are probabilities. -/
 def IsParam (par : ι → ℝ) : Prop := ∀ i, 0 ≤ par i ∧ par i ≤ 1
 
+omit [DecidableEq ι] in
 theorem fpw_nonneg {par : ι → ℝ} (hpar : IsParam par) (ω : ι → Bool) : 0 ≤ fpw par ω :=
   Finset.prod_nonneg (fun i _ => by
     split_ifs
@@ -272,7 +273,7 @@ theorem fpw_le_of_agree {par : ι → ℝ} (hpar : IsParam par) (J : Finset ι) 
 
 /-- The weight ratio under two parameter families agreeing outside `J`. -/
 theorem fpw_le_of_par {par par' : ι → ℝ} (hpar : IsParam par) (hpar' : IsParam par') (J : Finset ι)
-    {ρ : ℝ} (hρ : 0 ≤ ρ) (hJ : ∀ j, j ∉ J → par j = par' j)
+    {ρ : ℝ} (_hρ : 0 ≤ ρ) (hJ : ∀ j, j ∉ J → par j = par' j)
     (hrat : ∀ j ∈ J, par j ≤ ρ * par' j ∧ 1 - par j ≤ ρ * (1 - par' j)) (ω : ι → Bool) :
     fpw par ω ≤ ρ ^ J.card * fpw par' ω := by
   unfold fpw
@@ -300,7 +301,7 @@ theorem fpw_le_of_par {par par' : ι → ℝ} (hpar : IsParam par) (hpar' : IsPa
         gcongr
     _ = _ := by ring
 
-theorem fpr_le_of_par {par par' : ι → ℝ} (hpar' : IsParam par') {ρ : ℝ} (hρ : 0 ≤ ρ)
+theorem fpr_le_of_par {par par' : ι → ℝ} (_hpar' : IsParam par') {ρ : ℝ} (_hρ : 0 ≤ ρ)
     (h : ∀ ω, fpw par ω ≤ ρ * fpw par' ω) (A : Set (ι → Bool)) : fpr par A ≤ ρ * fpr par' A := by
   unfold fpr
   rw [Finset.mul_sum]
@@ -313,6 +314,7 @@ end FiniteProduct
 
 /-! ### Bernoulli(p) on finitely many bonds -/
 
+set_option linter.deprecated false in
 theorem bondLaw_cyl (p : NNReal) (hp : p ≤ 1) (F : Finset (Sym2 Site)) (ξ : Sym2 Site → Bool) :
     bondLaw p hp (cylBonds F ξ) = ∏ b ∈ F, (if ξ b then (p : ℝ≥0∞) else 1 - p) := by
   have hset : cylBonds F ξ = Set.pi (↑F) (fun b => {ξ b}) := by

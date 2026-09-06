@@ -363,9 +363,9 @@ theorem intPot_sum_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d))
     set Srest := S.filter (fun h' => ¬ h'.length = L) with hSrest
     set P := Stop.image List.dropLast with hP
     have hsplit : S = Srest ∪ Stop := by
-      rw [hSrest, hStop, Finset.union_comm, Finset.filter_union_filter_neg_eq]
+      rw [hSrest, hStop, Finset.union_comm, Finset.filter_union_filter_not_eq]
     have hdisj : Disjoint Srest Stop := by
-      rw [hSrest, hStop]; exact (Finset.disjoint_filter_filter_neg S S _).symm
+      rw [hSrest, hStop]; exact (Finset.disjoint_filter_filter_not S S _).symm
     have hStop_mem : ∀ x ∈ Stop, x ∈ S ∧ x.length = L := fun x hx => Finset.mem_filter.1 hx
     have hSrest_mem : ∀ x ∈ Srest, x ∈ S ∧ x.length ≤ h₀.length + n := fun x hx => by
       have h1 := Finset.mem_filter.1 hx
@@ -478,7 +478,7 @@ theorem intervalCyl_subset_of_wit {f d : Site} {h₀ : List Bool} {r : Site} {s 
 /-! ### The box and its bonds -/
 
 /-- The sites within `ℓ^∞` distance `s` of `r`. -/
-def boxSites (r : Site) (s : ℕ) : Finset Site :=
+noncomputable def boxSites (r : Site) (s : ℕ) : Finset Site :=
   (Finset.Icc (r.1 - s) (r.1 + s)) ×ˢ (Finset.Icc (r.2 - s) (r.2 + s))
 
 theorem mem_boxSites {r : Site} {s : ℕ} {y : Site} : y ∈ boxSites r s ↔ linfDist y r ≤ s := by
@@ -486,7 +486,7 @@ theorem mem_boxSites {r : Site} {s : ℕ} {y : Site} : y ∈ boxSites r s ↔ li
   omega
 
 /-- The bonds inside the box. -/
-def boxBonds (r : Site) (s : ℕ) : Finset (Sym2 Site) :=
+noncomputable def boxBonds (r : Site) (s : ℕ) : Finset (Sym2 Site) :=
   (boxSites r s ×ˢ boxSites r s).image (fun p => s(p.1, p.2))
 
 theorem mem_boxBonds_of {r : Site} {s : ℕ} {a b : Site} (ha : linfDist a r ≤ s)

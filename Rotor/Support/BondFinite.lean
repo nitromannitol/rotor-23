@@ -24,6 +24,7 @@ theorem measurableSet_cylBonds (F : Finset (Sym2 Site)) (ξ : Sym2 Site → Bool
   exact MeasurableSet.biInter (Finset.countable_toSet F)
     (fun b _ => measurable_pi_apply b MeasurableSet.of_discrete)
 
+set_option linter.deprecated false in
 theorem bondLaw_half_cyl (F : Finset (Sym2 Site)) (ξ : Sym2 Site → Bool) :
     bondLaw (1 / 2) half_le_one (cylBonds F ξ) = (1 / 2 : ℝ≥0∞) ^ F.card := by
   have hset : cylBonds F ξ = Set.pi (↑F) (fun b => {ξ b}) := by

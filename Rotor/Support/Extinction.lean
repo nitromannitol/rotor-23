@@ -330,7 +330,7 @@ theorem lintegral_Y_succ_le_atom (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v �
     exact lintegral_Y_succ_le hox h3 h v₀
   · refine setLIntegral_mono' hmR (fun ρ hρ => ?_)
     rw [Y_of_not_reach hρ.2, Nat.cast_zero]
-    exact zero_le _
+    exact zero_le
 
 theorem lintegral_Z_succ_le (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3) (j : ℕ) :
     ∫⁻ ρ, (Z π o x N (j + 1) ρ : ENNReal) ∂(uniformLaw π)
@@ -356,7 +356,7 @@ theorem lintegral_Z_succ_le (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3)
       have hs' : ∃ i ≤ j, N ≤ Y π o x i ρ :=
         ⟨i, hi, by rwa [Y_eq_of_atomE_le hρ hρ₀ (by omega)]⟩
       exact_mod_cast (Z_succ_of_stopped hs').le
-    · push_neg at hs
+    · push Not at hs
       have hZ : ∀ ρ ∈ atomE π o x h.1,
           Z π o x N (j + 1) ρ = Y π o x (j + 1) ρ ∧ Z π o x N j ρ = Y π o x j ρ :=
         fun ρ hρ => Z_succ_of_not_stopped (fun ⟨i, hi, hY⟩ => absurd hY (not_le.2 (hs ρ hρ i hi)))
@@ -394,7 +394,7 @@ theorem measure_exists_stop_le (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤
     ext ρ; simp
   rw [this, measure_iUnion_eq_iSup_accumulate]
   refine iSup_le (fun j => ?_)
-  have : Set.Accumulate (fun i => {ρ : Config G | N ≤ Y π o x i ρ}) j
+  have : Set.accumulate (fun i => {ρ : Config G | N ≤ Y π o x i ρ}) j
       = {ρ | ∃ i ≤ j, N ≤ Y π o x i ρ} := by
     ext ρ; simp [Set.mem_accumulate]
   rw [this]
@@ -499,16 +499,16 @@ theorem measure_atomE_le_three_mul_drop (hox : G.Adj o x) (h3 : ∀ v : V, G.deg
   have hmR : MeasurableSet R := measurableSet_reach _
   have h1 : uniformLaw π (atomE π o x h) =
       uniformLaw π (atomE π o x h ∩ Rᶜ) + uniformLaw π (atomE π o x h ∩ R) := by
-    rw [← measure_inter_add_diff (atomE π o x h) hmR, add_comm, Set.diff_eq]
+    rw [← measure_inter_add_sdiff (atomE π o x h) hmR, add_comm, Set.sdiff_eq]
   have h2 : uniformLaw π (atomE π o x h ∩ Drop π o x h.length) =
       uniformLaw π (atomE π o x h ∩ Drop π o x h.length ∩ Rᶜ) +
         uniformLaw π (atomE π o x h ∩ Drop π o x h.length ∩ R) := by
-    rw [← measure_inter_add_diff (atomE π o x h ∩ Drop π o x h.length) hmR, add_comm, Set.diff_eq]
+    rw [← measure_inter_add_sdiff (atomE π o x h ∩ Drop π o x h.length) hmR, add_comm, Set.sdiff_eq]
   rw [h1, h2, mul_add]
   refine add_le_add ?_ ?_
   · have hsub : atomE π o x h ∩ Rᶜ ⊆ atomE π o x h ∩ Drop π o x h.length ∩ Rᶜ :=
       fun ρ ⟨hρ, hr⟩ => ⟨⟨hρ, Or.inl hr⟩, hr⟩
-    exact (measure_mono hsub).trans (le_mul_of_one_le_left (zero_le _) (by norm_num))
+    exact (measure_mono hsub).trans (le_mul_of_one_le_left (zero_le) (by norm_num))
   · rcases Set.eq_empty_or_nonempty (atomE π o x h ∩ R) with he | ⟨ρ₀, hρ₀⟩
     · rw [he]; simp
     obtain ⟨v₀, hv₀⟩ := (reach_succ_iff hρ₀.1).1 hρ₀.2
@@ -558,7 +558,7 @@ theorem measure_le_three_mul_drop (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v 
       refine ⟨⟨hρE, Or.inl ?_⟩, hρp⟩
       rw [piece_of_length_lt hlt] at hρp
       exact fun hr => hρp.2 (reach_mono (by omega) hr)
-    exact (measure_mono hsub).trans (le_mul_of_one_le_left (zero_le _) (by norm_num))
+    exact (measure_mono hsub).trans (le_mul_of_one_le_left (zero_le) (by norm_num))
   · rw [piece_of_length_eq heq]
     by_cases hne : ∃ ρ₀ ∈ atomE π o x h.1, ρ₀ ∈ E
     · obtain ⟨ρ₀, hρ₀, hρ₀E⟩ := hne
@@ -570,7 +570,7 @@ theorem measure_le_three_mul_drop (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v 
         rw [Set.inter_assoc, Set.inter_comm (Drop π o x j), ← Set.inter_assoc, e1]
       rw [e1, e2]
       exact measure_atomE_le_three_mul_drop hox h3 heq
-    · push_neg at hne
+    · push Not at hne
       have : E ∩ atomE π o x h.1 = ∅ :=
         Set.eq_empty_of_forall_notMem (fun ρ ⟨h1, h2⟩ => hne ρ h2 h1)
       rw [this]
@@ -659,7 +659,7 @@ theorem measure_bad_succ_le (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3)
       ≤ uniformLaw π (Bad π o x N k \ Drops π o x (k * N) N) :=
         measure_mono (bad_succ_subset N k)
     _ = uniformLaw π (Bad π o x N k) - uniformLaw π (Bad π o x N k ∩ Drops π o x (k * N) N) := by
-        rw [← Set.diff_self_inter, measure_diff Set.inter_subset_left
+        rw [← Set.sdiff_self_inter, measure_sdiff Set.inter_subset_left
           (hm.inter hmD).nullMeasurableSet (measure_ne_top _ _)]
     _ ≤ uniformLaw π (Bad π o x N k) - (3 : ENNReal)⁻¹ ^ N * uniformLaw π (Bad π o x N k) :=
         tsub_le_tsub_left hge _
@@ -684,7 +684,7 @@ theorem measure_iInter_bad (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3) 
     exact pow_ne_zero _ (ENNReal.inv_ne_zero.2 (by norm_num))
   have ht : Filter.Tendsto (fun k : ℕ => (1 - (3 : ENNReal)⁻¹ ^ N) ^ k) Filter.atTop (nhds 0) :=
     ENNReal.tendsto_pow_atTop_nhds_zero_iff.2 hθ
-  refine le_antisymm (ge_of_tendsto' ht (fun k => ?_)) (zero_le _)
+  refine le_antisymm (ge_of_tendsto' ht (fun k => ?_)) (zero_le)
   exact (measure_mono (Set.iInter_subset _ k)).trans (measure_bad_le hox h3 N k)
 
 omit [Countable V] in
@@ -714,14 +714,14 @@ theorem mem_bad_of_forall {N : ℕ} {ρ : Config G} (hr : ∀ j, Reach π o x j 
 /-- Almost surely only finitely many vertices are reached. -/
 theorem measure_reach_all (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3) :
     uniformLaw π {ρ | ∀ j, Reach π o x j ρ} = 0 := by
-  refine le_antisymm ?_ (zero_le _)
+  refine le_antisymm ?_ (zero_le)
   refine ge_of_tendsto' ENNReal.tendsto_inv_nat_nhds_zero (fun N => ?_)
   have hsub : {ρ : Config G | ∀ j, Reach π o x j ρ} ⊆
       {ρ | ∃ i, N ≤ Y π o x i ρ} ∪ ⋂ k, Bad π o x N k := by
     intro ρ hρ
     by_cases hY : ∃ i, N ≤ Y π o x i ρ
     · exact Or.inl hY
-    · push_neg at hY
+    · push Not at hY
       exact Or.inr (Set.mem_iInter.2 (mem_bad_of_forall hρ hY))
   calc uniformLaw π {ρ : Config G | ∀ j, Reach π o x j ρ}
       ≤ uniformLaw π ({ρ | ∃ i, N ≤ Y π o x i ρ} ∪ ⋂ k, Bad π o x N k) := measure_mono hsub

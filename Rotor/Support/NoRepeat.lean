@@ -82,7 +82,7 @@ theorem degree_eq_card_add [G.LocallyFinite] (S : Finset V) (u : V) :
     · rintro ⟨hS, hadj⟩; exact ⟨G.adj_symm hadj, hS⟩
     · rintro ⟨hadj, hS⟩; exact ⟨hS, G.adj_symm hadj⟩
   rw [h1, ← SimpleGraph.card_neighborFinset_eq_degree]
-  exact (Finset.filter_card_add_filter_neg_card_eq_card _).symm
+  exact (Finset.card_filter_add_card_filter_not _).symm
 
 end Rotor
 

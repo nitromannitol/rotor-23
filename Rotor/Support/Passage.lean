@@ -126,7 +126,7 @@ theorem τ_triangle (hAb : External.Abelian G) [Infinite V] [G.LocallyFinite] (h
 /-! ### The passage balls -/
 
 theorem T_zero' [G.LocallyFinite] (ρ : Config G) (o : V) : T π ρ o 0 = 0 := by
-  refine le_antisymm ?_ (zero_le _)
+  refine le_antisymm ?_ (zero_le)
   have h : (0 : ℕ) ∈ circuitSet π ρ o 0 := ⟨rfl, by simp⟩
   have := T_le_of_mem π ρ o 0 h
   simpa using this

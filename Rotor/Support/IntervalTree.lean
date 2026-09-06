@@ -223,7 +223,7 @@ theorem exists_cut {l : List Site} {r : Site} (hhead : l.head? = some r)
   have hmin : ∀ j y, j < Nat.find hex → l[j]? = some y → linfDist y r < s := by
     intro j y hj hjy
     have := Nat.find_min hex hj
-    push_neg at this
+    push Not at this
     exact this y hjy
   generalize hm : Nat.find hex = m at hb hbs hmin
   have hml : m < l.length := (List.getElem?_eq_some_iff.1 hb).1
@@ -336,7 +336,7 @@ theorem exists_minWit (f : Site) {d : Site} (hd : IsUnit d) {h₀ : List Bool} {
       have := hp.trans (List.take_prefix m₀ h')
       rwa [List.prefix_iff_eq_take] at this
     have := Nat.find_min hex hlen
-    push_neg at this
+    push Not at this
     exact this hp0.length_le (by have := hp.length_le; rw [List.length_take] at this; omega)
       (hp' ▸ hw')
 

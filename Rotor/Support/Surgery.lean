@@ -131,7 +131,7 @@ theorem surgery (x y : Site) (r : ℕ) {z : ℤ × ℤ} (hz : z ∈ Zset r) {e :
   have htl : k₂ < l.length := (List.getElem?_eq_some_iff.1 ht).1
   have hst : s ≠ t := by
     intro hst
-    have : k₁ = k₂ := List.getElem?_inj hsl hopen.1.1 (hs.trans (hst ▸ ht.symm))
+    have : k₁ = k₂ := (List.getElem?_inj hsl hopen.1.1).1 (hs.trans (hst ▸ ht.symm))
     omega
   have hx0 : l[0]? = some x := by rw [← List.head?_eq_getElem?]; exact hhead
   have hyl : l[l.length - 1]? = some y := by rw [← List.getLast?_eq_getElem?]; exact hlast
@@ -206,8 +206,8 @@ theorem surgery (x y : Site) (r : ℕ) {z : ℤ × ℤ} (hz : z ∈ Zset r) {e :
       rcases Sym2.mem_iff.1 hvb with rfl | rfl
       · exact hu (hqB _ (List.mem_of_getElem? hv))
       · rcases hw with hw | hw
-        · have : i = 0 := List.getElem?_inj (by omega) hqP.1 (hv.trans hw.symm); omega
-        · have : i = q.length - 1 := List.getElem?_inj (by omega) hqP.1 (hv.trans hw.symm); omega
+        · have : i = 0 := (List.getElem?_inj (by omega) hqP.1).1 (hv.trans hw.symm); omega
+        · have : i = q.length - 1 := (List.getElem?_inj (by omega) hqP.1).1 (hv.trans hw.symm); omega
     · intro h; exact hu (he u (by rw [← h]; exact Sym2.mem_mk_left _ _))
   refine ⟨surgeryConfig ω q e, hagreeOut, ?_, ?_⟩
   · -- the new path
@@ -239,7 +239,7 @@ theorem surgery (x y : Site) (r : ℕ) {z : ℤ × ℤ} (hz : z ∈ Zset r) {e :
         rw [List.getElem?_take] at hi
         rw [List.getElem?_drop] at hj
         split_ifs at hi with hik
-        · have := List.getElem?_inj (List.getElem?_eq_some_iff.1 hi).1 hopen.1.1 (hi.trans hj.symm)
+        · have := (List.getElem?_inj (List.getElem?_eq_some_iff.1 hi).1 hopen.1.1).1 (hi.trans hj.symm)
           omega
       · exact fun v hv hv' => hdrop v hv' (hqB v hv)
       · intro a ha b hb
@@ -324,7 +324,7 @@ theorem surgery (x y : Site) (r : ℕ) {z : ℤ × ℤ} (hz : z ∈ Zset r) {e :
           have hk₁0 : k₁ = 0 := by omega
           rw [hk₁0, hx0] at hs
           have hsx : x = s := Option.some.inj hs
-          have : 0 = m := List.getElem?_inj (by omega) hqP.1
+          have : 0 = m := (List.getElem?_inj (by omega) hqP.1).1 
             (by rw [hq0, hw, ← hsx, hxw'])
           omega
         · intro hyw
@@ -335,7 +335,7 @@ theorem surgery (x y : Site) (r : ℕ) {z : ℤ × ℤ} (hz : z ∈ Zset r) {e :
           have hk₂' : k₂ = l.length - 1 := by omega
           rw [hk₂', hyl] at ht
           have hty : y = t := Option.some.inj ht
-          have : q.length - 1 = m := List.getElem?_inj (by omega) hqP.1
+          have : q.length - 1 = m := (List.getElem?_inj (by omega) hqP.1).1 
             (by rw [hqlast, hw, ← hty, hyw'])
           omega
       have hTq : Traverses p q := by
@@ -351,7 +351,7 @@ theorem surgery (x y : Site) (r : ℕ) {z : ℤ × ℤ} (hz : z ∈ Zset r) {e :
       have := hpm z hz hTc
       rw [Function.update_self] at this
       exact Bool.false_ne_true this
-    · push_neg at huse
+    · push Not at huse
       apply hno p
       refine ⟨?_, hph, hpl, hpD, ?_⟩
       · refine isOpenPath_mono hpo (fun i hi hop => ?_)
@@ -366,13 +366,13 @@ theorem surgery (x y : Site) (r : ℕ) {z : ℤ × ℤ} (hz : z ∈ Zset r) {e :
           have h6 : (gridCopy x y z).length = 6 := copyAt_length _
           have h6' : (copyAt c).length = 6 := copyAt_length _
           obtain ⟨m, hm, hm'⟩ := traverses_pair hT (i := 0)
-            (by change 0 + 1 < (copyAt c).length; rw [h6']; omega)
+            (by rw [h6]; omega)
           obtain ⟨a, ha⟩ : ∃ a, (gridCopy x y z)[0]? = some a :=
             ⟨_, List.getElem?_eq_getElem (by rw [h6]; omega)⟩
           obtain ⟨b, hb⟩ : ∃ b, (gridCopy x y z)[0 + 1]? = some b :=
             ⟨_, List.getElem?_eq_getElem (by rw [h6]; omega)⟩
           have hQ : QBond q s(a, b) :=
-            qbond_of_traverses hqT (by change 0 + 1 < (copyAt c).length; rw [h6']; omega) ha hb
+            qbond_of_traverses hqT (by rw [h6']; omega) ha hb
           apply huse m hm
           have hpm0 : p[m]? = some p[m] := List.getElem?_eq_getElem (by omega)
           have hpm1 : p[m + 1]? = some p[m + 1] := List.getElem?_eq_getElem hm

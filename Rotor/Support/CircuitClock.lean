@@ -332,7 +332,7 @@ theorem idx_tendsto (hT : ∀ n, T π ρ o n < ⊤)
   intro N
   refine ⟨(T π ρ o N).toNat, fun t ht => ?_⟩
   by_contra hlt
-  push_neg at hlt
+  push Not at hlt
   have h1 := lt_T_idx_succ π ρ o hex t
   have h2 : (T π ρ o (idx π ρ o hex t + 1)).toNat ≤ (T π ρ o N).toNat :=
     toNat_T_mono π ρ o hT (by omega)
@@ -515,8 +515,8 @@ theorem tendsto_hausdorff_R (hT : ∀ n, T π ρ o n < ⊤) {β : ℝ} (hβ : 0 
     rw [add_zero] at this
     refine this.congr (fun t => ?_)
     rw [add_div]
-  have hfin : ∀ n : ℕ, EMetric.hausdorffEdist ((n : ℝ)⁻¹ • (emb '' (A π ρ o n : Set V))) B ≠ ⊤ :=
-    fun n => Metric.hausdorffEdist_ne_top_of_nonempty_of_bounded
+  have hfin : ∀ n : ℕ, Metric.hausdorffEDist ((n : ℝ)⁻¹ • (emb '' (A π ρ o n : Set V))) B ≠ ⊤ :=
+    fun n => Metric.hausdorffEDist_ne_top_of_nonempty_of_bounded
       ⟨(n : ℝ)⁻¹ • emb o, Set.smul_mem_smul_set (Set.mem_image_of_mem emb (o_mem_A π ρ o n))⟩
       hBne (((A π ρ o n).finite_toSet.image emb).smul_set.isBounded) hBc.isBounded
   rw [Metric.tendsto_atTop]

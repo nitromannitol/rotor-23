@@ -31,7 +31,7 @@ theorem even_of_pos_initial (t : ℕ) (ht : t ≤ latTime M ρ o 0) (h : Xpend M
     have : t = 0 := by omega
     subst this
     exact hodd ⟨0, rfl⟩
-  · push_neg at hk2
+  · push Not at hk2
     have hn : (k : ℕ) + (M + 3 - k) = M + 3 := by have := k.isLt; omega
     obtain ⟨-, hpos⟩ := leaf_phase M o (M + 3 - k) ρ k hρ (by omega) hn
     have hlt : latTime M ρ o 0 = 2 * (M + 3 - k) := by
@@ -56,11 +56,11 @@ theorem visits_le_of_no_return {r : ℕ} (hr : ∀ s, 1 ≤ s → s < r → Ysq 
     obtain ⟨htt, hX⟩ := ht'
     have hle0 : t' ≤ latTime M ρ o 0 := by
       by_contra hgt
-      push_neg at hgt
+      push Not at hgt
       obtain ⟨s, hs1, hs2⟩ := exists_between M ρ o t' hgt
       have hs : s + 1 < r := by
         by_contra hge
-        push_neg at hge
+        push Not at hge
         have := latTime_mono M ρ o (show r - 1 ≤ s by omega)
         omega
       rcases pos_between M ρ o s t' hs1 hs2 with h' | ⟨i, h'⟩
@@ -83,7 +83,7 @@ theorem T_zero_le : T (pendantMech M) ρ (.inl o) 0 ≤ 0 :=
 theorem latTime_lt_T_one {r : ℕ} (hr : ∀ s, 1 ≤ s → s < r → Ysq M ρ o s ≠ o) :
     (latTime M ρ o (r - 1) : ℕ∞) < T (pendantMech M) ρ (.inl o) 1 := by
   by_contra hle
-  push_neg at hle
+  push Not at hle
   have hlt : T (pendantMech M) ρ (.inl o) 1 < ⊤ := lt_of_le_of_lt hle (WithTop.coe_lt_top _)
   have hmem := T_mem (pendantMech M) ρ (.inl o) 1 hlt
   obtain ⟨-, hvis⟩ := hmem

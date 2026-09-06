@@ -63,12 +63,16 @@ theorem productLaw_invariant (ν : ∀ v : V, Measure (G.neighborSet v))
   rw [hfun, ← Measure.map_map
     (g := ⇑(MeasurableEquiv.piCongrLeft (fun v => G.neighborSet v) (P.shiftVEquiv z)))
     (f := fun ρ : Config G => fun w => P.shiftNbr z (ρ w))
-    (MeasurableEquiv.piCongrLeft (fun v => G.neighborSet v) (P.shiftVEquiv z)).measurable hf,
-    Measure.infinitePi_map_pi (μ := ν) (f := fun w a => P.shiftNbr z a)
-      (fun w => P.measurable_shiftNbr z w)]
-  have : (fun w => (ν w).map (P.shiftNbr z)) = fun w => ν (P.shiftVEquiv z w) :=
+    (MeasurableEquiv.piCongrLeft (fun v => G.neighborSet v) (P.shiftVEquiv z)).measurable hf]
+  have h1 : (fun w => (ν w).map (P.shiftNbr z)) = fun w => ν (P.shiftVEquiv z w) :=
     funext (fun w => hν z w)
-  rw [this, Measure.infinitePi_map_piCongrLeft]
+  have hmap : (Measure.infinitePi ν).map (fun ρ w => P.shiftNbr z (ρ w))
+      = Measure.infinitePi (fun w => ν (P.shiftVEquiv z w)) := by
+    rw [← h1]
+    exact Measure.infinitePi_map_pi (μ := ν) (hf := fun w => P.measurable_shiftNbr z w)
+  exact (congrArg (fun μ : Measure ((b : V) → G.neighborSet (P.shiftVEquiv z b)) => Measure.map
+      (⇑(MeasurableEquiv.piCongrLeft (fun v => G.neighborSet v) (P.shiftVEquiv z))) μ) hmap).trans
+    (Measure.infinitePi_map_piCongrLeft (μ := ν) (e := P.shiftVEquiv z))
 
 /-- The translation as an equivalence of neighbour sets. -/
 def shiftNbrEquiv (z : ℤ × ℤ) (v : V) : G.neighborSet v ≃ G.neighborSet (P.shift z v) where

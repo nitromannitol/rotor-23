@@ -14,7 +14,7 @@ namespace Rotor
 
 /-- King walks of `m` steps from `o`, stored most recent first: lists of length `m + 1` ending
 in `o` whose consecutive entries are king steps. -/
-def kingWalks (o : ℤ × ℤ) : ℕ → Finset (List (ℤ × ℤ))
+noncomputable def kingWalks (o : ℤ × ℤ) : ℕ → Finset (List (ℤ × ℤ))
   | 0 => {[o]}
   | m + 1 => (kingWalks o m).biUnion (fun p => (kingNbrs (p.headD o)).image (fun b => b :: p))
 

@@ -35,7 +35,7 @@ theorem adj_X_succ (ρ : Config G) (o : V) (t : ℕ) : G.Adj (X π ρ o t) (X π
 /-- `x ∈ R_t` iff the walk is at `x` at some time `≤ t`. -/
 theorem mem_R (ρ : Config G) (o : V) (t : ℕ) (x : V) :
     x ∈ R π ρ o t ↔ ∃ s ≤ t, X π ρ o s = x := by
-  simp [R, Finset.mem_image, Nat.lt_succ_iff]
+  simp [R, Finset.mem_image]
 
 theorem X_mem_R (ρ : Config G) (o : V) (s t : ℕ) (h : s ≤ t) : X π ρ o s ∈ R π ρ o t :=
   (mem_R π ρ o t _).2 ⟨s, h, rfl⟩

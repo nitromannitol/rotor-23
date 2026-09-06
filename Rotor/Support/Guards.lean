@@ -27,7 +27,7 @@ theorem X_allNorth_four : X (fun _ => (0 : Dir)) (0, 0) 4 = (4, 0) := by
 
 /-- `T(0) = 0`: zero circuits are complete at time `0`. -/
 theorem T_zero (ρ : RotorConfig) (o : Site) : T ρ o 0 = 0 :=
-  le_antisymm (iInf₂_le (0 : ℕ) ⟨rfl, Nat.zero_le _⟩) (zero_le _)
+  le_antisymm (iInf₂_le (0 : ℕ) ⟨rfl, Nat.zero_le _⟩) zero_le
 
 /-- `A_0 = {o}`, `rotor.tex:222-223`. -/
 theorem A_zero (ρ : RotorConfig) (o : Site) : A ρ o 0 = {o} := by

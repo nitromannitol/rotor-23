@@ -197,7 +197,7 @@ theorem sandwich_of (hπ : P.Periodic π) (hG : G.Connected) (o : V) {f : Plane 
         have h3 : ‖P.emb x - P.emb o‖ ≤ R := hsmall.le.trans hRR
         have h4 : K * ‖P.emb x - P.emb o‖ ≤ K * R := mul_le_mul_of_nonneg_left h3 hK0
         linarith
-      · push_neg at hsmall
+      · push Not at hsmall
         have h1 := (abs_le.1 (hR₀ x hsmall)).2
         have h2 := pf_lower hfsmul hmin (P.emb x - P.emb o)
         have h3 : (ε / 4) * (l * ‖P.emb x - P.emb o‖) ≤ (ε / 4) * f (P.emb x - P.emb o) :=
@@ -215,7 +215,7 @@ theorem sandwich_of (hπ : P.Periodic π) (hG : G.Connected) (o : V) {f : Plane 
       have h3 : ‖P.emb x - P.emb o‖ ≤ R := hsmall.le.trans hRR
       have h4 : C * ‖P.emb x - P.emb o‖ ≤ C * R := mul_le_mul_of_nonneg_left h3 hC0.le
       linarith
-    · push_neg at hsmall
+    · push Not at hsmall
       have h1 := (abs_le.1 (hR₀ x hsmall)).1
       have h2 := pf_lower hfsmul hmin (P.emb x - P.emb o)
       have h3 : (ε / 4) * (l * ‖P.emb x - P.emb o‖) ≤ (ε / 4) * f (P.emb x - P.emb o) :=

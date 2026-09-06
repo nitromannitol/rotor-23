@@ -64,7 +64,8 @@ theorem pStep_of_not_adj {a b c : V} (h : ¬ (G.Adj b a ∧ G.Adj b c)) : pStep 
 /-- `eq:mean-continuations`. -/
 theorem sum_pStep {a b : V} (ha : G.Adj b a) :
     ∑ c ∈ G.neighborFinset b, pStep π a b c = ((G.degree b : ℝ) - 1) / 2 := by
-  rw [Finset.sum_subtype (G.neighborFinset b) (fun c => G.mem_neighborFinset b c)]
+  rw [Finset.sum_subtype (F := inferInstanceAs (Fintype (G.neighborSet b))) (G.neighborFinset b)
+    (fun c => G.mem_neighborFinset b c)]
   have h1 : ∀ c : G.neighborSet b, pStep π a b c =
       ((stepSet π b ⟨a, ha⟩ c).card : ℝ) / G.degree b := by
     intro c
@@ -87,6 +88,7 @@ theorem sum_pStep {a b : V} (ha : G.Adj b a) :
   have h4 : (∑ c : G.neighborSet b, ((stepSet π b ⟨a, ha⟩ c).card : ℝ)) * 2 =
       ((G.degree b : ℝ) - 1) * G.degree b := by linarith
   convert h4 using 2
+  congr 1
 
 theorem one_div_degree_le_pStep {a b c : V} (ha : G.Adj b a) (hc : G.Adj b c) (hne : c ≠ a) :
     1 / (G.degree b : ℝ) ≤ pStep π a b c := by

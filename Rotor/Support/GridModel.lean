@@ -13,11 +13,11 @@ variable (x y : Site) (r : ℕ)
 abbrev GIdx := ↥(Fset x y r) ⊕ ↥(Zset r)
 
 /-- The bond configuration read off a model configuration. -/
-def bondsOf (ω : GIdx x y r → Bool) : BondConfig :=
+noncomputable def bondsOf (ω : GIdx x y r → Bool) : BondConfig :=
   extF (Fset x y r) (fun b => ω (Sum.inl b))
 
 /-- The marks read off a model configuration. -/
-def marksOf (ω : GIdx x y r → Bool) (z : ℤ × ℤ) : Bool :=
+noncomputable def marksOf (ω : GIdx x y r → Bool) (z : ℤ × ℤ) : Bool :=
   if h : z ∈ Zset r then ω (Sum.inr ⟨z, h⟩) else false
 
 /-- The event of the marked model. -/
@@ -111,7 +111,7 @@ noncomputable def touchSet (z : ℤ × ℤ) : Finset (GIdx x y r) :=
   Finset.univ.filter (fun j => ∃ b : ↥(Fset x y r), j = Sum.inl b ∧ Touches (blockCorner x y z) b.1)
 
 /-- The vertices of the block with corner `c`. -/
-def blockVerts (c : Site) : Finset Site := Icc c.1 (c.1 + 4) ×ˢ Icc c.2 (c.2 + 4)
+noncomputable def blockVerts (c : Site) : Finset Site := Icc c.1 (c.1 + 4) ×ˢ Icc c.2 (c.2 + 4)
 
 theorem card_blockVerts (c : Site) : (blockVerts c).card = 25 := by
   rw [blockVerts, card_product, Int.card_Icc, Int.card_Icc,
@@ -277,7 +277,7 @@ theorem inr_notMem_newSet (W : Finset (ℤ × ℤ)) (z : ℤ × ℤ) (z' : ↥(Z
   unfold newSet
   rw [mem_filter]
   rintro ⟨-, b, h, -⟩
-  exact Sum.noConfusion h
+  simp at h
 
 theorem gridPar_insert (ε : ℝ) (W : Finset (ℤ × ℤ)) {z : ℤ × ℤ} (hz : z ∈ Zset r)
     (hzW : z ∉ W) :

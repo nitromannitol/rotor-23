@@ -131,7 +131,7 @@ theorem sub_succ (a : ℕ) :
 /-- `k(v) ≤ 4`: five departures would repeat a traversal. -/
 theorem kOut_le_four (h : FirstReturn σ o r) (v : Site) : kOut σ o r v ≤ 4 := by
   by_contra hlt
-  push_neg at hlt
+  push Not at hlt
   obtain ⟨a, ha, hva, hda⟩ := exists_deps_eq σ o r (show 0 < kOut σ o r v by omega)
   obtain ⟨b, hb, hvb, hdb⟩ := exists_deps_eq σ o r (show 4 < kOut σ o r v by omega)
   have hab : a < b := by
@@ -174,7 +174,6 @@ theorem sum_exits (v : Site) :
     exact mem_range.2 (deps_lt_kOut σ o r ha.1 ha.2)
   · intro a ha b hb hab
     simp only [mem_filter, mem_range] at ha hb
-    dsimp only at hab
     by_contra hne
     rcases lt_or_gt_of_ne hne with h' | h'
     · have := deps_lt_of_eq σ o v h' ha.2; omega
@@ -561,7 +560,7 @@ theorem excursion_core (h : FirstReturn σ o r) :
       exact cs_sum_exits_west σ o r v hW h1 h3
     · exact cs_sum_exits_ge σ o r h v
   rw [h0, sum_ite, sum_const, sum_const] at hle
-  have hc := filter_card_add_filter_neg_card_eq_card (s := Uset σ o r) (p := fun v => dir0 σ v = 3)
+  have hc := card_filter_add_card_filter_not (s := Uset σ o r) (p := fun v => dir0 σ v = 3)
   simp only [nsmul_eq_mul, mul_one, mul_neg] at hle
   simp only [ne_eq]
   omega

@@ -202,7 +202,7 @@ theorem indeg_survive (E : Finset (V × V)) (v : V) :
     indeg (survive E) v + (E.filter (fun e => e.2 = v ∧ e.swap ∈ E)).card = indeg E v := by
   unfold indeg survive
   rw [Finset.filter_filter]
-  have := Finset.filter_card_add_filter_neg_card_eq_card (s := E.filter (fun e => e.2 = v))
+  have := Finset.card_filter_add_card_filter_not (s := E.filter (fun e => e.2 = v))
     (fun e => e.swap ∈ E)
   rw [Finset.filter_filter, Finset.filter_filter] at this
   rw [← this, add_comm]
@@ -215,7 +215,7 @@ theorem outdeg_survive (E : Finset (V × V)) (v : V) :
     outdeg (survive E) v + (E.filter (fun e => e.1 = v ∧ e.swap ∈ E)).card = outdeg E v := by
   unfold outdeg survive
   rw [Finset.filter_filter]
-  have := Finset.filter_card_add_filter_neg_card_eq_card (s := E.filter (fun e => e.1 = v))
+  have := Finset.card_filter_add_card_filter_not (s := E.filter (fun e => e.1 = v))
     (fun e => e.swap ∈ E)
   rw [Finset.filter_filter, Finset.filter_filter] at this
   rw [← this, add_comm]

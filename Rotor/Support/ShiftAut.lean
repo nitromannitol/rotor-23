@@ -33,11 +33,13 @@ theorem shiftAut_act (hπ : P.Periodic π) (z : ℤ × ℤ) (ρ : Config G) :
   apply Subtype.ext
   rfl
 
+omit [G.LocallyFinite] in
 theorem recurrent_shiftConfig (hπ : P.Periodic π) (z : ℤ × ℤ) (ρ : Config G) (o : V) :
     Recurrent π (P.shiftConfig z ρ) (P.shift z o) ↔ Recurrent π ρ o := by
   rw [← P.shiftAut_act hπ z]
   exact (P.shiftAut hπ z).recurrent_act ρ o
 
+omit [G.LocallyFinite] in
 theorem shiftConfig_preimage_recurrent [Infinite V] (hG : G.Connected)
     (hAH : External.RecurrentOfRecurrent G) (hπ : P.Periodic π) (z : ℤ × ℤ) (o : V) :
     P.shiftConfig z ⁻¹' {ρ | Recurrent π ρ o} = {ρ | Recurrent π ρ o} := by

@@ -66,7 +66,7 @@ theorem InFiniteComponent.mono {V V' : Finset Site} (hVV' : V ⊆ V') {y : Site}
   refine ⟨hy, h.2.subset ?_⟩
   intro z hz
   exact Relation.ReflTransGen.mono
-    (fun a b hab => ⟨fun h => hab.1 (hVV' h), fun h => hab.2.1 (hVV' h), hab.2.2⟩) hz
+    (fun a b hab => ⟨fun h => hab.1 (hVV' h), fun h => hab.2.1 (hVV' h), hab.2.2⟩) _ _ hz
 
 theorem InFiniteComponent.adj {V : Finset Site} {x y : Site} (h : InFiniteComponent V x)
     (hxy : squareGraph.Adj x y) : y ∈ V ∨ InFiniteComponent V y := by

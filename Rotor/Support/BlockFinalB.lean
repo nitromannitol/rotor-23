@@ -19,7 +19,7 @@ theorem criterion_of_bound (μ : Measure (Config G)) (η : ℝ) (b : ℕ → ℝ
     (hlim : Tendsto b atTop (𝓝 0)) : Criterion π μ η := by
   unfold Criterion
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim
-    (Eventually.of_forall (fun R => zero_le _)) ?_
+    (Eventually.of_forall (fun R => zero_le)) ?_
   filter_upwards [hb] with R hR
   exact iSup_le hR
 

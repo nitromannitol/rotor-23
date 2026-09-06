@@ -173,7 +173,6 @@ theorem pot_step (S : Finset V) (ρ : Config G) (es : List (V × V)) (hes : IsBo
       obtain ⟨t, y⟩ := e
       simp only at hy
       simp [oneStep, htr, hq, pot, trackedIn, hy]
-      linarith
 
 /-- Before finishing, the potential is at least the number of moves. -/
 theorem pot_ge (S : Finset V) (ρ : Config G) (es : List (V × V)) (hes : IsBoundaryOrder G S es)

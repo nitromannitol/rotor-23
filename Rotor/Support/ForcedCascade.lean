@@ -193,7 +193,7 @@ theorem stage_analysis {h₀ : List Bool} {t w : Site} (st : Stage f d h₀ t w)
   rcases sublist_pair hsub with hact | hact | hact | hact
   · left
     exact ⟨h₀ ++ [true], List.prefix_refl _, hact, rfl,
-      le_mul_of_one_le_left (zero_le _) (by norm_num)⟩
+      le_mul_of_one_le_left (zero_le) (by norm_num)⟩
   · -- only the right turn
     by_cases hWe : TestedAs (replay f d (h₀ ++ [true])).tested
         (sideW (w, w + rotR (w - t)).1 (w, w + rotR (w - t)).2) false
@@ -233,7 +233,7 @@ theorem stage_analysis {h₀ : List Bool} {t w : Site} (st : Stage f d h₀ t w)
       have hP1 : Pm f d (h₀ ++ [true]) ≤ 2 * Pm f d (h₀ ++ [true] ++ [false]) :=
         Pm_nonforced f d hd _ hact hWe
       have hpos1 : Pm f d (h₀ ++ [true] ++ [false]) ≠ 0 := by
-        intro h0; rw [h0, mul_zero] at hP1; exact hpos (le_antisymm hP1 (zero_le _))
+        intro h0; rw [h0, mul_zero] at hP1; exact hpos (le_antisymm hP1 (zero_le))
       obtain ⟨-, -, -, hL55'⟩ := state_facts hd hpos1
       have hSclosed' : TestedAs (replay f d (h₀ ++ [true] ++ [false])).tested
           (sideS w (w + (w - t))) false := by
@@ -312,7 +312,7 @@ theorem minF_bound {N : ℕ} (hN : 1 ≤ N) {h : List Bool} (hm : MinF f d N h) 
           {ρ | ((N + 3 : ℕ) : ℕ∞) ≤ forcedCount ρ f d}) ≤ 4 * Pm f d h := by
           gcongr; exact measure_mono Set.inter_subset_left
       _ = 0 := by rw [hpos, mul_zero]
-      _ ≤ 3 * Pm f d h := zero_le _
+      _ ≤ 3 * Pm f d h := zero_le
   rcases List.eq_nil_or_concat h with rfl | ⟨h₀, o, rfl⟩
   · exfalso
     have := hm.1
@@ -338,7 +338,7 @@ theorem minF_bound {N : ℕ} (hN : 1 ≤ N) {h : List Bool} (hm : MinF f d N h) 
     · rfl
   subst ho
   have hpos₀ : Pm f d h₀ ≠ 0 := fun h0 => hpos (le_antisymm
-    ((Pm_append_le f d h₀ true).trans (le_of_eq h0)) (zero_le _))
+    ((Pm_append_le f d h₀ true).trans (le_of_eq h0)) (zero_le))
   obtain ⟨-, -, -, hL55⟩ := state_facts hd hpos₀
   have hrest : rest = [] := (hL55 g rest hact).1 (Or.inl hforced)
   subst hrest

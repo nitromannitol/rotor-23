@@ -39,7 +39,7 @@ theorem mem_NodupExt_iff {l : List V} (hl : Adm G l) {n : ℕ} {q : List V} :
         | [] => simp at hlen2
         | b :: rest =>
           rw [NodupExt_succ, mem_biUnion]
-          refine ⟨b :: rest, hq'', (mem_ext1_cons).2 ⟨hch.rel_head.symm, (List.nodup_cons.1 hnd).1⟩⟩
+          refine ⟨b :: rest, hq'', (mem_ext1_cons).2 ⟨hch.rel.symm, (List.nodup_cons.1 hnd).1⟩⟩
 
 theorem exists_cons_of_mem_NodupExt_succ {l : List V} {n : ℕ} {q : List V}
     (h : q ∈ NodupExt G l (n + 1)) : ∃ c t, q = c :: t ∧ t ∈ NodupExt G l n := by
@@ -69,7 +69,7 @@ theorem stuck_of_two_nbrs (h3 : ∀ v : V, G.degree v ≤ 3) {b : V} {rest : Lis
   have h2 : 2 ≤ ((G.neighborFinset b).filter (fun c => c ∈ b :: rest)).card := by
     have := card_le_card hsub
     rwa [card_pair hne] at this
-  have hsum := filter_card_add_filter_neg_card_eq_card (s := G.neighborFinset b)
+  have hsum := card_filter_add_card_filter_not (s := G.neighborFinset b)
     (fun c => c ∈ b :: rest)
   rw [G.card_neighborFinset_eq_degree] at hsum
   have := h3 b
@@ -133,7 +133,7 @@ theorem push (h3 : ∀ v : V, G.degree v ≤ 3) (v₀ : V) : ∀ (u : List V) (p
             · simp at hmeet
             · exact Nat.succ_pos k
           refine ⟨0, hk, z :: y :: p', by simp, ?_⟩
-          exact stuck_of_two_nbrs h3 List.mem_cons_self hx' (Ne.symm hxy) hpch.rel_head hzx
+          exact stuck_of_two_nbrs h3 List.mem_cons_self hx' (Ne.symm hxy) hpch.rel hzx
       · -- push x onto p
         have hp₁ : Adm G (x :: z :: y :: p') :=
           ⟨List.nodup_cons.2 ⟨hxp, hpnd⟩, List.isChain_cons.2 ⟨fun w hw => by
@@ -245,7 +245,7 @@ theorem exists_stuck_of_ball_bound (h3 : ∀ v : V, G.degree v ≤ 3) (hG : G.Co
     {h : ℕ} (hh : C * (h + 1) ^ 2 < 2 ^ h) (q : List V) (hq : Adm G q) :
     ∃ j ≤ 2 * h - 1, ∃ q' ∈ NodupExt G q j, Stuck G q' := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   obtain ⟨v₀⟩ := hG.nonempty
   have hinj := headD_injOn h3 hq v₀ h hcon
   have hcount := two_pow_le_card_NodupExt hq h (fun j hj => hcon j (by omega))

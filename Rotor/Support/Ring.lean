@@ -16,6 +16,9 @@ def ringOff : Fin 8 → Site
   | 0 => (1, 0) | 1 => (1, 1) | 2 => (0, 1) | 3 => (-1, 1)
   | 4 => (-1, 0) | 5 => (-1, -1) | 6 => (0, -1) | 7 => (1, -1)
 
+/-- `-1` as an element of `Fin 8`. -/
+theorem fin8_neg_one : (-1 : Fin 8) = 7 := by decide
+
 /-- The `i`-th point of the ring around `p`. -/
 def ringPt (p : Site) (i : Fin 8) : Site := p + ringOff i
 
@@ -139,7 +142,7 @@ direction. -/
 theorem leftPt_in_eq (z u : Site) (hu : IsUnit u) :
     leftPt (z - u) z = ringPt (z + z) (dirIdx (-u) - 1) := by
   rcases hu with rfl | rfl | rfl | rfl <;>
-    simp [leftPt, ringPt, rotL, dirIdx, ringOff, Prod.ext_iff] <;> ring_nf
+    simp [leftPt, ringPt, rotL, dirIdx, ringOff, Prod.ext_iff, fin8_neg_one] <;> ring_nf
 
 /-- The left point of the step out of `z` is the corner counterclockwise of the outgoing
 direction. -/
@@ -156,7 +159,7 @@ theorem rightPt_in_eq (z u : Site) (hu : IsUnit u) :
 theorem rightPt_out_eq (z w : Site) (hw : IsUnit w) :
     rightPt z (z + w) = ringPt (z + z) (dirIdx w - 1) := by
   rcases hw with rfl | rfl | rfl | rfl <;>
-    simp [rightPt, ringPt, rotR, dirIdx, ringOff, Prod.ext_iff] <;> ring_nf
+    simp [rightPt, ringPt, rotR, dirIdx, ringOff, Prod.ext_iff, fin8_neg_one] <;> ring_nf
 
 /-- The midpoint of the bond from `z` in the direction `v` is a ring point. -/
 theorem mid_eq_ringPt (z v : Site) (hv : IsUnit v) : z + z + v = ringPt (z + z) (dirIdx v) := by

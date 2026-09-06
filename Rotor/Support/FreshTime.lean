@@ -64,7 +64,7 @@ theorem hist_length_τf {j : ℕ} {ρ : Config G} (hj : Reach π o x j ρ) :
   · obtain ⟨s, hs⟩ := Nat.exists_eq_succ_of_ne_zero hpos.ne'
     have hlt : (St π o x ρ s).hist.length < j := by
       by_contra hge
-      push_neg at hge
+      push Not at hge
       have := τf_le hj hge
       omega
     have := hist_length_succ_le (π := π) (o := o) (x := x) ρ s
@@ -258,7 +258,7 @@ theorem τf_succ_eq_of {h : History G} {v : V} {ρ : Config G} {t₁ : ℕ}
   have hr : Reach π o x (h.length + 1) ρ := ⟨t₁ + 1, hlen'.ge⟩
   apply le_antisymm (τf_le hr hlen'.ge)
   by_contra hlt
-  push_neg at hlt
+  push Not at hlt
   have h1 := le_hist_length_τf hr
   have h2 := hist_length_mono (π := π) (o := o) (x := x) ρ
     (show τf π o x (h.length + 1) ρ ≤ t₁ by omega)
@@ -343,7 +343,7 @@ theorem Y_pos_of_nxt {h : History G} {v : V} {ρ : Config G}
   have hr0 := reach_of_atomE hρ.1
   rw [Y_of_reach hr0]
   by_contra h0
-  push_neg at h0
+  push Not at h0
   have hnil : (St π o x ρ (τf π o x h.length ρ)).queue = [] :=
     List.length_eq_zero_iff.1 (by omega)
   obtain ⟨t₁, -, ht₁, ht₁'⟩ := exists_τf_succ_of_nxt hρ
@@ -352,7 +352,6 @@ theorem Y_pos_of_nxt {h : History G} {v : V} {ρ : Config G}
   have := St_of_queue_nil hnil (t₁ + 1 - τf π o x h.length ρ)
   rw [Nat.add_sub_cancel' hle] at this
   have hlen := congrArg (fun s : QueueState V => s.hist.length) this
-  simp only at hlen
   rw [ht₁', hist_length_τf hr0, List.length_append, verts, List.length_map,
     List.length_singleton] at hlen
   omega
