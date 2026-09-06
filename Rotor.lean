@@ -76,3 +76,4 @@ import Rotor.Support.KingPaths
 import Rotor.Support.PathBlocks
 import Rotor.Support.BlockChain
 import Rotor.Support.Witness
+import Rotor.Support.BlockAssembly
