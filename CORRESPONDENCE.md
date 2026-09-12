@@ -72,6 +72,6 @@ exponential decay for percolation, is now proved rather than assumed: see
 | `lem-square-active-list` | `Rotor.Frozen.square_active_list` | `rotor.tex:1945-1949`, `lem:square-active-list` | SEALED |
 | `lem-square-forced-tests` | `Rotor.Frozen.square_forced_tests` | `rotor.tex:2077-2084`, `lem:square-forced-tests` | SEALED |
 | `prop-pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `rotor.tex:309-314`, `prop:pendant-counterexample` | SEALED |
-| `ext-kingman` | `Rotor.External.Kingman` | external input, Kingman 1968 Theorem 3 (general form, measurable invariant limit), used in the proof of prop:passage-limit | FROZEN |
+| `ext-kingman` | `Rotor.External.Kingman` | external input, Kingman 1968 Theorems 3 and 5 (nonnegative integrable arrays, measurable invariant limit), used in the proof of prop:passage-limit | FROZEN |
 
 <!-- FROZEN-SURFACE-END -->

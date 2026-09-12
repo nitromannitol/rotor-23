@@ -121,6 +121,19 @@ theorem measurable_arr (hAb : External.Abelian G) [Infinite V] (hG : G.Connected
   haveI := countable_of_connected hG
   exact measurable_from_nat.comp (measurable_τ π hAb hG _ _)
 
+/-- Each passage-array entry is integrable under a finite measure, since it is
+measurable and bounded by the graph distance between its endpoints. -/
+theorem integrable_arr (hAb : External.Abelian G) [Infinite V] (hG : G.Connected)
+    (μ : Measure (Config G)) [IsFiniteMeasure μ] (o : V) (z : ℤ × ℤ) (m n : ℕ) :
+    Integrable (fun ρ => arr π P ρ o z m n) μ := by
+  refine (integrable_const
+    (G.dist (P.shift (m • z) o) (P.shift (n • z) o) : ℝ)).mono'
+      (measurable_arr π P hAb hG o z m n).aestronglyMeasurable ?_
+  refine ae_of_all _ fun ρ => ?_
+  rw [Real.norm_eq_abs, abs_of_nonneg (arr_nonneg π P o z m n ρ)]
+  unfold arr
+  exact_mod_cast τ_le_dist π hG ρ (P.shift (m • z) o) (P.shift (n • z) o)
+
 /-! ### Kingman's theorem in direction `z` -/
 
 /-- The directional limit from Kingman's theorem: an a priori random,
@@ -131,7 +144,9 @@ theorem exists_dirLimit (hK : External.Kingman.{u}) (hπ : P.Periodic π) (hAb :
     ∃ γ : Config G → ℝ, Measurable γ ∧ (∀ᵐ ρ ∂μ, γ (P.shiftConfig (-z) ρ) = γ ρ) ∧
       ∀ᵐ ρ ∂μ, Tendsto (fun n : ℕ => arr π P ρ o z 0 n / n) atTop (𝓝 (γ ρ)) := by
   refine hK μ inferInstance (P.shiftConfig (-z)) (hinv (-z)) (fun m n ρ => arr π P ρ o z m n)
-    (fun m n => measurable_arr π P hAb hG o z m n) (fun m n ρ => arr_nonneg π P o z m n ρ)
+    (fun m n => measurable_arr π P hAb hG o z m n)
+    (fun m n => integrable_arr π P hAb hG μ o z m n)
+    (fun m n ρ => arr_nonneg π P o z m n ρ)
     (fun m n ρ => arr_shift π P hπ hAb hG o z m n ρ)
     (fun l m n ρ _ _ => arr_subadd π P hAb hG o z l m n ρ)
     ⟨G.dist o (P.shift z o), fun n => ?_⟩

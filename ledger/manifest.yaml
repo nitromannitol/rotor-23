@@ -369,13 +369,13 @@ nodes:
     approved: "2026-09-05"
 
   - id: ext-kingman
-    version: 2
+    version: 3
     kind: definition
-    source: external input, Kingman 1968 Theorem 3 (general form, measurable invariant limit), used in the proof of prop:passage-limit
+    source: external input, Kingman 1968 Theorems 3 and 5 (nonnegative integrable arrays, measurable invariant limit), used in the proof of prop:passage-limit
     file: Rotor/External/Kingman.lean
     export: Rotor.External.Kingman
     state: FROZEN
-    frozen_sha256: 725b3140a79a1f0681dd88cafc52b98e50cdaf81beafb3af65eacbdf72732a63
+    frozen_sha256: ab09f866910a4d9626a4579dd470a4dfac4469ee1d595331f3412404bba84a0f
     provider: Rotor.External.Kingman
-    approved: "2026-09-05"
+    approved: "2026-09-12"
 

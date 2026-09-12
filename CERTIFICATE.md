@@ -22,7 +22,7 @@ in `Rotor/Bridge/`.  No statement rests on an added axiom or a `sorry`.
 | Paper (`paper/rotor.tex`) SHA-256 | `007634d2d82fddfd902af49c3e85168461a545224b145998100433250895a930` |
 | Build | succeeded, 8852 jobs |
 | Build warnings | 0 |
-| Generated | 2026-09-06 |
+| Generated | 2026-09-12 |
 
 ## Reproducing it
 
@@ -125,7 +125,7 @@ verifies these; the recipe is in `CORRESPONDENCE.md`.
 | `lem-square-active-list` | `4d2f113b250d3728ed4607f88549a497ca1b1b9dc26ea509445422bdcbb7068e` |
 | `lem-square-forced-tests` | `bd218f336c17da837e9a7b583b0b412fbcbc4e93c91d9587d3f200c6e072ac79` |
 | `prop-pendant-counterexample` | `56a694dfe131f30dd9bacfc49dc92e0b71efe120c8fe3d919875eb6fd44d0418` |
-| `ext-kingman` | `725b3140a79a1f0681dd88cafc52b98e50cdaf81beafb3af65eacbdf72732a63` |
+| `ext-kingman` | `ab09f866910a4d9626a4579dd470a4dfac4469ee1d595331f3412404bba84a0f` |
 
 ## What is not claimed
 
