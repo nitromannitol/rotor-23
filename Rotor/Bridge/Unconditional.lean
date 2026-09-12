@@ -62,7 +62,9 @@ theorem perturbations_square (hFLP : External.OneCircuit squareGraph)
       ∀ (ν : ∀ v : Site, Measure (squareGraph.neighborSet v)) [∀ v, IsProbabilityMeasure (ν v)],
         (∀ v, tvDist (ν v) (uniformAt clockwise v) < δ) →
         (∀ o : Site, ∀ᵐ ρ ∂(productLaw ν), Recurrent clockwise ρ o) ∧
-        (squarePeriodic.InvariantMarginals ν → ∀ o : Site,
+        (∀ (Λ : AddSubgroup Site) [Λ.FiniteIndex],
+          (∀ z ∈ Λ, ∀ v, Measure.map (squarePeriodic.shiftNbr z) (ν v) = ν (v + z)) →
+          ∀ o : Site,
           ∃ B : Set Plane, IsCompact B ∧ Convex ℝ B ∧ (0 : Plane) ∈ interior B ∧
     ∃ κ c : ℝ, 0 < κ ∧ 0 < c ∧
       ∀ᵐ ρ ∂(productLaw ν), (∀ n : ℕ, T clockwise ρ o n < ⊤) ∧

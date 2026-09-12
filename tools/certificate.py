@@ -23,6 +23,8 @@ try:
 except ImportError:
     sys.exit("certificate.py: PyYAML is required (pip install pyyaml)")
 
+from sync_docs import square_perturbations_block
+
 ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = ROOT / "ledger" / "manifest.yaml"
 OUT = ROOT / "CERTIFICATE.md"
@@ -110,7 +112,9 @@ def build() -> str:
     A("below); the seventh, subcritical exponential decay for percolation, is proved")
     A("in `Rotor/Bridge/`.  No statement rests on an added axiom or a `sorry`.")
     A("")
-    A("## Environment")
+    A(square_perturbations_block(nodes))
+    A("")
+    A("## Versions and build")
     A("")
     A("| | |")
     A("|---|---|")
@@ -128,10 +132,15 @@ def build() -> str:
     A("elan toolchain install $(cat lean-toolchain)")
     A("lake exe cache get      # optional: prebuilt Mathlib")
     A("lake build Rotor")
+    A("python3 tools/check_axioms.py --emit # inspect every axiom closure")
     A("python3 tools/check_manifest.py     # frozen statements match their hashes")
-    A("python3 tools/check_axioms.py       # no axiom closure contains sorryAx")
     A("python3 tools/check_warnings.py     # the build emits no unauthorized warning")
     A("python3 tools/check_coverage.py     # every paper statement is formalized")
+    A("python3 tools/check_clauses.py      # every clause has a recorded correspondence")
+    A("python3 tools/check_constants.py   # quantifier order of constants")
+    A("python3 tools/check_exponents.py   # exponents match the paper")
+    A("python3 tools/paper_anchors.py     # paper labels and line ranges")
+    A("python3 tools/sync_docs.py         # generated theorem descriptions and tables")
     A("python3 tools/certificate.py --check")
     A("```")
     A("")
@@ -166,9 +175,8 @@ def build() -> str:
     A("")
     A("## Frozen statements")
     A("")
-    A("The bytes of each statement are pinned, so a statement cannot be weakened")
-    A("after the fact without the hash changing.  `tools/check_manifest.py`")
-    A("verifies these; the recipe is in `CORRESPONDENCE.md`.")
+    A("Each frozen statement is pinned by its SHA-256. `tools/check_manifest.py`")
+    A("verifies these hashes; the recipe is in `CORRESPONDENCE.md`.")
     A("")
     A("| node | SHA-256 of the frozen statement |")
     A("|---|---|")

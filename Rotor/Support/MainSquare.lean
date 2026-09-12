@@ -1,5 +1,5 @@
 import Rotor.Support.MainDegreeThree
-import Rotor.Support.SquareBasics
+import Rotor.Support.SquareLattice
 import Rotor.Frozen.Square.Passage
 
 /-!
@@ -59,7 +59,9 @@ theorem perturbations_square_proof (hFLP : External.OneCircuit squareGraph)
       ∀ (ν : ∀ v : Site, Measure (squareGraph.neighborSet v)) [∀ v, IsProbabilityMeasure (ν v)],
         (∀ v, tvDist (ν v) (uniformAt clockwise v) < δ) →
         (∀ o : Site, ∀ᵐ ρ ∂(productLaw ν), Recurrent clockwise ρ o) ∧
-        (squarePeriodic.InvariantMarginals ν → ∀ o : Site,
+        (∀ (Λ : AddSubgroup Site) [Λ.FiniteIndex],
+          (∀ z ∈ Λ, ∀ v, Measure.map (squarePeriodic.shiftNbr z) (ν v) = ν (v + z)) →
+          ∀ o : Site,
           ∃ B : Set Plane, IsCompact B ∧ Convex ℝ B ∧ (0 : Plane) ∈ interior B ∧
     ∃ κ c : ℝ, 0 < κ ∧ 0 < c ∧
       ∀ᵐ ρ ∂(productLaw ν), (∀ n : ℕ, T clockwise ρ o n < ⊤) ∧
@@ -76,7 +78,6 @@ theorem perturbations_square_proof (hFLP : External.OneCircuit squareGraph)
         Tendsto (fun t : ℕ => ((R clockwise ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ))
           atTop (𝓝 c)) := by
   have hG := squareGraph_connected
-  have hπ := squarePeriodic_periodic
   have hdeg : ∀ v : Site, squareGraph.degree v ≤ 4 := fun v => (squareGraph_degree v).le
   obtain ⟨ε, hε, L₀, hL₀, hblock⟩ :=
     Rotor.Frozen.block_live_paths hLSS squarePeriodic clockwise hG
@@ -88,9 +89,13 @@ theorem perturbations_square_proof (hFLP : External.OneCircuit squareGraph)
   have hcrit : Criterion clockwise (productLaw ν) η := hpert ν (fun v => (hν v).le)
   obtain ⟨hrec, -, -⟩ := Rotor.Frozen.path_reduction hFLP hAb hHP hK clockwise hG ⟨4, hdeg⟩
     (productLaw ν) η hη hcrit
-  refine ⟨fun o => by filter_upwards [hrec] with ρ h; exact h.2 o, fun hinv o => ?_⟩
-  exact shape_sandwich_proof clockwise squarePeriodic hFLP hAb hHP hK hG ⟨4, hdeg⟩ (productLaw ν)
-    η hη hcrit hπ (squarePeriodic.productLaw_invariant ν hinv)
-    (squarePeriodic.productLaw_ergodic (squarePeriodic.productLaw_invariant ν hinv)) o
+  refine ⟨fun o => by filter_upwards [hrec] with ρ h; exact h.2 o, fun Λ _ hinv o => ?_⟩
+  exact shape_sandwich_proof clockwise (squareLatticePeriodic Λ) hFLP hAb hHP hK hG ⟨4, hdeg⟩ (productLaw ν)
+    η hη hcrit (squareLatticePeriodic_periodic Λ)
+    ((squareLatticePeriodic Λ).productLaw_invariant ν
+      (squareLatticePeriodic_invariantMarginals Λ ν hinv))
+    ((squareLatticePeriodic Λ).productLaw_ergodic
+      ((squareLatticePeriodic Λ).productLaw_invariant ν
+        (squareLatticePeriodic_invariantMarginals Λ ν hinv))) o
 
 end Rotor

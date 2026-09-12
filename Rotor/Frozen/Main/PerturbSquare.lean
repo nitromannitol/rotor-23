@@ -11,9 +11,11 @@ Proposition 1.2 of rotor.tex, the square-lattice case, frozen.
 
 Split into two nodes like Theorem 1.1.  Conclusion (i) is asserted for every
 start; (ii) and (iii) are the conjunction frozen in `thm-main-square` minus
-recurrence, under invariance of the one-vertex laws.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed
-here: they are not derived in this repository and the certificate lists them.
+recurrence. The translation lattice ranges over every finite-index subgroup of
+`ℤ²`, and the one-vertex laws are equivariant under each translation in it.
+The perturbation radius is independent of the translation lattice.
+The `External.*` hypotheses are the cited inputs used in the proof. The bridge
+statement discharges subcritical exponential decay.
 -/
 import Rotor.Events
 import Rotor.Percolation
@@ -40,7 +42,9 @@ theorem Rotor.Frozen.perturbations_square (hFLP : External.OneCircuit squareGrap
       ∀ (ν : ∀ v : Site, Measure (squareGraph.neighborSet v)) [∀ v, IsProbabilityMeasure (ν v)],
         (∀ v, tvDist (ν v) (uniformAt clockwise v) < δ) →
         (∀ o : Site, ∀ᵐ ρ ∂(productLaw ν), Recurrent clockwise ρ o) ∧
-        (squarePeriodic.InvariantMarginals ν → ∀ o : Site,
+        (∀ (Λ : AddSubgroup Site) [Λ.FiniteIndex],
+          (∀ z ∈ Λ, ∀ v, Measure.map (squarePeriodic.shiftNbr z) (ν v) = ν (v + z)) →
+          ∀ o : Site,
           ∃ B : Set Plane, IsCompact B ∧ Convex ℝ B ∧ (0 : Plane) ∈ interior B ∧
     ∃ κ c : ℝ, 0 < κ ∧ 0 < c ∧
       ∀ᵐ ρ ∂(productLaw ν), (∀ n : ℕ, T clockwise ρ o n < ⊤) ∧

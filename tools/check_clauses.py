@@ -92,7 +92,8 @@ REVIEWED: dict[str, str] = {
         "the degree-three case, same six conjuncts with P.emb; split node of thm:main",
     "prop-perturbations-square":
         "∃ δ, then for every product law within δ of uniform: (i) for every start, and under "
-        "invariant marginals the (ii)-(iii) conjunction of thm-main-square",
+        "invariance under any finite-index translation sublattice Λ ≤ ℤ² the (ii)-(iii) "
+        "conjunction of thm-main-square; δ is independent of Λ",
     "prop-perturbations-degree-three":
         "the degree-three case of prop:small-perturbations; split node",
     "prop-subcubic-recurrence":

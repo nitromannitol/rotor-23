@@ -13,14 +13,27 @@ hypotheses, each a frozen `Prop` in `Rotor/External/` (the `FROZEN` nodes
 below); the seventh, subcritical exponential decay for percolation, is proved
 in `Rotor/Bridge/`.  No statement rests on an added axiom or a `sorry`.
 
-## Environment
+Proposition 1.2 on the square lattice gives one `δ > 0` for all independent
+rotor laws whose marginal at every vertex has total variation distance less
+than `δ` from uniform. The walk is almost surely recurrent from each start.
+For every finite-index translation sublattice `Λ ≤ ℤ²`, invariance of the
+marginal laws under `Λ` also gives a deterministic compact convex body `B`
+with the origin in its interior and positive constants `κ, c`. In coordinates
+centered at the starting vertex,
+`n^(-1) A_n → B`, `t^(-1/3) R_t → κ B`, and `|R_t| / t^(2/3) → c` almost surely.
+The radius is independent of `Λ`. The frozen statement also includes finite
+circuit times and the inner and outer lattice-point bounds.
+
+See [`Rotor.Frozen.perturbations_square`](Rotor/Frozen/Main/PerturbSquare.lean); its cited inputs are listed below.
+
+## Versions and build
 
 | | |
 |---|---|
 | Lean toolchain | `leanprover/lean4:v4.32.0` |
 | Mathlib revision | `81a5d257c8e410db227a6665ed08f64fea08e997` |
 | Paper (`paper/rotor.tex`) SHA-256 | `007634d2d82fddfd902af49c3e85168461a545224b145998100433250895a930` |
-| Build | succeeded, 8852 jobs |
+| Build | succeeded, 8853 jobs |
 | Build warnings | 0 |
 | Generated | 2026-09-12 |
 
@@ -30,10 +43,15 @@ in `Rotor/Bridge/`.  No statement rests on an added axiom or a `sorry`.
 elan toolchain install $(cat lean-toolchain)
 lake exe cache get      # optional: prebuilt Mathlib
 lake build Rotor
+python3 tools/check_axioms.py --emit # inspect every axiom closure
 python3 tools/check_manifest.py     # frozen statements match their hashes
-python3 tools/check_axioms.py       # no axiom closure contains sorryAx
 python3 tools/check_warnings.py     # the build emits no unauthorized warning
 python3 tools/check_coverage.py     # every paper statement is formalized
+python3 tools/check_clauses.py      # every clause has a recorded correspondence
+python3 tools/check_constants.py   # quantifier order of constants
+python3 tools/check_exponents.py   # exponents match the paper
+python3 tools/paper_anchors.py     # paper labels and line ranges
+python3 tools/sync_docs.py         # generated theorem descriptions and tables
 python3 tools/certificate.py --check
 ```
 
@@ -65,21 +83,21 @@ nowhere below.
 | 16 | `lem-block-live-paths` | `Rotor.Frozen.block_live_paths` | `lem:block-live-paths` | classical only |
 | 17 | `thm-main-square` | `Rotor.Frozen.main_square` | `thm:main` | classical only |
 | 18 | `thm-main-degree-three` | `Rotor.Frozen.main_degree_three` | `thm:main` | classical only |
-| 19 | `prop-perturbations-square` | `Rotor.Frozen.perturbations_square` | `prop:small-perturbations` | classical only |
-| 20 | `prop-perturbations-degree-three` | `Rotor.Frozen.perturbations_degree_three` | `prop:small-perturbations` | classical only |
-| 21 | `prop-subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `prop:subcubic-recurrence` | classical only |
-| 22 | `prop-degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `prop:degree-three-passage` | classical only |
-| 23 | `prop-square-passage` | `Rotor.Frozen.square_passage` | `prop:square-passage` | classical only |
-| 24 | `lem-square-dual-path` | `Rotor.Frozen.square_dual_path` | `lem:square-dual-path` | classical only |
-| 25 | `lem-square-constrained-bonds` | `Rotor.Frozen.square_constrained_bonds` | `lem:square-constrained-bonds` | classical only |
-| 26 | `ext-one-circuit` | `Rotor.External.OneCircuit` | — | classical only |
-| 27 | `lem-one-circuit` | `Rotor.Frozen.one_circuit` | `lem:one-circuit` | classical only |
-| 28 | `prop-circuit-clock` | `Rotor.Frozen.circuit_clock` | `prop:circuit-clock` | classical only |
-| 29 | `lem-square-exploration` | `Rotor.Frozen.square_exploration` | `lem:square-exploration` | classical only |
-| 30 | `lem-square-active-list` | `Rotor.Frozen.square_active_list` | `lem:square-active-list` | classical only |
-| 31 | `lem-square-forced-tests` | `Rotor.Frozen.square_forced_tests` | `lem:square-forced-tests` | classical only |
-| 32 | `prop-pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `prop:pendant-counterexample` | classical only |
-| 33 | `ext-kingman` | `Rotor.External.Kingman` | — | classical only |
+| 19 | `prop-perturbations-degree-three` | `Rotor.Frozen.perturbations_degree_three` | `prop:small-perturbations` | classical only |
+| 20 | `prop-subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `prop:subcubic-recurrence` | classical only |
+| 21 | `prop-degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `prop:degree-three-passage` | classical only |
+| 22 | `prop-square-passage` | `Rotor.Frozen.square_passage` | `prop:square-passage` | classical only |
+| 23 | `lem-square-dual-path` | `Rotor.Frozen.square_dual_path` | `lem:square-dual-path` | classical only |
+| 24 | `lem-square-constrained-bonds` | `Rotor.Frozen.square_constrained_bonds` | `lem:square-constrained-bonds` | classical only |
+| 25 | `ext-one-circuit` | `Rotor.External.OneCircuit` | — | classical only |
+| 26 | `lem-one-circuit` | `Rotor.Frozen.one_circuit` | `lem:one-circuit` | classical only |
+| 27 | `prop-circuit-clock` | `Rotor.Frozen.circuit_clock` | `prop:circuit-clock` | classical only |
+| 28 | `lem-square-exploration` | `Rotor.Frozen.square_exploration` | `lem:square-exploration` | classical only |
+| 29 | `lem-square-active-list` | `Rotor.Frozen.square_active_list` | `lem:square-active-list` | classical only |
+| 30 | `lem-square-forced-tests` | `Rotor.Frozen.square_forced_tests` | `lem:square-forced-tests` | classical only |
+| 31 | `prop-pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `prop:pendant-counterexample` | classical only |
+| 32 | `ext-kingman` | `Rotor.External.Kingman` | — | classical only |
+| 33 | `prop-perturbations-square` | `Rotor.Frozen.perturbations_square` | `prop:small-perturbations` | classical only |
 
 33 of 33 nodes depend on nothing beyond the three classical
 axioms.  In `ledger/manifest.yaml`, 26 nodes are `SEALED` (proved) and
@@ -87,9 +105,8 @@ axioms.  In `ledger/manifest.yaml`, 26 nodes are `SEALED` (proved) and
 
 ## Frozen statements
 
-The bytes of each statement are pinned, so a statement cannot be weakened
-after the fact without the hash changing.  `tools/check_manifest.py`
-verifies these; the recipe is in `CORRESPONDENCE.md`.
+Each frozen statement is pinned by its SHA-256. `tools/check_manifest.py`
+verifies these hashes; the recipe is in `CORRESPONDENCE.md`.
 
 | node | SHA-256 of the frozen statement |
 |---|---|
@@ -111,7 +128,6 @@ verifies these; the recipe is in `CORRESPONDENCE.md`.
 | `lem-block-live-paths` | `132ba277ad6631d8dbce032517ce913bcc4be5d78bd00117c5c69ee1c24b2d41` |
 | `thm-main-square` | `accea74870d023ae13e00bcae9e028ceba12e7bc13c773dec292f79fb198ef8f` |
 | `thm-main-degree-three` | `fe6b9b01b7a7955306df92af59e81762b6052eb1000f6e1c7a0b602b0ff93e1c` |
-| `prop-perturbations-square` | `01221f20143d7b83462aa243e0e2fc8a5865c4324bb981bd379283b8cd2a2ded` |
 | `prop-perturbations-degree-three` | `8df50adfd6739954fc7b9e1d69398344e8394f60155ab0e4c5cdc555ac6ea665` |
 | `prop-subcubic-recurrence` | `6fe16ac985883a225f0c064ac88d9239e4b7b27d6641e2f447fdb2b489f65e5e` |
 | `prop-degree-three-passage` | `5822a99fc7c1e7db2ce05320c0aff2dc42bb5f70d1420570a7b45bffbf229be2` |
@@ -126,6 +142,7 @@ verifies these; the recipe is in `CORRESPONDENCE.md`.
 | `lem-square-forced-tests` | `bd218f336c17da837e9a7b583b0b412fbcbc4e93c91d9587d3f200c6e072ac79` |
 | `prop-pendant-counterexample` | `56a694dfe131f30dd9bacfc49dc92e0b71efe120c8fe3d919875eb6fd44d0418` |
 | `ext-kingman` | `ab09f866910a4d9626a4579dd470a4dfac4469ee1d595331f3412404bba84a0f` |
+| `prop-perturbations-square` | `32cd623b305de2b1e37ab4d08be0e2c4d4224d9e954328f1aca4dd7906de25c4` |
 
 ## What is not claimed
 

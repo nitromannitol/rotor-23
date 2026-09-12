@@ -214,17 +214,6 @@ nodes:
     provider: Rotor.Frozen.main_degree_three
     approved: "2026-09-05"
 
-  - id: prop-perturbations-square
-    version: 1
-    kind: theorem
-    source: rotor.tex:272-280 (label prop:small-perturbations, the square-lattice case)
-    file: Rotor/Frozen/Main/PerturbSquare.lean
-    export: Rotor.Frozen.perturbations_square
-    state: SEALED
-    frozen_sha256: 01221f20143d7b83462aa243e0e2fc8a5865c4324bb981bd379283b8cd2a2ded
-    provider: Rotor.Frozen.perturbations_square
-    approved: "2026-09-05"
-
   - id: prop-perturbations-degree-three
     version: 1
     kind: theorem
@@ -377,5 +366,16 @@ nodes:
     state: FROZEN
     frozen_sha256: ab09f866910a4d9626a4579dd470a4dfac4469ee1d595331f3412404bba84a0f
     provider: Rotor.External.Kingman
+    approved: "2026-09-12"
+
+  - id: prop-perturbations-square
+    version: 2
+    kind: theorem
+    source: rotor.tex:272-280 (label prop:small-perturbations, the square-lattice case)
+    file: Rotor/Frozen/Main/PerturbSquare.lean
+    export: Rotor.Frozen.perturbations_square
+    state: SEALED
+    frozen_sha256: 32cd623b305de2b1e37ab4d08be0e2c4d4224d9e954328f1aca4dd7906de25c4
+    provider: Rotor.Frozen.perturbations_square
     approved: "2026-09-12"
 
