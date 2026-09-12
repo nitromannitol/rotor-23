@@ -1,8 +1,7 @@
 /-
 Model guards: computable witnesses that the definitions of `Rotor/Basic.lean`
-say what the paper says.  The dominant failure mode of a formalization is a
-vacuous or mistranscribed statement, not a wrong proof, so each guard pins one
-value that can be checked by hand against the paper.
+say what the paper says.  Each guard pins one value that can be checked by
+hand against the paper.
 -/
 import Rotor.Basic
 
@@ -18,10 +17,8 @@ theorem X_allNorth_one : X (fun _ => (0 : Dir)) (0, 0) 1 = (1, 0) := by
 theorem rot_allNorth_one : rot (fun _ => (0 : Dir)) (0, 0) 1 (0, 0) = 1 := by
   decide
 
-/-- With all rotors north the walker never returns: every rotor it meets turns
-to east, so after four steps it is at `(4, 0)`.  (A first draft of this guard
-claimed a return to the origin; `decide` refuted it.  Recorded so the mistake is
-not repeated.) -/
+/-- With all rotors north, every rotor the walker meets turns to east, so
+after four steps the walker is at `(4, 0)`. -/
 theorem X_allNorth_four : X (fun _ => (0 : Dir)) (0, 0) 4 = (4, 0) := by
   decide
 

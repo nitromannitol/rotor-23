@@ -1,11 +1,8 @@
 """Compare how much each paper statement asserts with how much its Lean node does.
 
-Every other checker here compares a statement with *itself*: the hash pins the
-bytes, the axiom check pins the proof.  None of them notices when a frozen
-statement quietly asserts less than the paper statement it claims to transcribe.
-That is how, in the ORRW formalization this tooling comes from, `lem:schur`
-came to be frozen without one of the three displays its paper statement
-asserts, while every other gate passed.
+Frozen hashes pin statement bytes, and axiom checks verify proofs.  This
+checker compares the assertion units of each paper statement with those of its
+Lean statement and records their correspondence.
 
 This counts assertion units on each side and reports the pairs where the paper
 asserts more:
@@ -120,7 +117,7 @@ REVIEWED: dict[str, str] = {
         "one display with the explicit constants C = 4/3, e^{-c} = (3/4)^{1/3} (ruling F-003)",
     "prop-pendant-counterexample":
         "one assertion: almost-sure transience for every start and every M ≥ 50331645, the "
-        "explicit M₀ (ruling F-003); see ERRATA E-001 for the almost-sure reading",
+        "explicit M₀ (ruling F-003); transience is asserted almost surely",
 }
 
 
