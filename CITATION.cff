@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: "If you use this formalization, please cite it as below."
+title: "rotor-23: a Lean 4 formalization of Eulerian walkers on Z^2 have range exponent 2/3"
+abstract: >-
+  A machine-checked Lean 4 / mathlib formalization of the paper "Eulerian
+  walkers on Z^2 have range exponent 2/3" (Bou-Rabee and Peres): recurrence,
+  the limit shape and the range exponent 2/3 of the rotor walk with
+  independent uniform initial rotors on the square lattice and on doubly
+  periodic plane graphs of maximum degree three (Theorem 1.1), their
+  extension to rotor laws close to uniform (Proposition 1.2), and a doubly
+  periodic graph on which the walk is transient (Proposition 1.3).  Six
+  results the paper cites without proof are taken as explicit hypotheses.
+  The development contains no sorry and no custom axiom.
+type: software
+authors:
+  - family-names: Bou-Rabee
+    given-names: Ahmed
+keywords:
+  - Lean
+  - mathlib
+  - formal verification
+  - rotor walk
+  - rotor-router
+  - probability
+license: Apache-2.0
+# Add a Zenodo DOI here once an archived release is minted.
+repository-code: "https://github.com/nitromannitol/rotor-23"
+references:
+  - type: article
+    title: "Eulerian walkers on Z^2 have range exponent 2/3"
+    authors:
+      - family-names: Bou-Rabee
+        given-names: Ahmed
+      - family-names: Peres
+        given-names: Yuval
+    url: "https://arxiv.org/abs/2608.23545"
+    identifiers:
+      - type: other
+        value: "arXiv:2608.23545"
+    notes: "The paper formalized by this repository."
