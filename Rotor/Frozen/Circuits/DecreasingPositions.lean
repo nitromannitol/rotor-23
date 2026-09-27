@@ -25,13 +25,14 @@ import Rotor.Support.DecreasingPositionsII
 import Rotor.External.OneCircuit
 import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
+import Rotor.Bridge.Abelian
 
 open Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.decreasing_positions (hAb : External.Abelian G) (π : Mechanism G)
+theorem Rotor.Frozen.decreasing_positions (π : Mechanism G)
     [Infinite V] (hG : G.Connected) (ρ : Config G) :
     (∀ (S : Finset V), S.Nonempty → ∀ y ∉ S, ∀ es : List (V × V), IsBoundaryOrder G S es →
         OneVisits π S ρ es y →
@@ -44,4 +45,4 @@ theorem Rotor.Frozen.decreasing_positions (hAb : External.Abelian G) (π : Mecha
           (∀ v ∈ l, v ∈ (Φ π ρ)^[n] {x}) ∧ (liveFailures π ρ l).card ≤ n - 1)
 -- FROZEN-STATEMENT-END
 := ⟨fun S _ y hy es hes hvis => decreasing_positions_i π S ρ y hy es hes hvis,
-    fun x y n _ hdef hy => decreasing_positions_ii π hAb hG ρ x n y hdef hy⟩
+    fun x y n _ hdef hy => decreasing_positions_ii π (Rotor.Bridge.abelian_holds G) hG ρ x n y hdef hy⟩

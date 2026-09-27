@@ -130,7 +130,7 @@ theorem main_degree_three_proof (hFLP : External.OneCircuit G) (hAb : External.A
   obtain ⟨c₀, C₀, hc₀, hC₀, hpass⟩ := Rotor.Frozen.degree_three_passage P π hG h3
   obtain ⟨L, hLL₀, hLpos, hsmall⟩ := exists_block_small π P hG h3 hc₀ hC₀ hpass hε L₀
   obtain ⟨η, hη, hcrit, -⟩ := hblock (uniformAt π) L hLL₀ hsmall
-  obtain ⟨hrec, -, -⟩ := Rotor.Frozen.path_reduction hFLP hAb hHP hK π hG ⟨3, h3⟩
+  obtain ⟨hrec, -, -⟩ := Rotor.Frozen.path_reduction π hG ⟨3, h3⟩
     (uniformLaw π) η hη hcrit
   obtain ⟨B, hBc, hBconv, hB0, κ, c, hκ, hc, hae⟩ := shape_sandwich_proof π P hFLP hAb hHP hK hG
     ⟨3, h3⟩ (uniformLaw π) η hη hcrit hπ (P.uniformLaw_invariant π) (P.uniformLaw_ergodic π) o
@@ -166,7 +166,7 @@ theorem perturbations_degree_three_proof (hFLP : External.OneCircuit G)
   obtain ⟨η, hη, -, δ, hδ, hpert⟩ := hblock (uniformAt π) L hLL₀ hsmall
   refine ⟨δ, hδ, fun ν _ hν => ?_⟩
   have hcrit : Criterion π (productLaw ν) η := hpert ν (fun v => (hν v).le)
-  obtain ⟨hrec, -, -⟩ := Rotor.Frozen.path_reduction hFLP hAb hHP hK π hG ⟨3, h3⟩
+  obtain ⟨hrec, -, -⟩ := Rotor.Frozen.path_reduction π hG ⟨3, h3⟩
     (productLaw ν) η hη hcrit
   refine ⟨fun o => by filter_upwards [hrec] with ρ h; exact h.2 o, fun hinv o => ?_⟩
   exact shape_sandwich_proof π P hFLP hAb hHP hK hG ⟨3, h3⟩ (productLaw ν) η hη hcrit hπ

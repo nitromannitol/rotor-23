@@ -21,6 +21,7 @@ import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
 import Rotor.External.SubcriticalDecay
+import Rotor.Bridge.SubcriticalDecay
 import Rotor.Support.PassageAssembly
 
 open Rotor MeasureTheory Filter Topology
@@ -31,9 +32,9 @@ universe u
 variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.square_passage (hSub : External.SubcriticalDecay) :
+theorem Rotor.Frozen.square_passage :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ (u v : Site), squareGraph.Adj u v → ∀ R : ℕ, 1 ≤ R →
       uniformLaw clockwise (liveReachEvent clockwise u v R) ≤
         ENNReal.ofReal (C * Real.exp (-c * R))
 -- FROZEN-STATEMENT-END
-:= square_passage_proof hSub
+:= square_passage_proof

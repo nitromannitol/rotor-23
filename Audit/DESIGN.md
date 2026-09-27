@@ -82,11 +82,17 @@ transported hypotheses, rewrites the goal with `T_eq`, `A_eq`, `R_eq`,
 None at the level of the displayed statements: each challenge theorem is the
 statement of the corresponding theorem of `Rotor/MainTheorems.lean` with every
 repository name replaced by its vocabulary copy.  Relative to the frozen
-statements in `Rotor/Frozen/Main/`, the square-lattice theorems
-(`main_square`, `perturbations_square`) omit the hypothesis
-`External.SubcriticalDecay`, which `Rotor/MainTheorems.lean` discharges with
-`Rotor.Bridge.subcriticalDecay_holds`; that is a strengthening, not a
-weakening.
+statements in `Rotor/Frozen/Main/`, all five theorems
+(`main_square`, `main_degree_three`, `perturbations_square`,
+`perturbations_degree_three`, `pendant_counterexample`) omit the hypothesis
+`External.OneCircuit`, which `Rotor/MainTheorems.lean` discharges with
+`Rotor.Bridge.oneCircuit_holds`; the first four also omit `External.Abelian`
+and `External.VisitsAllOfVisitsOne`, discharged with
+`Rotor.Bridge.abelian_holds` and `Rotor.Bridge.visitsAllOfVisitsOne_holds`;
+the square-lattice theorems (`main_square`, `perturbations_square`) also omit
+`External.Kingman` and `External.SubcriticalDecay`, discharged with
+`Rotor.Bridge.kingman_holds` and `Rotor.Bridge.subcriticalDecay_holds`.  Each
+omission is a strengthening, not a weakening.
 
 How each statement reads the paper, clause by clause, is recorded in the
 repository ledger (`tools/check_clauses.py`) and summarized in

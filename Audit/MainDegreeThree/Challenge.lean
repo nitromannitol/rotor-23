@@ -28,10 +28,6 @@ The paper uses results from the literature without proof.  The repository
 does not prove them either: each is a proposition taken as an explicit
 hypothesis, and this challenge carries the same hypotheses, restated in the
 vocabulary:
-   * `External.OneCircuit`: Florescu–Levine–Peres, Lemmas 2.1 and 2.4;
-   * `External.Abelian`: Holroyd–Levine–Mészáros–Peres–Propp–Wilson, Lemma 3.9;
-   * `External.VisitsAllOfVisitsOne`: Holroyd–Propp, Lemma 6;
-   * `External.Kingman`: Kingman 1968, Theorems 3 and 5;
    * `External.LSS`: Liggett–Schonmann–Stacey, Theorem 0.0(ii).
 
 ## Presentation deltas
@@ -514,23 +510,6 @@ def RecurrentOfRecurrent : Prop :=
 
 end Graph
 
-universe u
-
-open Filter Topology in
-/-- Kingman's subadditive ergodic theorem (Kingman 1968, Theorems 3 and 5), assumed. -/
-def Kingman : Prop :=
-  ∀ {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω), IsProbabilityMeasure μ →
-    ∀ θ : Ω → Ω, MeasurePreserving θ μ μ →
-      ∀ X : ℕ → ℕ → Ω → ℝ,
-        (∀ m n, Measurable (X m n)) →
-        (∀ m n, Integrable (X m n) μ) →
-        (∀ m n ω, 0 ≤ X m n ω) →
-        (∀ m n ω, X m n (θ ω) = X (m + 1) (n + 1) ω) →
-        (∀ l m n ω, l ≤ m → m ≤ n → X l n ω ≤ X l m ω + X m n ω) →
-        (∃ c : ℝ, ∀ n, ∫ ω, X 0 n ω ∂μ ≤ c * n) →
-        ∃ γ : Ω → ℝ, Measurable γ ∧ (∀ᵐ ω ∂μ, γ (θ ω) = γ ω) ∧
-          ∀ᵐ ω ∂μ, Tendsto (fun n : ℕ => X 0 n ω / n) atTop (𝓝 (γ ω))
-
 set_option linter.deprecated false in
 /-- The Bernoulli law on `Bool` with success probability `p`. -/
 noncomputable def bernoulli (p : NNReal) (hp : p ≤ 1) : Measure Bool := (PMF.bernoulli p hp).toMeasure
@@ -575,8 +554,8 @@ universe u
 
 /-- Theorem 1.1 (`thm:main`), doubly periodic graphs of maximum degree three. -/
 theorem main_degree_three {V : Type u} [DecidableEq V] {G : SimpleGraph V}
-    [G.LocallyFinite] (hFLP : External.OneCircuit G) (hAb : External.Abelian G)
-    (hHP : External.VisitsAllOfVisitsOne G) (hK : External.Kingman.{u}) (hLSS : External.LSS)
+    [G.LocallyFinite]
+    (hLSS : External.LSS)
     (P : DoublyPeriodic G) (π : Mechanism G) [Infinite V] (hG : G.Connected)
     (hπ : P.Periodic π) (h3 : ∀ v : V, G.degree v ≤ 3) (o : V) :
     ∃ B : Set Plane, IsCompact B ∧ Convex ℝ B ∧ (0 : Plane) ∈ interior B ∧

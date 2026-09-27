@@ -21,9 +21,8 @@ open scoped Pointwise
 universe u
 
 /-- Proposition 1.2 (`prop:small-perturbations`), square lattice. -/
-theorem perturbations_square (hFLP : External.OneCircuit squareGraph)
-    (hAb : External.Abelian squareGraph) (hHP : External.VisitsAllOfVisitsOne squareGraph)
-    (hK : External.Kingman.{0}) (hLSS : External.LSS) :
+theorem perturbations_square
+    (hLSS : External.LSS) :
     ∃ δ : ℝ, 0 < δ ∧
       ∀ (ν : ∀ v : Site, Measure (squareGraph.neighborSet v)) [∀ v, IsProbabilityMeasure (ν v)],
         (∀ v, tvDist (ν v) (uniformAt clockwise v) < δ) →
@@ -43,8 +42,8 @@ theorem perturbations_square (hFLP : External.OneCircuit squareGraph)
           (((t : ℝ) ^ (-(1 / 3 : ℝ))) • ((fun x => squareEmb x - squareEmb o) '' (R clockwise ρ o t : Set Site)))
           (κ • B)) atTop (𝓝 0) ∧
         Tendsto (fun t : ℕ => ((R clockwise ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c)) := by
-  have h := _root_.Rotor.perturbations_square (Bridge.oneCircuit hFLP) (Bridge.abelian hAb)
-    (Bridge.visitsAllOfVisitsOne hHP) (Bridge.kingman hK) (Bridge.lss hLSS)
+  have h := _root_.Rotor.perturbations_square
+    (Bridge.lss hLSS)
   simp only [Bridge.T_eq, Bridge.A_eq, Bridge.R_eq, Bridge.Recurrent_eq, Bridge.toMech_clockwise]
   exact h
 

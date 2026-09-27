@@ -21,7 +21,6 @@ import Rotor.Events
 import Rotor.External.OneCircuit
 import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
-import Rotor.External.Kingman
 import Rotor.External.LSS
 import Rotor.Support.CircuitShape
 
@@ -36,8 +35,8 @@ variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 -- hypotheses `hf`, `hball`, `hmin` carried by the statement; they are unused by the proof.
 set_option linter.unusedVariables false in
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.circuit_shape (hFLP : External.OneCircuit G) (hAb : External.Abelian G)
-    (hHP : External.VisitsAllOfVisitsOne G) (hK : External.Kingman.{u}) (π : Mechanism G)
+theorem Rotor.Frozen.circuit_shape
+    (π : Mechanism G)
     [Infinite V] (hG : G.Connected) (μ : Measure (Config G)) [IsProbabilityMeasure μ]
     (η : ℝ) (hη : 0 < η) (hcrit : Criterion π μ η) (P : DoublyPeriodic G) (hπ : P.Periodic π)
     (hinv : P.Invariant μ) (herg : P.Ergodic μ) (o : V) (f : Plane → ℝ)

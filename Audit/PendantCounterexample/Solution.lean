@@ -21,13 +21,10 @@ open scoped Pointwise
 universe u
 
 /-- Proposition 1.3 (`prop:pendant-counterexample`). -/
-theorem pendant_counterexample
-    (hFLP : ∀ M : ℕ, External.OneCircuit (pendantGraph M))
-    (hAH : ∀ M : ℕ, External.RecurrentOfRecurrent (pendantGraph M)) :
+theorem pendant_counterexample :
     ∀ M : ℕ, 50331645 ≤ M → ∀ o : PVertex M,
       ∀ᵐ ρ ∂(uniformLaw (pendantMech M)), ¬ Recurrent (pendantMech M) ρ o := by
-  have h := _root_.Rotor.pendant_counterexample (fun M => Bridge.oneCircuit (hFLP M))
-    (fun M => Bridge.recurrentOfRecurrent (hAH M))
+  have h := _root_.Rotor.pendant_counterexample
   simp only [Bridge.Recurrent_eq, Bridge.uniformLaw_eq, Bridge.toMech_pendantMech]
   exact h
 

@@ -17,6 +17,7 @@ import Rotor.Support.Monotone
 import Rotor.External.OneCircuit
 import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
+import Rotor.Bridge.Abelian
 
 open Rotor
 
@@ -26,9 +27,9 @@ variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 -- the termination for `U`, so `hTS` is unused.
 set_option linter.unusedVariables false in
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.monotonicity (hAb : External.Abelian G) (π : Mechanism G)
+theorem Rotor.Frozen.monotonicity (π : Mechanism G)
     [Infinite V] (hG : G.Connected) (ρ : Config G) (S U : Finset V) (hS : S.Nonempty)
     (hSU : S ⊆ U) (hTS : Terminates π S ρ) (hTU : Terminates π U ρ) :
     Φ π ρ S ⊆ Φ π ρ U
 -- FROZEN-STATEMENT-END
-:= Φ_mono π hAb hG ρ S U hS hSU hTU
+:= Φ_mono π (Rotor.Bridge.abelian_holds G) hG ρ S U hS hSU hTU

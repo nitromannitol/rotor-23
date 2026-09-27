@@ -177,8 +177,6 @@ theorem recurrentOfRecurrent (h : RotorAudit.External.RecurrentOfRecurrent G) :
 
 end General
 
-theorem kingman (h : RotorAudit.External.Kingman.{u}) : Rotor.External.Kingman.{u} := h
-
 theorem lss (h : RotorAudit.External.LSS) : Rotor.External.LSS := h
 
 /-! ### Laws and doubly periodic data -/

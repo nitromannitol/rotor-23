@@ -25,6 +25,7 @@ import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
+import Rotor.Bridge.OneCircuit
 import Rotor.Support.CircuitClock
 
 open Rotor MeasureTheory Filter Topology
@@ -35,7 +36,7 @@ universe u
 variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.circuit_clock (hFLP : External.OneCircuit G) (π : Mechanism G)
+theorem Rotor.Frozen.circuit_clock (π : Mechanism G)
     (hG : G.Connected) (ρ : Config G) (o : V) (hT : ∀ n : ℕ, T π ρ o n < ⊤) :
     (∀ n : ℕ, ∑ x ∈ A π ρ o n, G.degree x ≤ (T π ρ o (n + 1)).toNat - (T π ρ o n).toNat ∧
       (T π ρ o (n + 1)).toNat - (T π ρ o n).toNat ≤ ∑ x ∈ A π ρ o (n + 1), G.degree x) ∧
@@ -55,4 +56,4 @@ theorem Rotor.Frozen.circuit_clock (hFLP : External.OneCircuit G) (π : Mechanis
         (((t : ℝ) ^ (-(1 / 3 : ℝ))) • (emb '' (R π ρ o t : Set V))) (((3 / β) ^ (1 / 3 : ℝ)) • B))
         atTop (𝓝 0))
 -- FROZEN-STATEMENT-END
-:= circuit_clock_proof π ρ o hFLP hG hT
+:= circuit_clock_proof π ρ o (Rotor.Bridge.oneCircuit_holds G) hG hT

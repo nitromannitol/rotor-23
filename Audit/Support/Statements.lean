@@ -23,9 +23,7 @@ set_option linter.unusedVariables false
 
 /-- The statement of `Audit/MainSquare/Challenge.lean`. -/
 def mainSquare : Prop :=
-  ∀ (hFLP : External.OneCircuit squareGraph)
-    (hAb : External.Abelian squareGraph) (hHP : External.VisitsAllOfVisitsOne squareGraph)
-    (hK : External.Kingman.{0}) (hLSS : External.LSS)
+  ∀ (hLSS : External.LSS)
     (o : Site),
     ∃ B : Set Plane, IsCompact B ∧ Convex ℝ B ∧ (0 : Plane) ∈ interior B ∧
     ∃ κ c : ℝ, 0 < κ ∧ 0 < c ∧
@@ -43,8 +41,8 @@ def mainSquare : Prop :=
 /-- The statement of `Audit/MainDegreeThree/Challenge.lean`. -/
 def mainDegreeThree : Prop :=
   ∀ {V : Type u} [DecidableEq V] {G : SimpleGraph V}
-    [G.LocallyFinite] (hFLP : External.OneCircuit G) (hAb : External.Abelian G)
-    (hHP : External.VisitsAllOfVisitsOne G) (hK : External.Kingman.{u}) (hLSS : External.LSS)
+    [G.LocallyFinite]
+    (hLSS : External.LSS)
     (P : DoublyPeriodic G) (π : Mechanism G) [Infinite V] (hG : G.Connected)
     (hπ : P.Periodic π) (h3 : ∀ v : V, G.degree v ≤ 3) (o : V),
     ∃ B : Set Plane, IsCompact B ∧ Convex ℝ B ∧ (0 : Plane) ∈ interior B ∧
@@ -62,9 +60,7 @@ def mainDegreeThree : Prop :=
 
 /-- The statement of `Audit/PerturbationsSquare/Challenge.lean`. -/
 def perturbationsSquare : Prop :=
-  ∀ (hFLP : External.OneCircuit squareGraph)
-    (hAb : External.Abelian squareGraph) (hHP : External.VisitsAllOfVisitsOne squareGraph)
-    (hK : External.Kingman.{0}) (hLSS : External.LSS),
+  ∀ (hLSS : External.LSS),
     ∃ δ : ℝ, 0 < δ ∧
       ∀ (ν : ∀ v : Site, Measure (squareGraph.neighborSet v)) [∀ v, IsProbabilityMeasure (ν v)],
         (∀ v, tvDist (ν v) (uniformAt clockwise v) < δ) →
@@ -88,9 +84,8 @@ def perturbationsSquare : Prop :=
 /-- The statement of `Audit/PerturbationsDegreeThree/Challenge.lean`. -/
 def perturbationsDegreeThree : Prop :=
   ∀ {V : Type u} [DecidableEq V] {G : SimpleGraph V}
-    [G.LocallyFinite] (hFLP : External.OneCircuit G)
-    (hAb : External.Abelian G) (hHP : External.VisitsAllOfVisitsOne G)
-    (hK : External.Kingman.{u}) (hLSS : External.LSS) (P : DoublyPeriodic G) (π : Mechanism G)
+    [G.LocallyFinite]
+    (hLSS : External.LSS) (P : DoublyPeriodic G) (π : Mechanism G)
     [Infinite V] (hG : G.Connected) (hπ : P.Periodic π) (h3 : ∀ v : V, G.degree v ≤ 3),
     ∃ δ : ℝ, 0 < δ ∧
       ∀ (ν : ∀ v : V, Measure (G.neighborSet v)) [∀ v, IsProbabilityMeasure (ν v)],
@@ -112,10 +107,7 @@ def perturbationsDegreeThree : Prop :=
 
 /-- The statement of `Audit/PendantCounterexample/Challenge.lean`. -/
 def pendantCounterexample : Prop :=
-  ∀
-    (hFLP : ∀ M : ℕ, External.OneCircuit (pendantGraph M))
-    (hAH : ∀ M : ℕ, External.RecurrentOfRecurrent (pendantGraph M)),
-    ∀ M : ℕ, 50331645 ≤ M → ∀ o : PVertex M,
-      ∀ᵐ ρ ∂(uniformLaw (pendantMech M)), ¬ Recurrent (pendantMech M) ρ o
+  ∀ M : ℕ, 50331645 ≤ M → ∀ o : PVertex M,
+    ∀ᵐ ρ ∂(uniformLaw (pendantMech M)), ¬ Recurrent (pendantMech M) ρ o
 
 end RotorAudit.Statements

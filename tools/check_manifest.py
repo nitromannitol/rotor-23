@@ -336,6 +336,28 @@ def closure_digest(source: str, resolver: DeclarationResolver) -> tuple[str, int
     return hashlib.sha256(payload).hexdigest(), len(closure)
 
 
+def enclosing_namespace_at(text: str, offset: int) -> str:
+    """The lexical namespace open at a given byte offset of a source file.
+
+    A frozen declaration is ordinarily written with its full dotted name at
+    top level (no enclosing `namespace`), so `declaration_name == export`
+    matches directly.  A `Bridge/` proof may instead sit inside `namespace
+    Pkg.Bridge` and declare only its short name; this lets the checker
+    recover the qualification the export field must carry so `#print axioms
+    <export>` (in `certificate.py`/`check_axioms.py`) still resolves it.
+    """
+    scopes: list[tuple[str, str]] = []
+    for line in text[:offset].splitlines():
+        namespace_match = NAMESPACE_RE.match(line)
+        if namespace_match:
+            scopes.append(("namespace", namespace_match.group(1)))
+        elif SECTION_RE.match(line):
+            scopes.append(("section", ""))
+        elif END_RE.match(line) and scopes:
+            scopes.pop()
+    return current_namespace(scopes)
+
+
 def frozen_declaration(block: str, path: Path, errors: list[str]) -> tuple[str, str] | None:
     """Parse the unique supported declaration keyword and exact name in a block."""
     matches = FROZEN_DECL_RE.findall(strip_block_comments(block))
@@ -436,10 +458,13 @@ def main() -> int:
         if parsed is not None:
             declaration_kind, declaration_name = parsed
             export = node.get("export", "")
-            if declaration_name != export:
+            namespace = enclosing_namespace_at(text, text.index(BEGIN))
+            qualified_name = f"{namespace}.{declaration_name}" if namespace else declaration_name
+            if export not in (declaration_name, qualified_name):
                 errors.append(
-                    f"{nid}: frozen declaration name {declaration_name!r} does not "
-                    f"exactly match export {export!r}")
+                    f"{nid}: frozen declaration name {declaration_name!r} "
+                    f"(qualified {qualified_name!r}) does not exactly match "
+                    f"export {export!r}")
             if kind == "theorem" and declaration_kind != "theorem":
                 errors.append(
                     f"{nid}: manifest kind theorem but frozen declaration uses "

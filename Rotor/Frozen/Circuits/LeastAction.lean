@@ -23,6 +23,7 @@ import Rotor.Traversal
 import Rotor.External.OneCircuit
 import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
+import Rotor.Bridge.Abelian
 
 open Rotor
 
@@ -30,11 +31,11 @@ variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
 omit [G.LocallyFinite] in
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.least_action (hAb : External.Abelian G) (π : Mechanism G)
+theorem Rotor.Frozen.least_action (π : Mechanism G)
     [Infinite V] (hG : G.Connected) (S : Finset V) (hS : S.Nonempty) (ξ : RState G)
     (vs ws : List V) (hvs : IsLegal π S ξ vs) (hws : IsLegal π S ξ ws) :
     (Stable S (run π S ξ vs) → ws.length ≤ vs.length ∧ ∀ v, ws.count v ≤ vs.count v) ∧
     (Stable S (run π S ξ vs) → Stable S (run π S ξ ws) →
       ws.length = vs.length ∧ run π S ξ ws = run π S ξ vs ∧ ∀ v, ws.count v = vs.count v)
 -- FROZEN-STATEMENT-END
-:= hAb π inferInstance hG S hS ξ vs ws hvs hws
+:= Rotor.Bridge.abelian_holds G π inferInstance hG S hS ξ vs ws hvs hws

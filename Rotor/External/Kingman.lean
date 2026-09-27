@@ -10,6 +10,12 @@ of `X 0 n / n`.  Theorem 3 gives invariance of the limit, and Theorem 5 gives
 almost-sure convergence.  The paper makes this limit deterministic through
 ergodicity of the whole lattice action.  The almost-sure conclusion is the
 form used here.
+
+No longer assumed outright: `Rotor.Bridge.kingman_holds` in
+`Rotor/Bridge/Kingman.lean` proves it unconditionally from the shared library
+`Lattice-Probability` (`LatticeProb.Prob.Kingman`); this `Prop` itself carries
+no manifest node any longer (see ledger node `ext-kingman`, which now points
+at that proof).
 -/
 import Mathlib
 
@@ -17,7 +23,6 @@ open MeasureTheory Filter Topology
 
 universe u
 
--- FROZEN-STATEMENT-BEGIN
 /-- Kingman's subadditive ergodic theorem (Kingman 1968, Theorems 3 and 5):
 a measurable, nonnegative, integrable stationary subadditive array with linearly
 bounded expectations has a measurable, almost surely `θ`-invariant limit. -/
@@ -33,4 +38,3 @@ def Rotor.External.Kingman : Prop :=
         (∃ c : ℝ, ∀ n, ∫ ω, X 0 n ω ∂μ ≤ c * n) →
         ∃ γ : Ω → ℝ, Measurable γ ∧ (∀ᵐ ω ∂μ, γ (θ ω) = γ ω) ∧
           ∀ᵐ ω ∂μ, Tendsto (fun n : ℕ => X 0 n ω / n) atTop (𝓝 (γ ω))
--- FROZEN-STATEMENT-END

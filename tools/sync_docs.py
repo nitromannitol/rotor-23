@@ -74,7 +74,13 @@ def paper_cell(source: str) -> str:
 STATUS_WORD = {"SEALED": "proved", "FROZEN": "assumed", "DRAFT_SORRY": "open"}
 # Cited results that the frozen statements assume but that are proved elsewhere
 # in the repository.
-DISCHARGED = {"ext-subcritical-decay": "Rotor/Bridge/SubcriticalDecay.lean"}
+DISCHARGED = {
+    "ext-subcritical-decay": "Rotor/Bridge/SubcriticalDecay.lean",
+    "ext-abelian": "Rotor/Bridge/Abelian.lean",
+    "ext-one-circuit": "Rotor/Bridge/OneCircuit.lean",
+    "ext-holroyd-propp": "Rotor/Bridge/HolroydPropp.lean",
+    "ext-angel-holroyd": "Rotor/Bridge/AngelHolroyd.lean",
+}
 
 
 def status_cell(n: dict) -> str:

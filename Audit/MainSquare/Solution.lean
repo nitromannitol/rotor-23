@@ -21,9 +21,8 @@ open scoped Pointwise
 universe u
 
 /-- Theorem 1.1 (`thm:main`), square lattice. -/
-theorem main_square (hFLP : External.OneCircuit squareGraph)
-    (hAb : External.Abelian squareGraph) (hHP : External.VisitsAllOfVisitsOne squareGraph)
-    (hK : External.Kingman.{0}) (hLSS : External.LSS)
+theorem main_square
+    (hLSS : External.LSS)
     (o : Site) :
     ∃ B : Set Plane, IsCompact B ∧ Convex ℝ B ∧ (0 : Plane) ∈ interior B ∧
     ∃ κ c : ℝ, 0 < κ ∧ 0 < c ∧
@@ -37,8 +36,8 @@ theorem main_square (hFLP : External.OneCircuit squareGraph)
           (((t : ℝ) ^ (-(1 / 3 : ℝ))) • ((fun x => squareEmb x - squareEmb o) '' (R clockwise ρ o t : Set Site)))
           (κ • B)) atTop (𝓝 0) ∧
         Tendsto (fun t : ℕ => ((R clockwise ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c) := by
-  have h := _root_.Rotor.main_square (Bridge.oneCircuit hFLP) (Bridge.abelian hAb)
-    (Bridge.visitsAllOfVisitsOne hHP) (Bridge.kingman hK) (Bridge.lss hLSS) o
+  have h := _root_.Rotor.main_square
+    (Bridge.lss hLSS) o
   simp only [Bridge.T_eq, Bridge.A_eq, Bridge.R_eq, Bridge.Recurrent_eq, Bridge.uniformLaw_eq,
     Bridge.toMech_clockwise]
   exact h

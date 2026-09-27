@@ -324,8 +324,13 @@ theorem sharpness_bound (p : NNReal) (hp : p ≤ 1) (hlt : p < 1 / 2) :
   rw [← ENNReal.ofReal_toReal (measure_ne_top _ _)]
   exact ENNReal.ofReal_le_ofReal this
 
-/-- `External.SubcriticalDecay` holds. -/
-theorem subcriticalDecay_holds : External.SubcriticalDecay := by
+-- FROZEN-STATEMENT-BEGIN
+/-- Kesten's theorem with exponential decay below `p_c = 1/2` (`external input,
+Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail`), proved
+rather than assumed. -/
+theorem subcriticalDecay_holds : External.SubcriticalDecay
+-- FROZEN-STATEMENT-END
+:= by
   intro p hp hlt
   obtain ⟨c, hc, hbound⟩ := sharpness_bound p hp hlt
   refine ⟨c, 1, hc, one_pos, fun x r _ => ?_⟩

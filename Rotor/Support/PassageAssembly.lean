@@ -284,11 +284,11 @@ theorem nonTerm_measure_zero (f : Site) {d : Site} (hd : IsUnit d) {C' c' : ℝ}
 
 /-! ### Proposition 5.1 -/
 
-theorem square_passage_proof (hSub : External.SubcriticalDecay) :
+theorem square_passage_proof :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ (u v : Site), squareGraph.Adj u v → ∀ R : ℕ, 1 ≤ R →
       uniformLaw clockwise (liveReachEvent clockwise u v R) ≤
         ENNReal.ofReal (C * Real.exp (-c * R)) := by
-  obtain ⟨c, C, hc, hC, hCB⟩ := Rotor.Frozen.square_constrained_bonds hSub
+  obtain ⟨c, C, hc, hC, hCB⟩ := Rotor.Frozen.square_constrained_bonds
   obtain ⟨C', c', hc', hC', hreach⟩ := reach_exp_bound hc hC hCB
   refine ⟨c' / 2, C' * Real.exp (7 * c' / 2) + Real.exp (4 * c'), by positivity, by positivity,
     fun u v _ R hR => ?_⟩

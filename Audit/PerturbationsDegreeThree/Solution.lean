@@ -22,9 +22,8 @@ universe u
 
 /-- Proposition 1.2 (`prop:small-perturbations`), doubly periodic graphs of maximum degree three. -/
 theorem perturbations_degree_three {V : Type u} [DecidableEq V] {G : SimpleGraph V}
-    [G.LocallyFinite] (hFLP : External.OneCircuit G)
-    (hAb : External.Abelian G) (hHP : External.VisitsAllOfVisitsOne G)
-    (hK : External.Kingman.{u}) (hLSS : External.LSS) (P : DoublyPeriodic G) (π : Mechanism G)
+    [G.LocallyFinite]
+    (hLSS : External.LSS) (P : DoublyPeriodic G) (π : Mechanism G)
     [Infinite V] (hG : G.Connected) (hπ : P.Periodic π) (h3 : ∀ v : V, G.degree v ≤ 3) :
     ∃ δ : ℝ, 0 < δ ∧
       ∀ (ν : ∀ v : V, Measure (G.neighborSet v)) [∀ v, IsProbabilityMeasure (ν v)],
@@ -43,8 +42,8 @@ theorem perturbations_degree_three {V : Type u} [DecidableEq V] {G : SimpleGraph
           (((t : ℝ) ^ (-(1 / 3 : ℝ))) • ((fun x => P.emb x - P.emb o) '' (R π ρ o t : Set V)))
           (κ • B)) atTop (𝓝 0) ∧
         Tendsto (fun t : ℕ => ((R π ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c)) := by
-  have h := _root_.Rotor.perturbations_degree_three (Bridge.oneCircuit hFLP)
-    (Bridge.abelian hAb) (Bridge.visitsAllOfVisitsOne hHP) (Bridge.kingman hK) (Bridge.lss hLSS)
+  have h := _root_.Rotor.perturbations_degree_three
+    (Bridge.lss hLSS)
     (Bridge.toDP P) (Bridge.toMech π) hG ((Bridge.periodic_iff P π).1 hπ) h3
   simp only [Bridge.T_eq, Bridge.A_eq, Bridge.R_eq, Bridge.Recurrent_eq]
   exact h

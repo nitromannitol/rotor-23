@@ -22,6 +22,8 @@ import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
+import Rotor.Bridge.Kingman
+import Rotor.Bridge.Abelian
 import Rotor.Support.PassageUniform
 
 open Rotor MeasureTheory Filter Topology
@@ -35,8 +37,8 @@ variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 -- proof: the passage function exists for every invariant ergodic law.
 set_option linter.unusedVariables false in
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.passage_limit (hFLP : External.OneCircuit G) (hAb : External.Abelian G)
-    (hHP : External.VisitsAllOfVisitsOne G) (hK : External.Kingman.{u}) (π : Mechanism G)
+theorem Rotor.Frozen.passage_limit
+    (π : Mechanism G)
     [Infinite V] (hG : G.Connected) (μ : Measure (Config G)) [IsProbabilityMeasure μ]
     (η : ℝ) (hη : 0 < η) (hcrit : Criterion π μ η) (P : DoublyPeriodic G) (hπ : P.Periodic π)
     (hinv : P.Invariant μ) (herg : P.Ergodic μ) :
@@ -45,4 +47,4 @@ theorem Rotor.Frozen.passage_limit (hFLP : External.OneCircuit G) (hAb : Externa
       ∀ o : V, ∀ᵐ ρ ∂μ, ∀ ε : ℝ, 0 < ε → ∃ R₀ : ℝ, ∀ x : V, R₀ ≤ ‖P.emb x - P.emb o‖ →
         |(τ π ρ o x : ℝ) - f (P.emb x - P.emb o)| ≤ ε * ‖P.emb x - P.emb o‖
 -- FROZEN-STATEMENT-END
-:= passage_limit_proof π P hK hπ hAb hG μ hinv herg
+:= passage_limit_proof π P Rotor.Bridge.kingman_holds hπ (Rotor.Bridge.abelian_holds G) hG μ hinv herg

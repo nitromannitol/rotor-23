@@ -34,6 +34,11 @@ import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
 import Rotor.External.SubcriticalDecay
+import Rotor.Bridge.Kingman
+import Rotor.Bridge.SubcriticalDecay
+import Rotor.Bridge.Abelian
+import Rotor.Bridge.OneCircuit
+import Rotor.Bridge.HolroydPropp
 import Rotor.Support.MainSquare
 
 open Rotor MeasureTheory Filter Topology
@@ -44,9 +49,8 @@ universe u
 variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.main_square (hFLP : External.OneCircuit squareGraph)
-    (hAb : External.Abelian squareGraph) (hHP : External.VisitsAllOfVisitsOne squareGraph)
-    (hK : External.Kingman.{0}) (hLSS : External.LSS) (hSub : External.SubcriticalDecay)
+theorem Rotor.Frozen.main_square
+    (hLSS : External.LSS)
     (o : Site) :
     ∃ B : Set Plane, IsCompact B ∧ Convex ℝ B ∧ (0 : Plane) ∈ interior B ∧
     ∃ κ c : ℝ, 0 < κ ∧ 0 < c ∧
@@ -61,4 +65,5 @@ theorem Rotor.Frozen.main_square (hFLP : External.OneCircuit squareGraph)
           (κ • B)) atTop (𝓝 0) ∧
         Tendsto (fun t : ℕ => ((R clockwise ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c)
 -- FROZEN-STATEMENT-END
-:= main_square_proof hFLP hAb hHP hK hLSS hSub o
+:= main_square_proof (Rotor.Bridge.oneCircuit_holds squareGraph) (Rotor.Bridge.abelian_holds squareGraph)
+    (Rotor.Bridge.visitsAllOfVisitsOne_holds squareGraph) Rotor.Bridge.kingman_holds hLSS o

@@ -20,16 +20,18 @@ import Rotor.Support.Passage
 import Rotor.External.OneCircuit
 import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
+import Rotor.Bridge.Abelian
+import Rotor.Bridge.OneCircuit
 
 open Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.passage (hFLP : External.OneCircuit G) (hAb : External.Abelian G)
+theorem Rotor.Frozen.passage
     (π : Mechanism G) [Infinite V] (hG : G.Connected) (ρ : Config G) (o : V) :
     (∀ x y z : V, τ π ρ x z ≤ τ π ρ x y + τ π ρ y z) ∧
     (∀ x y : V, τ π ρ x y ≤ G.dist x y) ∧
     (AllTerminate π ρ → ∀ n : ℕ, T π ρ o n < ⊤ ∧ ∀ x : V, x ∈ A π ρ o n ↔ τ π ρ o x ≤ n)
 -- FROZEN-STATEMENT-END
-:= passage_proof π hFLP hAb hG ρ o
+:= passage_proof π (Rotor.Bridge.oneCircuit_holds G) (Rotor.Bridge.abelian_holds G) hG ρ o

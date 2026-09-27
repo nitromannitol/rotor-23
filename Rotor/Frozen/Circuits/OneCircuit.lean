@@ -18,17 +18,18 @@ import Rotor.Traversal
 import Rotor.External.OneCircuit
 import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
+import Rotor.Bridge.OneCircuit
 
 open Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.one_circuit (hFLP : External.OneCircuit G) (π : Mechanism G)
+theorem Rotor.Frozen.one_circuit (π : Mechanism G)
     [Infinite V] (hG : G.Connected) (ρ : Config G) (o : V) (n : ℕ) (hn : T π ρ o n < ⊤) :
     (∀ s t : ℕ, T π ρ o n ≤ (s : ℕ∞) → s < t → (t : ℕ∞) < T π ρ o (n + 1) →
         traversal π ρ o s ≠ traversal π ρ o t) ∧
     (T π ρ o (n + 1) < ⊤ → ∀ x ∈ A π ρ o n,
         departures π ρ o x (T π ρ o n).toNat (T π ρ o (n + 1)).toNat = G.degree x)
 -- FROZEN-STATEMENT-END
-:= hFLP π hG ρ o n hn
+:= Rotor.Bridge.oneCircuit_holds G π hG ρ o n hn

@@ -8,10 +8,12 @@ edit it by hand.
 ## What is claimed
 
 Every theorem, lemma and proposition of the paper is stated in Lean 4 and
-proved.  Six results the paper cites without proof enter only as explicit
-hypotheses, each a frozen `Prop` in `Rotor/External/` (the `FROZEN` nodes
-below); the seventh, subcritical exponential decay for percolation, is proved
-in `Rotor/Bridge/`.  No statement rests on an added axiom or a `sorry`.
+proved.  One result the paper cites without proof enters only as an explicit
+hypothesis, a frozen `Prop` in `Rotor/External/` (the `FROZEN` node below,
+`ext-lss`); the other six are proved in `Rotor/Bridge/`: Kingman's subadditive
+ergodic theorem, the abelian property of rotor-routing, the one-circuit lemma,
+Holroyd-Propp's Lemma 6, Angel-Holroyd's Theorem 1, and subcritical exponential
+decay for percolation.  No statement rests on an added axiom or a `sorry`.
 
 Proposition 1.2 on the square lattice gives one `δ > 0` for all independent
 rotor laws whose marginal at every vertex has total variation distance less
@@ -33,9 +35,9 @@ See [`Rotor.Frozen.perturbations_square`](Rotor/Frozen/Main/PerturbSquare.lean);
 | Lean toolchain | `leanprover/lean4:v4.32.0` |
 | Mathlib revision | `81a5d257c8e410db227a6665ed08f64fea08e997` |
 | Paper (`paper/rotor.tex`) SHA-256 | `007634d2d82fddfd902af49c3e85168461a545224b145998100433250895a930` |
-| Build | succeeded, 8856 jobs |
+| Build | succeeded, 8864 jobs |
 | Build warnings | 0 |
-| Generated | 2026-09-24 |
+| Generated | 2026-09-27 |
 
 ## Reproducing it
 
@@ -65,43 +67,43 @@ nowhere below.
 
 | # | node | Lean name | paper | axioms |
 |---|---|---|---|---|
-| 1 | `lem-least-action` | `Rotor.Frozen.least_action` | `lem:least-action` | classical only |
-| 2 | `lem-boundary-routing` | `Rotor.Frozen.boundary_routing` | `lem:boundary-routing` | classical only |
-| 3 | `prop-circuit-iterate` | `Rotor.Frozen.circuit_iterate` | `prop:circuit-iterate` | classical only |
-| 4 | `prop-monotonicity` | `Rotor.Frozen.monotonicity` | `prop:monotonicity` | classical only |
-| 5 | `prop-passage` | `Rotor.Frozen.passage` | `prop:passage` | classical only |
-| 6 | `lem-decreasing-positions` | `Rotor.Frozen.decreasing_positions` | `lem:decreasing-positions` | classical only |
-| 7 | `prop-live-recurrence` | `Rotor.Frozen.live_recurrence` | `prop:live-recurrence` | classical only |
-| 8 | `ext-abelian` | `Rotor.External.Abelian` | — | classical only |
-| 9 | `ext-holroyd-propp` | `Rotor.External.VisitsAllOfVisitsOne` | — | classical only |
-| 10 | `ext-lss` | `Rotor.External.LSS` | — | classical only |
-| 11 | `ext-angel-holroyd` | `Rotor.External.RecurrentOfRecurrent` | — | classical only |
-| 12 | `ext-subcritical-decay` | `Rotor.External.SubcriticalDecay` | — | classical only |
-| 13 | `prop-path-reduction` | `Rotor.Frozen.path_reduction` | `prop:path-reduction` | classical only |
-| 14 | `prop-passage-limit` | `Rotor.Frozen.passage_limit` | `prop:passage-limit` | classical only |
-| 15 | `prop-circuit-shape` | `Rotor.Frozen.circuit_shape` | `prop:circuit-shape` | classical only |
-| 16 | `lem-block-live-paths` | `Rotor.Frozen.block_live_paths` | `lem:block-live-paths` | classical only |
-| 17 | `thm-main-square` | `Rotor.Frozen.main_square` | `thm:main` | classical only |
-| 18 | `thm-main-degree-three` | `Rotor.Frozen.main_degree_three` | `thm:main` | classical only |
-| 19 | `prop-perturbations-degree-three` | `Rotor.Frozen.perturbations_degree_three` | `prop:small-perturbations` | classical only |
-| 20 | `prop-subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `prop:subcubic-recurrence` | classical only |
-| 21 | `prop-degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `prop:degree-three-passage` | classical only |
-| 22 | `prop-square-passage` | `Rotor.Frozen.square_passage` | `prop:square-passage` | classical only |
-| 23 | `lem-square-dual-path` | `Rotor.Frozen.square_dual_path` | `lem:square-dual-path` | classical only |
-| 24 | `lem-square-constrained-bonds` | `Rotor.Frozen.square_constrained_bonds` | `lem:square-constrained-bonds` | classical only |
-| 25 | `ext-one-circuit` | `Rotor.External.OneCircuit` | — | classical only |
-| 26 | `lem-one-circuit` | `Rotor.Frozen.one_circuit` | `lem:one-circuit` | classical only |
-| 27 | `prop-circuit-clock` | `Rotor.Frozen.circuit_clock` | `prop:circuit-clock` | classical only |
-| 28 | `lem-square-exploration` | `Rotor.Frozen.square_exploration` | `lem:square-exploration` | classical only |
-| 29 | `lem-square-active-list` | `Rotor.Frozen.square_active_list` | `lem:square-active-list` | classical only |
-| 30 | `lem-square-forced-tests` | `Rotor.Frozen.square_forced_tests` | `lem:square-forced-tests` | classical only |
-| 31 | `prop-pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `prop:pendant-counterexample` | classical only |
-| 32 | `ext-kingman` | `Rotor.External.Kingman` | — | classical only |
-| 33 | `prop-perturbations-square` | `Rotor.Frozen.perturbations_square` | `prop:small-perturbations` | classical only |
+| 1 | `ext-lss` | `Rotor.External.LSS` | — | classical only |
+| 2 | `ext-subcritical-decay` | `Rotor.Bridge.subcriticalDecay_holds` | — | classical only |
+| 3 | `lem-block-live-paths` | `Rotor.Frozen.block_live_paths` | `lem:block-live-paths` | classical only |
+| 4 | `prop-subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `prop:subcubic-recurrence` | classical only |
+| 5 | `prop-degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `prop:degree-three-passage` | classical only |
+| 6 | `prop-square-passage` | `Rotor.Frozen.square_passage` | `prop:square-passage` | classical only |
+| 7 | `lem-square-dual-path` | `Rotor.Frozen.square_dual_path` | `lem:square-dual-path` | classical only |
+| 8 | `lem-square-constrained-bonds` | `Rotor.Frozen.square_constrained_bonds` | `lem:square-constrained-bonds` | classical only |
+| 9 | `lem-square-exploration` | `Rotor.Frozen.square_exploration` | `lem:square-exploration` | classical only |
+| 10 | `lem-square-active-list` | `Rotor.Frozen.square_active_list` | `lem:square-active-list` | classical only |
+| 11 | `lem-square-forced-tests` | `Rotor.Frozen.square_forced_tests` | `lem:square-forced-tests` | classical only |
+| 12 | `ext-kingman` | `Rotor.Bridge.kingman_holds` | — | classical only |
+| 13 | `ext-abelian` | `Rotor.Bridge.abelian_holds` | — | classical only |
+| 14 | `lem-least-action` | `Rotor.Frozen.least_action` | `lem:least-action` | classical only |
+| 15 | `lem-boundary-routing` | `Rotor.Frozen.boundary_routing` | `lem:boundary-routing` | classical only |
+| 16 | `prop-monotonicity` | `Rotor.Frozen.monotonicity` | `prop:monotonicity` | classical only |
+| 17 | `lem-decreasing-positions` | `Rotor.Frozen.decreasing_positions` | `lem:decreasing-positions` | classical only |
+| 18 | `ext-one-circuit` | `Rotor.Bridge.oneCircuit_holds` | — | classical only |
+| 19 | `lem-one-circuit` | `Rotor.Frozen.one_circuit` | `lem:one-circuit` | classical only |
+| 20 | `prop-circuit-iterate` | `Rotor.Frozen.circuit_iterate` | `prop:circuit-iterate` | classical only |
+| 21 | `prop-passage` | `Rotor.Frozen.passage` | `prop:passage` | classical only |
+| 22 | `prop-circuit-clock` | `Rotor.Frozen.circuit_clock` | `prop:circuit-clock` | classical only |
+| 23 | `ext-holroyd-propp` | `Rotor.Bridge.visitsAllOfVisitsOne_holds` | — | classical only |
+| 24 | `prop-live-recurrence` | `Rotor.Frozen.live_recurrence` | `prop:live-recurrence` | classical only |
+| 25 | `prop-path-reduction` | `Rotor.Frozen.path_reduction` | `prop:path-reduction` | classical only |
+| 26 | `prop-passage-limit` | `Rotor.Frozen.passage_limit` | `prop:passage-limit` | classical only |
+| 27 | `prop-circuit-shape` | `Rotor.Frozen.circuit_shape` | `prop:circuit-shape` | classical only |
+| 28 | `thm-main-square` | `Rotor.Frozen.main_square` | `thm:main` | classical only |
+| 29 | `thm-main-degree-three` | `Rotor.Frozen.main_degree_three` | `thm:main` | classical only |
+| 30 | `prop-perturbations-square` | `Rotor.Frozen.perturbations_square` | `prop:small-perturbations` | classical only |
+| 31 | `prop-perturbations-degree-three` | `Rotor.Frozen.perturbations_degree_three` | `prop:small-perturbations` | classical only |
+| 32 | `ext-angel-holroyd` | `Rotor.Bridge.recurrentOfRecurrent_holds` | — | classical only |
+| 33 | `prop-pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `prop:pendant-counterexample` | classical only |
 
 33 of 33 nodes depend on nothing beyond the three classical
-axioms.  In `ledger/manifest.yaml`, 26 nodes are `SEALED` (proved) and
-7 are `FROZEN` (cited hypotheses, no proof obligation here).
+axioms.  In `ledger/manifest.yaml`, 32 nodes are `SEALED` (proved) and
+1 are `FROZEN` (cited hypotheses, no proof obligation here).
 
 ## Frozen statements
 
@@ -110,39 +112,39 @@ verifies these hashes; the recipe is in `CORRESPONDENCE.md`.
 
 | node | SHA-256 of the frozen statement |
 |---|---|
-| `lem-least-action` | `68868114ebd0b960cd14e67d8a8e114c5de6b9ae357000382efcbe7d9660f919` |
-| `lem-boundary-routing` | `46b14f86c3d38129bf144926eb471eeec6f415ee67f3a1e9a476d1c18e9d5e4d` |
-| `prop-circuit-iterate` | `2f6bf56d2de866d9738d8b476d169b3f4123648b266a63cadbb71b0772f17318` |
-| `prop-monotonicity` | `8332aa8c4e37db9baf61257bfaa75cfc202fc11797c333823ab89b5e6b2a2936` |
-| `prop-passage` | `069a4ff096575cb0bee1e65a93fe66b5e2db4930d7e69f74971ffc3ed54a1b5f` |
-| `lem-decreasing-positions` | `6c7e704aa3cf8a6847d993e3bc951d433b7ddae001140148ddd3a3c3c997bf51` |
-| `prop-live-recurrence` | `b5474429111fccf9b4176f4b7502ba213577f4e32cd9e28129d50b66d0cc854f` |
-| `ext-abelian` | `c0d83e13b688419da997c7a4dbdd78c98b50387e6dc9cc04e7ee2c22a81503a6` |
-| `ext-holroyd-propp` | `1d9bd3d9563700959c606b70575cc18d3719acda6e3654bb4e502fda5ec4052c` |
 | `ext-lss` | `a9d090913b002a564b4642649bfe3b32520831d2ffd1b5cff70e159b9fb2e0bc` |
-| `ext-angel-holroyd` | `798919095ca52e96180cea29f9557ff8b5d6817e6759befca9a41324759eb068` |
-| `ext-subcritical-decay` | `91cf2b38392188c44f404e23be502f1144ee36be9f58d482a5368668b5b0eca4` |
-| `prop-path-reduction` | `61b5b79240cacbb8dec7947ef9a139b2f23fb0392575e68cf0b859391b89df66` |
-| `prop-passage-limit` | `c662d0a3b5ee38dcf6e5b69210cf141e36670df3aca22d31ac11bd3179d8d3ce` |
-| `prop-circuit-shape` | `1464abd94afe17ec7941bfadf5f5560b4940a175082201235d00fad01835cdfc` |
+| `ext-subcritical-decay` | `66a85f39d5abd5c36c099f13b3820f36fe253562342ee274cd83d8e107aee5e8` |
 | `lem-block-live-paths` | `132ba277ad6631d8dbce032517ce913bcc4be5d78bd00117c5c69ee1c24b2d41` |
-| `thm-main-square` | `accea74870d023ae13e00bcae9e028ceba12e7bc13c773dec292f79fb198ef8f` |
-| `thm-main-degree-three` | `fe6b9b01b7a7955306df92af59e81762b6052eb1000f6e1c7a0b602b0ff93e1c` |
-| `prop-perturbations-degree-three` | `8df50adfd6739954fc7b9e1d69398344e8394f60155ab0e4c5cdc555ac6ea665` |
 | `prop-subcubic-recurrence` | `6fe16ac985883a225f0c064ac88d9239e4b7b27d6641e2f447fdb2b489f65e5e` |
 | `prop-degree-three-passage` | `5822a99fc7c1e7db2ce05320c0aff2dc42bb5f70d1420570a7b45bffbf229be2` |
-| `prop-square-passage` | `c30d0e0b3a944cfb37416f3cacf1667fc8c57c4a365c8ebc66f1d5f4542895ae` |
+| `prop-square-passage` | `faadcb73aae82c6d5177b23840051c1188f2aeb4b1b3fdb7d80248a6f39fc3b7` |
 | `lem-square-dual-path` | `2bc0634c1d4e585969e95f90af2eb6b1fe30698603caf9581bc0c418bd69e345` |
-| `lem-square-constrained-bonds` | `2f356470ab7adc44a2175651db286fb74ce81ada4e9a4db780f581cafee931a8` |
-| `ext-one-circuit` | `9595078feae90719f59738a3a50b03c1f70ecb64e4ad889e01a082b8a748a941` |
-| `lem-one-circuit` | `de30aac41c2d292bc5ce382b305dde5873ce7f8df8053f617c5468a1ecfb2b96` |
-| `prop-circuit-clock` | `920122aaf6875b74d2a02358ad07cfc05b0804f3402f436f7289872d2aa4d399` |
+| `lem-square-constrained-bonds` | `1e4a42f7325f09b7a6c63d74fcdf3c1abc7c0f0cac4c8d6a5bcb2dd95971d7cd` |
 | `lem-square-exploration` | `571205e8b2202e4a7bb8c3c9e822da164cbede5cecf808663ecdfce9cf0e4c87` |
 | `lem-square-active-list` | `4d2f113b250d3728ed4607f88549a497ca1b1b9dc26ea509445422bdcbb7068e` |
 | `lem-square-forced-tests` | `bd218f336c17da837e9a7b583b0b412fbcbc4e93c91d9587d3f200c6e072ac79` |
-| `prop-pendant-counterexample` | `56a694dfe131f30dd9bacfc49dc92e0b71efe120c8fe3d919875eb6fd44d0418` |
-| `ext-kingman` | `ab09f866910a4d9626a4579dd470a4dfac4469ee1d595331f3412404bba84a0f` |
-| `prop-perturbations-square` | `32cd623b305de2b1e37ab4d08be0e2c4d4224d9e954328f1aca4dd7906de25c4` |
+| `ext-kingman` | `56422a99669da0010cf34f8517cd0d134bfc81dc9372607bede688f462dc4fc7` |
+| `ext-abelian` | `392f4cdeecf5a48efbc9955cba42ba7f5c518c3d9939986741ae751c2add89dc` |
+| `lem-least-action` | `2885b7358d9c76763583ade4ea3a1307370088507007539d66d6c48bce1e4af0` |
+| `lem-boundary-routing` | `df8d855002e6350ad64f179a58b79ad4998a0d8927550ade6b3f2e4bb7984c54` |
+| `prop-monotonicity` | `6c8c9cb36a51ff8dbd41ef08794d638dada01a99f6a4f27a51f0686c6a80acb4` |
+| `lem-decreasing-positions` | `2ee7ef2ad8beedcadda8ff6bc54213b3c0ca0ac6d45d3a206534ecaaa23d4136` |
+| `ext-one-circuit` | `a872a06d1630844dd14b2eb3ed43dae19ba184b18152f8fd3b471840a425e91b` |
+| `lem-one-circuit` | `739d50b3d74061595f64e36b42aa043210b658be20fad656c85a0affcde49a0a` |
+| `prop-circuit-iterate` | `e696b07cfffb3dc9674acc0eed073d1882eb20097a8202376ac0cb49231e16f8` |
+| `prop-passage` | `12df11820fef39692d24c210dcb0e95e6082d6e771e4196a583f605ffe2ec9ca` |
+| `prop-circuit-clock` | `a25e71f3aae03d56f6745832435ee4dca63d723815ad5cb680c0c05be076083d` |
+| `ext-holroyd-propp` | `11e7fc07ce6a5dbff50d82999af1f3c94e1fb73749a4fd84304f394cbb18fe57` |
+| `prop-live-recurrence` | `da78c1f279a056d91be8bb811d85ab6e98130244b192ea8bced1ed4d1b413829` |
+| `prop-path-reduction` | `c5d3f9290f23cce719648cb9dbb1d9c93e1bdd15c0c7b28a200abb44680e9c6c` |
+| `prop-passage-limit` | `66490f79a6960ac7cb979873916d245d30afce8f3d7152ef1fbfd707747c5ced` |
+| `prop-circuit-shape` | `d34da7360c19d9854fa2c2adfcdd02569fd7915339b6e187cbe71ff4fea393fd` |
+| `thm-main-square` | `f803a7bc4ad6edc15be23beb44c71d08ca49a54ab81a7ba6d94bece89e810ae1` |
+| `thm-main-degree-three` | `317c2220cd6f87dd662f3176138a69ee12f9be088b6eda2d5d6ccafb00cd9ae6` |
+| `prop-perturbations-square` | `2c898bb2eb483e7a0a88372a0759827e6f92a4ff3c1237351efd2f04a088e908` |
+| `prop-perturbations-degree-three` | `929f869370b902dabb3d38b0d36e9a452f9dea26b92a3a88977813504418af48` |
+| `ext-angel-holroyd` | `406747bfc1b9179d21c3ebc24b407c6c4c8eeb9e039f69f3f3bfc130d4f709d2` |
+| `prop-pendant-counterexample` | `dfa44b011cb5d114c692409a42efe0ca4ccf2dec774a1678ec43b06fc4799ec2` |
 
 ## What is not claimed
 

@@ -24,13 +24,14 @@ import Rotor.Support.BoundaryRouting
 import Rotor.External.OneCircuit
 import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
+import Rotor.Bridge.Abelian
 
 open Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.boundary_routing (hAb : External.Abelian G) (π : Mechanism G)
+theorem Rotor.Frozen.boundary_routing (π : Mechanism G)
     [Infinite V] (hG : G.Connected) (S : Finset V) (hS : S.Nonempty) (ρ : Config G) :
     (∀ (es : List (V × V)) (vs : List V), IsBoundaryOrder G S es →
         IsLegal π S (boundaryInit S ρ) vs → (boundaryTraversed π S ρ es vs).Nodup) ∧
@@ -41,6 +42,7 @@ theorem Rotor.Frozen.boundary_routing (hAb : External.Abelian G) (π : Mechanism
           ∀ v, (oneActed π S ρ es n).count v = ws.count v)
 -- FROZEN-STATEMENT-END
 := by
+  have hAb : External.Abelian G := Rotor.Bridge.abelian_holds G
   refine ⟨fun es vs hes hleg => boundaryTraversed_nodup π S ρ es vs hes hleg,
     fun es hes => ?_, fun hT es hes n hd => ?_⟩
   · exact ⟨terminates_of_oneFinite π S ρ es hes, oneFinite_of_terminates π hAb hG S hS ρ es hes⟩

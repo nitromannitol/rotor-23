@@ -15,14 +15,15 @@ here: they are not derived in this repository and the certificate lists them.
 -/
 import Rotor.Dual
 import Rotor.External.SubcriticalDecay
+import Rotor.Bridge.SubcriticalDecay
 import Rotor.Support.ConstrainedBondsProof
 
 open Rotor
 
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.square_constrained_bonds (hSub : External.SubcriticalDecay) :
+theorem Rotor.Frozen.square_constrained_bonds :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ (x : Site) (r : ℕ), 1 ≤ r →
       bondLaw (1 / 2) Rotor.half_le_one (constrainedCrossing x r) ≤
         ENNReal.ofReal (C * Real.exp (-c * r))
 -- FROZEN-STATEMENT-END
-:= square_constrained_bonds_proof hSub
+:= square_constrained_bonds_proof Rotor.Bridge.subcriticalDecay_holds

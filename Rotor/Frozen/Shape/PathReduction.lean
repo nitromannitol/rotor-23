@@ -33,6 +33,10 @@ import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
+import Rotor.Bridge.Kingman
+import Rotor.Bridge.Abelian
+import Rotor.Bridge.OneCircuit
+import Rotor.Bridge.HolroydPropp
 import Rotor.Support.PathReductionIII
 
 open Rotor MeasureTheory Filter Topology
@@ -43,8 +47,8 @@ universe u
 variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.path_reduction (hFLP : External.OneCircuit G) (hAb : External.Abelian G)
-    (hHP : External.VisitsAllOfVisitsOne G) (hK : External.Kingman.{u}) (π : Mechanism G)
+theorem Rotor.Frozen.path_reduction
+    (π : Mechanism G)
     [Infinite V] (hG : G.Connected) (hdeg : ∃ D : ℕ, ∀ v, G.degree v ≤ D)
     (μ : Measure (Config G)) [IsProbabilityMeasure μ] (η : ℝ) (hη : 0 < η)
     (hcrit : Criterion π μ η) :
@@ -63,4 +67,4 @@ theorem Rotor.Frozen.path_reduction (hFLP : External.OneCircuit G) (hAb : Extern
               (κ • B)) atTop (𝓝 0) ∧
           Tendsto (fun t : ℕ => ((R π ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c))
 -- FROZEN-STATEMENT-END
-:= path_reduction_proof π hFLP hAb hHP hK hG hdeg μ η hη hcrit
+:= path_reduction_proof π (Rotor.Bridge.oneCircuit_holds G) (Rotor.Bridge.abelian_holds G) (Rotor.Bridge.visitsAllOfVisitsOne_holds G) Rotor.Bridge.kingman_holds hG hdeg μ η hη hcrit

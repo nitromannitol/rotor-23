@@ -16,7 +16,7 @@ namespace Rotor
 /-- Theorem 1.1, square-lattice case. -/
 theorem main_square_proof (hFLP : External.OneCircuit squareGraph)
     (hAb : External.Abelian squareGraph) (hHP : External.VisitsAllOfVisitsOne squareGraph)
-    (hK : External.Kingman.{0}) (hLSS : External.LSS) (hSub : External.SubcriticalDecay)
+    (hK : External.Kingman.{0}) (hLSS : External.LSS)
     (o : Site) :
     ∃ B : Set Plane, IsCompact B ∧ Convex ℝ B ∧ (0 : Plane) ∈ interior B ∧
     ∃ κ c : ℝ, 0 < κ ∧ 0 < c ∧
@@ -38,11 +38,11 @@ theorem main_square_proof (hFLP : External.OneCircuit squareGraph)
   have hdeg : ∀ v : Site, squareGraph.degree v ≤ 4 := fun v => (squareGraph_degree v).le
   obtain ⟨ε, hε, L₀, hL₀, hblock⟩ :=
     Rotor.Frozen.block_live_paths hLSS squarePeriodic clockwise hG
-  obtain ⟨c₀, C₀, hc₀, hC₀, hpass⟩ := Rotor.Frozen.square_passage hSub
+  obtain ⟨c₀, C₀, hc₀, hC₀, hpass⟩ := Rotor.Frozen.square_passage
   obtain ⟨L, hLL₀, hLpos, hsmall⟩ :=
     exists_block_small clockwise squarePeriodic hG hdeg hc₀ hC₀ hpass hε L₀
   obtain ⟨η, hη, hcrit, -⟩ := hblock (uniformAt clockwise) L hLL₀ hsmall
-  obtain ⟨hrec, -, -⟩ := Rotor.Frozen.path_reduction hFLP hAb hHP hK clockwise hG ⟨4, hdeg⟩
+  obtain ⟨hrec, -, -⟩ := Rotor.Frozen.path_reduction clockwise hG ⟨4, hdeg⟩
     (uniformLaw clockwise) η hη hcrit
   obtain ⟨B, hBc, hBconv, hB0, κ, c, hκ, hc, hae⟩ := shape_sandwich_proof clockwise squarePeriodic
     hFLP hAb hHP hK hG ⟨4, hdeg⟩ (uniformLaw clockwise) η hη hcrit hπ
@@ -54,7 +54,7 @@ theorem main_square_proof (hFLP : External.OneCircuit squareGraph)
 /-- Proposition 1.2, square-lattice case. -/
 theorem perturbations_square_proof (hFLP : External.OneCircuit squareGraph)
     (hAb : External.Abelian squareGraph) (hHP : External.VisitsAllOfVisitsOne squareGraph)
-    (hK : External.Kingman.{0}) (hLSS : External.LSS) (hSub : External.SubcriticalDecay) :
+    (hK : External.Kingman.{0}) (hLSS : External.LSS) :
     ∃ δ : ℝ, 0 < δ ∧
       ∀ (ν : ∀ v : Site, Measure (squareGraph.neighborSet v)) [∀ v, IsProbabilityMeasure (ν v)],
         (∀ v, tvDist (ν v) (uniformAt clockwise v) < δ) →
@@ -81,13 +81,13 @@ theorem perturbations_square_proof (hFLP : External.OneCircuit squareGraph)
   have hdeg : ∀ v : Site, squareGraph.degree v ≤ 4 := fun v => (squareGraph_degree v).le
   obtain ⟨ε, hε, L₀, hL₀, hblock⟩ :=
     Rotor.Frozen.block_live_paths hLSS squarePeriodic clockwise hG
-  obtain ⟨c₀, C₀, hc₀, hC₀, hpass⟩ := Rotor.Frozen.square_passage hSub
+  obtain ⟨c₀, C₀, hc₀, hC₀, hpass⟩ := Rotor.Frozen.square_passage
   obtain ⟨L, hLL₀, hLpos, hsmall⟩ :=
     exists_block_small clockwise squarePeriodic hG hdeg hc₀ hC₀ hpass hε L₀
   obtain ⟨η, hη, -, δ, hδ, hpert⟩ := hblock (uniformAt clockwise) L hLL₀ hsmall
   refine ⟨δ, hδ, fun ν _ hν => ?_⟩
   have hcrit : Criterion clockwise (productLaw ν) η := hpert ν (fun v => (hν v).le)
-  obtain ⟨hrec, -, -⟩ := Rotor.Frozen.path_reduction hFLP hAb hHP hK clockwise hG ⟨4, hdeg⟩
+  obtain ⟨hrec, -, -⟩ := Rotor.Frozen.path_reduction clockwise hG ⟨4, hdeg⟩
     (productLaw ν) η hη hcrit
   refine ⟨fun o => by filter_upwards [hrec] with ρ h; exact h.2 o, fun Λ _ hinv o => ?_⟩
   exact shape_sandwich_proof clockwise (squareLatticePeriodic Λ) hFLP hAb hHP hK hG ⟨4, hdeg⟩ (productLaw ν)

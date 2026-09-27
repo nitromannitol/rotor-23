@@ -16,105 +16,6 @@ source_pin:
 
 nodes:
 
-  - id: lem-least-action
-    version: 2
-    kind: theorem
-    source: rotor.tex:746-757 (label lem:least-action)
-    file: Rotor/Frozen/Circuits/LeastAction.lean
-    export: Rotor.Frozen.least_action
-    state: SEALED
-    frozen_sha256: 68868114ebd0b960cd14e67d8a8e114c5de6b9ae357000382efcbe7d9660f919
-    provider: Rotor.Frozen.least_action
-    approved: "2026-09-05"
-
-  - id: lem-boundary-routing
-    version: 2
-    kind: theorem
-    source: rotor.tex:766-771 (label lem:boundary-routing)
-    file: Rotor/Frozen/Circuits/BoundaryRouting.lean
-    export: Rotor.Frozen.boundary_routing
-    state: SEALED
-    frozen_sha256: 46b14f86c3d38129bf144926eb471eeec6f415ee67f3a1e9a476d1c18e9d5e4d
-    provider: Rotor.Frozen.boundary_routing
-    approved: "2026-09-05"
-
-  - id: prop-circuit-iterate
-    version: 2
-    kind: theorem
-    source: rotor.tex:793-801 (label prop:circuit-iterate)
-    file: Rotor/Frozen/Circuits/CircuitIterate.lean
-    export: Rotor.Frozen.circuit_iterate
-    state: SEALED
-    frozen_sha256: 2f6bf56d2de866d9738d8b476d169b3f4123648b266a63cadbb71b0772f17318
-    provider: Rotor.Frozen.circuit_iterate
-    approved: "2026-09-05"
-
-  - id: prop-monotonicity
-    version: 2
-    kind: theorem
-    source: rotor.tex:820-826 (label prop:monotonicity)
-    file: Rotor/Frozen/Circuits/Monotonicity.lean
-    export: Rotor.Frozen.monotonicity
-    state: SEALED
-    frozen_sha256: 8332aa8c4e37db9baf61257bfaa75cfc202fc11797c333823ab89b5e6b2a2936
-    provider: Rotor.Frozen.monotonicity
-    approved: "2026-09-05"
-
-  - id: prop-passage
-    version: 2
-    kind: theorem
-    source: rotor.tex:852-866 (label prop:passage)
-    file: Rotor/Frozen/Circuits/Passage.lean
-    export: Rotor.Frozen.passage
-    state: SEALED
-    frozen_sha256: 069a4ff096575cb0bee1e65a93fe66b5e2db4930d7e69f74971ffc3ed54a1b5f
-    provider: Rotor.Frozen.passage
-    approved: "2026-09-05"
-
-  - id: lem-decreasing-positions
-    version: 2
-    kind: theorem
-    source: rotor.tex:902-915 (label lem:decreasing-positions)
-    file: Rotor/Frozen/Circuits/DecreasingPositions.lean
-    export: Rotor.Frozen.decreasing_positions
-    state: SEALED
-    frozen_sha256: 6c7e704aa3cf8a6847d993e3bc951d433b7ddae001140148ddd3a3c3c997bf51
-    provider: Rotor.Frozen.decreasing_positions
-    approved: "2026-09-05"
-
-  - id: prop-live-recurrence
-    version: 2
-    kind: theorem
-    source: rotor.tex:957-961 (label prop:live-recurrence)
-    file: Rotor/Frozen/Circuits/LiveRecurrence.lean
-    export: Rotor.Frozen.live_recurrence
-    state: SEALED
-    frozen_sha256: b5474429111fccf9b4176f4b7502ba213577f4e32cd9e28129d50b66d0cc854f
-    provider: Rotor.Frozen.live_recurrence
-    approved: "2026-09-05"
-
-  - id: ext-abelian
-    version: 3
-    kind: definition
-    source: external input, HLMPPW Lemma 3.9, the statement of lem:least-action
-    file: Rotor/External/Abelian.lean
-    export: Rotor.External.Abelian
-    state: FROZEN
-    frozen_sha256: c0d83e13b688419da997c7a4dbdd78c98b50387e6dc9cc04e7ee2c22a81503a6
-    provider: Rotor.External.Abelian
-    approved: "2026-09-05"
-
-  - id: ext-holroyd-propp
-    version: 3
-    kind: definition
-    source: external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence
-    file: Rotor/External/HolroydPropp.lean
-    export: Rotor.External.VisitsAllOfVisitsOne
-    state: FROZEN
-    frozen_sha256: 1d9bd3d9563700959c606b70575cc18d3719acda6e3654bb4e502fda5ec4052c
-    provider: Rotor.External.VisitsAllOfVisitsOne
-    approved: "2026-09-05"
-
   - id: ext-lss
     version: 1
     kind: definition
@@ -126,60 +27,16 @@ nodes:
     provider: Rotor.External.LSS
     approved: "2026-09-05"
 
-  - id: ext-angel-holroyd
-    version: 1
-    kind: definition
-    source: external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence
-    file: Rotor/External/AngelHolroyd.lean
-    export: Rotor.External.RecurrentOfRecurrent
-    state: FROZEN
-    frozen_sha256: 798919095ca52e96180cea29f9557ff8b5d6817e6759befca9a41324759eb068
-    provider: Rotor.External.RecurrentOfRecurrent
-    approved: "2026-09-05"
-
   - id: ext-subcritical-decay
-    version: 1
-    kind: definition
-    source: external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail
-    file: Rotor/External/SubcriticalDecay.lean
-    export: Rotor.External.SubcriticalDecay
-    state: FROZEN
-    frozen_sha256: 91cf2b38392188c44f404e23be502f1144ee36be9f58d482a5368668b5b0eca4
-    provider: Rotor.External.SubcriticalDecay
-    approved: "2026-09-05"
-
-  - id: prop-path-reduction
-    version: 1
+    version: 2
     kind: theorem
-    source: rotor.tex:1023-1056 (label prop:path-reduction)
-    file: Rotor/Frozen/Shape/PathReduction.lean
-    export: Rotor.Frozen.path_reduction
+    source: external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail; cited result, now proved here from the percolation library PercolationContinuity (Kesten's p_c(Z^2)=1/2 and DCT-16 phase-transition sharpness)
+    file: Rotor/Bridge/SubcriticalDecay.lean
+    export: Rotor.Bridge.subcriticalDecay_holds
     state: SEALED
-    frozen_sha256: 61b5b79240cacbb8dec7947ef9a139b2f23fb0392575e68cf0b859391b89df66
-    provider: Rotor.Frozen.path_reduction
-    approved: "2026-09-05"
-
-  - id: prop-passage-limit
-    version: 1
-    kind: theorem
-    source: rotor.tex:1103-1113 (label prop:passage-limit)
-    file: Rotor/Frozen/Shape/PassageLimit.lean
-    export: Rotor.Frozen.passage_limit
-    state: SEALED
-    frozen_sha256: c662d0a3b5ee38dcf6e5b69210cf141e36670df3aca22d31ac11bd3179d8d3ce
-    provider: Rotor.Frozen.passage_limit
-    approved: "2026-09-05"
-
-  - id: prop-circuit-shape
-    version: 1
-    kind: theorem
-    source: rotor.tex:1134-1154 (label prop:circuit-shape)
-    file: Rotor/Frozen/Shape/CircuitShape.lean
-    export: Rotor.Frozen.circuit_shape
-    state: SEALED
-    frozen_sha256: 1464abd94afe17ec7941bfadf5f5560b4940a175082201235d00fad01835cdfc
-    provider: Rotor.Frozen.circuit_shape
-    approved: "2026-09-05"
+    frozen_sha256: 66a85f39d5abd5c36c099f13b3820f36fe253562342ee274cd83d8e107aee5e8
+    provider: Rotor.Bridge.subcriticalDecay_holds
+    approved: "2026-09-25"
 
   - id: lem-block-live-paths
     version: 1
@@ -190,39 +47,6 @@ nodes:
     state: SEALED
     frozen_sha256: 132ba277ad6631d8dbce032517ce913bcc4be5d78bd00117c5c69ee1c24b2d41
     provider: Rotor.Frozen.block_live_paths
-    approved: "2026-09-05"
-
-  - id: thm-main-square
-    version: 1
-    kind: theorem
-    source: rotor.tex:237-259 (label thm:main, the square-lattice case)
-    file: Rotor/Frozen/Main/Square.lean
-    export: Rotor.Frozen.main_square
-    state: SEALED
-    frozen_sha256: accea74870d023ae13e00bcae9e028ceba12e7bc13c773dec292f79fb198ef8f
-    provider: Rotor.Frozen.main_square
-    approved: "2026-09-05"
-
-  - id: thm-main-degree-three
-    version: 1
-    kind: theorem
-    source: rotor.tex:237-259 (label thm:main, the degree-three case)
-    file: Rotor/Frozen/Main/DegreeThree.lean
-    export: Rotor.Frozen.main_degree_three
-    state: SEALED
-    frozen_sha256: fe6b9b01b7a7955306df92af59e81762b6052eb1000f6e1c7a0b602b0ff93e1c
-    provider: Rotor.Frozen.main_degree_three
-    approved: "2026-09-05"
-
-  - id: prop-perturbations-degree-three
-    version: 1
-    kind: theorem
-    source: rotor.tex:272-280 (label prop:small-perturbations, the degree-three case)
-    file: Rotor/Frozen/Main/PerturbDegreeThree.lean
-    export: Rotor.Frozen.perturbations_degree_three
-    state: SEALED
-    frozen_sha256: 8df50adfd6739954fc7b9e1d69398344e8394f60155ab0e4c5cdc555ac6ea665
-    provider: Rotor.Frozen.perturbations_degree_three
     approved: "2026-09-05"
 
   - id: prop-subcubic-recurrence
@@ -248,15 +72,15 @@ nodes:
     approved: "2026-09-05"
 
   - id: prop-square-passage
-    version: 1
+    version: 2
     kind: theorem
-    source: rotor.tex:1480-1490 (label prop:square-passage)
+    source: rotor.tex:1480-1490 (label prop:square-passage); subcritical-decay hypothesis dropped, now discharged internally by Rotor.Bridge.subcriticalDecay_holds
     file: Rotor/Frozen/Square/Passage.lean
     export: Rotor.Frozen.square_passage
     state: SEALED
-    frozen_sha256: c30d0e0b3a944cfb37416f3cacf1667fc8c57c4a365c8ebc66f1d5f4542895ae
+    frozen_sha256: faadcb73aae82c6d5177b23840051c1188f2aeb4b1b3fdb7d80248a6f39fc3b7
     provider: Rotor.Frozen.square_passage
-    approved: "2026-09-05"
+    approved: "2026-09-25"
 
   - id: lem-square-dual-path
     version: 1
@@ -270,48 +94,15 @@ nodes:
     approved: "2026-09-05"
 
   - id: lem-square-constrained-bonds
-    version: 1
+    version: 2
     kind: theorem
-    source: rotor.tex:1696-1711 (label lem:square-constrained-bonds)
+    source: rotor.tex:1696-1711 (label lem:square-constrained-bonds); subcritical-decay hypothesis dropped, now discharged internally by Rotor.Bridge.subcriticalDecay_holds
     file: Rotor/Frozen/Square/ConstrainedBonds.lean
     export: Rotor.Frozen.square_constrained_bonds
     state: SEALED
-    frozen_sha256: 2f356470ab7adc44a2175651db286fb74ce81ada4e9a4db780f581cafee931a8
+    frozen_sha256: 1e4a42f7325f09b7a6c63d74fcdf3c1abc7c0f0cac4c8d6a5bcb2dd95971d7cd
     provider: Rotor.Frozen.square_constrained_bonds
-    approved: "2026-09-05"
-
-  - id: ext-one-circuit
-    version: 4
-    kind: definition
-    source: external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit
-    file: Rotor/External/OneCircuit.lean
-    export: Rotor.External.OneCircuit
-    state: FROZEN
-    frozen_sha256: 9595078feae90719f59738a3a50b03c1f70ecb64e4ad889e01a082b8a748a941
-    provider: Rotor.External.OneCircuit
-    approved: "2026-09-05"
-
-  - id: lem-one-circuit
-    version: 3
-    kind: theorem
-    source: rotor.tex:710-716 (label lem:one-circuit)
-    file: Rotor/Frozen/Circuits/OneCircuit.lean
-    export: Rotor.Frozen.one_circuit
-    state: SEALED
-    frozen_sha256: de30aac41c2d292bc5ce382b305dde5873ce7f8df8053f617c5468a1ecfb2b96
-    provider: Rotor.Frozen.one_circuit
-    approved: "2026-09-05"
-
-  - id: prop-circuit-clock
-    version: 2
-    kind: theorem
-    source: rotor.tex:1167-1195 (label prop:circuit-clock)
-    file: Rotor/Frozen/Shape/CircuitClock.lean
-    export: Rotor.Frozen.circuit_clock
-    state: SEALED
-    frozen_sha256: 920122aaf6875b74d2a02358ad07cfc05b0804f3402f436f7289872d2aa4d399
-    provider: Rotor.Frozen.circuit_clock
-    approved: "2026-09-05"
+    approved: "2026-09-25"
 
   - id: lem-square-exploration
     version: 1
@@ -346,36 +137,245 @@ nodes:
     provider: Rotor.Frozen.square_forced_tests
     approved: "2026-09-05"
 
-  - id: prop-pendant-counterexample
-    version: 1
-    kind: theorem
-    source: rotor.tex:309-314 (label prop:pendant-counterexample)
-    file: Rotor/Frozen/Main/Pendant.lean
-    export: Rotor.Frozen.pendant_counterexample
-    state: SEALED
-    frozen_sha256: 56a694dfe131f30dd9bacfc49dc92e0b71efe120c8fe3d919875eb6fd44d0418
-    provider: Rotor.Frozen.pendant_counterexample
-    approved: "2026-09-05"
-
   - id: ext-kingman
+    version: 4
+    kind: theorem
+    source: external input, Kingman 1968 Theorems 3 and 5 (nonnegative integrable arrays, measurable invariant limit), used in the proof of prop:passage-limit; cited result, now proved here from the shared library Lattice-Probability (LatticeProb.Prob.Kingman)
+    file: Rotor/Bridge/Kingman.lean
+    export: Rotor.Bridge.kingman_holds
+    state: SEALED
+    frozen_sha256: 56422a99669da0010cf34f8517cd0d134bfc81dc9372607bede688f462dc4fc7
+    provider: Rotor.Bridge.kingman_holds
+    approved: "2026-09-25"
+
+  - id: ext-abelian
+    version: 4
+    kind: theorem
+    source: external input, HLMPPW Lemma 3.9, the statement of lem:least-action; cited result, now proved here from Rotor.Bridge.abelian_holds by induction on legal routings
+    file: Rotor/Bridge/Abelian.lean
+    export: Rotor.Bridge.abelian_holds
+    state: SEALED
+    frozen_sha256: 392f4cdeecf5a48efbc9955cba42ba7f5c518c3d9939986741ae751c2add89dc
+    provider: Rotor.Bridge.abelian_holds
+    approved: "2026-09-26"
+
+  - id: lem-least-action
     version: 3
-    kind: definition
-    source: external input, Kingman 1968 Theorems 3 and 5 (nonnegative integrable arrays, measurable invariant limit), used in the proof of prop:passage-limit
-    file: Rotor/External/Kingman.lean
-    export: Rotor.External.Kingman
-    state: FROZEN
-    frozen_sha256: ab09f866910a4d9626a4579dd470a4dfac4469ee1d595331f3412404bba84a0f
-    provider: Rotor.External.Kingman
-    approved: "2026-09-12"
+    kind: theorem
+    source: rotor.tex:746-757 (label lem:least-action); Abelian hypothesis dropped, now discharged internally by Rotor.Bridge.abelian_holds
+    file: Rotor/Frozen/Circuits/LeastAction.lean
+    export: Rotor.Frozen.least_action
+    state: SEALED
+    frozen_sha256: 2885b7358d9c76763583ade4ea3a1307370088507007539d66d6c48bce1e4af0
+    provider: Rotor.Frozen.least_action
+    approved: "2026-09-26"
+
+  - id: lem-boundary-routing
+    version: 3
+    kind: theorem
+    source: rotor.tex:766-771 (label lem:boundary-routing); Abelian hypothesis dropped, now discharged internally by Rotor.Bridge.abelian_holds
+    file: Rotor/Frozen/Circuits/BoundaryRouting.lean
+    export: Rotor.Frozen.boundary_routing
+    state: SEALED
+    frozen_sha256: df8d855002e6350ad64f179a58b79ad4998a0d8927550ade6b3f2e4bb7984c54
+    provider: Rotor.Frozen.boundary_routing
+    approved: "2026-09-26"
+
+  - id: prop-monotonicity
+    version: 3
+    kind: theorem
+    source: rotor.tex:820-826 (label prop:monotonicity); Abelian hypothesis dropped, now discharged internally by Rotor.Bridge.abelian_holds
+    file: Rotor/Frozen/Circuits/Monotonicity.lean
+    export: Rotor.Frozen.monotonicity
+    state: SEALED
+    frozen_sha256: 6c8c9cb36a51ff8dbd41ef08794d638dada01a99f6a4f27a51f0686c6a80acb4
+    provider: Rotor.Frozen.monotonicity
+    approved: "2026-09-26"
+
+  - id: lem-decreasing-positions
+    version: 3
+    kind: theorem
+    source: rotor.tex:902-915 (label lem:decreasing-positions); Abelian hypothesis dropped, now discharged internally by Rotor.Bridge.abelian_holds
+    file: Rotor/Frozen/Circuits/DecreasingPositions.lean
+    export: Rotor.Frozen.decreasing_positions
+    state: SEALED
+    frozen_sha256: 2ee7ef2ad8beedcadda8ff6bc54213b3c0ca0ac6d45d3a206534ecaaa23d4136
+    provider: Rotor.Frozen.decreasing_positions
+    approved: "2026-09-26"
+
+  - id: ext-one-circuit
+    version: 5
+    kind: theorem
+    source: external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit; cited result, now proved here from Rotor.Bridge.oneCircuit_holds by an injectivity argument on traversed edges and incoming/outgoing degree counts
+    file: Rotor/Bridge/OneCircuit.lean
+    export: Rotor.Bridge.oneCircuit_holds
+    state: SEALED
+    frozen_sha256: a872a06d1630844dd14b2eb3ed43dae19ba184b18152f8fd3b471840a425e91b
+    provider: Rotor.Bridge.oneCircuit_holds
+    approved: "2026-09-26"
+
+  - id: lem-one-circuit
+    version: 4
+    kind: theorem
+    source: rotor.tex:710-716 (label lem:one-circuit); OneCircuit hypothesis dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds
+    file: Rotor/Frozen/Circuits/OneCircuit.lean
+    export: Rotor.Frozen.one_circuit
+    state: SEALED
+    frozen_sha256: 739d50b3d74061595f64e36b42aa043210b658be20fad656c85a0affcde49a0a
+    provider: Rotor.Frozen.one_circuit
+    approved: "2026-09-26"
+
+  - id: prop-circuit-iterate
+    version: 4
+    kind: theorem
+    source: rotor.tex:793-801 (label prop:circuit-iterate); Abelian hypothesis dropped, now discharged internally by Rotor.Bridge.abelian_holds; OneCircuit hypothesis also dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds
+    file: Rotor/Frozen/Circuits/CircuitIterate.lean
+    export: Rotor.Frozen.circuit_iterate
+    state: SEALED
+    frozen_sha256: e696b07cfffb3dc9674acc0eed073d1882eb20097a8202376ac0cb49231e16f8
+    provider: Rotor.Frozen.circuit_iterate
+    approved: "2026-09-26"
+
+  - id: prop-passage
+    version: 4
+    kind: theorem
+    source: rotor.tex:852-866 (label prop:passage); Abelian hypothesis dropped, now discharged internally by Rotor.Bridge.abelian_holds; OneCircuit hypothesis also dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds
+    file: Rotor/Frozen/Circuits/Passage.lean
+    export: Rotor.Frozen.passage
+    state: SEALED
+    frozen_sha256: 12df11820fef39692d24c210dcb0e95e6082d6e771e4196a583f605ffe2ec9ca
+    provider: Rotor.Frozen.passage
+    approved: "2026-09-26"
+
+  - id: prop-circuit-clock
+    version: 3
+    kind: theorem
+    source: rotor.tex:1167-1195 (label prop:circuit-clock); OneCircuit hypothesis dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds
+    file: Rotor/Frozen/Shape/CircuitClock.lean
+    export: Rotor.Frozen.circuit_clock
+    state: SEALED
+    frozen_sha256: a25e71f3aae03d56f6745832435ee4dca63d723815ad5cb680c0c05be076083d
+    provider: Rotor.Frozen.circuit_clock
+    approved: "2026-09-26"
+
+  - id: ext-holroyd-propp
+    version: 4
+    kind: theorem
+    source: external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence; cited result, now proved here from Rotor.Bridge.visitsAllOfVisitsOne_holds by propagating infinitely-many-visits along a walk between any two vertices
+    file: Rotor/Bridge/HolroydPropp.lean
+    export: Rotor.Bridge.visitsAllOfVisitsOne_holds
+    state: SEALED
+    frozen_sha256: 11e7fc07ce6a5dbff50d82999af1f3c94e1fb73749a4fd84304f394cbb18fe57
+    provider: Rotor.Bridge.visitsAllOfVisitsOne_holds
+    approved: "2026-09-26"
+
+  - id: prop-live-recurrence
+    version: 5
+    kind: theorem
+    source: rotor.tex:957-961 (label prop:live-recurrence); Abelian hypothesis dropped, now discharged internally by Rotor.Bridge.abelian_holds; OneCircuit hypothesis also dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds; VisitsAllOfVisitsOne hypothesis also dropped, now discharged internally by Rotor.Bridge.visitsAllOfVisitsOne_holds
+    file: Rotor/Frozen/Circuits/LiveRecurrence.lean
+    export: Rotor.Frozen.live_recurrence
+    state: SEALED
+    frozen_sha256: da78c1f279a056d91be8bb811d85ab6e98130244b192ea8bced1ed4d1b413829
+    provider: Rotor.Frozen.live_recurrence
+    approved: "2026-09-26"
+
+  - id: prop-path-reduction
+    version: 5
+    kind: theorem
+    source: rotor.tex:1023-1056 (label prop:path-reduction); Kingman's subadditive ergodic theorem hypothesis dropped, now discharged internally by Rotor.Bridge.kingman_holds; Abelian hypothesis also dropped, now discharged internally by Rotor.Bridge.abelian_holds; OneCircuit hypothesis also dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds; VisitsAllOfVisitsOne hypothesis also dropped, now discharged internally by Rotor.Bridge.visitsAllOfVisitsOne_holds
+    file: Rotor/Frozen/Shape/PathReduction.lean
+    export: Rotor.Frozen.path_reduction
+    state: SEALED
+    frozen_sha256: c5d3f9290f23cce719648cb9dbb1d9c93e1bdd15c0c7b28a200abb44680e9c6c
+    provider: Rotor.Frozen.path_reduction
+    approved: "2026-09-26"
+
+  - id: prop-passage-limit
+    version: 5
+    kind: theorem
+    source: rotor.tex:1103-1113 (label prop:passage-limit); Kingman's subadditive ergodic theorem hypothesis dropped, now discharged internally by Rotor.Bridge.kingman_holds; Abelian hypothesis also dropped, now discharged internally by Rotor.Bridge.abelian_holds; unused OneCircuit hypothesis also dropped (the proof never used it); unused VisitsAllOfVisitsOne hypothesis also dropped (the proof never used it)
+    file: Rotor/Frozen/Shape/PassageLimit.lean
+    export: Rotor.Frozen.passage_limit
+    state: SEALED
+    frozen_sha256: 66490f79a6960ac7cb979873916d245d30afce8f3d7152ef1fbfd707747c5ced
+    provider: Rotor.Frozen.passage_limit
+    approved: "2026-09-26"
+
+  - id: prop-circuit-shape
+    version: 5
+    kind: theorem
+    source: rotor.tex:1134-1154 (label prop:circuit-shape); unused Kingman hypothesis dropped (the proof never used it); unused Abelian hypothesis also dropped (the proof never used it); unused OneCircuit hypothesis also dropped (the proof never used it); unused VisitsAllOfVisitsOne hypothesis also dropped (the proof never used it)
+    file: Rotor/Frozen/Shape/CircuitShape.lean
+    export: Rotor.Frozen.circuit_shape
+    state: SEALED
+    frozen_sha256: d34da7360c19d9854fa2c2adfcdd02569fd7915339b6e187cbe71ff4fea393fd
+    provider: Rotor.Frozen.circuit_shape
+    approved: "2026-09-26"
+
+  - id: thm-main-square
+    version: 5
+    kind: theorem
+    source: rotor.tex:237-259 (label thm:main, the square-lattice case); Kingman and subcritical-decay hypotheses dropped, now discharged internally by Rotor.Bridge.kingman_holds and Rotor.Bridge.subcriticalDecay_holds; Abelian hypothesis also dropped, now discharged internally by Rotor.Bridge.abelian_holds; OneCircuit hypothesis also dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds; VisitsAllOfVisitsOne hypothesis also dropped, now discharged internally by Rotor.Bridge.visitsAllOfVisitsOne_holds
+    file: Rotor/Frozen/Main/Square.lean
+    export: Rotor.Frozen.main_square
+    state: SEALED
+    frozen_sha256: f803a7bc4ad6edc15be23beb44c71d08ca49a54ab81a7ba6d94bece89e810ae1
+    provider: Rotor.Frozen.main_square
+    approved: "2026-09-26"
+
+  - id: thm-main-degree-three
+    version: 5
+    kind: theorem
+    source: rotor.tex:237-259 (label thm:main, the degree-three case); Kingman hypothesis dropped, now discharged internally by Rotor.Bridge.kingman_holds; Abelian hypothesis also dropped, now discharged internally by Rotor.Bridge.abelian_holds; OneCircuit hypothesis also dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds; VisitsAllOfVisitsOne hypothesis also dropped, now discharged internally by Rotor.Bridge.visitsAllOfVisitsOne_holds
+    file: Rotor/Frozen/Main/DegreeThree.lean
+    export: Rotor.Frozen.main_degree_three
+    state: SEALED
+    frozen_sha256: 317c2220cd6f87dd662f3176138a69ee12f9be088b6eda2d5d6ccafb00cd9ae6
+    provider: Rotor.Frozen.main_degree_three
+    approved: "2026-09-26"
 
   - id: prop-perturbations-square
-    version: 2
+    version: 6
     kind: theorem
-    source: rotor.tex:272-280 (label prop:small-perturbations, the square-lattice case)
+    source: rotor.tex:272-280 (label prop:small-perturbations, the square-lattice case); Kingman and subcritical-decay hypotheses dropped, now discharged internally by Rotor.Bridge.kingman_holds and Rotor.Bridge.subcriticalDecay_holds; Abelian hypothesis also dropped, now discharged internally by Rotor.Bridge.abelian_holds; OneCircuit hypothesis also dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds; VisitsAllOfVisitsOne hypothesis also dropped, now discharged internally by Rotor.Bridge.visitsAllOfVisitsOne_holds
     file: Rotor/Frozen/Main/PerturbSquare.lean
     export: Rotor.Frozen.perturbations_square
     state: SEALED
-    frozen_sha256: 32cd623b305de2b1e37ab4d08be0e2c4d4224d9e954328f1aca4dd7906de25c4
+    frozen_sha256: 2c898bb2eb483e7a0a88372a0759827e6f92a4ff3c1237351efd2f04a088e908
     provider: Rotor.Frozen.perturbations_square
-    approved: "2026-09-12"
+    approved: "2026-09-26"
+
+  - id: prop-perturbations-degree-three
+    version: 5
+    kind: theorem
+    source: rotor.tex:272-280 (label prop:small-perturbations, the degree-three case); Kingman hypothesis dropped, now discharged internally by Rotor.Bridge.kingman_holds; Abelian hypothesis also dropped, now discharged internally by Rotor.Bridge.abelian_holds; OneCircuit hypothesis also dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds; VisitsAllOfVisitsOne hypothesis also dropped, now discharged internally by Rotor.Bridge.visitsAllOfVisitsOne_holds
+    file: Rotor/Frozen/Main/PerturbDegreeThree.lean
+    export: Rotor.Frozen.perturbations_degree_three
+    state: SEALED
+    frozen_sha256: 929f869370b902dabb3d38b0d36e9a452f9dea26b92a3a88977813504418af48
+    provider: Rotor.Frozen.perturbations_degree_three
+    approved: "2026-09-26"
+
+  - id: ext-angel-holroyd
+    version: 2
+    kind: theorem
+    source: external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence; cited result, now proved here from Rotor.Bridge.recurrentOfRecurrent_holds by propagating recurrence along adjacency and then along a connecting walk, via Rotor.Bridge.abelian_holds
+    file: Rotor/Bridge/AngelHolroyd.lean
+    export: Rotor.Bridge.recurrentOfRecurrent_holds
+    state: SEALED
+    frozen_sha256: 406747bfc1b9179d21c3ebc24b407c6c4c8eeb9e039f69f3f3bfc130d4f709d2
+    provider: Rotor.Bridge.recurrentOfRecurrent_holds
+    approved: "2026-09-26"
+
+  - id: prop-pendant-counterexample
+    version: 3
+    kind: theorem
+    source: rotor.tex:309-314 (label prop:pendant-counterexample); OneCircuit hypothesis dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds; RecurrentOfRecurrent hypothesis also dropped, now discharged internally by Rotor.Bridge.recurrentOfRecurrent_holds
+    file: Rotor/Frozen/Main/Pendant.lean
+    export: Rotor.Frozen.pendant_counterexample
+    state: SEALED
+    frozen_sha256: dfa44b011cb5d114c692409a42efe0ca4ccf2dec774a1678ec43b06fc4799ec2
+    provider: Rotor.Frozen.pendant_counterexample
+    approved: "2026-09-26"
 

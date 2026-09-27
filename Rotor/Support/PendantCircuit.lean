@@ -93,6 +93,10 @@ theorem latTime_lt_T_one {r : ℕ} (hr : ∀ s, 1 ≤ s → s < r → Ysq M ρ o
   have := visits_le_of_no_return M ρ o hr (t := (T (pendantMech M) ρ (.inl o) 1).toNat) (by omega)
   omega
 
+-- `hFLP` is no longer used by the proof: `Rotor.Frozen.one_circuit` is unconditional now,
+-- but the parameter is kept so this lemma's callers need not be unthreaded (Rotor/Support/
+-- plumbing may stay parameterised).
+set_option linter.unusedVariables false in
 /-- The induced walk's traversals up to its first return are distinct. -/
 theorem induced_traversal_injective (hFLP : External.OneCircuit (pendantGraph M)) {r : ℕ}
     (hr : ∀ s, 1 ≤ s → s < r → Ysq M ρ o s ≠ o) {a b : ℕ} (hab : a < b) (hb : b ≤ r - 1) :
@@ -100,7 +104,7 @@ theorem induced_traversal_injective (hFLP : External.OneCircuit (pendantGraph M)
   intro heq
   have h0 : T (pendantMech M) ρ (.inl o) 0 < ⊤ :=
     lt_of_le_of_lt (T_zero_le M ρ o) (WithTop.coe_lt_top 0)
-  have hdist := (Rotor.Frozen.one_circuit hFLP (pendantMech M) (pendantGraph_connected M) ρ
+  have hdist := (Rotor.Frozen.one_circuit (pendantMech M) (pendantGraph_connected M) ρ
     (.inl o) 0 h0).1 (latTime M ρ o a) (latTime M ρ o b)
     ((T_zero_le M ρ o).trans (by exact_mod_cast Nat.zero_le _))
     (lt_of_lt_of_le (by have := latTime_succ_ge M ρ o a; omega)

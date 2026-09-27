@@ -19,6 +19,39 @@ The official `leanprover/comparator` was run on every pair in this directory on 
 
 A pass means the comparator printed `Your solution is okay!`: the solution proves a theorem whose statement and full dependency closure match the challenge's, using only the permitted axioms.
 
+## 2026-09-25 rerun (Lean kernel only)
+
+After discharging `ext-kingman` and `ext-subcritical-decay` (both now proved unconditionally,
+`Rotor.Bridge.kingman_holds` and `Rotor.Bridge.subcriticalDecay_holds`) and dropping the now-proved
+hypotheses from the frozen statements they carried, the four pairs whose challenge statement changed
+(`MainSquare`, `MainDegreeThree`, `PerturbationsSquare`, `PerturbationsDegreeThree`; `PendantCounterexample`'s
+statement is unaffected) were rerun with the Lean kernel only (`enable_nanoda` false, the committed
+configuration):
+
+| Pair | Lean kernel |
+|---|---|
+| `MainSquare` | passed |
+| `MainDegreeThree` | passed |
+| `PerturbationsSquare` | passed |
+| `PerturbationsDegreeThree` | passed |
+
+Same tool revisions as above.
+
+## Run of 2026-09-27
+
+The official `leanprover/comparator` was run on every pair in this directory again at commit
+`fce8250`, on a second local machine (Linux 6.17), with the same tool revisions as above. Each
+pair was checked twice, once with the Lean kernel and once more with the independent `nanoda`
+kernel enabled, exactly as in the first run.
+
+| Pair | Lean kernel | Lean and nanoda kernels |
+|---|---|---|
+| `MainDegreeThree` | passed (122 s) | passed (169 s) |
+| `MainSquare` | passed (155 s) | passed (213 s) |
+| `PendantCounterexample` | passed (82 s) | passed (112 s) |
+| `PerturbationsDegreeThree` | passed (115 s) | passed (156 s) |
+| `PerturbationsSquare` | passed (162 s) | passed (236 s) |
+
 To reproduce one pair, from the repository root:
 
 ```

@@ -21,15 +21,18 @@ import Rotor.Support.LiveRecurrence
 import Rotor.External.OneCircuit
 import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
+import Rotor.Bridge.Abelian
+import Rotor.Bridge.OneCircuit
+import Rotor.Bridge.HolroydPropp
 
 open Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.live_recurrence (hFLP : External.OneCircuit G) (hAb : External.Abelian G)
-    (hHP : External.VisitsAllOfVisitsOne G) (π : Mechanism G) [Infinite V] (hG : G.Connected)
+theorem Rotor.Frozen.live_recurrence
+    (π : Mechanism G) [Infinite V] (hG : G.Connected)
     (ρ : Config G) (o : V) (h : ¬ ∃ x : ℕ → V, IsInfPath G x ∧ IsInfLive π ρ x) :
     AllTerminate π ρ ∧ (∀ n : ℕ, T π ρ o n < ⊤) ∧ Recurrent π ρ o
 -- FROZEN-STATEMENT-END
-:= live_recurrence_proof π hFLP hAb hHP hG ρ o h
+:= live_recurrence_proof π (Rotor.Bridge.oneCircuit_holds G) (Rotor.Bridge.abelian_holds G) (Rotor.Bridge.visitsAllOfVisitsOne_holds G) hG ρ o h

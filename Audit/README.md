@@ -23,7 +23,7 @@ configurations, the step rule, `X_t`, `R_t`, the circuit times `T(n)`, the
 circuit ranges `A_n`, recurrence), particle-and-rotor routings, the product law
 of the initial rotors and total variation, doubly periodic graphs in the plane,
 the square lattice with its clockwise mechanism, the graph `G_M` of
-Proposition 1.3 with its mechanism, and the six cited results.
+Proposition 1.3 with its mechanism, and the five cited results.
 
 ## What Is Checked
 
@@ -33,15 +33,28 @@ its library theorem uses, restated in the vocabulary.
 
 | Directory | Cited results carried as hypotheses |
 | --- | --- |
-| `MainSquare/`, `PerturbationsSquare/` | `OneCircuit`, `Abelian`, `VisitsAllOfVisitsOne` (on `squareGraph`), `Kingman.{0}`, `LSS` |
-| `MainDegreeThree/`, `PerturbationsDegreeThree/` | `OneCircuit`, `Abelian`, `VisitsAllOfVisitsOne` (on `G`), `Kingman.{u}`, `LSS` |
-| `PendantCounterexample/` | `OneCircuit` and `RecurrentOfRecurrent` on every `G_M` |
+| `MainSquare/`, `PerturbationsSquare/` | `LSS` |
+| `MainDegreeThree/`, `PerturbationsDegreeThree/` | `LSS` |
 
-Subcritical exponential decay for Bernoulli bond percolation, which the
-frozen square-lattice statements also take as a hypothesis, is not a
-hypothesis here: `Rotor/Bridge/SubcriticalDecay.lean` proves it from the
-percolation library `PercolationContinuity`, and `Rotor/MainTheorems.lean`
-discharges it.
+Kingman's subadditive ergodic theorem, subcritical exponential decay for
+Bernoulli bond percolation, the abelian property of rotor-routing, the
+one-circuit property of a rotor walk, Holroyd–Propp's Lemma 6, and
+Angel–Holroyd's theorem that recurrence does not depend on the starting
+vertex, which the frozen statements also take as hypotheses, are not
+hypotheses here: `Rotor/Bridge/Kingman.lean`,
+`Rotor/Bridge/SubcriticalDecay.lean`, `Rotor/Bridge/Abelian.lean`,
+`Rotor/Bridge/OneCircuit.lean`, `Rotor/Bridge/HolroydPropp.lean` and
+`Rotor/Bridge/AngelHolroyd.lean` prove them (from the shared library
+`Lattice-Probability`, the percolation library `PercolationContinuity`, by
+induction on legal routings, by an injectivity argument on traversed edges
+together with incoming/outgoing degree counts at circuit times, by
+propagating infinitely-many-visits along a walk between any two vertices, and
+by that same propagation combined with the abelian property, respectively),
+and `Rotor/MainTheorems.lean` discharges them.  The vocabulary still defines
+`Abelian`, `OneCircuit`, `VisitsAllOfVisitsOne` and `RecurrentOfRecurrent`
+(for byte-identity across the five challenges and for definitional
+record-keeping) but no audited theorem's signature uses any of the four
+any longer.
 
 - **`MainSquare`** (Theorem 1.1): on `ℤ²` with the clockwise mechanism and
   independent uniform initial rotors, there are a compact convex `B` with the
@@ -128,8 +141,8 @@ challenge statement and depends only on `propext`, `Classical.choice` and
 
 **Status.**  All five solutions build, and the statement regression and the
 axiom prints pass locally.  `leanprover/comparator` was run on all five pairs
-on 2026-09-24, at commit `b9303b6`, and every pair passed with the Lean
-kernel and with the independent nanoda kernel.  Results and reproduction
-steps are in [`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md).  The workflow
-[`.github/workflows/comparator.yml`](../.github/workflows/comparator.yml) runs
-it on request.
+most recently on 2026-09-27, at commit `fce8250`, and every pair passed with
+the Lean kernel and with the independent nanoda kernel.  Results and
+reproduction steps are in [`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md).  The
+workflow [`.github/workflows/comparator.yml`](../.github/workflows/comparator.yml)
+runs it on request.

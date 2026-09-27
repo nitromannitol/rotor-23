@@ -14,21 +14,23 @@ probability of $T(1)=\infty$ to almost-sure transience, uses that recurrence
 does not depend on the starting vertex (`External.RecurrentOfRecurrent`)
 together with ergodicity of the uniform law, which the paper's proof leaves
 implicit.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed
-here: they are not derived in this repository and the certificate lists them.
+Both cited results are proved rather than assumed: `External.OneCircuit` by
+`Rotor.Bridge.oneCircuit_holds` and `External.RecurrentOfRecurrent` by
+`Rotor.Bridge.recurrentOfRecurrent_holds`, so neither appears as a hypothesis
+of the frozen statement below.
 -/
 import Rotor.Pendant
 import Rotor.External.OneCircuit
-import Rotor.External.AngelHolroyd
+import Rotor.Bridge.OneCircuit
+import Rotor.Bridge.AngelHolroyd
 import Rotor.Support.MainPendant
 
 open Rotor MeasureTheory
 
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.pendant_counterexample
-    (hFLP : ∀ M : ℕ, External.OneCircuit (pendantGraph M))
-    (hAH : ∀ M : ℕ, External.RecurrentOfRecurrent (pendantGraph M)) :
+theorem Rotor.Frozen.pendant_counterexample :
     ∀ M : ℕ, 50331645 ≤ M → ∀ o : PVertex M,
       ∀ᵐ ρ ∂(uniformLaw (pendantMech M)), ¬ Recurrent (pendantMech M) ρ o
 -- FROZEN-STATEMENT-END
-:= pendant_counterexample_proof hFLP hAH
+:= pendant_counterexample_proof (fun M => Rotor.Bridge.oneCircuit_holds (pendantGraph M))
+    (fun _M => Rotor.Bridge.recurrentOfRecurrent_holds)

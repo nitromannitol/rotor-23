@@ -15,6 +15,10 @@ import Rotor.External.HolroydPropp
 import Rotor.External.Kingman
 import Rotor.External.LSS
 import Rotor.External.SubcriticalDecay
+import Rotor.Bridge.Kingman
+import Rotor.Bridge.Abelian
+import Rotor.Bridge.OneCircuit
+import Rotor.Bridge.HolroydPropp
 import Rotor.Support.MainDegreeThree
 
 open Rotor MeasureTheory Filter Topology
@@ -25,8 +29,8 @@ universe u
 variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
 -- FROZEN-STATEMENT-BEGIN
-theorem Rotor.Frozen.main_degree_three (hFLP : External.OneCircuit G) (hAb : External.Abelian G)
-    (hHP : External.VisitsAllOfVisitsOne G) (hK : External.Kingman.{u}) (hLSS : External.LSS)
+theorem Rotor.Frozen.main_degree_three
+    (hLSS : External.LSS)
     (P : DoublyPeriodic G) (π : Mechanism G) [Infinite V] (hG : G.Connected)
     (hπ : P.Periodic π) (h3 : ∀ v : V, G.degree v ≤ 3) (o : V) :
     ∃ B : Set Plane, IsCompact B ∧ Convex ℝ B ∧ (0 : Plane) ∈ interior B ∧
@@ -42,4 +46,4 @@ theorem Rotor.Frozen.main_degree_three (hFLP : External.OneCircuit G) (hAb : Ext
           (κ • B)) atTop (𝓝 0) ∧
         Tendsto (fun t : ℕ => ((R π ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c)
 -- FROZEN-STATEMENT-END
-:= main_degree_three_proof π P hFLP hAb hHP hK hLSS hG hπ h3 o
+:= main_degree_three_proof π P (Rotor.Bridge.oneCircuit_holds G) (Rotor.Bridge.abelian_holds G) (Rotor.Bridge.visitsAllOfVisitsOne_holds G) Rotor.Bridge.kingman_holds hLSS hG hπ h3 o
