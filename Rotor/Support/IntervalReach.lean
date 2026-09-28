@@ -1,10 +1,12 @@
 import Rotor.Support.IntervalTree
 
 /-!
-Proposition 5.1 (`prop:square-passage`), part 5: the reach of one interval.  The interval
-starting at `h₀` reaches distance `s` from its root only through a minimal witness, so its
-probability is at most `Pm h₀` times the constrained-crossing probability, which Lemma 5.3
-bounds by `C e^{-cs}`.  Between consecutive forced tests every test is nonforced.
+# The interval reach bound and gaps between forced tests
+
+Proves part 5 of Proposition 5.1 (`prop:square-passage`): the interval starting at `h₀`
+reaches distance `s` from its root only through a minimal witness, so its probability is at
+most `Pm h₀` times the constrained-crossing probability, which Lemma 5.3 bounds by
+`C e^{-cs}`. Also records that between consecutive forced tests, every test is nonforced.
 -/
 
 open Finset MeasureTheory ENNReal Classical
@@ -17,9 +19,12 @@ noncomputable def rootOf (f d : Site) (h : List Bool) : Site :=
   | some t => t.2.1
   | none => f
 
+/-- With no tests, the root of the interval is the starting vertex `f`. -/
 theorem rootOf_nil (f d : Site) : rootOf f d [] = f := by
   simp [rootOf, replay, explInit]
 
+/-- Testing the head `e` of the active list extends the last tested edge, so the root after
+`h₁ ++ [o]` becomes `e.2`, the head of `e`. -/
 theorem rootOf_append (f d : Site) (h₁ : List Bool) {e : Site × Site} {rest : List (Site × Site)}
     (he : (replay f d h₁).active = e :: rest) (o : Bool) : rootOf f d (h₁ ++ [o]) = e.2 := by
   unfold rootOf
@@ -31,10 +36,14 @@ def IntReach (f d : Site) (h₀ : List Bool) (s : ℕ) : Set (Config squareGraph
   {ρ | ∃ n, IntervalHist f d h₀ (history ρ f d n) ∧ ∃ g ∈ (explore ρ f d n).visited,
     g ∉ (replay f d h₀).visited ∧ (s : ℤ) ≤ linfDist g (rootOf f d h₀)}
 
+/-- The event that the interval after `h₀` reaches distance `s` from its root is contained in
+the union, over minimal witnesses reaching that distance, of the events that the walk's
+history matches that witness. -/
 theorem intReach_subset (f : Site) {d : Site} (hd : IsUnit d) {h₀ : List Bool}
     (hs0 : IntervalStart f d h₀ (rootOf f d h₀)) {s : ℕ} (hs : 1 ≤ s) :
     {ρ | history ρ f d h₀.length = h₀} ∩ IntReach f d h₀ s ⊆
-      ⋃ h' : {h' // MinWit f d h₀ (rootOf f d h₀) s h'}, {ρ | history ρ f d h'.1.length = h'.1} := by
+      ⋃ h' : {h' // MinWit f d h₀ (rootOf f d h₀) s h'},
+        {ρ | history ρ f d h'.1.length = h'.1} := by
   rintro ρ ⟨hρ0, n, hI, g, hg, hg0, hdist⟩
   simp only [Set.mem_setOf_eq] at hρ0
   set h' := history ρ f d n with hh'
@@ -48,7 +57,8 @@ theorem intReach_subset (f : Site) {d : Site} (hd : IsUnit d) {h₀ : List Bool}
 /-- The interval reach bound, from the constrained-crossing constants `c, C`. -/
 theorem intReach_measure_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {c C : ℝ}
     (hCB : ∀ (x : Site) (r : ℕ), 1 ≤ r →
-      bondLaw (1 / 2) half_le_one (constrainedCrossing x r) ≤ ENNReal.ofReal (C * Real.exp (-c * r)))
+      bondLaw (1 / 2) half_le_one (constrainedCrossing x r) ≤
+        ENNReal.ofReal (C * Real.exp (-c * r)))
     {h₀ : List Bool} (hs0 : IntervalStart f d h₀ (rootOf f d h₀)) {s : ℕ} (hs : 1 ≤ s) :
     uniformLaw clockwise ({ρ | history ρ f d h₀.length = h₀} ∩ IntReach f d h₀ s) ≤
       Pm f d h₀ * ENNReal.ofReal (C * Real.exp (-c * s)) := by
@@ -63,6 +73,9 @@ theorem intReach_measure_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d
 
 /-! ### Between consecutive forced tests -/
 
+/-- The forced-test count is monotone along a prefix: if `h₀` prefixes `h'` and `i` is at
+least the length of `h₀`, the forced count after `h₀` is at most the forced count after the
+first `i` tests of `h'`. -/
 theorem forced_take_ge (f d : Site) {h₀ h' : List Bool} (hp : h₀ <+: h') {i : ℕ}
     (hi : h₀.length ≤ i) : (replay f d h₀).forced ≤ (replay f d (h'.take i)).forced :=
   forced_mono_prefix f d (List.prefix_of_prefix_length_le hp (List.take_prefix _ _)

@@ -19,6 +19,17 @@ three cases are three conjuncts: on the event that the first
 import Rotor.Exploration
 import Rotor.Support.ExplorationLemma
 
+/-!
+# Properties of the square-lattice dual exploration process
+
+Proves Lemma 5.4: the exploration process started at a face `f` along the dual edge `f → f + d`
+never tests the same undirected dual bond twice; if it terminates, every face reachable from `f`
+by an open directed path is either visited or lies in a finite component of the complement of
+the visited set; and, conditionally on the history of earlier test outcomes, the currently
+tested edge is open with probability `1`, `0`, or `1/2` according as the corresponding bond was
+tested closed, tested open, or not yet tested.
+-/
+
 open Rotor MeasureTheory
 
 -- FROZEN-STATEMENT-BEGIN

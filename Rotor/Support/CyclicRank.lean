@@ -1,6 +1,8 @@
 import Rotor.Model
 
 /-!
+# The rank function of a cyclic permutation
+
 Pure lemmas on the rank function of a cyclic permutation, `rotor.tex:1295-1310`:
 for a permutation `σ` of a finite type acting transitively, `cycRank σ x w` is the
 least `k ≥ 1` with `σ^k x = w`, the position of `w` in the cyclic order beginning
@@ -16,6 +18,8 @@ section Cyclic
 variable {α : Type*} [Fintype α] [DecidableEq α] (σ : Equiv.Perm α)
 
 omit [Fintype α] [DecidableEq α] in
+/-- From transitivity of `σ`, produces a strictly positive `k` with `σ^k x = w`, converting the
+exponent given by `h` at `σ x` into one starting at `x`. -/
 theorem exists_pos_pow_eq (h : ∀ a b : α, ∃ k : ℕ, (σ ^ k) a = b) (x w : α) :
     ∃ k : ℕ, 0 < k ∧ (σ ^ k) x = w := by
   obtain ⟨d, hd⟩ := h (σ x) w
@@ -30,6 +34,7 @@ variable (h : ∀ a b : α, ∃ k : ℕ, (σ ^ k) a = b)
 include h
 
 omit [DecidableEq α] in
+/-- `σ` acts as a single cycle on the whole (finite) type `α`. -/
 theorem isCycleOn_univ : σ.IsCycleOn ↑(univ : Finset α) := by
   refine ⟨?_, ?_⟩
   · simp
@@ -38,22 +43,27 @@ theorem isCycleOn_univ : σ.IsCycleOn ↑(univ : Finset α) := by
     exact ⟨k, by simpa using hk⟩
 
 omit [DecidableEq α] in
+/-- `σ^n` fixes `x` iff `n` is a multiple of `|α|`, the length of the cycle. -/
 theorem pow_apply_eq_self_iff (x : α) (n : ℕ) : (σ ^ n) x = x ↔ Fintype.card α ∣ n := by
   have := (isCycleOn_univ σ h).pow_apply_eq (mem_univ x) (n := n)
   rwa [card_univ] at this
 
 omit [DecidableEq α] in
+/-- Applying `σ` a full `|α|` times returns any `x` to itself. -/
 theorem pow_card_apply (x : α) : (σ ^ Fintype.card α) x = x :=
   (pow_apply_eq_self_iff σ h x _).2 dvd_rfl
 
 omit [Fintype α] in
+/-- `cycRank σ h x w` is strictly positive, by definition of `cycRank` as a `Nat.find`. -/
 theorem cycRank_pos (x w : α) : 0 < cycRank σ h x w :=
   (Nat.find_spec (exists_pos_pow_eq σ h x w)).1
 
 omit [Fintype α] in
+/-- `cycRank σ h x w` is a witness exponent: `σ` raised to it sends `x` to `w`. -/
 theorem pow_cycRank (x w : α) : (σ ^ cycRank σ h x w) x = w :=
   (Nat.find_spec (exists_pos_pow_eq σ h x w)).2
 
+/-- `cycRank σ h x w` never exceeds `|α|`, the length of the full cycle. -/
 theorem cycRank_le (x w : α) : cycRank σ h x w ≤ Fintype.card α := by
   obtain ⟨k, hk, hkw⟩ := (isCycleOn_univ σ h).exists_pow_eq (mem_univ x) (mem_univ w)
   rw [card_univ] at hk
@@ -63,6 +73,8 @@ theorem cycRank_le (x w : α) : cycRank σ h x w ≤ Fintype.card α := by
     exact Nat.find_min' _ ⟨Fintype.card_pos_iff.2 ⟨x⟩, pow_card_apply σ h x⟩
   · exact (Nat.find_min' _ ⟨hk0, hkw⟩).trans hk.le
 
+/-- Any exponent `k` in `(0, |α|]` with `σ^k x = w` must equal `cycRank σ h x w`: it is the
+unique such exponent in that range. -/
 theorem cycRank_eq_of {x w : α} {k : ℕ} (hk0 : 0 < k) (hkd : k ≤ Fintype.card α)
     (hkw : (σ ^ k) x = w) : cycRank σ h x w = k := by
   rw [cycRank, Nat.find_eq_iff]
@@ -77,11 +89,15 @@ theorem cycRank_eq_of {x w : α} {k : ℕ} (hk0 : 0 < k) (hkd : k ≤ Fintype.ca
   omega
 
 omit [Fintype α] in
+/-- For fixed `x`, `w ↦ cycRank σ h x w` is injective: the rank determines `w` via
+`pow_cycRank`. -/
 theorem cycRank_right_injective (x : α) : Function.Injective (cycRank σ h x) := by
   intro w w' he
   rw [← pow_cycRank σ h x w, ← pow_cycRank σ h x w', he]
 
 omit [Fintype α] in
+/-- For fixed `w`, `x ↦ cycRank σ h x w` is injective: equal ranks send `x` and `x'` to `w`
+under the same power of `σ`, so `x = x'` follows from injectivity of `σ`. -/
 theorem cycRank_left_injective (w : α) : Function.Injective (fun x => cycRank σ h x w) := by
   intro x x' he
   have h1 := pow_cycRank σ h x w
@@ -90,13 +106,18 @@ theorem cycRank_left_injective (w : α) : Function.Injective (fun x => cycRank �
   rw [he] at h1
   exact (σ ^ cycRank σ h x' w).injective (h1.trans h2.symm)
 
+/-- `cycRank σ h a a = |α|`: returning to the start takes exactly one full cycle. -/
 theorem cycRank_self (a : α) : cycRank σ h a a = Fintype.card α :=
   cycRank_eq_of σ h (Fintype.card_pos_iff.2 ⟨a⟩) le_rfl (pow_card_apply σ h a)
 
+/-- For `c ≠ a`, `cycRank σ h a c` is strictly less than `|α|`: only returning to `a` itself
+takes the full cycle length. -/
 theorem cycRank_lt_card {a c : α} (hne : c ≠ a) : cycRank σ h a c < Fintype.card α := by
   refine lt_of_le_of_ne (cycRank_le σ h a c) fun he => hne ?_
   rw [← pow_cycRank σ h a c, he, pow_card_apply σ h]
 
+/-- For fixed `x`, the ranks `cycRank σ h x c` as `c` ranges over `α` hit every value in
+`[1, |α|]` exactly once. -/
 theorem image_cycRank_right (x : α) :
     (univ : Finset α).image (cycRank σ h x) = Icc 1 (Fintype.card α) := by
   apply eq_of_subset_of_card_le
@@ -106,6 +127,8 @@ theorem image_cycRank_right (x : α) :
   · rw [Nat.card_Icc, card_image_of_injective _ (cycRank_right_injective σ h x), card_univ]
     omega
 
+/-- For fixed `a`, the ranks `cycRank σ h x a` as `x` ranges over `α` hit every value in
+`[1, |α|]` exactly once. -/
 theorem image_cycRank_left (a : α) :
     (univ : Finset α).image (fun x => cycRank σ h x a) = Icc 1 (Fintype.card α) := by
   apply eq_of_subset_of_card_le
@@ -115,6 +138,8 @@ theorem image_cycRank_left (a : α) :
   · rw [Nat.card_Icc, card_image_of_injective _ (cycRank_left_injective σ h a), card_univ]
     omega
 
+/-- From a fixed start `x`, exactly `cycRank σ h x a - 1` of the elements `c` have strictly
+smaller rank than `a`, i.e. lie strictly before `a` in the cyclic order starting after `x`. -/
 theorem card_filter_cycRank_lt (x a : α) :
     (univ.filter (fun c => cycRank σ h x c < cycRank σ h x a)).card = cycRank σ h x a - 1 := by
   have himg : (univ.filter (fun c => cycRank σ h x c < cycRank σ h x a)).image (cycRank σ h x)
@@ -148,7 +173,8 @@ theorem two_mul_sum_card_filter_lt (a : α) :
     simp only [mem_Icc, mem_Ico]
     omega
   rw [h2, hI, sum_Ico_eq_sum_range]
-  have h3 : ∑ k ∈ range (Fintype.card α + 1 - 1), (1 + k - 1) = ∑ k ∈ range (Fintype.card α), k := by
+  have h3 : ∑ k ∈ range (Fintype.card α + 1 - 1), (1 + k - 1)
+      = ∑ k ∈ range (Fintype.card α), k := by
     rw [Nat.add_sub_cancel]
     exact sum_congr rfl (fun k _ => by omega)
   rw [h3, mul_comm, sum_range_id_mul_two]

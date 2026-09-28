@@ -2,6 +2,8 @@ import Rotor.Support.PendantInduced
 import Rotor.Support.Excursion
 
 /-!
+# Counting bound for the pendant counterexample
+
 The counting estimate of the pendant counterexample (`rotor.tex:2240-2247`): for the uniform
 law on `G_M`, the probability that some king-connected set `U ∋ o` has at least `|U|/3`
 sites whose induced rotor does not point west is at most `1/64` once `M + 4 ≥ 3 · 2^24`.
@@ -16,11 +18,14 @@ namespace Rotor
 
 variable (M : ℕ)
 
+/-- The induced rotor's direction `dir0 (induce M ρ) v` equals `latDir M` applied to
+the neighbour index of `ρ` at the lattice copy `.inl v`. -/
 theorem dir0_induce (ρ : Config (pendantGraph M)) (v : Site) :
     dir0 (induce M ρ) v = latDir M (nbrIdx M (ρ (.inl v))) := by
   unfold dir0 induce
   exact Equiv.symm_apply_apply _ _
 
+/-- `latDir M k` differs from the west direction `3` exactly when `(k : ℕ) ≤ 2`. -/
 theorem latDir_ne_three_iff (k : Fin (M + 4)) : latDir M k ≠ 3 ↔ (k : ℕ) ≤ 2 := by
   unfold latDir
   split_ifs with h
@@ -40,6 +45,8 @@ def nonWestSet : ∀ w : PVertex M, Set ((pendantGraph M).neighborSet w)
   | .inl _ => {a | (nbrIdx M a : ℕ) ≤ 2}
   | .inr _ => Set.univ
 
+/-- `nonWestOn M A` unfolds as the product set `Set.pi` of `nonWestSet M` over the
+lattice vertices of `A`. -/
 theorem nonWestOn_eq (A : Finset Site) :
     nonWestOn M A = Set.pi ↑(A.image (Sum.inl : Site → PVertex M)) (nonWestSet M) := by
   ext ρ
@@ -47,6 +54,8 @@ theorem nonWestOn_eq (A : Finset Site) :
     forall_exists_index, and_imp, forall_apply_eq_imp_iff₂]
   rfl
 
+/-- Exactly `3` of the neighbours of a lattice vertex `.inl v` have neighbour index `≤ 2`,
+transferring the count along the equivalence `pendantNbrLattice`. -/
 theorem card_filter_nbrIdx_le_two (v : Site) :
     (Finset.univ.filter (fun a : (pendantGraph M).neighborSet (.inl v) =>
       (nbrIdx M a : ℕ) ≤ 2)).card = 3 := by
@@ -62,6 +71,8 @@ theorem card_filter_nbrIdx_le_two (v : Site) :
   · intro a
     simp [nbrIdx]
 
+/-- Under the uniform rotor law at a lattice vertex `.inl v`, the probability of
+`nonWestSet M (.inl v)` is `3 / (M + 4)`. -/
 theorem uniformAt_nonWestSet_inl (v : Site) :
     uniformAt (pendantMech M) (.inl v) (nonWestSet M (.inl v)) = 3 / ((M : ℝ≥0∞) + 4) := by
   have hset : nonWestSet M (.inl v) = ↑(Finset.univ.filter
@@ -75,6 +86,8 @@ theorem uniformAt_nonWestSet_inl (v : Site) :
   push_cast
   rfl
 
+/-- Under the uniform product law, `nonWestOn M A` has probability
+`(3 / (M + 4)) ^ A.card`, by independence across the sites of `A`. -/
 theorem uniformLaw_nonWestOn (A : Finset Site) :
     uniformLaw (pendantMech M) (nonWestOn M A) = (3 / ((M : ℝ≥0∞) + 4)) ^ A.card := by
   have key := Measure.infinitePi_pi (μ := uniformAt (pendantMech M))
@@ -96,6 +109,8 @@ def badN (o : Site) (n : ℕ) : Set (Config (pendantGraph M)) :=
   {ρ | ∃ U : Finset Site, KConn o U ∧ U.card = n + 1 ∧
     n + 1 ≤ 3 * (U.filter (fun v => (nbrIdx M (ρ (.inl v)) : ℕ) ≤ 2)).card}
 
+/-- Every configuration in `badEvent M o` lies in `badN M o n` for `n = U.card - 1`,
+where `U` is the witnessing king-connected set. -/
 theorem badEvent_subset (o : Site) : badEvent M o ⊆ ⋃ n : ℕ, badN M o n := by
   intro ρ hρ
   obtain ⟨U, hK, hU⟩ := hρ
@@ -107,6 +122,8 @@ theorem badEvent_subset (o : Site) : badEvent M o ⊆ ⋃ n : ℕ, badN M o n :=
   rw [← this]
   omega
 
+/-- `badN M o n` is covered by the union, over king-connected sets `U` of size `n + 1` in
+`𝒰`, of `nonWestOn M A` for subsets `A ⊆ U` of size `(n + 3) / 3` witnessing the majority. -/
 theorem badN_subset (o : Site) (n : ℕ) (𝒰 : Finset (Finset Site))
     (h𝒰 : ∀ U, KConn o U → U.card = n + 1 → U ∈ 𝒰) :
     badN M o n ⊆ ⋃ U ∈ 𝒰, ⋃ A ∈ U.powersetCard ((n + 3) / 3), nonWestOn M A := by
@@ -118,6 +135,10 @@ theorem badN_subset (o : Site) (n : ℕ) (𝒰 : Finset (Finset Site))
   · exact mem_powersetCard.2 ⟨hAsub.trans (filter_subset _ _), hAcard⟩
   · exact fun v hv => (mem_filter.1 (hAsub hv)).2
 
+/-- `badN M o n` has probability at most
+`64 ^ n * 2 ^ (n + 1) * (3 / (M + 4)) ^ ((n + 3) / 3)`, combining the count of king-connected
+animals of size `n + 1`, a binomial bound on the number of witnessing subsets, and
+`uniformLaw_nonWestOn`. -/
 theorem measure_badN_le (o : Site) (n : ℕ) :
     uniformLaw (pendantMech M) (badN M o n) ≤
       (64 : ℝ≥0∞) ^ n * 2 ^ (n + 1) * (3 / ((M : ℝ≥0∞) + 4)) ^ ((n + 3) / 3) := by
@@ -137,7 +158,8 @@ theorem measure_badN_le (o : Site) (n : ℕ) :
     _ = ∑ U ∈ 𝒰, ∑ A ∈ U.powersetCard ((n + 3) / 3), (3 / ((M : ℝ≥0∞) + 4)) ^ ((n + 3) / 3) := by
         refine sum_congr rfl (fun U _ => sum_congr rfl (fun A hA => ?_))
         rw [uniformLaw_nonWestOn, (mem_powersetCard.1 hA).2]
-    _ = ∑ U ∈ 𝒰, ((n + 1).choose ((n + 3) / 3) : ℝ≥0∞) * (3 / ((M : ℝ≥0∞) + 4)) ^ ((n + 3) / 3) := by
+    _ = ∑ U ∈ 𝒰, ((n + 1).choose ((n + 3) / 3) : ℝ≥0∞) *
+          (3 / ((M : ℝ≥0∞) + 4)) ^ ((n + 3) / 3) := by
         refine sum_congr rfl (fun U hU => ?_)
         rw [sum_const, card_powersetCard, nsmul_eq_mul, hcard U hU]
     _ ≤ ∑ U ∈ 𝒰, (2 : ℝ≥0∞) ^ (n + 1) * (3 / ((M : ℝ≥0∞) + 4)) ^ ((n + 3) / 3) := by
@@ -154,6 +176,8 @@ theorem measure_badN_le (o : Site) (n : ℕ) :
 
 /-! ### The numerical bound -/
 
+/-- Once `M ≥ 50331645 = 3 · 2^24 - 4`, the single-site probability `3 / (M + 4)` is
+at most `(1/2) ^ 24`. -/
 theorem three_div_le (hM : 50331645 ≤ M) :
     (3 : ℝ≥0∞) / ((M : ℝ≥0∞) + 4) ≤ (2⁻¹ : ℝ≥0∞) ^ 24 := by
   have h1 : (3 : ℝ≥0∞) / ((M : ℝ≥0∞) + 4) ≤ 3 / (3 * 2 ^ 24) := by
@@ -167,6 +191,8 @@ theorem three_div_le (hM : 50331645 ≤ M) :
     ENNReal.mul_inv (Or.inl (by norm_num)) (Or.inl (by norm_num)),
     ← mul_assoc, ENNReal.mul_inv_cancel (by norm_num) (by norm_num), one_mul]
 
+/-- Once `M ≥ 50331645`, the `n`-th term of the union bound on `badN` is at most
+`(1/2) ^ (n + 7)`, via `three_div_le` and `64 = 2^6`. -/
 theorem term_le (hM : 50331645 ≤ M) (n : ℕ) :
     (64 : ℝ≥0∞) ^ n * 2 ^ (n + 1) * (3 / ((M : ℝ≥0∞) + 4)) ^ ((n + 3) / 3) ≤
       (2⁻¹ : ℝ≥0∞) ^ (n + 7) := by
@@ -185,6 +211,7 @@ theorem term_le (hM : 50331645 ≤ M) (n : ℕ) :
         rw [← mul_assoc, ← mul_pow, ENNReal.mul_inv_cancel two_ne_zero ofNat_ne_top, one_pow,
           one_mul]
 
+/-- The geometric series `∑' n, (1/2) ^ (n + 7)` sums to `(1/2) ^ 6`. -/
 theorem tsum_half_pow : ∑' n : ℕ, (2⁻¹ : ℝ≥0∞) ^ (n + 7) = (2⁻¹ : ℝ≥0∞) ^ 6 := by
   simp_rw [pow_add]
   rw [ENNReal.tsum_mul_right, ENNReal.tsum_geometric, ENNReal.one_sub_inv_two, inv_inv,
@@ -200,6 +227,7 @@ theorem measure_badEvent_le (hM : 50331645 ≤ M) (o : Site) :
         ENNReal.tsum_le_tsum (fun n => (measure_badN_le M o n).trans (term_le M hM n))
     _ = (2⁻¹ : ℝ≥0∞) ^ 6 := tsum_half_pow
 
+/-- The bad event has probability strictly less than `1`, since `(1/2) ^ 6 < 1`. -/
 theorem measure_badEvent_lt_one (hM : 50331645 ≤ M) (o : Site) :
     uniformLaw (pendantMech M) (badEvent M o) < 1 :=
   (measure_badEvent_le M hM o).trans_lt

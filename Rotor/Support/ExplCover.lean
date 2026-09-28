@@ -1,6 +1,8 @@
 import Rotor.Support.ExplInv
 
 /-!
+# Coverage of open dual paths by the exploration
+
 Lemma 5.4 (ii) (`rotor.tex:1906-1909`): if the exploration terminates, every face reachable
 from `f` by an open directed dual path is visited or lies in a finite component of the
 complement of the visited set.  The invariant: for every visited face `x` and neighbour `y`,
@@ -18,12 +20,15 @@ namespace Rotor
 def AvoidReach (V : Finset Site) (x y : Site) : Prop :=
   Relation.ReflTransGen (fun a b => a ∉ V ∧ b ∉ V ∧ squareGraph.Adj a b) x y
 
+/-- The endpoint of an `AvoidReach V` path from `x ∉ V` also lies outside `V`. -/
 theorem AvoidReach.notMem {V : Finset Site} {x y : Site} (hx : x ∉ V) (h : AvoidReach V x y) :
     y ∉ V := by
   induction h with
   | refl => exact hx
   | tail _ hbc _ => exact hbc.2.1
 
+/-- An `AvoidReach V` path from `x` to `y` gives a path between `x` and `y` in the graph induced
+on the complement of `V`. -/
 theorem reachable_induce_of_avoidReach (V : Finset Site) {x y : Site} (h : AvoidReach V x y)
     (hx : x ∉ V) (hy : y ∉ V) :
     (squareGraph.induce {z : Site | z ∉ V}).Reachable ⟨x, hx⟩ ⟨y, hy⟩ := by
@@ -34,6 +39,8 @@ theorem reachable_induce_of_avoidReach (V : Finset Site) {x y : Site} (h : Avoid
     refine (ih hb).trans (SimpleGraph.Adj.reachable ?_)
     exact hbc.2.2
 
+/-- Conversely, reachability between `p` and `q` in the graph induced on the complement of `V`
+gives an `AvoidReach V` path between their underlying vertices. -/
 theorem avoidReach_of_reachable_induce (V : Finset Site) :
     ∀ (p q : {z : Site // z ∉ V}), (squareGraph.induce {z : Site | z ∉ V}).Reachable p q →
       AvoidReach V p.1 q.1 := by
@@ -43,6 +50,8 @@ theorem avoidReach_of_reachable_induce (V : Finset Site) :
   | refl => exact Relation.ReflTransGen.refl
   | @tail b c _ hbc ih => exact ih.tail ⟨b.2, c.2, hbc⟩
 
+/-- `y` lies in a finite component of the complement of `V` iff `y ∉ V` and only finitely many
+vertices are `AvoidReach V`-reachable from `y`. -/
 theorem inFiniteComponent_iff (V : Finset Site) (y : Site) :
     InFiniteComponent V y ↔ y ∉ V ∧ Set.Finite {z | AvoidReach V y z} := by
   unfold InFiniteComponent
@@ -57,6 +66,8 @@ theorem inFiniteComponent_iff (V : Finset Site) (y : Site) :
     rintro z ⟨hz, hy', hr⟩
     exact avoidReach_of_reachable_induce V ⟨y, hy'⟩ ⟨z, hz⟩ hr
 
+/-- Enlarging `V` to `V'` either moves `y` into `V'` or keeps it in a finite component of the
+complement of `V'`. -/
 theorem InFiniteComponent.mono {V V' : Finset Site} (hVV' : V ⊆ V') {y : Site}
     (h : InFiniteComponent V y) : y ∈ V' ∨ InFiniteComponent V' y := by
   by_cases hy : y ∈ V'
@@ -68,6 +79,8 @@ theorem InFiniteComponent.mono {V V' : Finset Site} (hVV' : V ⊆ V') {y : Site}
   exact Relation.ReflTransGen.mono
     (fun a b hab => ⟨fun h => hab.1 (hVV' h), fun h => hab.2.1 (hVV' h), hab.2.2⟩) _ _ hz
 
+/-- If `x` lies in a finite component of the complement of `V` and `y` is adjacent to `x`, then
+either `y ∈ V` or `y` lies in the same finite component. -/
 theorem InFiniteComponent.adj {V : Finset Site} {x y : Site} (h : InFiniteComponent V x)
     (hxy : squareGraph.Adj x y) : y ∈ V ∨ InFiniteComponent V y := by
   by_cases hy : y ∈ V
@@ -80,12 +93,16 @@ theorem InFiniteComponent.adj {V : Finset Site} {x y : Site} (h : InFiniteCompon
 
 /-! ### The neighbours of a face are covered by the edges added at its visit -/
 
+/-- Every neighbour `y` of `f` is the head of one of the four directed edges out of `f` listed
+by `edgesFrom f d`. -/
 theorem edgesFrom_cover (f : Site) {d : Site} (hd : IsUnit d) {y : Site}
     (h : squareGraph.Adj f y) : (f, y) ∈ edgesFrom f d := by
   have hy : y = f + (y - f) := by abel
   rcases isUnit_of_adj h with hu | hu | hu | hu <;> rw [hu] at hy <;> subst hy <;>
   rcases hd with rfl | rfl | rfl | rfl <;> simp [edgesFrom, rotL]
 
+/-- Every neighbour `y` of `b` other than `a` is the head of one of the three directed edges out
+of `b` listed by `continuations a b`. -/
 theorem continuations_cover {a b : Site} (h : squareGraph.Adj a b) {y : Site}
     (hy : squareGraph.Adj b y) : y = a ∨ (b, y) ∈ continuations a b := by
   have hb : b = a + (b - a) := by abel
@@ -105,6 +122,9 @@ structure ExplCov (ρ : Config squareGraph) (f : Site) (s : ExplState) : Prop wh
   outcomes : ∀ t ∈ s.tested, t.2.2 = decide (DualOpen ρ t.1 t.2.1)
 
 open Classical in
+/-- The initial exploration state `explInit f d` satisfies the covering invariant `ExplCov`:
+`f` is visited, and its neighbours are covered by the edges `edgesFrom f d` in the active
+list. -/
 theorem explCov_init (ρ : Config squareGraph) (f : Site) {d : Site} (hd : IsUnit d) :
     ExplCov ρ f (explInit f d) where
   root_mem := by simp [explInit]
@@ -116,6 +136,10 @@ theorem explCov_init (ρ : Config squareGraph) (f : Site) {d : Site} (hd : IsUni
   outcomes := by simp [explInit]
 
 open Classical in
+/-- One step of the exploration preserves the covering invariant `ExplCov`, given that it also
+preserves `ExplInv`: a newly tested edge is either recorded as an outcome or, if open, its
+continuations replace it in the active list, keeping every neighbour of a visited face
+covered. -/
 theorem explCov_step (ρ : Config squareGraph) (f : Site) {s : ExplState} (hinv : ExplInv s)
     (hs : ExplCov ρ f s) : ExplCov ρ f (explStep ρ s) := by
   rcases h : s.active with _ | ⟨e, rest⟩
@@ -196,6 +220,8 @@ theorem explCov_step (ρ : Config squareGraph) (f : Site) {s : ExplState} (hinv 
       subst ht
       rfl
 
+/-- The exploration state after `n` steps from `f` satisfies the covering invariant `ExplCov`,
+by induction on `n` from `explCov_init` and `explCov_step`. -/
 theorem explCov_explore (ρ : Config squareGraph) (f : Site) {d : Site} (hd : IsUnit d) (n : ℕ) :
     ExplCov ρ f (explore ρ f d n) := by
   induction n with
@@ -206,6 +232,8 @@ theorem explCov_explore (ρ : Config squareGraph) (f : Site) {d : Site} (hd : Is
 
 /-! ### Lemma 5.4 (ii) -/
 
+/-- A list that is a chain for both `R` and `S` is a chain for their conjunction
+`fun a b => R a b ∧ S a b`. -/
 theorem isChain_and {α : Type*} {R S : α → α → Prop} : ∀ {l : List α},
     l.IsChain R → l.IsChain S → l.IsChain (fun a b => R a b ∧ S a b)
   | [], _, _ => List.isChain_nil
@@ -214,6 +242,8 @@ theorem isChain_and {α : Type*} {R S : α → α → Prop} : ∀ {l : List α},
     rw [List.isChain_cons_cons] at hR hS ⊢
     exact ⟨⟨hR.1, hS.1⟩, isChain_and hR.2 hS.2⟩
 
+/-- If `P` holds at the head of a list and is preserved along each step of an `R`-chain, then
+`P` holds at every member of the list. -/
 theorem forall_mem_of_isChain {α : Type*} {R : α → α → Prop} {P : α → Prop}
     (hstep : ∀ a b, P a → R a b → P b) : ∀ {l : List α},
     l.IsChain R → (∀ z ∈ l.head?, P z) → ∀ z ∈ l, P z
@@ -230,6 +260,9 @@ theorem forall_mem_of_isChain {α : Type*} {R : α → α → Prop} {P : α → 
     · exact ha
     · exact forall_mem_of_isChain hstep hch.2 (by simpa using hb) z hz
 
+/-- Lemma 5.4 (ii): if the exploration from `f` terminates with an empty active list, every face
+`g` reachable from `f` by an open directed dual path is either visited or lies in a finite
+component of the complement of the visited set. -/
 theorem square_exploration_ii (f : Site) {d : Site} (hd : IsUnit d) (ρ : Config squareGraph)
     (n : ℕ) (hterm : (explore ρ f d n).active = []) (g : Site) (hg : DualReachable ρ f g) :
     g ∈ (explore ρ f d n).visited ∨ InFiniteComponent (explore ρ f d n).visited g := by

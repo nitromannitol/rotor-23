@@ -11,26 +11,40 @@ finite set, where the directional limit is uniform.
 import Rotor.Support.PassageArray
 import Rotor.Support.PlaneExtension
 
+/-!
+# Uniform convergence to the passage function
+
+Proves `prop:passage-limit`: the passage time `τ π ρ o x` converges, uniformly in the
+direction, to a deterministic subadditive function `f` of `P.emb x - P.emb o`. The lattice
+directional limits are shown subadditive on `ℤ²` and extended to the plane, and for a
+lattice point `w` at scale `n` the passage time to `w` is within `O(n)` of the passage time
+along one of finitely many directions, where the directional convergence is uniform.
+-/
+
 open Finset MeasureTheory Filter Topology
 
 universe u
 
 namespace Rotor
 
+/-- The triangle inequality for a sum of three reals: `|a + b + c| ≤ |a| + |b| + |c|`. -/
 theorem abs_add_three' (a b c : ℝ) : |a + b + c| ≤ |a| + |b| + |c| :=
   (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
 
 /-- The sup norm of a lattice vector as a natural number. -/
 def supNat (w : ℤ × ℤ) : ℕ := max w.1.natAbs w.2.natAbs
 
+/-- The real-valued sup norm `supNorm w` agrees with the natural number `supNat w`. -/
 theorem supNorm_eq_supNat (w : ℤ × ℤ) : supNorm w = supNat w := by
   rw [supNorm, supNat, Nat.cast_max, ← Int.cast_abs, ← Int.cast_abs, Int.abs_eq_natAbs,
     Int.abs_eq_natAbs, Int.cast_natCast, Int.cast_natCast]
 
+/-- `|w.1| ≤ supNat w`: the first coordinate is bounded by the sup norm. -/
 theorem abs_fst_le_supNat (w : ℤ × ℤ) : |w.1| ≤ (supNat w : ℤ) := by
   rw [Int.abs_eq_natAbs]
   exact_mod_cast le_max_left _ _
 
+/-- `|w.2| ≤ supNat w`: the second coordinate is bounded by the sup norm. -/
 theorem abs_snd_le_supNat (w : ℤ × ℤ) : |w.2| ≤ (supNat w : ℤ) := by
   rw [Int.abs_eq_natAbs]
   exact_mod_cast le_max_right _ _
@@ -73,7 +87,8 @@ theorem uniform_lattice (hπ : P.Periodic π) (hAb : External.Abelian G) [Infini
   -- the finite set of directions
   have hSfin : (Set.Icc (-(2 * M : ℤ), -(2 * M : ℤ)) ((2 * M : ℤ), (2 * M : ℤ))).Finite :=
     Set.finite_Icc _ _
-  have hev : ∀ᶠ n : ℕ in atTop, ∀ z ∈ Set.Icc (-(2 * M : ℤ), -(2 * M : ℤ)) ((2 * M : ℤ), (2 * M : ℤ)),
+  have hev : ∀ᶠ n : ℕ in atTop,
+      ∀ z ∈ Set.Icc (-(2 * M : ℤ), -(2 * M : ℤ)) ((2 * M : ℤ), (2 * M : ℤ)),
       |(arr π P ρ o z 0 n : ℝ) / n - m z| < 1 := by
     rw [Filter.eventually_all_finite hSfin]
     intro z _
@@ -215,7 +230,8 @@ theorem passage_limit_proof (hK : External.Kingman.{u}) (hπ : P.Periodic π)
   have hn2 := hCB (P.coord x)
   have hxy : ‖P.emb x - P.emb o‖ ≤ ‖P.latVec (P.coord x)‖ + D := by
     calc ‖P.emb x - P.emb o‖
-        = ‖(P.emb x - P.emb (P.shift (P.coord x) o)) + (P.emb (P.shift (P.coord x) o) - P.emb o)‖ := by
+        = ‖(P.emb x - P.emb (P.shift (P.coord x) o)) +
+            (P.emb (P.shift (P.coord x) o) - P.emb o)‖ := by
           congr 1; abel
       _ ≤ ‖P.emb x - P.emb (P.shift (P.coord x) o)‖ + ‖P.emb (P.shift (P.coord x) o) - P.emb o‖ :=
           norm_add_le _ _

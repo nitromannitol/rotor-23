@@ -31,6 +31,18 @@ The depth-first exploration of the dual configuration, `rotor.tex:1870-1900`
 -/
 import Rotor.Dual
 
+/-!
+# The depth-first exploration of the dual configuration
+
+Formalizes the depth-first exploration process of Section 5.3 of `rotor.tex`: starting from a
+face and a chosen outgoing dual edge, the process tests dual edges for openness one at a time,
+maintaining a visited set and an active list, and pruning edges that lead into an already visited
+or finite unvisited component. A test is forced when the opposite side of its square was already
+tested closed. This file gives the state, the deterministic step functions `explStepWith` and
+`explStep`, their iterates `explore`/`replay`, and the derived quantities `history`, `forcedCount`
+and reachability by open dual edges, without proving anything about their probabilistic behavior.
+-/
+
 open Finset
 
 namespace Rotor

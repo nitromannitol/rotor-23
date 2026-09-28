@@ -7,6 +7,17 @@ and the resulting function is Lipschitz.
 -/
 import Rotor.Support.LatticeGeom
 
+/-!
+# Extending a subadditive lattice function to the plane
+
+Extends a subadditive function on the lattice `ℤ²` to a continuous, subadditive, positively
+homogeneous function on the plane. This is the "usual argument" of the proof of
+`prop:passage-limit`: the limit along the integer multiples of the coordinate vector of a point
+exists by Fekete's lemma (`tendsto_latSeq`), the floor errors introduced by rounding to the
+lattice are bounded (`latt_add`, `floor_scale_diff`), and the resulting extension `planeExt` is
+Lipschitz (`planeExt_lip`), hence continuous.
+-/
+
 open Filter Topology
 
 namespace Rotor
@@ -30,8 +41,10 @@ theorem floor_scale_diff (θ x : ℝ) (hθ : 0 < θ) (n : ℕ) :
 /-- The lattice point below a coordinate vector. -/
 noncomputable def latt (c : Fin 2 → ℝ) : ℤ × ℤ := (⌊c 0⌋, ⌊c 1⌋)
 
+/-- `latt 0 = 0`. -/
 theorem latt_zero : latt 0 = 0 := by simp [latt]
 
+/-- `latt (c + d)` differs from `latt c + latt d` by an error `e` of sup norm at most `1`. -/
 theorem latt_add (c d : Fin 2 → ℝ) :
     ∃ e : ℤ × ℤ, latt (c + d) = latt c + latt d + e ∧ supNorm e ≤ 1 := by
   refine ⟨latt (c + d) - latt c - latt d, by abel, ?_⟩
@@ -45,6 +58,7 @@ theorem latt_add (c d : Fin 2 → ℝ) :
   rw [supNorm_le_iff]
   exact ⟨key (c 0) (d 0), key (c 1) (d 1)⟩
 
+/-- `|⌊t⌋| ≤ |t| + 1`. -/
 theorem abs_floor_le (t : ℝ) : |(⌊t⌋ : ℝ)| ≤ |t| + 1 := by
   have f1 := Int.floor_le t
   have f2 := Int.lt_floor_add_one t
@@ -53,6 +67,7 @@ theorem abs_floor_le (t : ℝ) : |(⌊t⌋ : ℝ)| ≤ |t| + 1 := by
   · linarith [neg_abs_le t]
   · linarith [le_abs_self t]
 
+/-- `supNorm (latt c) ≤ ‖c‖ + 1`. -/
 theorem supNorm_latt_le (c : Fin 2 → ℝ) : supNorm (latt c) ≤ ‖c‖ + 1 := by
   rw [supNorm_le_iff]
   have h0 := norm_le_pi_norm c 0
@@ -60,6 +75,8 @@ theorem supNorm_latt_le (c : Fin 2 → ℝ) : supNorm (latt c) ≤ ‖c‖ + 1 :
   rw [Real.norm_eq_abs] at h0 h1
   exact ⟨(abs_floor_le _).trans (by linarith), (abs_floor_le _).trans (by linarith)⟩
 
+/-- `latt` applied to `n • z` (as a real vector) recovers `n • z`, since the floor of an
+integer is itself. -/
 theorem latt_natCast_smul (n : ℕ) (z : ℤ × ℤ) :
     latt ((n : ℝ) • ![(z.1 : ℝ), (z.2 : ℝ)]) = n • z := by
   have key (a : ℤ) : ⌊(n : ℝ) * (a : ℝ)⌋ = n • a := by
@@ -79,10 +96,12 @@ namespace LatticeSubadditive
 variable {m : ℤ × ℤ → ℝ} {K : ℝ} (h : LatticeSubadditive m K)
 include h
 
+/-- A `LatticeSubadditive` function vanishes at `0`. -/
 theorem zero : m 0 = 0 := by
   have := h.nsmul 0 0
   simpa using this
 
+/-- The bound `K` in `LatticeSubadditive` is nonnegative. -/
 theorem K_nonneg : 0 ≤ K := by
   have h1 := h.le (1, 0)
   have h2 := h.nonneg (1, 0)
@@ -105,6 +124,8 @@ theorem lip (z w : ℤ × ℤ) : |m z - m w| ≤ K * supNorm (z - w) := by
       rwa [sub_add_cancel] at this
     linarith
 
+/-- Pulling `latt_add`'s error term through `m`: `m (latt (c + d)) ≤ m (latt c) + m (latt d) +
+K`. -/
 theorem latt_add_le (c d : Fin 2 → ℝ) : m (latt (c + d)) ≤ m (latt c) + m (latt d) + K := by
   obtain ⟨e, he, hse⟩ := latt_add c d
   rw [he]
@@ -129,14 +150,17 @@ noncomputable def planeExt (x : Plane) : ℝ := limUnder atTop (fun n : ℕ => l
 variable {m} {K : ℝ} (h : LatticeSubadditive m K)
 include h
 
+/-- `latSeq` is subadditive in `n`, up to the additive error `K`. -/
 theorem LatticeSubadditive.latSeq_add_le (x : Plane) (p q : ℕ) :
     latSeq m ξ x (p + q) ≤ latSeq m ξ x p + latSeq m ξ x q + K := by
   unfold latSeq
   rw [Nat.cast_add, add_smul]
   exact h.latt_add_le _ _
 
+/-- `latSeq m ξ x n` is nonnegative. -/
 theorem LatticeSubadditive.latSeq_nonneg (x : Plane) (n : ℕ) : 0 ≤ latSeq m ξ x n := h.nonneg _
 
+/-- `latSeq m ξ x n ≤ K * (n * ‖ξ x‖ + 1)`. -/
 theorem LatticeSubadditive.latSeq_le (x : Plane) (n : ℕ) :
     latSeq m ξ x n ≤ K * (n * ‖ξ x‖ + 1) := by
   unfold latSeq
@@ -162,10 +186,12 @@ theorem LatticeSubadditive.tendsto_latSeq (x : Plane) :
     simpa only [sub_zero, ← sub_div, add_sub_cancel_right] using
       (hu.tendsto_lim hbdd).sub
         (tendsto_const_div_atTop_nhds_zero_nat K)⟩
+/-- `planeExt m ξ x` is nonnegative, as the limit of the nonnegative sequence `latSeq`. -/
 theorem LatticeSubadditive.planeExt_nonneg (x : Plane) : 0 ≤ planeExt m ξ x :=
   ge_of_tendsto' (h.tendsto_latSeq ξ x)
     (fun n => div_nonneg (h.latSeq_nonneg ξ x n) (Nat.cast_nonneg _))
 
+/-- `planeExt m ξ x ≤ K * ‖ξ x‖`. -/
 theorem LatticeSubadditive.planeExt_le (x : Plane) : planeExt m ξ x ≤ K * ‖ξ x‖ := by
   have hK := h.K_nonneg
   have hlim : Tendsto (fun n : ℕ => K * ‖ξ x‖ + K / n) atTop (𝓝 (K * ‖ξ x‖ + 0)) :=
@@ -181,6 +207,7 @@ theorem LatticeSubadditive.planeExt_le (x : Plane) : planeExt m ξ x ≤ K * ‖
     calc latSeq m ξ x n ≤ K * (n * ‖ξ x‖ + 1) := this
       _ = (K * ‖ξ x‖ + K / n) * n := by field_simp
 
+/-- `planeExt` is subadditive: `planeExt m ξ (x + y) ≤ planeExt m ξ x + planeExt m ξ y`. -/
 theorem LatticeSubadditive.planeExt_add_le (x y : Plane) :
     planeExt m ξ (x + y) ≤ planeExt m ξ x + planeExt m ξ y := by
   have hlim : Tendsto (fun n : ℕ => latSeq m ξ x n / n + latSeq m ξ y n / n + K / n) atTop
@@ -204,9 +231,13 @@ theorem LatticeSubadditive.planeExt_eq_of_coords (x : Plane) (z : ℤ × ℤ)
   have hn' : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
   simp only [latSeq, hx, latt_natCast_smul, h.nsmul,
     mul_div_cancel_left₀ _ hn']
+/-- `planeExt m ξ 0 = 0`. -/
 theorem LatticeSubadditive.planeExt_zero : planeExt m ξ 0 = 0 := by
   simpa only [h.zero] using
     h.planeExt_eq_of_coords ξ 0 0 (by ext i; fin_cases i <;> simp)
+
+/-- `planeExt` scales linearly along rays: `planeExt m ξ (θ • x) = θ * planeExt m ξ x` for
+`θ ≥ 0`, obtained by comparing the sequence at `n` with the sequence at `k n = ⌊n θ⌋₊`. -/
 theorem LatticeSubadditive.planeExt_smul (θ : ℝ) (hθ : 0 ≤ θ) (x : Plane) :
     planeExt m ξ (θ • x) = θ * planeExt m ξ x := by
   rcases hθ.eq_or_lt with rfl | hθ
@@ -255,6 +286,8 @@ theorem LatticeSubadditive.planeExt_smul (θ : ℝ) (hθ : 0 ≤ θ) (x : Plane)
         add_sub_cancel]
   rw [tendsto_nhds_unique (h.tendsto_latSeq ξ (θ • x)) h4, mul_comm]
 
+/-- `planeExt m ξ` is Lipschitz with constant `K * ‖ξ‖`:
+`|planeExt m ξ x - planeExt m ξ y| ≤ K * ‖ξ‖ * ‖x - y‖`. -/
 theorem LatticeSubadditive.planeExt_lip (x y : Plane) :
     |planeExt m ξ x - planeExt m ξ y| ≤ K * ‖ξ‖ * ‖x - y‖ := by
   have hK := h.K_nonneg
@@ -273,6 +306,7 @@ theorem LatticeSubadditive.planeExt_lip (x y : Plane) :
     rw [norm_sub_rev] at this
     linarith
 
+/-- `planeExt m ξ` is continuous, as a Lipschitz function via `planeExt_lip`. -/
 theorem LatticeSubadditive.planeExt_continuous : Continuous (planeExt m ξ) := by
   have hK := h.K_nonneg
   refine LipschitzWith.continuous (K := ⟨K * ‖ξ‖, by positivity⟩)

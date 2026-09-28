@@ -15,6 +15,17 @@ vertex, `rotor.tex:291-299` and Section 6:
 -/
 import Rotor.Dual
 
+/-!
+# The pendant graph `G_M`
+
+Constructs the graph `G_M` of the paper: the square lattice with `M` leaves attached at every
+lattice vertex, drawn between the west and north edges so that the clockwise order at a lattice
+vertex is `N, E, S, W, L_1, …, L_M`. Identifies the neighbor sets of lattice vertices and of
+leaves, which exhibits `G_M` as locally finite and supports the clockwise rotor mechanism
+`pendantMech`, and gives the planar embedding `pendantEmb`, proved injective, together with the
+lattice shift action `pendantShift`.
+-/
+
 open Fin.NatCast
 
 namespace Rotor
@@ -83,6 +94,8 @@ def pendantNbrLeaf (M : ℕ) (w : Site × Fin M) : Unit ≃ (pendantGraph M).nei
     · exact Subtype.ext (congrArg Sum.inl h)
     · exact h.elim
 
+/-- `G_M` is locally finite: the neighbor set of a lattice vertex is finite via
+`pendantNbrLattice`, and of a leaf via `pendantNbrLeaf`. -/
 instance (M : ℕ) : (pendantGraph M).LocallyFinite := fun v =>
   match v with
   | .inl v => Fintype.ofEquiv _ (pendantNbrLattice M v)
@@ -91,10 +104,14 @@ instance (M : ℕ) : (pendantGraph M).LocallyFinite := fun v =>
 /-- Turning by one position in the clockwise order `N, E, S, W, L_1, …, L_M`
 at a lattice vertex. -/
 def pendantTurn (M : ℕ) (v : Site) : Equiv.Perm ((pendantGraph M).neighborSet (.inl v)) :=
-  (pendantNbrLattice M v).symm.trans ((Equiv.addRight (1 : Fin (M + 4))).trans (pendantNbrLattice M v))
+  (pendantNbrLattice M v).symm.trans
+    ((Equiv.addRight (1 : Fin (M + 4))).trans (pendantNbrLattice M v))
 
+/-- Iterating `pendantTurn M v` `k` times advances the clockwise position by `k`: applied to the
+`a`-th neighbor it gives the `(a + k)`-th, by induction on `k`. -/
 theorem pendantTurn_pow (M : ℕ) (v : Site) (k : ℕ) (a : Fin (M + 4)) :
-    ((pendantTurn M v) ^ k) (pendantNbrLattice M v a) = pendantNbrLattice M v (a + (k : Fin (M + 4))) := by
+    ((pendantTurn M v) ^ k) (pendantNbrLattice M v a) =
+      pendantNbrLattice M v (a + (k : Fin (M + 4))) := by
   induction k with
   | zero => simp
   | succ k ih =>
@@ -126,7 +143,8 @@ def pendantMech (M : ℕ) : Mechanism (pendantGraph M) where
 /-- The drawing of `G_M` in the plane. -/
 noncomputable def pendantEmb (M : ℕ) : PVertex M → Plane
   | .inl v => squareEmb v
-  | .inr (v, i) => squareEmb v + (((i : ℕ) + 1 : ℝ) / (2 * ((M : ℝ) + 1))) • WithLp.toLp 2 ![(-1 : ℝ), 1]
+  | .inr (v, i) => squareEmb v +
+      (((i : ℕ) + 1 : ℝ) / (2 * ((M : ℝ) + 1))) • WithLp.toLp 2 ![(-1 : ℝ), 1]
 
 /-- The lattice action on `G_M`. -/
 def pendantShift (M : ℕ) (z : Site) : PVertex M → PVertex M
@@ -137,6 +155,10 @@ end Rotor
 
 namespace Rotor
 
+/-- `pendantEmb M` is injective. Two lattice vertices are separated by the injectivity of
+`squareEmb`; a lattice vertex and a leaf, or two leaves, are separated by comparing fractional
+parts, using that the offset `t i = (i + 1) / (2 (M + 1))` lies strictly between `0` and `1` and
+is injective in `i`. -/
 theorem pendantEmb_injective (M : ℕ) : Function.Injective (pendantEmb M) := by
   let t (i : Fin M) : ℝ := ((i : ℕ) + 1 : ℝ) / (2 * ((M : ℝ) + 1))
   have hM : (0 : ℝ) < 2 * ((M : ℝ) + 1) := by positivity

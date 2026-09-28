@@ -2,6 +2,8 @@ import Rotor.Support.HistoryProb
 import Rotor.Support.ActiveListLemma
 
 /-!
+# The cascade of forced tests
+
 Lemma 5.6 (`lem:square-forced-tests`), part 2: the cascade.  After a forced open test
 `g = (t, w)` the active list is a sublist of the right turn `e` and the straight edge `f`
 (the left turn returns to the visited tail of the closed side); the closed side of `g`
@@ -17,6 +19,8 @@ namespace Rotor
 
 /-! ### The sides of the square in coordinates -/
 
+/-- The `S` side of the dual square of the directed edge `t → w` is the pair
+`(t + rotL (w - t), t)`. -/
 theorem sideS_geom {t w : Site} (h : squareGraph.Adj t w) :
     sideS t w = (t + rotL (w - t), t) := by
   have h1 : w - t = rotR (rightFace (primalTail t w) (primalDir t w + 1) - t) := by
@@ -28,6 +32,8 @@ theorem sideS_geom {t w : Site} (h : squareGraph.Adj t w) :
   · rw [sideS_fst, hSW]
   · rw [sideS_snd, rightFace_primal h]
 
+/-- The `W` side of the dual square of the directed edge `t → w` is the pair
+`(w + rotL (w - t), t + rotL (w - t))`. -/
 theorem sideW_geom {t w : Site} (h : squareGraph.Adj t w) :
     sideW t w = (w + rotL (w - t), t + rotL (w - t)) := by
   have h1 : w - t = rotR (rightFace (primalTail t w) (primalDir t w + 1) - t) := by
@@ -45,17 +51,23 @@ theorem sideW_geom {t w : Site} (h : squareGraph.Adj t w) :
   · rw [sideW_fst, hNW]
   · rw [sideW_snd, hSW]
 
+/-- Two right turns reverse a direction: `rotR (rotR u) = -u`. -/
 theorem rotR_rotR (u : Site) : rotR (rotR u) = -u := by
   obtain ⟨a, b⟩ := u; simp [rotR]
 
+/-- A left turn of a unit direction is never its negation. -/
 theorem rotL_ne_neg {u : Site} (hu : IsUnit u) : rotL u ≠ -u := by
   rcases hu with rfl | rfl | rfl | rfl <;> decide
 
+/-- Vertices at unit-vector distance are adjacent in the square lattice graph. -/
 theorem adj_of_isUnit {a b : Site} (h : IsUnit (b - a)) : squareGraph.Adj a b := adj_of_unit h
 
 /-! ### After a forced open test -/
 
 open Classical in
+/-- After a forced open test of the sole active edge `(t, w)`, the new active list is a sublist
+of the right turn and the straight edge (the left turn is already closed), `w` becomes visited,
+`tested` gains `(t, w, true)`, and `forced` increases by one. -/
 theorem after_forced_open {s : ExplState} (hinv : ExplInv s) (hout : ExplOuter s)
     (hcov : ∀ x ∈ s.visited, ∀ y, squareGraph.Adj x y →
       y ∈ s.visited ∨ InFiniteComponent s.visited y ∨ (x, y) ∈ s.active ∨ (x, y, false) ∈ s.tested)
@@ -107,6 +119,7 @@ theorem after_forced_open {s : ExplState} (hinv : ExplInv s) (hout : ExplOuter s
     simp only
     rw [if_pos hW]
 
+/-- A sublist of a two-element list `[a, b]` is `[]`, `[a]`, `[b]`, or `[a, b]`. -/
 theorem sublist_pair {α : Type*} {a b : α} {l : List α} (h : l <+ [a, b]) :
     l = [] ∨ l = [a] ∨ l = [b] ∨ l = [a, b] := by
   rw [List.sublist_cons_iff] at h
@@ -128,6 +141,8 @@ structure Stage (f d : Site) (h₀ : List Bool) (t w : Site) : Prop where
   forced : TestedAs (replay f d h₀).tested (sideW t w) false
   pos : Pm f d h₀ ≠ 0
 
+/-- The visited set only grows along a replay: it is a subset of the visited set after one
+more outcome. -/
 theorem visited_mono_replay (f d : Site) (h : List Bool) (o : Bool) :
     (replay f d h).visited ⊆ (replay f d (h ++ [o])).visited := by
   rw [replay_append]; exact visited_subset_step _ _
@@ -137,6 +152,7 @@ section Cascade
 variable {f d : Site} (hd : squareGraph.Adj f (f + d))
 include hd
 
+/-- The step direction `d` of the adjacent pair `f, f + d` is a unit vector. -/
 theorem hdu : IsUnit d := by
   have := isUnit_of_adj hd; rwa [add_sub_cancel_left] at this
 
@@ -171,6 +187,9 @@ theorem close_sole {h : List Bool} {e : Site × Site} (he : (replay f d h).activ
   · rw [replay_append, explStepWith_cons he]; simp
   · rw [forced_append_cons f d h he, if_neg hW]
 
+/-- From a stage `(t, w)`, either the exploration already terminates after the forced open
+test (with the active list dropping to `[]` and the recorded probability and forced-count
+bounds), or the right turn `(w, w + rotR (w - t))` becomes the next stage. -/
 theorem stage_analysis {h₀ : List Bool} {t w : Site} (st : Stage f d h₀ t w) :
     (∃ h', (h₀ ++ [true]) <+: h' ∧ (replay f d h').active = [] ∧
         (replay f d h').forced = (replay f d (h₀ ++ [true])).forced ∧
@@ -183,7 +202,8 @@ theorem stage_analysis {h₀ : List Bool} {t w : Site} (st : Stage f d h₀ t w)
   have hPm : Pm f d (h₀ ++ [true]) = Pm f d h₀ := (Pm_forced f d hd h₀ st.active st.forced).1
   have hpos : Pm f d (h₀ ++ [true]) ≠ 0 := by rw [hPm]; exact st.pos
   obtain ⟨hinv₁, hout₁, -, hL55⟩ := state_facts hd hpos
-  have hadj : squareGraph.Adj t w := hinv₀.active_adj _ (by rw [st.active]; exact List.mem_cons_self)
+  have hadj : squareGraph.Adj t w :=
+    hinv₀.active_adj _ (by rw [st.active]; exact List.mem_cons_self)
   have hu : IsUnit (w - t) := isUnit_of_adj hadj
   have hadjf : squareGraph.Adj w (w + (w - t)) := adj_of_isUnit (by rwa [add_sub_cancel_left])
   have hSclosed : TestedAs (replay f d (h₀ ++ [true])).tested (sideS w (w + (w - t))) false := by
@@ -280,6 +300,9 @@ theorem stage_third {h₀ : List Bool} {t w : Site} (st₀ : Stage f d h₀ t w)
       rw [this]; abel
     rw [this]; exact ht3
 
+/-- Following at most three stages of forced right turns from `(t, w)`, the exploration
+terminates with fewer than three more forced tests and probability loss at most a factor
+of `4`. -/
 theorem cascade {h₀ : List Bool} {t w : Site} (st : Stage f d h₀ t w) :
     ∃ h', (h₀ ++ [true]) <+: h' ∧ (replay f d h').active = [] ∧
       (replay f d h').forced < (replay f d (h₀ ++ [true])).forced + 3 ∧
@@ -357,6 +380,8 @@ theorem minF_bound {N : ℕ} (hN : 1 ≤ N) {h : List Bool} (hm : MinF f d N h) 
           rw [show (4 : ℝ≥0∞) = 3 + 1 by norm_num, add_mul, one_mul]
   exact ENNReal.le_of_add_le_add_right (Pm_ne_top f d _) h4
 
+/-- One step of the cascade recursion: the probability of at least `N + 3` forced tests is at
+most `3/4` times the probability of at least `N` forced tests. -/
 theorem K_step {N : ℕ} (hN : 1 ≤ N) :
     4 * uniformLaw clockwise {ρ | ((N + 3 : ℕ) : ℕ∞) ≤ forcedCount ρ f d} ≤
       3 * uniformLaw clockwise {ρ | (N : ℕ∞) ≤ forcedCount ρ f d} := by
@@ -364,6 +389,8 @@ theorem K_step {N : ℕ} (hN : 1 ≤ N) :
     ← ENNReal.tsum_mul_left, ← ENNReal.tsum_mul_left]
   exact ENNReal.tsum_le_tsum (fun h => minF_bound hd hN h.2)
 
+/-- The probability of at least `3k + 1` forced tests decays geometrically: it is at most
+`(3/4)^k`. -/
 theorem K_bound : ∀ k : ℕ,
     uniformLaw clockwise {ρ | ((3 * k + 1 : ℕ) : ℕ∞) ≤ forcedCount ρ f d} ≤ (3 / 4 : ℝ≥0∞) ^ k
   | 0 => by rw [pow_zero]; exact prob_le_one
@@ -384,6 +411,8 @@ end Cascade
 
 /-! ### Lemma 5.6 -/
 
+/-- Lemma 5.6 (`lem:square-forced-tests`): the probability of at least `m` forced tests is at
+most `(4/3) (3/4)^{m/3}`. -/
 theorem square_forced_tests_proof (f d : Site) (hd : squareGraph.Adj f (f + d)) :
     ∀ m : ℕ, 1 ≤ m →
       uniformLaw clockwise {ρ | (m : ℕ∞) ≤ forcedCount ρ f d} ≤

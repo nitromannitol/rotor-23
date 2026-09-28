@@ -1,6 +1,8 @@
 import Rotor.Support.KingPaths
 
 /-!
+# Counting lattice animals via closed king walks
+
 Lattice animals for the pendant counterexample (`rotor.tex:2240-2247`): the number of
 `ℓ^∞`-connected sets of `n + 1` sites containing a fixed site `o` is at most `64 ^ n`.  Every
 such set is the set of sites of a closed king walk of `2n` steps from `o` (walk around a
@@ -18,6 +20,8 @@ noncomputable def kingWalks (o : ℤ × ℤ) : ℕ → Finset (List (ℤ × ℤ)
   | 0 => {[o]}
   | m + 1 => (kingWalks o m).biUnion (fun p => (kingNbrs (p.headD o)).image (fun b => b :: p))
 
+/-- There are at most `8 ^ m` king walks of `m` steps from `o`, since each step has at most `8`
+king neighbors. -/
 theorem card_kingWalks (o : ℤ × ℤ) (m : ℕ) : (kingWalks o m).card ≤ 8 ^ m := by
   induction m with
   | zero => simp [kingWalks]
@@ -31,6 +35,7 @@ theorem card_kingWalks (o : ℤ × ℤ) (m : ℕ) : (kingWalks o m).card ≤ 8 ^
       _ ≤ 8 ^ m * 8 := Nat.mul_le_mul_right _ ih
       _ = 8 ^ (m + 1) := by ring
 
+/-- `p ∈ kingWalks o m` iff `p` has length `m + 1`, ends at `o`, and is a chain of king steps. -/
 theorem mem_kingWalks_iff (o : ℤ × ℤ) : ∀ (m : ℕ) (p : List (ℤ × ℤ)),
     p ∈ kingWalks o m ↔ p.length = m + 1 ∧ p.getLast? = some o ∧ p.IsChain KingStep
   | 0, p => by
@@ -63,6 +68,7 @@ theorem mem_kingWalks_iff (o : ℤ × ℤ) : ∀ (m : ℕ) (p : List (ℤ × ℤ
         · rw [List.headD_cons]
           exact mem_kingNbrs.2 (List.isChain_cons_cons.1 hchain).1.symm
 
+/-- A king walk of `m` steps has `m + 1` sites. -/
 theorem length_of_mem_kingWalks {o : ℤ × ℤ} {m : ℕ} {p : List (ℤ × ℤ)} (hp : p ∈ kingWalks o m) :
     p.length = m + 1 :=
   ((mem_kingWalks_iff o m p).1 hp).1
@@ -108,6 +114,8 @@ from `o` inside `U`. -/
 def KConn (o : ℤ × ℤ) (U : Finset (ℤ × ℤ)) : Prop :=
   o ∈ U ∧ ∀ v ∈ U, ∃ m, ∃ p ∈ kingWalks o m, (∀ q ∈ p, q ∈ U) ∧ p.headD o = v
 
+/-- `U` is king-connected from `o` if every site of `U` is reachable from `o` by steps that stay
+inside `U`, in the reflexive-transitive sense. -/
 theorem kconn_of_reflTransGen {o : ℤ × ℤ} {U : Finset (ℤ × ℤ)} (ho : o ∈ U)
     (h : ∀ v ∈ U, Relation.ReflTransGen (fun a b => b ∈ U ∧ KingStep a b) o v) : KConn o U := by
   refine ⟨ho, fun v hv => ?_⟩
@@ -185,7 +193,8 @@ theorem exists_spanning_walk (o : ℤ × ℤ) : ∀ (n : ℕ) (U : Finset (ℤ �
       · -- the suffix `q :: t` is a walk to `q` of fewer steps
         have hsuf := suffix_mem_kingWalks hp hst (List.cons_ne_nil _ _)
         have hfq : f q ≤ t.length := by
-          have := hf_le q (hpU q hq) _ ⟨_, hsuf, fun z hz => hpU z (hst ▸ List.mem_append_right _ hz), rfl⟩
+          have := hf_le q (hpU q hq) _ ⟨_, hsuf,
+              fun z hz => hpU z (hst ▸ List.mem_append_right _ hz), rfl⟩
           simpa using this
         have hs : s ≠ [] := by
           rintro rfl

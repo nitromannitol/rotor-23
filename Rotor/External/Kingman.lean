@@ -19,6 +19,17 @@ at that proof).
 -/
 import Mathlib
 
+/-!
+# Kingman's subadditive ergodic theorem
+
+States Kingman's subadditive ergodic theorem (Kingman 1968, Theorems 3 and 5) as a `Prop`,
+`Rotor.External.Kingman`: on a probability space with a measure-preserving map `θ`, a measurable,
+nonnegative, integrable, stationary subadditive array `X m n` with linearly bounded expectations
+has a measurable, almost surely `θ`-invariant limit of `X 0 n / n`. This is the external input used
+in the proof of `prop:passage-limit`. It is no longer assumed outright: `Rotor.Bridge.kingman_holds`
+proves it unconditionally from the shared `Lattice-Probability` library.
+-/
+
 open MeasureTheory Filter Topology
 
 universe u

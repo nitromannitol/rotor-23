@@ -18,13 +18,20 @@ namespace Rotor
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V}
 variable (π : Mechanism G)
 
-/-! ### The splitting characterization of legality -/
+/-!
+# Monotonicity of the circuit map
 
+### The splitting characterization of legality -/
+
+/-- If `l₁ ++ v :: l₂` is a legal `S`-routing then `v ∉ S` and `v` holds a positive number of
+chips after running `l₁`, the two legality conditions at the point where `v` is actuated. -/
 theorem isLegal_split (S : Finset V) (ξ : RState G) (l₁ : List V) (v : V) (l₂ : List V)
     (h : IsLegal π S ξ (l₁ ++ v :: l₂)) : v ∉ S ∧ 0 < (run π S ξ l₁).σ v := by
   rw [isLegal_append, isLegal_cons] at h
   exact ⟨h.2.1, h.2.2.1⟩
 
+/-- Converse of `isLegal_split`: if every splitting `vs = l₁ ++ v :: l₂` satisfies `v ∉ S` and
+`0 < (run π S ξ l₁).σ v`, then `vs` is a legal `S`-routing, by induction on `vs`. -/
 theorem isLegal_of_split (S : Finset V) (ξ : RState G) (vs : List V)
     (h : ∀ l₁ v l₂, vs = l₁ ++ v :: l₂ → v ∉ S ∧ 0 < (run π S ξ l₁).σ v) :
     IsLegal π S ξ vs := by
@@ -42,6 +49,8 @@ theorem isLegal_of_split (S : Finset V) (ξ : RState G) (vs : List V)
 /-- Two states agree outside `U`: their rotors agree at every vertex outside `U`. -/
 def AgreeOutside (U : Finset V) (ξ ξ' : RState G) : Prop := ∀ x, x ∉ U → ξ.ρ x = ξ'.ρ x
 
+/-- Actuating `v ∉ U` in both states preserves agreement outside `U`: if `ξ` and `ξ'` agree
+outside `U`, so do `actuate π S ξ v` and `actuate π U ξ' v`. -/
 theorem agreeOutside_actuate_both (S U : Finset V) (ξ ξ' : RState G)
     (h : AgreeOutside U ξ ξ') (v : V) (hv : v ∉ U) :
     AgreeOutside U (actuate π S ξ v) (actuate π U ξ' v) := by
@@ -50,6 +59,8 @@ theorem agreeOutside_actuate_both (S U : Finset V) (ξ ξ' : RState G)
   · subst hxv; rw [actuate_ρ_self, actuate_ρ_self, h x hx]
   · rw [actuate_ρ_of_ne π S ξ v x hxv, actuate_ρ_of_ne π U ξ' v x hxv, h x hx]
 
+/-- Actuating `v ∈ U` only in the left state preserves agreement outside `U`: since `v` itself
+lies in `U`, changing the rotor there does not affect agreement at vertices outside `U`. -/
 theorem agreeOutside_actuate_left (S U : Finset V) (ξ ξ' : RState G)
     (h : AgreeOutside U ξ ξ') (v : V) (hv : v ∈ U) :
     AgreeOutside U (actuate π S ξ v) ξ' := by
@@ -76,7 +87,8 @@ theorem traversed_filter (S U : Finset V) (ξ ξ' : RState G) (h : AgreeOutside 
       refine ⟨?_, this.2⟩
       rw [this.1, List.filter_cons]
       simp [hv]
-    · have hf : (v :: p).filter (fun v => decide (v ∉ U)) = v :: p.filter (fun v => decide (v ∉ U)) := by
+    · have hf : (v :: p).filter (fun v => decide (v ∉ U)) =
+          v :: p.filter (fun v => decide (v ∉ U)) := by
         simp [hv]
       rw [hf, traversed_cons, traversed_cons, run_cons, run_cons]
       have := ih (actuate π S ξ v) (actuate π U ξ' v) (agreeOutside_actuate_both π S U ξ ξ' h v hv)
@@ -116,6 +128,9 @@ theorem run_σ_add_count_ge (S : Finset V) (ξ : RState G) (vs : List V) (x : V)
 /-! ### Counting the arrivals from `U ∖ S` -/
 
 open Classical in
+/-- Among a `Nodup` list `L` of `G`-edges with tails outside `S`, the number whose head is `x`
+and tail lies in `U` is at most the number of neighbors of `x` in `U \ S`: distinct qualifying
+edges have distinct tails, each a neighbor of `x` in `U \ S`. -/
 theorem countP_head_tail_le [G.LocallyFinite] (S U : Finset V) (L : List (V × V)) (hL : L.Nodup)
     (x : V) (hadj : ∀ e ∈ L, G.Adj e.1 e.2) (hS : ∀ e ∈ L, e.1 ∉ S) :
     L.countP (fun e => decide (e.2 = x) && decide (e.1 ∈ U)) ≤
@@ -139,6 +154,8 @@ theorem countP_head_tail_le [G.LocallyFinite] (S U : Finset V) (L : List (V × V
     _ ≤ _ := Finset.card_le_card (fun t ht => hsub t (List.mem_toFinset.1 ht))
 
 open Classical in
+/-- For `S ⊆ U`, the number of neighbors of `x` in `U` splits as the number of neighbors in `S`
+plus the number of neighbors in `U \ S`. -/
 theorem card_inEdges_split [G.LocallyFinite] (S U : Finset V) (hSU : S ⊆ U) (x : V) :
     (U.filter (fun u => G.Adj u x)).card =
       (S.filter (fun s => G.Adj s x)).card + ((U \ S).filter (fun t => G.Adj t x)).card := by
@@ -203,6 +220,9 @@ theorem σ_le_filtered [G.LocallyFinite] (S U : Finset V) (hSU : S ⊆ U) (ρ : 
 
 /-! ### Legality of the deleted routing -/
 
+/-- If every `v` with `q v = true` in a splitting `p = l₁ ++ v :: l₂` satisfies `v ∉ U` and
+`0 < (run π U ξU (l₁.filter q)).σ v`, then `p.filter q` is a legal `U`-routing, by induction
+on `p`. -/
 theorem isLegal_filter_of (U : Finset V) (ξU : RState G) (q : V → Bool) (p : List V)
     (h : ∀ l₁ v l₂, p = l₁ ++ v :: l₂ → q v = true →
       v ∉ U ∧ 0 < (run π U ξU (l₁.filter q)).σ v) :
@@ -236,14 +256,19 @@ theorem isLegal_filter [G.LocallyFinite] (S U : Finset V) (hSU : S ⊆ U) (ρ : 
 
 /-! ### The circuit map -/
 
+/-- When the boundary routing of `S` terminates, `Φ π ρ S` unfolds to `S` union the vertices
+actuated by the chosen complete routing witness. -/
 theorem Φ_of_terminates (ρ : Config G) (S : Finset V) (h : Terminates π S ρ) :
     Φ π ρ S = S ∪ (Classical.choose h).toFinset := by
   simp [Φ, h]
 
+/-- `S ⊆ Φ π ρ S` in either branch of the definition of `Φ`. -/
 theorem subset_Φ (ρ : Config G) (S : Finset V) : S ⊆ Φ π ρ S := by
   unfold Φ
   split_ifs <;> simp
 
+/-- `x ∈ Φ π ρ S` implies `x ∈ S`, or `x` is actuated by some complete boundary routing of
+`S`. -/
 theorem mem_Φ_imp (ρ : Config G) (S : Finset V) (x : V) (hx : x ∈ Φ π ρ S) :
     x ∈ S ∨ ∃ ws, IsComplete π S (boundaryInit S ρ) ws ∧ x ∈ ws := by
   unfold Φ at hx

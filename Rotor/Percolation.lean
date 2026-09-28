@@ -14,6 +14,15 @@ Bernoulli bond percolation on `ℤ²`, `rotor.tex:1658-1668`:
 import Rotor.Square
 import Rotor.External.LSS
 
+/-!
+# Bernoulli bond percolation on the square lattice
+
+Defines Bernoulli bond percolation `ℙ_p` on `ℤ²` as the product over `Sym2 Site` of
+Bernoulli(`p`) laws, an open path in a bond configuration, and the box-crossing event that a site
+is joined by an open path to the boundary of an `ℓ^∞`-ball around it while staying inside that
+ball, matching the subcritical bound cited from Kesten and Grimmett.
+-/
+
 open MeasureTheory
 
 namespace Rotor
@@ -25,6 +34,8 @@ abbrev BondConfig := Sym2 Site → Bool
 noncomputable def bondLaw (p : NNReal) (hp : p ≤ 1) : Measure BondConfig :=
   Measure.infinitePi (fun _ : Sym2 Site => External.bernoulli p hp)
 
+/-- `bondLaw p hp` is a probability measure, inherited from the infinite product of
+Bernoulli(`p`) probability measures. -/
 instance (p : NNReal) (hp : p ≤ 1) : IsProbabilityMeasure (bondLaw p hp) := by
   unfold bondLaw; infer_instance
 

@@ -24,6 +24,17 @@ import Rotor.External.Kingman
 import Rotor.External.LSS
 import Rotor.Support.BlockFinalC
 
+/-!
+# Lemma 3.5: the block criterion forces a live-path criterion
+
+States `lem:block-live-paths`: for a doubly periodic graph with an arbitrary mechanism, once the
+supremum over blocks of the block event's probability is small enough, the resulting criterion
+holds for the initial product law, with a fixed exponent `η` that continues to work for every
+product law whose one-vertex marginals stay within a fixed total variation distance of the
+original ones. The statement is frozen; its proof, `block_live_paths_proof`, is supplied
+elsewhere and uses LSS domination.
+-/
+
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
 

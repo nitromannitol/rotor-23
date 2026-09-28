@@ -1,6 +1,8 @@
 import Rotor.Support.DualGeom
 
 /-!
+# Winding numbers of closed lattice walks
+
 Winding numbers of closed lattice walks in `ℤ²`, the discrete Jordan-curve input for the
 contour argument of Lemma 5.5 (`rotor.tex:1938-1990`).  For a closed walk `c` of unit steps
 and a point `y`, `wind c y` counts, with sign, the vertical steps of `c` strictly to the right
@@ -30,11 +32,14 @@ def stepWind (y : Site) (s : Site × Site) : ℤ :=
 /-- The winding number of the closed walk `c` about `y`. -/
 def wind (c : List Site) (y : Site) : ℤ := ((steps c).map (stepWind y)).sum
 
+/-- Unfolds `steps` at the head of a walk with at least two points. -/
 theorem steps_cons_cons (a b : Site) (l : List Site) :
     steps (a :: b :: l) = (a, b) :: steps (b :: l) := rfl
 
+/-- A one-point walk has no steps. -/
 theorem steps_singleton (a : Site) : steps [a] = [] := rfl
 
+/-- The empty walk has no steps. -/
 theorem steps_nil : steps [] = [] := rfl
 
 /-- Telescoping along a walk. -/
@@ -46,6 +51,8 @@ theorem sum_steps_sub (g : Site → ℤ) : ∀ (a : Site) (l : List Site),
     simp only [List.getLast_cons_cons]
     ring
 
+/-- The telescoping sum `sum_steps_sub` vanishes on a closed walk, since the start and end
+values of `g` agree. -/
 theorem sum_steps_sub_closed {c : List Site} (hc : IsClosedWalk c) (g : Site → ℤ) :
     ((steps c).map (fun s => g s.2 - g s.1)).sum = 0 := by
   rcases c with _ | ⟨a, l⟩
@@ -56,6 +63,7 @@ theorem sum_steps_sub_closed {c : List Site} (hc : IsClosedWalk c) (g : Site →
   simp only [Option.some.injEq] at this
   rw [← this, sub_self]
 
+/-- Both endpoints of a step of `c` are points of `c`. -/
 theorem mem_steps {c : List Site} {s : Site × Site} (hs : s ∈ steps c) : s.1 ∈ c ∧ s.2 ∈ c := by
   unfold steps at hs
   obtain ⟨i, hi, hs'⟩ := List.mem_iff_getElem.1 hs
@@ -66,6 +74,7 @@ theorem mem_steps {c : List Site} {s : Site × Site} (hs : s ∈ steps c) : s.1 
   rw [List.getElem_tail]
   exact List.getElem_mem _
 
+/-- Every step of a closed walk `c` is a unit vector, inherited from `IsClosedWalk.unit`. -/
 theorem steps_unit {c : List Site} (hc : IsClosedWalk c) {s : Site × Site} (hs : s ∈ steps c) :
     IsUnit (s.2 - s.1) := by
   unfold steps at hs
@@ -76,12 +85,15 @@ theorem steps_unit {c : List Site} (hc : IsClosedWalk c) {s : Site × Site} (hs 
   have := List.isChain_iff_getElem.1 hc.unit i (by omega)
   simpa [List.getElem_tail] using this
 
+/-- `(b1, b2) - (a1, a2)` is a unit iff the two points differ by exactly one of the four unit
+steps east, west, north, or south. -/
 theorem isUnit_iff' {a1 a2 b1 b2 : ℤ} : IsUnit ((b1, b2) - (a1, a2)) ↔
     (b1 = a1 + 1 ∧ b2 = a2) ∨ (b1 = a1 - 1 ∧ b2 = a2) ∨ (b1 = a1 ∧ b2 = a2 + 1) ∨
       (b1 = a1 ∧ b2 = a2 - 1) := by
   simp only [IsUnit, Prod.mk_sub_mk, Prod.mk.injEq]
   omega
 
+/-- The sum of a difference of maps is the difference of the sums. -/
 theorem sum_map_sub' (l : List (Site × Site)) (f g : Site × Site → ℤ) :
     (l.map f).sum - (l.map g).sum = (l.map (fun s => f s - g s)).sum := by
   induction l with
@@ -129,8 +141,10 @@ theorem wind_eq_right {c : List Site} (hc : IsClosedWalk c) {y : Site} (hy : y +
   have hu := steps_unit hc hs
   obtain ⟨⟨a1, a2⟩, ⟨b1, b2⟩⟩ := s
   obtain ⟨y1, y2⟩ := y
-  have h1 : (a1, a2) ≠ (y1 + 1, y2) := fun h => hy (by rw [Prod.mk_add_mk, add_zero, ← h]; exact hm.1)
-  have h2 : (b1, b2) ≠ (y1 + 1, y2) := fun h => hy (by rw [Prod.mk_add_mk, add_zero, ← h]; exact hm.2)
+  have h1 : (a1, a2) ≠ (y1 + 1, y2) :=
+    fun h => hy (by rw [Prod.mk_add_mk, add_zero, ← h]; exact hm.1)
+  have h2 : (b1, b2) ≠ (y1 + 1, y2) :=
+    fun h => hy (by rw [Prod.mk_add_mk, add_zero, ← h]; exact hm.2)
   rw [isUnit_iff'] at hu
   simp only [Prod.mk_add_mk, Prod.mk.injEq, ne_eq, not_and] at h1 h2 ⊢
   unfold stepWind
@@ -184,6 +198,8 @@ theorem wind_eq_of_reflTransGen {c : List Site} (hc : IsClosedWalk c) {y z : Sit
   | refl => rfl
   | tail _ hbc ih => exact ih.trans (wind_eq_of_adj hc hbc.1 hbc.2.1 hbc.2.2)
 
+/-- Summing the `0`/`1` indicator of equality to `x` over a list counts the occurrences
+of `x`. -/
 theorem sum_map_indicator (l : List (Site × Site)) (x : Site × Site) :
     (l.map (fun s => if s = x then (1 : ℤ) else 0)).sum = l.count x := by
   induction l with
@@ -239,7 +255,8 @@ theorem stepWind_row_horiz (a : Site) {s : Site × Site} (hu : IsUnit (s.2 - s.1
     (if a.1 + 1 ≤ s.2.1 ∧ s.2.2 = a.2 then (1 : ℤ) else 0) -
       (if a.1 + 1 ≤ s.1.1 ∧ s.1.2 = a.2 then (1 : ℤ) else 0) =
     (stepWind (a + (0, -1)) s - stepWind a s) +
-      ((if s = (a, a + (1, 0)) then (1 : ℤ) else 0) - (if s = (a + (1, 0), a) then (1 : ℤ) else 0)) := by
+      ((if s = (a, a + (1, 0)) then (1 : ℤ) else 0) -
+        (if s = (a + (1, 0), a) then (1 : ℤ) else 0)) := by
   obtain ⟨⟨a1, a2⟩, ⟨b1, b2⟩⟩ := s
   obtain ⟨x1, x2⟩ := a
   rw [isUnit_iff'] at hu

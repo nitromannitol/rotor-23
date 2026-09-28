@@ -28,6 +28,17 @@ import Rotor.External.LSS
 import Rotor.Bridge.OneCircuit
 import Rotor.Support.CircuitClock
 
+/-!
+# The circuit-time growth rate and the shape of the range
+
+This file states the frozen paper result `circuit_clock`, pinning the circuit times `T(n)`
+between the total degree of two consecutive circuit sets and deriving, from a quadratic growth
+hypothesis on those sets, the cubic growth rate of `T(n)`, the `2/3` growth exponent of the range
+`R_t`, and the Hausdorff convergence of the rescaled range to a rescaling of the limit shape of
+the circuit sets. The proof assembles this from `Rotor.Support.CircuitClock` together with the
+externally cited result bridged through `Rotor.Bridge.OneCircuit`.
+-/
+
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
 

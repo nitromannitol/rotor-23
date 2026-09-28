@@ -11,6 +11,16 @@ import Rotor.Model
 import Rotor.Basic
 import Rotor.Periodic
 
+/-!
+# The square lattice as an instance of the general rotor model
+
+Instantiates the general rotor-walk model of `Rotor/Model.lean` on the square lattice `ℤ × ℤ`,
+transporting the concrete encoding of directions from `Rotor/Basic.lean` (`Fin 4`, with
+`0 = N, 1 = E, 2 = S, 3 = W` and clockwise `= +1`) to the neighbor sets of the lattice graph. This
+gives the clockwise rotor mechanism with cyclic order `N, E, S, W`, and equips the lattice with its
+standard planar embedding and doubly periodic structure.
+-/
+
 open Fin.NatCast
 
 namespace Rotor
@@ -24,12 +34,16 @@ def squareGraph : SimpleGraph Site where
     rw [abs_sub_comm y.1, abs_sub_comm y.2]; exact h⟩
   loopless := ⟨fun x h => by simp at h⟩
 
+/-- Unfolds `squareGraph.Adj`: `x` and `y` are adjacent iff `|x.1 - y.1| + |x.2 - y.2| = 1`. -/
 theorem squareGraph_adj (x y : Site) : squareGraph.Adj x y ↔ |x.1 - y.1| + |x.2 - y.2| = 1 :=
   Iff.rfl
 
+/-- Adjacency in `squareGraph` is decidable, since it unfolds to decidable equality of
+integers. -/
 instance : DecidableRel squareGraph.Adj := fun x y => by
   unfold squareGraph; exact inferInstanceAs (Decidable (_ = _))
 
+/-- `v` and `v + dirVec a` are adjacent in `squareGraph`, for every direction `a`. -/
 theorem adj_add_dirVec (v : Site) (a : Dir) : squareGraph.Adj v (v + dirVec a) := by
   rw [squareGraph_adj]
   fin_cases a <;> simp [dirVec]
@@ -38,9 +52,12 @@ theorem adj_add_dirVec (v : Site) (a : Dir) : squareGraph.Adj v (v + dirVec a) :
 def dirOf (d : Site) : Dir :=
   if d = (0, 1) then 0 else if d = (1, 0) then 1 else if d = (0, -1) then 2 else 3
 
+/-- `dirOf` inverts `dirVec` on unit steps: `dirOf (dirVec a) = a`. -/
 theorem dirOf_dirVec (a : Dir) : dirOf (dirVec a) = a := by
   fin_cases a <;> simp [dirOf, dirVec]
 
+/-- For adjacent `v` and `w`, stepping from `v` in the direction `dirOf (w - v)` lands exactly
+on `w`. -/
 theorem dirVec_dirOf_of_adj {v w : Site} (h : squareGraph.Adj v w) :
     v + dirVec (dirOf (w - v)) = w := by
   rw [squareGraph_adj] at h
@@ -58,15 +75,19 @@ def nbr (v : Site) : Dir ≃ squareGraph.neighborSet v where
   left_inv a := by simp [dirOf_dirVec]
   right_inv w := Subtype.ext (dirVec_dirOf_of_adj w.2)
 
+/-- `squareGraph` is locally finite, via the equivalence `nbr v` between `Dir` and the neighbor
+set of each vertex `v`. -/
 instance : squareGraph.LocallyFinite := fun v => Fintype.ofEquiv Dir (nbr v)
 
 /-- Turning by one direction, transported to the neighbors of `v`. -/
 def turnAt (v : Site) : Equiv.Perm (squareGraph.neighborSet v) :=
   (nbr v).symm.trans ((Equiv.addRight (1 : Dir)).trans (nbr v))
 
+/-- Turning by one direction sends the neighbor `nbr v a` to `nbr v (a + 1)`. -/
 theorem turnAt_nbr (v : Site) (a : Dir) : turnAt v (nbr v a) = nbr v (a + 1) := by
   simp [turnAt]
 
+/-- Iterating the turn `k` times sends `nbr v a` to `nbr v (a + k)`, by induction on `k`. -/
 theorem turnAt_pow_nbr (v : Site) (k : ℕ) (a : Dir) :
     ((turnAt v) ^ k) (nbr v a) = nbr v (a + (k : Dir)) := by
   induction k with
@@ -95,6 +116,7 @@ namespace Rotor
 /-- The standard embedding of `ℤ²` in the plane. -/
 def squareEmb (v : Site) : Plane := WithLp.toLp 2 ![(v.1 : ℝ), (v.2 : ℝ)]
 
+/-- The standard embedding `squareEmb` of `ℤ²` into the plane is injective. -/
 theorem squareEmb_injective : Function.Injective squareEmb := by
   intro v w h
   have h' : (![(v.1 : ℝ), (v.2 : ℝ)] : Fin 2 → ℝ) = ![(w.1 : ℝ), (w.2 : ℝ)] := by

@@ -3,6 +3,8 @@ import Mathlib.GroupTheory.IndexNSmul
 import Mathlib.LinearAlgebra.FreeModule.PID
 
 /-!
+# Finite-index sublattices of the square lattice
+
 Finite-index translation sublattices of the square graph (`rotor.tex:231-235`).
 An integer basis supplies the shifts and a finite quotient supplies the orbit representatives.
 -/
@@ -11,14 +13,20 @@ open Module
 
 namespace Rotor
 
+/-- The finite-index sublattice `Λ` of `Site` has `ℤ`-rank `2`, since `Site` itself has
+rank `2` and finite index preserves the rank. -/
 theorem squareLattice_rank (Λ : AddSubgroup Site) [Λ.FiniteIndex] :
     Module.finrank ℤ Λ.toIntSubmodule = 2 := by
   simpa [Module.finrank_prod] using! AddSubgroup.finrank_eq_of_finiteIndex Λ
 
+/-- A chosen `ℤ`-basis of the finite-index sublattice `Λ`, indexed by `Fin 2` via
+`squareLattice_rank`. -/
 noncomputable def squareLatticeBasis (Λ : AddSubgroup Site) [Λ.FiniteIndex] :
     Basis (Fin 2) ℤ Λ.toIntSubmodule :=
   (Module.finBasis ℤ Λ.toIntSubmodule).reindex (finCongr (squareLattice_rank Λ))
 
+/-- If `a` and `b` are `ℤ`-linearly independent, their determinant
+`a.1 * b.2 - a.2 * b.1` is nonzero; otherwise `LinearIndependent.pair_iff` would force `a = 0`. -/
 theorem squarePair_det_ne_zero (a b : Site) (h : LinearIndependent ℤ ![a, b]) :
     a.1 * b.2 - a.2 * b.1 ≠ 0 := by
   intro hd
@@ -27,9 +35,12 @@ theorem squarePair_det_ne_zero (a b : Site) (h : LinearIndependent ℤ ![a, b]) 
     apply Prod.ext <;> change _ * _ + _ * _ = (0 : ℤ) <;> nlinarith)
   have hf : b.1 = 0 ∧ -a.1 = 0 := hc b.1 (-a.1) (by
     apply Prod.ext <;> change _ * _ + _ * _ = (0 : ℤ) <;> nlinarith)
-  have ha : a = 0 := Prod.ext (by simpa using neg_eq_zero.mp hf.2) (by simpa using neg_eq_zero.mp hs.2)
+  have ha : a = 0 :=
+    Prod.ext (by simpa using neg_eq_zero.mp hf.2) (by simpa using neg_eq_zero.mp hs.2)
   exact h.ne_zero 0 ha
 
+/-- If `a` and `b` have nonzero determinant `a.1 * b.2 - a.2 * b.1`, their images
+`squareEmb a` and `squareEmb b` are `ℝ`-linearly independent in the plane. -/
 theorem squareEmb_pair_independent (a b : Site) (h : a.1 * b.2 - a.2 * b.1 ≠ 0) :
     LinearIndependent ℝ ![squareEmb a, squareEmb b] := by
   rw [LinearIndependent.pair_iff]
@@ -45,38 +56,51 @@ theorem squareEmb_pair_independent (a b : Site) (h : a.1 * b.2 - a.2 * b.1 ≠ 0
     linear_combination (a.1 : ℝ) * h1 - (a.2 : ℝ) * h0
   exact ⟨(mul_eq_zero.mp hs).resolve_right hd, (mul_eq_zero.mp ht).resolve_right hd⟩
 
+/-- `squareEmb` is additive: `squareEmb (v + w) = squareEmb v + squareEmb w`. -/
 theorem squareEmb_add (v w : Site) : squareEmb (v + w) = squareEmb v + squareEmb w := by
   ext i
   fin_cases i <;> simp [squareEmb]
 
+/-- `squareEmb` commutes with integer scalar multiplication:
+`squareEmb (n • v) = (n : ℝ) • squareEmb v`. -/
 theorem squareEmb_zsmul (n : ℤ) (v : Site) : squareEmb (n • v) = (n : ℝ) • squareEmb v := by
   ext i
   fin_cases i <;> simp [squareEmb, smul_eq_mul]
 
+/-- The element of `Λ` with basis coordinates `(z.1, z.2)` in `squareLatticeBasis Λ`. -/
 noncomputable def squareLatticeVector (Λ : AddSubgroup Site) [Λ.FiniteIndex] (z : Site) :
     Λ.toIntSubmodule := (squareLatticeBasis Λ).equivFun.symm ![z.1, z.2]
 
+/-- `squareLatticeVector Λ z` expands as `z.1 • squareLatticeBasis Λ 0 +
+z.2 • squareLatticeBasis Λ 1`. -/
 theorem squareLatticeVector_formula (Λ : AddSubgroup Site) [Λ.FiniteIndex] (z : Site) :
     squareLatticeVector Λ z = z.1 • squareLatticeBasis Λ 0 + z.2 • squareLatticeBasis Λ 1 := by
   simp [squareLatticeVector, Basis.equivFun_symm_apply, Fin.sum_univ_two]
 
+/-- `squareLatticeVector Λ 0 = 0`. -/
 theorem squareLatticeVector_zero (Λ : AddSubgroup Site) [Λ.FiniteIndex] :
     squareLatticeVector Λ 0 = 0 := by
   simp [squareLatticeVector_formula]
 
+/-- `squareLatticeVector Λ` is additive in its coordinate argument. -/
 theorem squareLatticeVector_add (Λ : AddSubgroup Site) [Λ.FiniteIndex] (z w : Site) :
     squareLatticeVector Λ (z + w) = squareLatticeVector Λ z + squareLatticeVector Λ w := by
   simp only [squareLatticeVector_formula, Prod.fst_add, Prod.snd_add, add_smul]
   abel
 
+/-- A chosen representative of `v`'s coset in `Site ⧸ Λ`. -/
 noncomputable def squareLatticeRep (Λ : AddSubgroup Site) (v : Site) : Site :=
   ((QuotientAddGroup.mk' Λ) v).out
 
+/-- `v - squareLatticeRep Λ v` lies in `Λ`, since the representative is chosen from
+`v`'s coset. -/
 theorem squareLatticeRep_sub_mem (Λ : AddSubgroup Site) (v : Site) :
     v - squareLatticeRep Λ v ∈ Λ := by
   apply QuotientAddGroup.eq_iff_sub_mem.mp
   exact (QuotientAddGroup.out_eq' ((QuotientAddGroup.mk' Λ) v)).symm
 
+/-- `squareLatticeRep Λ` is unchanged by translating its argument by an element
+`z ∈ Λ`. -/
 theorem squareLatticeRep_add (Λ : AddSubgroup Site) (v z : Site) (hz : z ∈ Λ) :
     squareLatticeRep Λ (v + z) = squareLatticeRep Λ v := by
   unfold squareLatticeRep
@@ -85,16 +109,20 @@ theorem squareLatticeRep_add (Λ : AddSubgroup Site) (v z : Site) (hz : z ∈ Λ
   have hz0 : (QuotientAddGroup.mk' Λ) z = 0 := (QuotientAddGroup.eq_zero_iff z).mpr hz
   rw [hz0, add_zero]
 
+/-- The range of `squareLatticeRep Λ` is finite, since `Λ` has finite index. -/
 theorem squareLatticeRep_finite (Λ : AddSubgroup Site) [Λ.FiniteIndex] :
     (Set.range (squareLatticeRep Λ)).Finite := by
   apply (Set.finite_range (fun q : Site ⧸ Λ => q.out)).subset
   rintro x ⟨v, rfl⟩
   exact ⟨_, rfl⟩
 
+/-- The basis coordinates, packaged as a `Site`, of `v - squareLatticeRep Λ v` with
+respect to `squareLatticeBasis Λ`. -/
 noncomputable def squareLatticeCoord (Λ : AddSubgroup Site) [Λ.FiniteIndex] (v : Site) : Site :=
   let f := (squareLatticeBasis Λ).equivFun ⟨v - squareLatticeRep Λ v, squareLatticeRep_sub_mem Λ v⟩
   (f 0, f 1)
 
+/-- `squareLatticeVector Λ (squareLatticeCoord Λ v)` recovers `v - squareLatticeRep Λ v`. -/
 theorem squareLatticeVector_coord (Λ : AddSubgroup Site) [Λ.FiniteIndex] (v : Site) :
     (squareLatticeVector Λ (squareLatticeCoord Λ v) : Site) = v - squareLatticeRep Λ v := by
   unfold squareLatticeVector squareLatticeCoord
@@ -105,6 +133,8 @@ theorem squareLatticeVector_coord (Λ : AddSubgroup Site) [Λ.FiniteIndex] (v : 
     fin_cases i <;> rfl
   rw [he, LinearEquiv.symm_apply_apply]
 
+/-- The images `squareEmb (squareLatticeBasis Λ i)` of the chosen basis are `ℝ`-linearly
+independent, via `squareEmb_pair_independent`. -/
 theorem squareLatticeBasis_independent (Λ : AddSubgroup Site) [Λ.FiniteIndex] :
     LinearIndependent ℝ (fun i => squareEmb (squareLatticeBasis Λ i)) := by
   have h := (squareLatticeBasis Λ).linearIndependent.map'
@@ -119,6 +149,8 @@ theorem squareLatticeBasis_independent (Λ : AddSubgroup Site) [Λ.FiniteIndex] 
   funext i
   fin_cases i <;> rfl
 
+/-- `squareEmb` of a point shifted by `squareLatticeVector Λ z` expands as `squareEmb v`
+plus the two basis images scaled by `z.1` and `z.2`. -/
 theorem squareLattice_emb_shift (Λ : AddSubgroup Site) [Λ.FiniteIndex] (z v : Site) :
     squareEmb (v + squareLatticeVector Λ z) = squareEmb v +
       (z.1 : ℝ) • squareEmb (squareLatticeBasis Λ 0) +

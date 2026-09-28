@@ -5,6 +5,8 @@ import Rotor.Support.ExplCover
 import Rotor.Support.FrameSector
 
 /-!
+# The first-visit tree inside an interval
+
 Proposition 5.1 (`prop:square-passage`), part 4: the first-visit tree inside an interval.  After
 the start `h₀` of an interval (the initial state, or the state after a forced test of the sole
 active edge) every active edge leaves the root `r` or a face first visited in the interval, and
@@ -24,12 +26,16 @@ namespace Rotor
 def IntervalStart (f d : Site) (h₀ : List Bool) (r : Site) : Prop :=
   r ∈ (replay f d h₀).visited ∧ ∀ e ∈ (replay f d h₀).active, e.1 = r
 
+/-- The empty history `[]` starts an interval rooted at `f`: the initial
+exploration state has visited only `f`, and its active edges all leave `f`. -/
 theorem intervalStart_nil (f d : Site) : IntervalStart f d [] f := by
   refine ⟨by simp [replay, explInit], fun e he => ?_⟩
   simp only [replay, List.foldl_nil, explInit, edgesFrom, List.mem_cons, List.not_mem_nil,
     or_false] at he
   rcases he with rfl | rfl | rfl | rfl <;> rfl
 
+/-- If `h₁`'s only active edge is `(t, r)` and it is forced open, appending
+`true` starts a new interval rooted at `r`. -/
 theorem intervalStart_forced (f d : Site) (h₁ : List Bool) {t r : Site}
     (he : (replay f d h₁).active = [(t, r)]) : IntervalStart f d (h₁ ++ [true]) r := by
   unfold IntervalStart
@@ -41,6 +47,8 @@ theorem intervalStart_forced (f d : Site) (h₁ : List Bool) {t r : Site}
 
 /-! ### The invariant along an interval -/
 
+/-- The visited set is monotone along prefixes of the exploration history, by
+induction on the appended suffix using `visited_mono_replay`. -/
 theorem visited_mono_prefix (f d : Site) {h₀ h' : List Bool} (hp : h₀ <+: h') :
     (replay f d h₀).visited ⊆ (replay f d h').visited := by
   obtain ⟨t, rfl⟩ := hp
@@ -61,12 +69,19 @@ structure IntInv (f d : Site) (h₀ : List Bool) (r : Site) (h' : List Bool) : P
       l.IsChain (fun a b => (a, b, true) ∈ intervalTests f d h₀ h') ∧
       (∀ y ∈ l, y ∈ (replay f d h').visited) ∧ (∀ y ∈ l.tail, y ∉ (replay f d h₀).visited)
 
+/-- The invariant `IntInv` holds trivially at the start of an interval: at
+`h' = h₀` there are no new faces, and the active-tail condition comes directly
+from `IntervalStart`. -/
 theorem intInv_self (f d : Site) {h₀ : List Bool} {r : Site} (hs : IntervalStart f d h₀ r) :
     IntInv f d h₀ r h₀ where
   hpre := List.prefix_refl _
   tails := fun e he => Or.inl (hs.2 e he)
   chains := fun _ hg hg0 => absurd hg hg0
 
+/-- The invariant `IntInv` is preserved by one exploration step `h' ↦ h' ++ [o]`:
+when the active list is empty nothing changes, and when it has a head `(a, g)`
+opening with `o = true` visits `g`, extending the witnessing chain to `g` by one
+edge from `a`. -/
 theorem intInv_step (f : Site) {d : Site} (hd : IsUnit d) {h₀ : List Bool} {r : Site}
     (hs : IntervalStart f d h₀ r) {h' : List Bool} (hI : IntInv f d h₀ r h') (o : Bool) :
     IntInv f d h₀ r (h' ++ [o]) := by
@@ -115,7 +130,8 @@ theorem intInv_step (f : Site) {d : Site} (hd : IsUnit d) {h₀ : List Bool} {r 
       rw [hvis] at hg'
       by_cases hold : g' ∈ (replay f d h').visited
       · obtain ⟨l, h1, h2, h3, h4, h5, h6⟩ := hI.chains g' hold hg'0
-        refine ⟨l, h1, h2, h3, h4.imp (fun {x y} hxy => by rw [hIT]; exact List.mem_append_left _ hxy),
+        refine ⟨l, h1, h2, h3,
+          h4.imp (fun {x y} hxy => by rw [hIT]; exact List.mem_append_left _ hxy),
           fun y hy => ?_, h6⟩
         rw [hvis]
         split_ifs
@@ -177,6 +193,8 @@ theorem intInv_step (f : Site) {d : Site} (hd : IsUnit d) {h₀ : List Bool} {r 
               · exact hgV0
         · exact absurd hg' hold
 
+/-- The invariant `IntInv f d h₀ r h'` holds for every `h'` extending `h₀`, by
+induction on the appended suffix via `intInv_self` and `intInv_step`. -/
 theorem intInv_of_prefix (f : Site) {d : Site} (hd : IsUnit d) {h₀ : List Bool} {r : Site}
     (hs : IntervalStart f d h₀ r) {h' : List Bool} (hp : h₀ <+: h') : IntInv f d h₀ r h' := by
   obtain ⟨t, rfl⟩ := hp
@@ -188,6 +206,8 @@ theorem intInv_of_prefix (f : Site) {d : Site} (hd : IsUnit d) {h₀ : List Bool
 
 /-! ### From a far face to a minimal witness -/
 
+/-- If `a` and `b` are adjacent in `squareGraph`, their ℓ∞ distances to a fixed
+point `r` differ by at most `1`, by cases on the unit step `b - a`. -/
 theorem linfDist_adj_le {a b r : Site} (h : squareGraph.Adj a b) :
     linfDist b r ≤ linfDist a r + 1 := by
   have hu := isUnit_of_adj h
@@ -195,9 +215,12 @@ theorem linfDist_adj_le {a b r : Site} (h : squareGraph.Adj a b) :
   rcases hu with h | h | h | h <;> simp only [Prod.mk_sub_mk, Prod.mk.injEq] at h <;>
     simp only [linfDist, abs_eq_max_neg] <;> omega
 
+/-- The ℓ∞ distance from a point to itself is `0`. -/
 theorem linfDist_self (r : Site) : linfDist r r = 0 := by
   obtain ⟨r1, r2⟩ := r; simp [linfDist]
 
+/-- If `l` is an `R`-chain and `a`, `b` sit at consecutive positions `i` and
+`i + 1` of `l`, then `R a b` holds. -/
 theorem isChain_getElem? {α : Type*} {R : α → α → Prop} {l : List α} (h : l.IsChain R) {i : ℕ}
     {a b : α} (ha : l[i]? = some a) (hb : l[i + 1]? = some b) : R a b := by
   rw [List.isChain_iff_getElem] at h
@@ -264,11 +287,15 @@ theorem exists_cut {l : List Site} {r : Site} (hhead : l.head? = some r)
       List.getElem?_take_of_lt (by omega)]
     exact hb
 
+/-- If the prefix `l.take n` contains a forbidden pattern, so does `l`: the
+six-element window witnessing the pattern lies entirely within the first `n`
+elements, so it survives dropping the `take n`. -/
 theorem containsPattern_of_take {l : List Site} {n : ℕ} (h : ContainsPattern (l.take n)) :
     ContainsPattern l := by
   obtain ⟨i, z, hP⟩ := h
   refine ⟨i, z, ?_⟩
-  have hkey : ∀ P : List Site, P.length = 6 → ((l.take n).drop i).take 6 = P → (l.drop i).take 6 = P := by
+  have hkey : ∀ P : List Site, P.length = 6 → ((l.take n).drop i).take 6 = P →
+      (l.drop i).take 6 = P := by
     intro P hP6 hPe
     rw [List.drop_take, List.take_take] at hPe
     have hlen := congrArg List.length hPe

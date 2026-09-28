@@ -26,6 +26,18 @@ import Rotor.Bridge.Kingman
 import Rotor.Bridge.Abelian
 import Rotor.Support.PassageUniform
 
+/-!
+# Shape theorem for the passage time (Proposition 3.2)
+
+The certified statement `Rotor.Frozen.passage_limit` of Proposition 3.2 (`prop:passage-limit`):
+under the standing assumptions of `prop:path-reduction` (iii), there is a deterministic
+continuous subadditive function `f : Plane → ℝ`, positively homogeneous of degree `1`, such that
+almost surely the passage time `τ` from any fixed origin `o` is asymptotic to `f` uniformly at
+infinity, and `f` does not depend on `o`. The `External.*` hypotheses it is proved from are
+results the paper's proof cites without deriving, discharged here by the bridge lemmas
+`Rotor.Bridge.kingman_holds` and `Rotor.Bridge.abelian_holds`.
+-/
+
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
 
@@ -47,4 +59,5 @@ theorem Rotor.Frozen.passage_limit
       ∀ o : V, ∀ᵐ ρ ∂μ, ∀ ε : ℝ, 0 < ε → ∃ R₀ : ℝ, ∀ x : V, R₀ ≤ ‖P.emb x - P.emb o‖ →
         |(τ π ρ o x : ℝ) - f (P.emb x - P.emb o)| ≤ ε * ‖P.emb x - P.emb o‖
 -- FROZEN-STATEMENT-END
-:= passage_limit_proof π P Rotor.Bridge.kingman_holds hπ (Rotor.Bridge.abelian_holds G) hG μ hinv herg
+:= passage_limit_proof π P Rotor.Bridge.kingman_holds hπ (Rotor.Bridge.abelian_holds G) hG μ
+    hinv herg

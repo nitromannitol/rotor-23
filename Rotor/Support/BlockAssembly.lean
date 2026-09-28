@@ -7,6 +7,17 @@ import Rotor.Support.Witness
 import Rotor.Support.PathBlocks
 import Rotor.Support.BlockChain
 
+/-!
+# Assembly of the block estimate
+
+Assembles the cover-event bound of `rotor.tex:1263-1273`: on the cover event, the witness path
+forces the marked block events to hold along a duplicate-free king path of `m₀ + 1` block
+indices, obtained from a coarser king-move chain of the underlying path by discarding all but its
+first `m₀ + 1` steps and finding, among any nine further steps, one that has moved at least two
+blocks away. Combining this with the per-block probability bound and a union bound over king
+paths gives `mLaw_coverEvent_le`: the cover event has probability at most `(7/8)^{m₀}`.
+-/
+
 open MeasureTheory
 open scoped ENNReal
 
@@ -46,7 +57,8 @@ omit [G.LocallyFinite] in
 `m₀ + 1` blocks of the coarse path, provided the coarse path has at least ten more elements. -/
 theorem coverEvent_subset {K : ℤ} (hK : ∀ u v : V, G.Adj u v → linf (P.coord v - P.coord u) ≤ K)
     {L : ℕ} (hL : K < L) (hL0 : 0 < L) (η : ℝ) (u v : V) (R : ℕ) (m₀ : ℕ)
-    (hm₀ : ∀ w : V, G.dist u w = R → (m₀ : ℤ) + 10 ≤ linf (P.blockIndex L w - P.blockIndex L u) + 1) :
+    (hm₀ : ∀ w : V, G.dist u w = R →
+        (m₀ : ℤ) + 10 ≤ linf (P.blockIndex L w - P.blockIndex L u) + 1) :
     coverEvent π η u v R ⊆
       ⋃ q ∈ (kingSeqs (P.blockIndex L u) m₀).filter (fun q => q.Nodup),
         ⋂ z ∈ q, markedBlockEvent π P L z := by
@@ -89,7 +101,8 @@ theorem coverEvent_subset {K : ℤ} (hK : ∀ u v : V, G.Adj u v → linf (P.coo
     rw [List.length_take]; omega
   have hqmem : q ∈ (kingSeqs (P.blockIndex L u) m₀).filter (fun q => q.Nodup) := by
     rw [Finset.mem_filter]
-    refine ⟨reverse_mem_kingSeqs _ m₀ _ htake_len ?_ (hcc.take _) (hnd.sublist (List.take_sublist _ _)),
+    refine ⟨reverse_mem_kingSeqs _ m₀ _ htake_len ?_ (hcc.take _)
+      (hnd.sublist (List.take_sublist _ _)),
       List.nodup_reverse.2 (hnd.sublist (List.take_sublist _ _))⟩
     rw [List.head?_take, hchu]
     simp
@@ -122,6 +135,8 @@ theorem coverEvent_subset {K : ℤ} (hK : ∀ u v : V, G.Adj u v → linf (P.coo
   · rw [P.mem_blockPlus_iff hL0, hb]
     exact fun h => absurd h (not_le.2 (lt_of_lt_of_le (by norm_num : (1 : ℤ) < 2) hz'far))
 
+/-- The algebraic identity `8 · 7^m · (1/8)^{m+1} = (7/8)^m` in `ℝ≥0∞`, used to collapse the
+union-bound count against the per-block probability bound. -/
 theorem ennreal_seven_eighths (m : ℕ) :
     ((8 * 7 ^ m : ℕ) : ℝ≥0∞) * (1 / 8 : ℝ≥0∞) ^ (m + 1) = (7 / 8 : ℝ≥0∞) ^ m := by
   have h1 : (1 / 8 : ℝ≥0∞) = ENNReal.ofReal (1 / 8) := by
@@ -132,7 +147,8 @@ theorem ennreal_seven_eighths (m : ℕ) :
     ← ENNReal.ofReal_pow (by norm_num), ← ENNReal.ofReal_mul (Nat.cast_nonneg _)]
   congr 1
   push_cast
-  rw [pow_succ, show (8 : ℝ) * 7 ^ m * ((1 / 8) ^ m * (1 / 8)) = (7 * (1 / 8)) ^ m * (8 * (1 / 8)) by
+  rw [pow_succ,
+      show (8 : ℝ) * 7 ^ m * ((1 / 8) ^ m * (1 / 8)) = (7 * (1 / 8)) ^ m * (8 * (1 / 8)) by
     rw [mul_pow]; ring]
   norm_num
 
@@ -146,7 +162,8 @@ theorem mLaw_coverEvent_le {K : ℤ} (hK : ∀ u v : V, G.Adj u v → linf (P.co
         μ A ≤ External.bernoulliField (1 / 8) External.eighth_le_one A)
     (hsite : ∀ z, mLaw ν s hs (markedBlockEvent π P L z) ≤ ENNReal.ofReal (2 * ε))
     (η : ℝ) (u v : V) (R : ℕ) (m₀ : ℕ)
-    (hm₀ : ∀ w : V, G.dist u w = R → (m₀ : ℤ) + 10 ≤ linf (P.blockIndex L w - P.blockIndex L u) + 1) :
+    (hm₀ : ∀ w : V, G.dist u w = R →
+        (m₀ : ℤ) + 10 ≤ linf (P.blockIndex L w - P.blockIndex L u) + 1) :
     mLaw ν s hs (coverEvent π η u v R) ≤ (7 / 8 : ℝ≥0∞) ^ m₀ := by
   classical
   calc mLaw ν s hs (coverEvent π η u v R)
@@ -160,12 +177,14 @@ theorem mLaw_coverEvent_le {K : ℤ} (hK : ∀ u v : V, G.Adj u v → linf (P.co
         refine Finset.sum_le_sum (fun q hq => ?_)
         rw [Finset.mem_filter] at hq
         have hlen := (mem_kingSeqs _ _ hq.1).1
-        have hZ : (⋂ z ∈ q, markedBlockEvent π P L z) = ⋂ z ∈ q.toFinset, markedBlockEvent π P L z := by
+        have hZ : (⋂ z ∈ q, markedBlockEvent π P L z) =
+            ⋂ z ∈ q.toFinset, markedBlockEvent π P L z := by
           ext p; simp
         rw [hZ]
         have := mLaw_iInter_markedBlockEvent_le π P L ν s hs hL0 hLSS hsite q.toFinset
         rwa [List.toFinset_card_of_nodup hq.2, hlen] at this
-    _ = ((kingSeqs (P.blockIndex L u) m₀).filter (fun q => q.Nodup)).card * (1 / 8 : ℝ≥0∞) ^ (m₀ + 1) := by
+    _ = ((kingSeqs (P.blockIndex L u) m₀).filter (fun q => q.Nodup)).card *
+          (1 / 8 : ℝ≥0∞) ^ (m₀ + 1) := by
         rw [Finset.sum_const, nsmul_eq_mul]
     _ ≤ (8 * 7 ^ m₀ : ℕ) * (1 / 8 : ℝ≥0∞) ^ (m₀ + 1) := by
         gcongr

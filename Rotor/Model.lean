@@ -41,6 +41,16 @@ How the paper's objects are modelled here:
 -/
 import Mathlib
 
+/-!
+# The rotor-walk model on a general graph
+
+Defines a rotor `Mechanism` on a graph `G` (a cyclic permutation of each vertex's outgoing
+edges) and the `Config`uration it acts on, the resulting deterministic `walk`, its position `X`,
+and the range `R`. Defines the circuit-completion time `T n`, the range `A n` after `n` circuits,
+and what it means for the walk to be `Recurrent`. Also defines finite and infinite paths and the
+live condition on their internal vertices, following the paper's cyclic-order convention.
+-/
+
 open Finset
 
 namespace Rotor
@@ -120,6 +130,9 @@ an internal vertex `x_i` when `x_i → x_{i+1}` occurs before `x_i → x_{i-1}`
 in it, that is, when `r_{x_i}(x_{i+1}) < r_{x_i}(x_{i-1})`. -/
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- Some positive number of iterates of `next v` starting from `ρ v` reaches `w`: cyclicity
+gives a `k` with `(next v)^k (next v (ρ v)) = w`, and shifting the exponent up by one reaches `w`
+from `ρ v` itself. -/
 theorem rank_exists (ρ : Config G) (v : V) (w : G.neighborSet v) :
     ∃ k : ℕ, 0 < k ∧ ((π.next v) ^ k) (ρ v) = w := by
   obtain ⟨d, hd⟩ := π.cyclic v (π.next v (ρ v)) w

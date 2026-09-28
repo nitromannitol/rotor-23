@@ -36,6 +36,16 @@ How the paper's objects are modelled here:
 -/
 import Rotor.Law
 
+/-!
+# Doubly periodic graphs and mechanisms
+
+A `DoublyPeriodic` graph packages a rank-two lattice `ℤ²` acting on `V` by translation
+automorphisms, together with an embedding into the plane, orbit representatives, and
+coordinates identifying `V` with finitely many `ℤ²`-indexed copies. Defines when a mechanism,
+a law, or a family of one-vertex laws is invariant or ergodic under this action, the lattice
+blocks `Q_z` and `Q_z⁺` of `rotor.tex:1212-1226`, and total variation distance on a finite type.
+-/
+
 open MeasureTheory Finset
 
 namespace Rotor
@@ -83,10 +93,14 @@ def Periodic (π : Mechanism G) : Prop :=
     π.next (P.shift z v) (P.shiftNbr z a) = P.shiftNbr z (π.next v a)
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- Shifting by `z` after shifting by `-z` returns to `v`: the lattice action of `z`
+and `-z` are mutually inverse. -/
 theorem shift_neg_shift (z : ℤ × ℤ) (v : V) : P.shift z (P.shift (-z) v) = v := by
   rw [← P.shift_add, add_neg_cancel, P.shift_zero]
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- Shifting by `-z` after shifting by `z` returns to `v`, the other order of
+`shift_neg_shift`. -/
 theorem shift_shift_neg (z : ℤ × ℤ) (v : V) : P.shift (-z) (P.shift z v) = v := by
   rw [← P.shift_add, neg_add_cancel, P.shift_zero]
 

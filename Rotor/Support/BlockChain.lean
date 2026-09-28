@@ -6,6 +6,17 @@ vertex to the block of the last, of length at least the sup-distance between the
 -/
 import Rotor.Support.KingPaths
 
+/-!
+# Coarse king paths of block indices
+
+Given a doubly periodic block decomposition with blocks of side `L`, the sequence of block
+indices visited by a path in the graph forms a "lazy king chain": consecutive indices are
+equal, or king-step adjacent, once `L` exceeds the coordinate bound of an edge. Removing
+consecutive repetitions and erasing loops (`exists_blockChain`) produces a duplicate-free
+king path of block indices, in the order of visits, running from the block of the first
+vertex to the block of the last and of length at least their sup-distance apart.
+-/
+
 namespace Rotor
 
 /-! ### Lazy king chains -/
@@ -13,6 +24,9 @@ namespace Rotor
 /-- A lazy king step: stay or move by a king step. -/
 def LazyKingStep (a b : ℤ × ℤ) : Prop := a = b ∨ KingStep a b
 
+/-- Destuttering the tail `l` from `a` under a lazy king chain `a :: l` gives a `KingStep`
+chain starting at `a`, with the same last element as `a :: l`; the auxiliary induction step
+behind `destutter_lazy`. -/
 theorem destutter'_lazy : ∀ (l : List (ℤ × ℤ)) (a : ℤ × ℤ), (a :: l).IsChain LazyKingStep →
     (l.destutter' (· ≠ ·) a).IsChain KingStep ∧ (l.destutter' (· ≠ ·) a).head? = some a ∧
       (l.destutter' (· ≠ ·) a).getLast? = (a :: l).getLast? := by
@@ -74,7 +88,8 @@ theorem linf_le_of_kingChain : ∀ (l : List (ℤ × ℤ)), l.IsChain KingStep �
       subst hy
       simp [linf]
     · have hab : KingStep a b := (List.isChain_cons_cons.1 hchain).1
-      have := ih (List.isChain_cons_cons.1 hchain).2 b rfl y (by rwa [List.getLast?_cons_cons] at hy)
+      have := ih (List.isChain_cons_cons.1 hchain).2 b rfl y
+        (by rwa [List.getLast?_cons_cons] at hy)
       have htri := linf_triangle y b a
       have h1 : linf (b - a) ≤ 1 := hab.2
       simp only [List.length_cons] at this ⊢
@@ -111,7 +126,8 @@ omit [DecidableEq V] [G.LocallyFinite] in
 theorem exists_blockChain {K : ℤ} (hK : ∀ u v : V, G.Adj u v → linf (P.coord v - P.coord u) ≤ K)
     {L : ℕ} (hL : K < L) (l : List V) (hl : l.IsChain G.Adj) (hne : l ≠ []) :
     ∃ c : List (ℤ × ℤ), c.IsChain KingStep ∧ c.Nodup ∧ c.Sublist (l.map (P.blockIndex L)) ∧
-      c.head? = (l.map (P.blockIndex L)).head? ∧ c.getLast? = (l.map (P.blockIndex L)).getLast? := by
+      c.head? = (l.map (P.blockIndex L)).head? ∧
+        c.getLast? = (l.map (P.blockIndex L)).getLast? := by
   obtain ⟨hc, hh, hlast⟩ := destutter_lazy _ (blockIndex_lazyChain P hK hL l hl)
   have hne' : (l.map (P.blockIndex L)).destutter (· ≠ ·) ≠ [] := by
     intro h0

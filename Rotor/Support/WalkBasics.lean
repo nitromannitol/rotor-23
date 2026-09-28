@@ -5,6 +5,17 @@ defining conditions.
 -/
 import Rotor.Support.BoundaryRouting
 
+/-!
+# Basic facts about the rotor walk
+
+This file collects elementary consequences of the recursive definitions in `Rotor/Model.lean`:
+how one step of `walk` unfolds, how the position `X` and rotor configuration `rot` change from
+time `t` to `t + 1`, monotonicity and membership facts for the range `R`, the fact that a rotor
+never changes at a vertex the walk has not yet visited, and the defining properties of the
+circuit times `T n` as the least time by which the walk has returned to the origin with at least
+`n` full rotor cycles of visits.
+-/
+
 open Finset
 
 namespace Rotor
@@ -12,20 +23,29 @@ namespace Rotor
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V}
 variable (π : Mechanism G)
 
+/-- One step of the walk unfolds `walk` at `t + 1` as `step` applied to the configuration at
+time `t`. -/
 theorem walk_succ (ρ : Config G) (o : V) (t : ℕ) :
     walk π ρ o (t + 1) = step π (walk π ρ o t) := by
   rw [walk, Function.iterate_succ', Function.comp_apply, walk]
 
+/-- The position at time `t + 1` is the neighbor that `π.next` sends the walker to from its
+current position `X t`, using the current rotor state there. -/
 theorem X_succ (ρ : Config G) (o : V) (t : ℕ) :
     X π ρ o (t + 1) = (π.next (X π ρ o t) (rot π ρ o t (X π ρ o t))).1 := by
   rw [X, walk_succ]; rfl
 
+/-- The rotor configuration at time `t + 1` agrees with that at time `t` except at the current
+vertex `X t`, whose rotor is advanced by `π.next`. -/
 theorem rot_succ (ρ : Config G) (o : V) (t : ℕ) :
     rot π ρ o (t + 1) = Function.update (rot π ρ o t) (X π ρ o t)
       (π.next (X π ρ o t) (rot π ρ o t (X π ρ o t))) := by
   rw [rot, walk_succ]; rfl
 
+/-- The walk starts at `o`. -/
 @[simp] theorem X_zero (ρ : Config G) (o : V) : X π ρ o 0 = o := rfl
+
+/-- The rotor configuration at time `0` is the initial configuration `ρ`. -/
 @[simp] theorem rot_zero (ρ : Config G) (o : V) : rot π ρ o 0 = ρ := rfl
 
 /-- The walk steps to a neighbor. -/
@@ -37,9 +57,11 @@ theorem mem_R (ρ : Config G) (o : V) (t : ℕ) (x : V) :
     x ∈ R π ρ o t ↔ ∃ s ≤ t, X π ρ o s = x := by
   simp [R, Finset.mem_image]
 
+/-- The position at any time `s ≤ t` lies in the range `R_t`. -/
 theorem X_mem_R (ρ : Config G) (o : V) (s t : ℕ) (h : s ≤ t) : X π ρ o s ∈ R π ρ o t :=
   (mem_R π ρ o t _).2 ⟨s, h, rfl⟩
 
+/-- The range `R_t` is monotone in `t`. -/
 theorem R_mono (ρ : Config G) (o : V) {s t : ℕ} (h : s ≤ t) : R π ρ o s ⊆ R π ρ o t := by
   intro x hx
   obtain ⟨u, hu, rfl⟩ := (mem_R π ρ o s x).1 hx
@@ -78,9 +100,11 @@ variable [G.LocallyFinite]
 def circuitSet (ρ : Config G) (o : V) (n : ℕ) : Set ℕ :=
   {t : ℕ | X π ρ o t = o ∧ G.degree o * n ≤ visits π ρ o t}
 
+/-- `T n` unfolds definitionally to the infimum, in `ℕ∞`, of the times in `circuitSet π ρ o n`. -/
 theorem T_eq (ρ : Config G) (o : V) (n : ℕ) :
     T π ρ o n = ⨅ t ∈ circuitSet π ρ o n, (t : ℕ∞) := rfl
 
+/-- Any time `t` in the defining set `circuitSet π ρ o n` is an upper bound for `T n`. -/
 theorem T_le_of_mem (ρ : Config G) (o : V) (n : ℕ) {t : ℕ} (ht : t ∈ circuitSet π ρ o n) :
     T π ρ o n ≤ t := by
   rw [T_eq]; exact iInf₂_le t ht

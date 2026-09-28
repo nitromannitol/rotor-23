@@ -1,6 +1,8 @@
 import Rotor.Support.IntervalReach
 
 /-!
+# Proposition 5.1, part 6: roots and reach
+
 Proposition 5.1 (`prop:square-passage`), part 6: roots and reach.  A minimal history with
 positive probability ends with a forced open test of the sole active edge, so its interval
 starts at the head of that edge; the reach of the visited set grows across an interval by at
@@ -13,6 +15,9 @@ namespace Rotor
 
 /-! ### The structure of a minimal history -/
 
+/-- A minimal history `h` of level `j ≥ 1` with positive probability has the form `h₁ ++ [true]`,
+where after replaying `h₁` the active list is the single edge `(t, r)` and its `W`-side has
+already been tested closed, so the final entry `true` is the forced open test of that edge. -/
 theorem minF_structure (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {j : ℕ} (hj : 1 ≤ j)
     {h : List Bool} (hm : MinF f d j h) (hpos : Pm f d h ≠ 0) :
     ∃ (h₁ : List Bool) (t r : Site), h = h₁ ++ [true] ∧ (replay f d h₁).active = [(t, r)] ∧
@@ -52,12 +57,16 @@ def IsRoot (f d : Site) : ℕ → List Bool → Prop
   | 0, h => h = []
   | j + 1, h => MinF f d (j + 1) h
 
+/-- Replaying a root history `h` at level `j` gives forced count exactly `j`. -/
 theorem isRoot_forced {f d : Site} {j : ℕ} {h : List Bool} (hr : IsRoot f d j h) :
     (replay f d h).forced = j := by
   cases j with
   | zero => simp only [IsRoot] at hr; subst hr; rfl
   | succ j => exact hr.1
 
+/-- A root history `h` of positive probability starts its interval at `rootOf f d h`: at `j = 0`
+this is the trivial start of the empty history, and at `j ≥ 1` it follows from `minF_structure`
+and `intervalStart_forced`. -/
 theorem intervalStart_of_root (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {j : ℕ}
     {h : List Bool} (hr : IsRoot f d j h) (hpos : Pm f d h ≠ 0) :
     IntervalStart f d h (rootOf f d h) := by
@@ -74,9 +83,11 @@ theorem intervalStart_of_root (f : Site) {d : Site} (hd : squareGraph.Adj f (f +
 
 /-! ### The reach of the visited set -/
 
+/-- `linfDist a b` is nonnegative. -/
 theorem linfDist_nonneg (a b : Site) : 0 ≤ linfDist a b :=
   le_max_of_le_left (abs_nonneg _)
 
+/-- The triangle inequality for `linfDist`. -/
 theorem linfDist_triangle (a b c : Site) : linfDist a c ≤ linfDist a b + linfDist b c := by
   obtain ⟨a1, a2⟩ := a; obtain ⟨b1, b2⟩ := b; obtain ⟨c1, c2⟩ := c
   simp only [linfDist, abs_eq_max_neg]
@@ -86,6 +97,8 @@ theorem linfDist_triangle (a b c : Site) : linfDist a c ≤ linfDist a b + linfD
 noncomputable def reachN (f d : Site) (h : List Bool) : ℕ :=
   (replay f d h).visited.sup (fun g => (linfDist g f).toNat)
 
+/-- Every visited vertex lies within `reachN f d h` of `f`, since `reachN` is the sup of
+`linfDist` over the visited set. -/
 theorem le_reachN {f d : Site} {h : List Bool} {g : Site} (hg : g ∈ (replay f d h).visited) :
     linfDist g f ≤ reachN f d h := by
   have := Finset.le_sup (f := fun g => (linfDist g f).toNat) hg
@@ -94,9 +107,11 @@ theorem le_reachN {f d : Site} {h : List Bool} {g : Site} (hg : g ∈ (replay f 
   rw [h2]
   exact_mod_cast this
 
+/-- The reach of the empty history is `0`, since its only visited vertex is `f` itself. -/
 theorem reachN_nil (f d : Site) : reachN f d [] = 0 := by
   simp [reachN, replay, explInit, linfDist_self]
 
+/-- If every visited vertex lies within `n` of `f`, then `reachN f d h ≤ n`. -/
 theorem reachN_le_of_forall {f d : Site} {h : List Bool} {n : ℕ}
     (hn : ∀ g ∈ (replay f d h).visited, linfDist g f ≤ n) : reachN f d h ≤ n := by
   refine Finset.sup_le (fun g hg => ?_)
@@ -108,6 +123,8 @@ noncomputable def intD (f d : Site) (h₀ h' : List Bool) : ℕ :=
   ((replay f d h'.dropLast).visited \ (replay f d h₀).visited).sup
     (fun g => (linfDist g (rootOf f d h₀)).toNat)
 
+/-- Any vertex `g` newly visited by `h'.dropLast` (visited but not already visited by `h₀`) lies
+within `intD f d h₀ h'` of `rootOf f d h₀`. -/
 theorem le_intD {f d : Site} {h₀ h' : List Bool} {g : Site}
     (hg : g ∈ (replay f d h'.dropLast).visited) (hg0 : g ∉ (replay f d h₀).visited) :
     linfDist g (rootOf f d h₀) ≤ intD f d h₀ h' := by
@@ -118,6 +135,8 @@ theorem le_intD {f d : Site} {h₀ h' : List Bool} {g : Site}
   rw [h2]
   exact_mod_cast this
 
+/-- For `s ≥ 1`, `s ≤ intD f d h₀ h'` iff some vertex newly visited by `h'.dropLast` lies at
+distance at least `s` from `rootOf f d h₀`. -/
 theorem intD_ge_iff {f d : Site} {h₀ h' : List Bool} {s : ℕ} (hs : 1 ≤ s) :
     s ≤ intD f d h₀ h' ↔ ∃ g ∈ (replay f d h'.dropLast).visited, g ∉ (replay f d h₀).visited ∧
       (s : ℤ) ≤ linfDist g (rootOf f d h₀) := by
@@ -180,6 +199,8 @@ theorem reachN_succ_le (f : Site) {d : Site} (hd : IsUnit d) {h₀ h' : List Boo
       · have := hbound g hg; omega
     · have := hbound g hg; omega
 
+/-- `Pm` is antitone under the prefix order on histories: a longer history is at least as
+restrictive an event as any of its prefixes. -/
 theorem Pm_le_of_prefix (f d : Site) {h₀ h' : List Bool} (hp : h₀ <+: h') :
     Pm f d h' ≤ Pm f d h₀ := by
   obtain ⟨t, rfl⟩ := hp
@@ -191,6 +212,9 @@ theorem Pm_le_of_prefix (f d : Site) {h₀ h' : List Bool} (hp : h₀ <+: h') :
 
 /-! ### The layer cake over one interval -/
 
+/-- The `Pm`-masses of a finite family of pairwise distinct minimal `(j + 1)`-histories extending
+`h₀` sum to at most `Pm f d h₀`, since the corresponding events are pairwise disjoint and each
+contained in the event for `h₀`. -/
 theorem sum_minF_succ_le_Pm (f : Site) {d : Site} (hd : IsUnit d) {j : ℕ} {h₀ : List Bool}
     (F : Finset (List Bool)) (hF : ∀ h' ∈ F, MinF f d (j + 1) h' ∧ h₀ <+: h') :
     ∑ h' ∈ F, Pm f d h' ≤ Pm f d h₀ := by
@@ -206,6 +230,8 @@ theorem sum_minF_succ_le_Pm (f : Site) {d : Site} (hd : IsUnit d) {j : ℕ} {h�
     intro ρ h1 h2
     exact hne (minF_unique f d (hF h₁ hh₁).1 (hF h₂ hh₂).1 h1 h2)
 
+/-- The telescoping identity `a ^ n = 1 + ∑_{s < n} (a ^ (s + 1) - a ^ s)` for `a ≥ 1` in
+`ℝ≥0∞`, by induction on `n`. -/
 theorem pow_eq_one_add_sum {a : ℝ≥0∞} (ha : 1 ≤ a) :
     ∀ n : ℕ, a ^ n = 1 + ∑ s ∈ Finset.range n, (a ^ (s + 1) - a ^ s)
   | 0 => by simp
@@ -220,14 +246,16 @@ noncomputable def Mconst (a : ℝ≥0∞) (c C : ℝ) : ℝ≥0∞ :=
 /-- The expected `a`-power of the interval reach, over a finite family of next roots. -/
 theorem sum_pow_intD_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {c C : ℝ}
     (hCB : ∀ (x : Site) (r : ℕ), 1 ≤ r →
-      bondLaw (1 / 2) half_le_one (constrainedCrossing x r) ≤ ENNReal.ofReal (C * Real.exp (-c * r)))
+      bondLaw (1 / 2) half_le_one (constrainedCrossing x r) ≤
+        ENNReal.ofReal (C * Real.exp (-c * r)))
     {j : ℕ} {h₀ : List Bool} (hm0 : (replay f d h₀).forced = j)
     (hs0 : IntervalStart f d h₀ (rootOf f d h₀)) {a : ℝ≥0∞} (ha : 1 ≤ a)
     (F : Finset (List Bool)) (hF : ∀ h' ∈ F, MinF f d (j + 1) h' ∧ h₀ <+: h') :
     ∑ h' ∈ F, Pm f d h' * a ^ intD f d h₀ h' ≤ Pm f d h₀ * Mconst a c C := by
   have hdu : IsUnit d := by have := isUnit_of_adj hd; rwa [add_sub_cancel_left] at this
   set N := F.sup (fun h' => intD f d h₀ h') with hN
-  have hDN : ∀ h' ∈ F, intD f d h₀ h' ≤ N := fun h' hh' => Finset.le_sup (f := fun h' => intD f d h₀ h') hh'
+  have hDN : ∀ h' ∈ F, intD f d h₀ h' ≤ N :=
+    fun h' hh' => Finset.le_sup (f := fun h' => intD f d h₀ h') hh'
   -- layer cake
   have hlayer : ∀ h' ∈ F, Pm f d h' * a ^ intD f d h₀ h' =
       Pm f d h' + ∑ s ∈ Finset.range N,
@@ -236,7 +264,8 @@ theorem sum_pow_intD_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {
     rw [pow_eq_one_add_sum ha, mul_add, mul_one, Finset.mul_sum]
     congr 1
     rw [← Finset.sum_filter]
-    have : (Finset.range N).filter (fun s => s < intD f d h₀ h') = Finset.range (intD f d h₀ h') := by
+    have : (Finset.range N).filter (fun s => s < intD f d h₀ h') =
+        Finset.range (intD f d h₀ h') := by
       ext s; simp only [Finset.mem_filter, Finset.mem_range]
       constructor
       · exact fun h => h.2
@@ -261,7 +290,8 @@ theorem sum_pow_intD_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {
               exact (intD_ge_iff (by omega)).1 hh'.2)
           have hint := intReach_measure_le f hd hCB hs0 (s := s + 1) (by omega)
           calc (∑ h' ∈ F.filter (fun h' => s < intD f d h₀ h'), Pm f d h') * (a ^ (s + 1) - a ^ s)
-              ≤ Pm f d h₀ * ENNReal.ofReal (C * Real.exp (-c * ↑(s + 1))) * (a ^ (s + 1) - a ^ s) := by
+              ≤ Pm f d h₀ * ENNReal.ofReal (C * Real.exp (-c * ↑(s + 1))) *
+                (a ^ (s + 1) - a ^ s) := by
                 gcongr; exact hsub.trans hint
             _ = _ := by push_cast; ring
       _ = Pm f d h₀ * ∑ s ∈ Finset.range N,
@@ -271,6 +301,9 @@ theorem sum_pow_intD_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {
 
 /-! ### The root prefix -/
 
+/-- Every value `k` at most the forced count of `h'` is achieved by the forced count of some
+prefix `h'.take m`, by induction on `h'` using that the forced count grows by at most `1` per
+token. -/
 theorem exists_take_forced_eq (f d : Site) : ∀ (h' : List Bool) (k : ℕ),
     k ≤ (replay f d h').forced → ∃ m ≤ h'.length, (replay f d (h'.take m)).forced = k := by
   intro h'
@@ -299,9 +332,12 @@ noncomputable def rootLen (f d : Site) (j : ℕ) (h' : List Bool) : ℕ :=
 noncomputable def rootPrefix (f d : Site) (j : ℕ) (h' : List Bool) : List Bool :=
   h'.take (rootLen f d j h')
 
+/-- `rootPrefix f d j h'` is a prefix of `h'`, being a `List.take`. -/
 theorem rootPrefix_prefix (f d : Site) (j : ℕ) (h' : List Bool) : rootPrefix f d j h' <+: h' :=
   List.take_prefix _ _
 
+/-- If `h'` is a root at level `j + 1`, its root prefix at level `j` is itself a root at level
+`j`: it is the shortest prefix whose forced count first reaches `j`. -/
 theorem rootPrefix_isRoot (f d : Site) {j : ℕ} {h' : List Bool} (hr : IsRoot f d (j + 1) h') :
     IsRoot f d j (rootPrefix f d j h') := by
   classical
@@ -326,10 +362,13 @@ theorem rootPrefix_isRoot (f d : Site) {j : ℕ} {h' : List Bool} (hr : IsRoot f
       exact this ⟨by omega, h⟩
     have hle : (replay f d (h'.take i)).forced ≤ (replay f d (h'.take (Nat.find hex))).forced := by
       refine forced_mono_prefix f d ?_
-      rw [show h'.take i = (h'.take (Nat.find hex)).take i by rw [List.take_take, min_eq_left hi.le]]
+      rw [show h'.take i = (h'.take (Nat.find hex)).take i by
+        rw [List.take_take, min_eq_left hi.le]]
       exact List.take_prefix _ _
     omega
 
+/-- If `h₀` is a root at level `j`, `h'` is a root at level `j + 1`, and `h₀` is a prefix of `h'`,
+then `h₀` is exactly the root prefix of `h'` at level `j`. -/
 theorem rootPrefix_eq (f d : Site) {j : ℕ} {h₀ h' : List Bool} (hr0 : IsRoot f d j h₀)
     (hr1 : IsRoot f d (j + 1) h') (hp : h₀ <+: h') : rootPrefix f d j h' = h₀ := by
   classical
@@ -362,21 +401,28 @@ theorem rootPrefix_eq (f d : Site) {j : ℕ} {h₀ h' : List Bool} (hr0 : IsRoot
 noncomputable def Tpot (f d : Site) (a : ℝ≥0∞) (j : ℕ) : ℝ≥0∞ :=
   ∑' h : {h // IsRoot f d j h}, Pm f d h.1 * a ^ reachN f d h.1
 
+/-- `Pm f d [] = 1`: every configuration is consistent with the empty history. -/
 theorem Pm_nil (f d : Site) : Pm f d [] = 1 := by
   unfold Pm
   have : {ρ : Config squareGraph | history ρ f d ([] : List Bool).length = []} = Set.univ := by
     ext ρ; simp [history, explore_zero, explInit]
   rw [this, measure_univ]
 
+/-- `Tpot f d a 0 = 1`: the only root at level `0` is the empty history, which has `Pm = 1` and
+`reachN = 0`. -/
 theorem Tpot_zero (f d : Site) (a : ℝ≥0∞) : Tpot f d a 0 = 1 := by
   unfold Tpot
   have huniq : ∀ x : {h // IsRoot f d 0 h}, x = ⟨[], rfl⟩ := fun x => Subtype.ext x.2
   rw [tsum_eq_single ⟨[], rfl⟩ (fun x hx => absurd (huniq x) hx)]
   simp [Pm_nil, reachN_nil]
 
+/-- The recursive bound `Tpot f d a (j + 1) ≤ a * Mconst a c C * Tpot f d a j`, grouping the
+level-`(j + 1)` roots by their root prefix at level `j` and bounding each fiber's contribution
+with `sum_pow_intD_le` and `reachN_succ_le`. -/
 theorem Tpot_succ_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {c C : ℝ}
     (hCB : ∀ (x : Site) (r : ℕ), 1 ≤ r →
-      bondLaw (1 / 2) half_le_one (constrainedCrossing x r) ≤ ENNReal.ofReal (C * Real.exp (-c * r)))
+      bondLaw (1 / 2) half_le_one (constrainedCrossing x r) ≤
+        ENNReal.ofReal (C * Real.exp (-c * r)))
     {a : ℝ≥0∞} (ha : 1 ≤ a) (j : ℕ) :
     Tpot f d a (j + 1) ≤ a * Mconst a c C * Tpot f d a j := by
   have hdu : IsUnit d := by have := isUnit_of_adj hd; rwa [add_sub_cancel_left] at this
@@ -437,14 +483,17 @@ theorem Tpot_succ_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {c C
             = ∑ x ∈ P.attach, Pm f d x.1 * a ^ reachN f d x.1 := (Finset.sum_attach _ _).symm
           _ = ∑ y ∈ P.attach.image (fun x => (⟨x.1, hProot x.1 x.2⟩ : {h // IsRoot f d j h})),
               Pm f d y.1 * a ^ reachN f d y.1 :=
-              (Finset.sum_image (f := fun y : {h // IsRoot f d j h} => Pm f d y.1 * a ^ reachN f d y.1)
+              (Finset.sum_image
+                (f := fun y : {h // IsRoot f d j h} => Pm f d y.1 * a ^ reachN f d y.1)
                 (g := fun x : {h // h ∈ P} => (⟨x.1, hProot x.1 x.2⟩ : {h // IsRoot f d j h}))
                 (fun x _ y _ h => Subtype.ext (by simp only [Subtype.mk.injEq] at h; exact h))).symm
           _ ≤ _ := ENNReal.sum_le_tsum _
 
+/-- Unrolling `Tpot_succ_le` by induction on `j` gives `Tpot f d a j ≤ (a * Mconst a c C) ^ j`. -/
 theorem Tpot_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {c C : ℝ}
     (hCB : ∀ (x : Site) (r : ℕ), 1 ≤ r →
-      bondLaw (1 / 2) half_le_one (constrainedCrossing x r) ≤ ENNReal.ofReal (C * Real.exp (-c * r)))
+      bondLaw (1 / 2) half_le_one (constrainedCrossing x r) ≤
+        ENNReal.ofReal (C * Real.exp (-c * r)))
     {a : ℝ≥0∞} (ha : 1 ≤ a) : ∀ j : ℕ, Tpot f d a j ≤ (a * Mconst a c C) ^ j
   | 0 => by rw [Tpot_zero, pow_zero]
   | j + 1 => by
@@ -461,6 +510,8 @@ def ReachEvent (f d : Site) (R : ℕ) : Set (Config squareGraph) :=
 def KEvent (f d : Site) (N : ℕ) : Set (Config squareGraph) :=
   {ρ | (N : ℕ∞) ≤ forcedCount ρ f d}
 
+/-- Taking the first `i` entries of the history at time `n` (with `i ≤ n` inside its length) gives
+the history at time `i`. -/
 theorem history_take_of_lt_length (ρ : Config squareGraph) (f d : Site) {i n : ℕ} (hin : i ≤ n)
     (hi : i < (history ρ f d n).length) : (history ρ f d n).take i = history ρ f d i := by
   refine history_take ρ f d hin ?_
@@ -472,13 +523,15 @@ theorem history_take_of_lt_length (ρ : Config squareGraph) (f d : Site) {i n : 
   unfold history at this
   omega
 
+/-- The forced-test count is monotone (non-decreasing) in the exploration stage. -/
 theorem forced_explore_mono (ρ : Config squareGraph) (f d : Site) {m n : ℕ} (hmn : m ≤ n) :
     (explore ρ f d m).forced ≤ (explore ρ f d n).forced := by
   rw [forced_explore, forced_explore]
   exact forced_mono_prefix f d (history_prefix ρ f d hmn)
 
 /-- The root of the interval containing stage `n`. -/
-theorem exists_root_of_stage (f d : Site) (ρ : Config squareGraph) (n : ℕ) : ∃ h₀, IsRoot f d (explore ρ f d n).forced h₀ ∧ history ρ f d h₀.length = h₀ ∧
+theorem exists_root_of_stage (f d : Site) (ρ : Config squareGraph) (n : ℕ) :
+    ∃ h₀, IsRoot f d (explore ρ f d n).forced h₀ ∧ history ρ f d h₀.length = h₀ ∧
       h₀.length ≤ n ∧ IntervalHist f d h₀ (history ρ f d n) := by
   set j := (explore ρ f d n).forced with hj
   -- the nonforced condition between stage `m` and `n`
@@ -487,7 +540,8 @@ theorem exists_root_of_stage (f d : Site) (ρ : Config squareGraph) (n : ℕ) : 
     intro h₀ hρ0 hlen hf0
     refine ⟨?_, fun i hi hi' e rest he hW => ?_⟩
     · rw [← hρ0]; exact history_prefix ρ f d hlen
-    · rw [history_take_of_lt_length ρ f d (by have := history_length_le ρ f d n; omega) hi'] at he hW
+    · rw [history_take_of_lt_length ρ f d
+        (by have := history_length_le ρ f d n; omega) hi'] at he hW
       have h1 : (explore ρ f d (i + 1)).forced = (explore ρ f d i).forced + 1 := by
         rw [forced_explore, forced_explore,
           history_succ_cons ρ f d i (by rw [explore_eq_replay]; exact he)]
@@ -566,9 +620,13 @@ theorem reachEvent_subset (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d))
   · left; left; left
     exact (le_forcedCount_iff ρ f d n₀).2 ⟨n, hjn⟩
 
+/-- `KEvent f d 0` is the whole space: every configuration trivially has at least `0` forced
+tests. -/
 theorem KEvent_zero (f d : Site) : KEvent f d 0 = Set.univ := by
   ext ρ; simp [KEvent]
 
+/-- The `Pm`-masses of all roots at level `j` sum to the probability of `KEvent f d j` (at least
+`j` forced tests), via `K_measure_eq`. -/
 theorem tsum_root_Pm (f : Site) {d : Site} (hd : IsUnit d) (j : ℕ) :
     ∑' h₀ : {h₀ // IsRoot f d j h₀}, Pm f d h₀.1 = uniformLaw clockwise (KEvent f d j) := by
   cases j with
@@ -583,7 +641,8 @@ theorem tsum_root_Pm (f : Site) {d : Site} (hd : IsUnit d) (j : ℕ) :
 /-- The measure bound for the reach event. -/
 theorem reachEvent_measure_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {c C : ℝ}
     (hCB : ∀ (x : Site) (r : ℕ), 1 ≤ r →
-      bondLaw (1 / 2) half_le_one (constrainedCrossing x r) ≤ ENNReal.ofReal (C * Real.exp (-c * r)))
+      bondLaw (1 / 2) half_le_one (constrainedCrossing x r) ≤
+        ENNReal.ofReal (C * Real.exp (-c * r)))
     {a : ℝ≥0∞} (ha : 1 ≤ a) (ha' : a ≠ ⊤) (R n₀ : ℕ) (hR : 1 ≤ R) :
     uniformLaw clockwise (ReachEvent f d R) ≤ uniformLaw clockwise (KEvent f d n₀) +
       ∑ j ∈ Finset.range n₀, ((a * Mconst a c C) ^ j / a ^ (R / 2) +
@@ -597,7 +656,8 @@ theorem reachEvent_measure_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f +
     le_rfl).trans ?_
   -- the null part
   have hnull : uniformLaw clockwise (⋃ j ∈ Finset.range n₀,
-      ⋃ h₀ : {h₀ // IsRoot f d j h₀ ∧ Pm f d h₀ = 0}, {ρ | history ρ f d h₀.1.length = h₀.1}) = 0 := by
+      ⋃ h₀ : {h₀ // IsRoot f d j h₀ ∧ Pm f d h₀ = 0},
+        {ρ | history ρ f d h₀.1.length = h₀.1}) = 0 := by
     refine le_antisymm ((measure_biUnion_finset_le _ _).trans ?_) (zero_le)
     refine le_of_eq (Finset.sum_eq_zero (fun j _ => ?_))
     refine le_antisymm ((measure_iUnion_le _).trans ?_) (zero_le)
@@ -607,13 +667,15 @@ theorem reachEvent_measure_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f +
       {ρ | history ρ f d h₀.1.length = h₀.1}) ≤ (a * Mconst a c C) ^ j / a ^ (R / 2) := by
     intro j
     refine (measure_iUnion_le _).trans ?_
-    have hapow : a ^ (R / 2) ≠ 0 := pow_ne_zero _ (by intro h; rw [h] at ha; exact absurd ha (by simp))
+    have hapow : a ^ (R / 2) ≠ 0 :=
+      pow_ne_zero _ (by intro h; rw [h] at ha; exact absurd ha (by simp))
     have hapow' : a ^ (R / 2) ≠ ⊤ := ENNReal.pow_ne_top ha'
     rw [ENNReal.le_div_iff_mul_le (Or.inl hapow) (Or.inl hapow')]
     calc (∑' h₀ : {h₀ // IsRoot f d j h₀ ∧ R / 2 ≤ reachN f d h₀}, Pm f d h₀.1) * a ^ (R / 2)
         = ∑' h₀ : {h₀ // IsRoot f d j h₀ ∧ R / 2 ≤ reachN f d h₀}, Pm f d h₀.1 * a ^ (R / 2) := by
           rw [ENNReal.tsum_mul_right]
-      _ ≤ ∑' h₀ : {h₀ // IsRoot f d j h₀ ∧ R / 2 ≤ reachN f d h₀}, Pm f d h₀.1 * a ^ reachN f d h₀.1 :=
+      _ ≤ ∑' h₀ : {h₀ // IsRoot f d j h₀ ∧ R / 2 ≤ reachN f d h₀},
+          Pm f d h₀.1 * a ^ reachN f d h₀.1 :=
           ENNReal.tsum_le_tsum (fun x =>
             mul_le_mul_of_nonneg_left (pow_le_pow_right₀ ha x.2.2) (zero_le))
       _ ≤ ∑' h₀ : {h₀ // IsRoot f d j h₀}, Pm f d h₀.1 * a ^ reachN f d h₀.1 :=
@@ -625,13 +687,15 @@ theorem reachEvent_measure_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f +
   -- the interval part
   have hint : ∀ j, uniformLaw clockwise (⋃ h₀ : {h₀ // IsRoot f d j h₀},
       ({ρ | history ρ f d h₀.1.length = h₀.1} ∩ IntReach f d h₀.1 (R - R / 2))) ≤
-      ENNReal.ofReal (C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) * uniformLaw clockwise (KEvent f d j) := by
+      ENNReal.ofReal (C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) *
+        uniformLaw clockwise (KEvent f d j) := by
     intro j
     refine (measure_iUnion_le _).trans ?_
     rw [← tsum_root_Pm f hdu j, ← ENNReal.tsum_mul_left]
     refine ENNReal.tsum_le_tsum (fun h₀ => ?_)
     by_cases hpos : Pm f d h₀.1 = 0
-    · calc uniformLaw clockwise ({ρ | history ρ f d h₀.1.length = h₀.1} ∩ IntReach f d h₀.1 (R - R / 2))
+    · calc uniformLaw clockwise
+            ({ρ | history ρ f d h₀.1.length = h₀.1} ∩ IntReach f d h₀.1 (R - R / 2))
           ≤ Pm f d h₀.1 := measure_mono Set.inter_subset_left
         _ = 0 := hpos
         _ ≤ _ := zero_le
@@ -639,7 +703,8 @@ theorem reachEvent_measure_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f +
       exact intReach_measure_le f hd hCB (intervalStart_of_root f hd h₀.2 hpos) (by omega)
   rw [hnull, add_zero]
   calc uniformLaw clockwise (KEvent f d n₀) +
-        uniformLaw clockwise (⋃ j ∈ Finset.range n₀, ⋃ h₀ : {h₀ // IsRoot f d j h₀ ∧ R / 2 ≤ reachN f d h₀},
+        uniformLaw clockwise (⋃ j ∈ Finset.range n₀,
+          ⋃ h₀ : {h₀ // IsRoot f d j h₀ ∧ R / 2 ≤ reachN f d h₀},
           {ρ | history ρ f d h₀.1.length = h₀.1}) +
         uniformLaw clockwise (⋃ j ∈ Finset.range n₀, ⋃ h₀ : {h₀ // IsRoot f d j h₀},
           ({ρ | history ρ f d h₀.1.length = h₀.1} ∩ IntReach f d h₀.1 (R - R / 2)))

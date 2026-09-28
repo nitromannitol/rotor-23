@@ -26,6 +26,17 @@ import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
 import Rotor.Bridge.Abelian
 
+/-!
+# Boundary routings do not repeat and agree with the complete boundary routing
+
+Proves Lemma 2.3: a legal one-particle-at-a-time boundary routing of a nonempty finite vertex
+set `S`, counting the initial edges out of `S`, never traverses a directed edge twice; it is
+finite exactly when the boundary routing of `S` terminates; and, when it terminates, every
+finishing stage of it is a complete boundary routing with the same actuation counts as every
+other complete boundary routing. The proof rests on the least-action lemma `lem:least-action`
+via `External.Abelian`.
+-/
+
 open Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]

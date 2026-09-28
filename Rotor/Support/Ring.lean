@@ -1,6 +1,8 @@
 import Rotor.Support.DoubledCurve
 
 /-!
+# The ring of eight points around a doubled-lattice vertex
+
 The ring of eight points around a vertex of the doubled lattice, counterclockwise from east,
 and the two arcs cut out by a simple closed walk passing through the vertex: the points of an
 arc are lattice-connected off the walk, and the arc from the outgoing direction to the reverse
@@ -22,8 +24,12 @@ theorem fin8_neg_one : (-1 : Fin 8) = 7 := by decide
 /-- The `i`-th point of the ring around `p`. -/
 def ringPt (p : Site) (i : Fin 8) : Site := p + ringOff i
 
+/-- Decidability instance for `IsUnit`, obtained by unfolding it to a finite
+disjunction of equalities. -/
 instance : DecidablePred IsUnit := fun d => by unfold IsUnit; infer_instance
 
+/-- Consecutive ring points `ringPt p i` and `ringPt p (i + 1)` differ by a
+unit vector, checked by cases on the eight offsets. -/
 theorem ringPt_adj (p : Site) (i : Fin 8) : IsUnit (ringPt p (i + 1) - ringPt p i) := by
   simp only [ringPt, add_sub_add_left_eq_sub]
   fin_cases i <;> decide
@@ -32,28 +38,44 @@ theorem ringPt_adj (p : Site) (i : Fin 8) : IsUnit (ringPt p (i + 1) - ringPt p 
 def dirIdx (d : Site) : Fin 8 :=
   if d = (1, 0) then 0 else if d = (0, 1) then 2 else if d = (-1, 0) then 4 else 6
 
+/-- `dirIdx` and `ringOff` are mutually inverse on unit directions:
+`ringOff (dirIdx d) = d`. -/
 theorem ringOff_dirIdx {d : Site} (hd : IsUnit d) : ringOff (dirIdx d) = d := by
   rcases hd with rfl | rfl | rfl | rfl <;> rfl
 
+/-- Negating a unit direction advances its ring index by `4`, the opposite
+point on the ring. -/
 theorem dirIdx_neg {d : Site} (hd : IsUnit d) : dirIdx (-d) = dirIdx d + 4 := by
   rcases hd with rfl | rfl | rfl | rfl <;> rfl
 
+/-- Rotating a unit direction left by a quarter turn (`rotL`) advances its ring
+index by `2`. -/
 theorem dirIdx_rotL {d : Site} (hd : IsUnit d) : dirIdx (rotL d) = dirIdx d + 2 := by
   rcases hd with rfl | rfl | rfl | rfl <;> rfl
 
+/-- Rotating a unit direction right by a quarter turn (`rotR`) advances its
+ring index by `6`, equivalently `-2` modulo `8`. -/
 theorem dirIdx_rotR {d : Site} (hd : IsUnit d) : dirIdx (rotR d) = dirIdx d + 6 := by
   rcases hd with rfl | rfl | rfl | rfl <;> rfl
 
+/-- Every unit direction's ring index is even, since the four unit directions
+occupy the even positions `0, 2, 4, 6` of the ring. -/
 theorem dirIdx_even {d : Site} (hd : IsUnit d) : Even (dirIdx d).val := by
   rcases hd with rfl | rfl | rfl | rfl <;> decide
 
-theorem dirIdx_injective {d d' : Site} (hd : IsUnit d) (hd' : IsUnit d') (h : dirIdx d = dirIdx d') :
+/-- `dirIdx` is injective on unit directions: two units with the same ring
+index coincide, checked by cases. -/
+theorem dirIdx_injective {d d' : Site} (hd : IsUnit d) (hd' : IsUnit d')
+    (h : dirIdx d = dirIdx d') :
     d = d' := by
-  rcases hd with rfl | rfl | rfl | rfl <;> rcases hd' with rfl | rfl | rfl | rfl <;> first | rfl | exact absurd h (by decide)
+  rcases hd with rfl | rfl | rfl | rfl <;> rcases hd' with rfl | rfl | rfl | rfl <;>
+    first | rfl | exact absurd h (by decide)
 
 /-- `k` lies strictly between `i` and `j`, counterclockwise from `i`. -/
 def Between (i j k : Fin 8) : Prop := 0 < (k - i).val ∧ (k - i).val < (j - i).val
 
+/-- Decidability instance for `Between`, obtained by unfolding it to a
+conjunction of decidable numeric inequalities. -/
 instance (i j k : Fin 8) : Decidable (Between i j k) := by unfold Between; infer_instance
 
 /-- The odd-odd points of the ring are the odd indices. -/
@@ -70,6 +92,8 @@ theorem ringPt_odd (p : Site) (hp1 : Even p.1) (hp2 : Even p.2) (i : Fin 8) (hi 
 /-- The relation "adjacent and both off `c`". -/
 def OffAdj (c : List Site) (x y : Site) : Prop := x ∉ c ∧ y ∉ c ∧ IsUnit (y - x)
 
+/-- `OffAdj c` is symmetric: if `x` and `y` are adjacent and both off `c`, so
+are `y` and `x`, since the unit-difference condition is closed under negation. -/
 theorem OffAdj.symm {c : List Site} {x y : Site} (h : OffAdj c x y) : OffAdj c y x := by
   refine ⟨h.2.1, h.1, ?_⟩
   have := h.2.2
@@ -79,6 +103,8 @@ theorem OffAdj.symm {c : List Site} {x y : Site} (h : OffAdj c x y) : OffAdj c y
     rw [e, h']
     simp [IsUnit]
 
+/-- The reflexive-transitive closure of `OffAdj c` is symmetric: reverse each
+step of the chain using `OffAdj.symm`, by induction on the chain. -/
 theorem reflTransGen_offAdj_symm {c : List Site} {x y : Site}
     (h : Relation.ReflTransGen (OffAdj c) x y) : Relation.ReflTransGen (OffAdj c) y x := by
   induction h with
@@ -96,7 +122,8 @@ arc. -/
 theorem ringPt_reach_arc {c : List Site} (p : Site) (i j : Fin 8)
     (hoff : ∀ l, Between i j l → ringPt p l ∉ c) :
     ∀ (m m' : ℕ), 0 < m → m ≤ m' → m' < (j - i).val →
-      Relation.ReflTransGen (OffAdj c) (ringPt p (i + (m : Fin 8))) (ringPt p (i + (m' : Fin 8))) := by
+      Relation.ReflTransGen (OffAdj c) (ringPt p (i + (m : Fin 8)))
+        (ringPt p (i + (m' : Fin 8))) := by
   intro m m' hm hmm' hm'
   induction m' with
   | zero => omega
@@ -151,11 +178,15 @@ theorem leftPt_out_eq (z w : Site) (hw : IsUnit w) :
   rcases hw with rfl | rfl | rfl | rfl <;>
     simp [leftPt, ringPt, rotL, dirIdx, ringOff, Prod.ext_iff] <;> ring_nf
 
+/-- The right point of the step into `z` is the corner counterclockwise of the
+reverse incoming direction. -/
 theorem rightPt_in_eq (z u : Site) (hu : IsUnit u) :
     rightPt (z - u) z = ringPt (z + z) (dirIdx (-u) + 1) := by
   rcases hu with rfl | rfl | rfl | rfl <;>
     simp [rightPt, ringPt, rotR, dirIdx, ringOff, Prod.ext_iff] <;> ring_nf
 
+/-- The right point of the step out of `z` is the corner clockwise of the
+outgoing direction. -/
 theorem rightPt_out_eq (z w : Site) (hw : IsUnit w) :
     rightPt z (z + w) = ringPt (z + z) (dirIdx w - 1) := by
   rcases hw with rfl | rfl | rfl | rfl <;>

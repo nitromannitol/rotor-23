@@ -6,6 +6,16 @@ later leaves `Q_z⁺` witnesses the marked block event `E_z` (`rotor.tex:1265-12
 import Rotor.Support.BlockField
 import Rotor.Support.KingPaths
 
+/-!
+# The sub-path of a live path that crosses one enlarged block
+
+Isolates, from a live-at-unmarked path that visits an enlarged block `Q_z⁺` and then leaves it,
+the sub-path between those two indices, and shows that this sub-path witnesses the marked block
+event `E_z` (`rotor.tex:1265-1268`). The tool for extracting the sub-path is `infixAt`, together
+with lemmas transporting `IsPath`, liveness at an index, and unmarked liveness from the full path
+to one of its infixes.
+-/
+
 open MeasureTheory
 
 namespace Rotor
@@ -19,18 +29,24 @@ variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite] (π :
 def infixAt (l : List V) (a k : ℕ) : List V := (l.drop a).take k
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The infix `infixAt l a k` has exactly `k` elements, once `a + k` does not exceed the length
+of `l`. -/
 theorem length_infixAt (l : List V) (a k : ℕ) (h : a + k ≤ l.length) :
     (infixAt l a k).length = k := by
   simp only [infixAt, List.length_take, List.length_drop]
   omega
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The `i`-th element of the infix `infixAt l a k` is the `(a + i)`-th element of `l`. -/
 theorem getElem_infixAt (l : List V) (a k i : ℕ) (hi : i < (infixAt l a k).length) :
-    (infixAt l a k)[i] = l[a + i]'(by simp only [infixAt, List.length_take, List.length_drop] at hi; omega) := by
+    (infixAt l a k)[i] = l[a + i]'(by
+      simp only [infixAt, List.length_take, List.length_drop] at hi; omega) := by
   simp only [infixAt]
   rw [List.getElem_take, List.getElem_drop]
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- `List.get` version of `getElem_infixAt`: the `i`-th element of `infixAt l a k` equals the
+`(a + i)`-th element of `l`. -/
 theorem get_infixAt (l : List V) (a k i : ℕ) (hi : i < (infixAt l a k).length) :
     (infixAt l a k).get ⟨i, hi⟩ =
       l.get ⟨a + i, by simp only [infixAt, List.length_take, List.length_drop] at hi; omega⟩ := by
@@ -38,14 +54,18 @@ theorem get_infixAt (l : List V) (a k i : ℕ) (hi : i < (infixAt l a k).length)
   exact getElem_infixAt l a k i hi
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- `infixAt l a k` is an infix (a sublist that is both a suffix of a prefix) of `l`. -/
 theorem infixAt_isInfix (l : List V) (a k : ℕ) : infixAt l a k <:+: l :=
   (List.take_prefix k _).isInfix.trans (List.drop_suffix a l).isInfix
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- An infix of a path in `G` is again a path in `G`. -/
 theorem isPath_infixAt {l : List V} (hl : IsPath G l) (a k : ℕ) : IsPath G (infixAt l a k) :=
   ⟨hl.1.sublist (infixAt_isInfix l a k).sublist, hl.2.infix (infixAt_isInfix l a k)⟩
 
 omit [G.LocallyFinite] in
+/-- Liveness at index `i + 1` of the infix `infixAt l a k` matches liveness of `l` at index
+`a + i + 1`, transported along the index shift `getElem_infixAt`/`get_infixAt`. -/
 theorem liveAtIndex_infixAt (ρ : Config G) (l : List V) (a k i : ℕ) (hk : a + k ≤ l.length)
     (hi : i + 2 < k) :
     LiveAtIndex π ρ (infixAt l a k) (i + 1) ↔ LiveAtIndex π ρ l (a + i + 1) := by
@@ -71,6 +91,8 @@ theorem liveAtIndex_infixAt (ρ : Config G) (l : List V) (a k i : ℕ) (hk : a +
     exact h
 
 omit [G.LocallyFinite] in
+/-- `IsLiveUnmarked` for `l` restricts to the infix `infixAt l a k`, transporting the marked/live
+alternative at each interior index through `liveAtIndex_infixAt`. -/
 theorem isLiveUnmarked_infixAt (p : MPair G) (l : List V) (a k : ℕ) (hk : a + k ≤ l.length)
     (hl : IsLiveUnmarked π p l) : IsLiveUnmarked π p (infixAt l a k) := by
   intro i hi hi0
@@ -87,6 +109,7 @@ theorem isLiveUnmarked_infixAt (p : MPair G) (l : List V) (a k : ℕ) (hk : a + 
 /-! ### A visit followed by an exit witnesses the block event -/
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The block `Q_z` is contained in the enlarged block `Q_z⁺`. -/
 theorem block_subset_blockPlus {L : ℕ} (hL : 0 < L) (z : ℤ × ℤ) :
     P.block L z ⊆ P.blockPlus L z := by
   intro v hv

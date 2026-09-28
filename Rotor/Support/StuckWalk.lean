@@ -1,6 +1,8 @@
 import Rotor.Support.SelfAvoiding
 
 /-!
+# Existence of a stuck extension within bounded steps
+
 Existence of a stuck extension within a bounded number of steps, `rotor.tex:1408-1418`:
 "a nonbacktracking walk with distinct vertices, all of degree three, has two continuations at
 every step … From every directed edge, some nonbacktracking walk of at most `m` steps therefore
@@ -15,6 +17,9 @@ namespace Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
+/-- `q` belongs to `NodupExt G l n`, the self-avoiding extensions of `l` by `n`
+vertices, iff `q` has length `l.length + n`, its last `l.length` entries recover
+`l` via `q.drop n`, it has no duplicate vertices, and it is a chain for `G.Adj`. -/
 theorem mem_NodupExt_iff {l : List V} (hl : Adm G l) {n : ℕ} {q : List V} :
     q ∈ NodupExt G l n ↔ q.length = l.length + n ∧ q.drop n = l ∧ q.Nodup ∧ q.IsChain G.Adj := by
   constructor
@@ -41,6 +46,8 @@ theorem mem_NodupExt_iff {l : List V} (hl : Adm G l) {n : ℕ} {q : List V} :
           rw [NodupExt_succ, mem_biUnion]
           refine ⟨b :: rest, hq'', (mem_ext1_cons).2 ⟨hch.rel.symm, (List.nodup_cons.1 hnd).1⟩⟩
 
+/-- Every extension `q ∈ NodupExt G l (n + 1)` is a single vertex `c` prepended
+to some `t ∈ NodupExt G l n`. -/
 theorem exists_cons_of_mem_NodupExt_succ {l : List V} {n : ℕ} {q : List V}
     (h : q ∈ NodupExt G l (n + 1)) : ∃ c t, q = c :: t ∧ t ∈ NodupExt G l n := by
   rw [NodupExt_succ, mem_biUnion] at h
@@ -48,6 +55,8 @@ theorem exists_cons_of_mem_NodupExt_succ {l : List V} {n : ℕ} {q : List V}
   obtain ⟨b, rest, c, rfl, -, -, rfl⟩ := exists_of_mem_ext1 hq
   exact ⟨c, b :: rest, rfl, ht⟩
 
+/-- Every vertex of the base list `l` remains present in any extension
+`q ∈ NodupExt G l n`, since `l` is the suffix `q.drop n`. -/
 theorem mem_of_mem_NodupExt {l : List V} {n : ℕ} {q : List V} (h : q ∈ NodupExt G l n)
     {x : V} (hx : x ∈ l) : x ∈ q := by
   rw [← drop_of_mem_NodupExt h] at hx
@@ -75,11 +84,15 @@ theorem stuck_of_two_nbrs (h3 : ∀ v : V, G.degree v ≤ 3) {b : V} {rest : Lis
   have := h3 b
   omega
 
+/-- The number of one-step extensions `ext1 G (b :: rest)` equals the number of
+neighbours of `b` that do not already lie on the path `b :: rest`. -/
 theorem card_ext1 (b : V) (rest : List V) :
     (ext1 G (b :: rest)).card = ((G.neighborFinset b).filter (fun c => c ∉ b :: rest)).card := by
   rw [ext1]
   exact card_image_of_injective _ (fun x y hxy => by simpa using hxy)
 
+/-- A non-stuck admissible path `q` has at least two one-step extensions, since
+`Stuck` is exactly the failure of this bound. -/
 theorem two_le_card_ext1 {q : List V} (hq : Adm G q) (hs : ¬ Stuck G q) : 2 ≤ (ext1 G q).card := by
   obtain ⟨-, -, hlen⟩ := hq
   match q with
@@ -109,7 +122,8 @@ before the meeting point, or the walk's first vertex is the second vertex of the
 theorem push (h3 : ∀ v : V, G.degree v ≤ 3) (v₀ : V) : ∀ (u : List V) (p : List V) (k : ℕ),
     Adm G p → u.IsChain G.Adj → u.Nodup → (∀ x ∈ u.head?, G.Adj (p.headD v₀) x) →
     p.headD v₀ ∉ u → (∃ x ∈ u.take k, x ∈ p) →
-    (∃ j < k, ∃ q ∈ NodupExt G p j, Stuck G q) ∨ (∃ x ∈ u.head?, ∃ y p', p = p.headD v₀ :: y :: p' ∧ x = y)
+    (∃ j < k, ∃ q ∈ NodupExt G p j, Stuck G q) ∨
+      (∃ x ∈ u.head?, ∃ y p', p = p.headD v₀ :: y :: p' ∧ x = y)
   | [], p, k, _, _, _, _, _, hmeet => by simp at hmeet
   | x :: u', p, k, hp, hch, hnd, hadj, hz, hmeet => by
     obtain ⟨hpnd, hpch, hplen⟩ := hp
@@ -220,6 +234,9 @@ theorem headD_injOn (h3 : ∀ v : V, G.degree v ≤ 3) {q₀ : List V} (hq₀ : 
       exact hne' (headD_injOn h3 hq₀ v₀ h (fun j hj => hno j (by omega)) t₁ ht₁ t₂ ht₂
         (e1.trans e2.symm))
 
+/-- By induction on `n`, using the triangle inequality along one-step
+extensions, the head of `q ∈ NodupExt G l n` lies within graph distance `n`
+of the head of `l`. -/
 theorem dist_headD_le (hG : G.Connected) (v₀ : V) {l : List V} :
     ∀ {n : ℕ} {q : List V}, q ∈ NodupExt G l n → G.dist (l.headD v₀) (q.headD v₀) ≤ n
   | 0, q, h => by

@@ -3,6 +3,8 @@ import Rotor.Support.ExplCover
 import Rotor.Frozen.Square.Exploration
 
 /-!
+# The probability of a history of forced and nonforced tests
+
 Lemma 5.6 (`lem:square-forced-tests`, `rotor.tex:2058-2170`), part 1: the probability of a
 history.  `Pm f d h` is the law of the event that the first `h.length` outcomes are `h`; it is
 measurable, splits over the next outcome, and Lemma 5.4 (iii) gives the split: a forced test
@@ -18,6 +20,9 @@ namespace Rotor
 
 /-! ### Measurability -/
 
+/-- The event `DualOpen ρ a b` that the dual edge across `a → b` is open is measurable in `ρ`,
+being the preimage of a fixed discrete set under evaluating `ρ` at the primal edge's tail
+vertex. -/
 theorem measurableSet_dualOpen {a b : Site} (h : squareGraph.Adj a b) :
     MeasurableSet {ρ : Config squareGraph | DualOpen ρ a b} := by
   have : {ρ : Config squareGraph | DualOpen ρ a b} =
@@ -33,6 +38,9 @@ theorem measurableSet_dualOpen {a b : Site} (h : squareGraph.Adj a b) :
   exact measurable_pi_apply _ MeasurableSet.of_discrete
 
 open Classical in
+/-- `testEvent C` is measurable, by induction on `C`: it splits as the intersection of the
+measurable event that the outcome recorded for the head test matches with the measurable event
+for the tail `C`. -/
 theorem measurableSet_testEvent (C : List (Site × Site × Bool))
     (hadj : ∀ t ∈ C, squareGraph.Adj t.1 t.2.1) : MeasurableSet (testEvent C) := by
   induction C with
@@ -61,6 +69,8 @@ theorem measurableSet_testEvent (C : List (Site × Site × Bool))
 
 /-! ### Histories along the exploration -/
 
+/-- Once the exploration's active list is empty at time `m`, it stays exactly as it is at every
+later time `n ≥ m`. -/
 theorem explore_stuck (ρ : Config squareGraph) (f d : Site) {m n : ℕ} (hmn : m ≤ n)
     (h : (explore ρ f d m).active = []) : explore ρ f d n = explore ρ f d m := by
   induction n with
@@ -73,6 +83,7 @@ theorem explore_stuck (ρ : Config squareGraph) (f d : Site) {m n : ℕ} (hmn : 
     · have : m = n + 1 := by omega
       subst this; rfl
 
+/-- `history ρ f d m` is a prefix of `history ρ f d n` whenever `m ≤ n`. -/
 theorem history_prefix (ρ : Config squareGraph) (f d : Site) {m n : ℕ} (hmn : m ≤ n) :
     history ρ f d m <+: history ρ f d n := by
   induction n with
@@ -93,7 +104,8 @@ theorem history_prefix (ρ : Config squareGraph) (f d : Site) {m n : ℕ} (hmn :
 if `n > h.length`, the exploration has terminated by then. -/
 theorem history_eq_iff (ρ : Config squareGraph) (f d : Site) (n : ℕ) (h : List Bool) :
     history ρ f d n = h ↔
-      history ρ f d h.length = h ∧ (h.length = n ∨ (h.length < n ∧ (replay f d h).active = [])) := by
+      history ρ f d h.length = h ∧
+        (h.length = n ∨ (h.length < n ∧ (replay f d h).active = [])) := by
   constructor
   · intro hn
     have hlen : h.length ≤ n := by rw [← hn]; exact history_length_le ρ f d n
@@ -137,6 +149,9 @@ theorem history_eq_iff (ρ : Config squareGraph) (f d : Site) (n : ℕ) (h : Lis
       rw [explore_stuck ρ f d hlt.le hstuck']
       exact hm
 
+/-- The event that `history ρ f d h.length = h` is measurable: it equals `testEvent` of the
+outcomes recorded by `h` when every proper prefix of `h` still has an active test, and is empty
+otherwise. -/
 theorem measurableSet_history_len (f : Site) {d : Site} (hd : IsUnit d) (h : List Bool) :
     MeasurableSet {ρ : Config squareGraph | history ρ f d h.length = h} := by
   by_cases hpre : ∀ i < h.length, (replay f d (h.take i)).active ≠ []
@@ -179,6 +194,8 @@ theorem measurableSet_history_len (f : Site) {d : Site} (hd : IsUnit d) (h : Lis
       omega
     rw [this]; exact MeasurableSet.empty
 
+/-- The event that `history ρ f d n = h` is measurable, as the intersection, via `history_eq_iff`,
+of the measurable event `history ρ f d h.length = h` with a condition not depending on `ρ`. -/
 theorem measurableSet_history (f : Site) {d : Site} (hd : IsUnit d) (n : ℕ) (h : List Bool) :
     MeasurableSet {ρ : Config squareGraph | history ρ f d n = h} := by
   have : {ρ : Config squareGraph | history ρ f d n = h} =
@@ -197,11 +214,15 @@ theorem measurableSet_history (f : Site) {d : Site} (hd : IsUnit d) (n : ℕ) (h
 noncomputable def Pm (f d : Site) (h : List Bool) : ℝ≥0∞ :=
   uniformLaw clockwise {ρ | history ρ f d h.length = h}
 
+/-- `Pm f d h` is a probability, hence at most `1`. -/
 theorem Pm_le_one (f d : Site) (h : List Bool) : Pm f d h ≤ 1 := prob_le_one
 
+/-- `Pm f d h` is finite. -/
 theorem Pm_ne_top (f d : Site) (h : List Bool) : Pm f d h ≠ ⊤ :=
   ne_top_of_le_ne_top one_ne_top (Pm_le_one f d h)
 
+/-- If the first `(h ++ [o]).length` outcomes of the exploration from `f` are `h ++ [o]`, the
+first `h.length` outcomes are already `h`. -/
 theorem history_of_append (ρ : Config squareGraph) (f d : Site) (h : List Bool) (o : Bool)
     (hρ : history ρ f d (h ++ [o]).length = h ++ [o]) : history ρ f d h.length = h := by
   have := history_prefix ρ f d (show h.length ≤ (h ++ [o]).length by simp)
@@ -219,9 +240,13 @@ theorem history_of_append (ρ : Config squareGraph) (f d : Site) (h : List Bool)
   rw [List.prefix_iff_eq_take] at this
   rw [this, hlen, List.take_left' rfl]
 
+/-- Appending an outcome can only decrease the probability of a history: `Pm f d (h ++ [o]) ≤
+Pm f d h`. -/
 theorem Pm_append_le (f d : Site) (h : List Bool) (o : Bool) : Pm f d (h ++ [o]) ≤ Pm f d h :=
   measure_mono (fun ρ hρ => history_of_append ρ f d h o hρ)
 
+/-- Once the replay from `h` has stopped (empty active list), extending `h` by any outcome `o`
+has probability zero, since no history can then equal `h ++ [o]`. -/
 theorem Pm_stuck (f d : Site) (h : List Bool) (hs : (replay f d h).active = []) (o : Bool) :
     Pm f d (h ++ [o]) = 0 := by
   unfold Pm
@@ -239,6 +264,9 @@ theorem Pm_stuck (f d : Site) (h : List Bool) (hs : (replay f d h).active = []) 
   rw [this, measure_empty]
 
 open Classical in
+/-- When the active edge after replaying `h` is `e`, the event that `history` reaches `h ++ [o]`
+splits as the event that `history` reaches `h` intersected with the event that the outcome at `e`
+is `o`. -/
 theorem history_append_eq (f d : Site) (h : List Bool) {e : Site × Site}
     {rest : List (Site × Site)} (he : (replay f d h).active = e :: rest) (o : Bool) :
     {ρ : Config squareGraph | history ρ f d (h ++ [o]).length = h ++ [o]} =
@@ -248,6 +276,9 @@ theorem history_append_eq (f d : Site) (h : List Bool) {e : Site × Site}
   rw [history_append_iff ρ f d h o (by rw [he]; exact List.cons_ne_nil _ _), outcome,
     curEdge_eq he]
 
+/-- The probabilities of extending `h` by `true` and by `false` sum to the probability of `h`,
+since these two extensions partition the event underlying `Pm f d h` by the (measurable) outcome
+at the active edge `e`. -/
 theorem Pm_split (f : Site) {d : Site} (hd : IsUnit d) (h : List Bool) {e : Site × Site}
     {rest : List (Site × Site)} (he : (replay f d h).active = e :: rest) :
     Pm f d (h ++ [true]) + Pm f d (h ++ [false]) = Pm f d h := by
@@ -267,6 +298,8 @@ theorem Pm_split (f : Site) {d : Site} (hd : IsUnit d) (h : List Bool) {e : Site
   congr 1
   rw [← Set.inter_union_distrib_left, Set.union_compl_self, Set.inter_univ]
 
+/-- `Pm f d (h ++ [true])` equals the probability that the first `h.length` outcomes are `h` and
+the dual edge at the active edge `e` is open. -/
 theorem Pm_true_eq (f d : Site) (h : List Bool) {e : Site × Site} {rest : List (Site × Site)}
     (he : (replay f d h).active = e :: rest) :
     Pm f d (h ++ [true]) =
@@ -319,6 +352,9 @@ theorem Pm_nonforced (f d : Site) (hd : squareGraph.Adj f (f + d)) (h : List Boo
 /-! ### The forced count along histories -/
 
 open Classical in
+/-- When replaying `h` still has an active edge `e`, one more step's forced count increases by
+`1` exactly when `e`'s far side has already been tested closed, matching the case split in
+`explStepWith`. -/
 theorem forced_append_cons (f d : Site) (h : List Bool) {e : Site × Site}
     {rest : List (Site × Site)} (he : (replay f d h).active = e :: rest) (o : Bool) :
     (replay f d (h ++ [o])).forced =
@@ -326,22 +362,27 @@ theorem forced_append_cons (f d : Site) (h : List Bool) {e : Site × Site}
       else (replay f d h).forced := by
   rw [replay_append, explStepWith_cons he]
 
+/-- Once replaying `h` has stopped, one more step leaves the forced count unchanged. -/
 theorem forced_append_nil (f d : Site) (h : List Bool) (hs : (replay f d h).active = [])
     (o : Bool) : (replay f d (h ++ [o])).forced = (replay f d h).forced := by
   rw [replay_append, explStepWith_nil hs]
 
+/-- One more step of replay increases the forced count by at most `1`. -/
 theorem forced_append_le (f d : Site) (h : List Bool) (o : Bool) :
     (replay f d (h ++ [o])).forced ≤ (replay f d h).forced + 1 := by
   rcases he : (replay f d h).active with _ | ⟨e, rest⟩
   · rw [forced_append_nil f d h he]; omega
   · rw [forced_append_cons f d h he]; split_ifs <;> omega
 
+/-- One more step of replay never decreases the forced count. -/
 theorem le_forced_append (f d : Site) (h : List Bool) (o : Bool) :
     (replay f d h).forced ≤ (replay f d (h ++ [o])).forced := by
   rcases he : (replay f d h).active with _ | ⟨e, rest⟩
   · rw [forced_append_nil f d h he]
   · rw [forced_append_cons f d h he]; split_ifs <;> omega
 
+/-- The forced count is monotone along prefixes: `h₁ <+: h₂` implies `(replay f d h₁).forced ≤
+(replay f d h₂).forced`, by induction on the suffix using `le_forced_append`. -/
 theorem forced_mono_prefix (f d : Site) {h₁ h₂ : List Bool} (hp : h₁ <+: h₂) :
     (replay f d h₁).forced ≤ (replay f d h₂).forced := by
   obtain ⟨t, rfl⟩ := hp
@@ -351,10 +392,14 @@ theorem forced_mono_prefix (f d : Site) {h₁ h₂ : List Bool} (hp : h₁ <+: h
     rw [← List.append_assoc]
     exact ih.trans (le_forced_append f d _ o)
 
+/-- The exploration's forced count after `n` steps equals the forced count of replaying its own
+history. -/
 theorem forced_explore (ρ : Config squareGraph) (f d : Site) (n : ℕ) :
     (explore ρ f d n).forced = (replay f d (history ρ f d n)).forced := by
   rw [← explore_eq_replay]
 
+/-- `N ≤ forcedCount ρ f d` iff the exploration reaches forced count at least `N` at some finite
+time `n`. -/
 theorem le_forcedCount_iff (ρ : Config squareGraph) (f d : Site) (N : ℕ) :
     (N : ℕ∞) ≤ forcedCount ρ f d ↔ ∃ n, N ≤ (explore ρ f d n).forced := by
   constructor
@@ -374,12 +419,16 @@ theorem le_forcedCount_iff (ρ : Config squareGraph) (f d : Site) (N : ℕ) :
     unfold forcedCount
     exact le_iSup_of_le n (by exact_mod_cast hn)
 
+/-- If `h` is the walk's history at time `h.length`, the forced count of replaying `h` is a lower
+bound for `forcedCount ρ f d`. -/
 theorem forcedCount_of_history {ρ : Config squareGraph} (f d : Site) {h : List Bool}
     (hρ : history ρ f d h.length = h) :
     ((replay f d h).forced : ℕ∞) ≤ forcedCount ρ f d := by
   rw [le_forcedCount_iff]
   exact ⟨h.length, by rw [forced_explore, hρ]⟩
 
+/-- If `h` is the walk's history at time `h.length` and replaying `h` has stopped, then
+`forcedCount ρ f d` equals exactly the forced count of `h`. -/
 theorem forcedCount_eq_of_stuck {ρ : Config squareGraph} (f d : Site) {h : List Bool}
     (hρ : history ρ f d h.length = h) (hs : (replay f d h).active = []) :
     forcedCount ρ f d = (replay f d h).forced := by
@@ -404,6 +453,8 @@ theorem history_take (ρ : Config squareGraph) (f d : Site) {m n : ℕ} (hmn : m
   rw [history_length_eq ρ f d m hne] at hp
   exact hp.symm
 
+/-- If `h` is a prefix of `h'` and `h'` is the walk's history at time `h'.length`, then `h` is
+already the walk's history at time `h.length`. -/
 theorem history_of_prefix {ρ : Config squareGraph} (f d : Site) {h h' : List Bool} (hp : h <+: h')
     (hρ : history ρ f d h'.length = h') : history ρ f d h.length = h := by
   rcases Nat.lt_or_ge h.length h'.length with hlt | hge
@@ -423,8 +474,11 @@ theorem history_of_prefix {ρ : Config squareGraph} (f d : Site) {h h' : List Bo
   · have : h = h' := hp.eq_of_length (by have := hp.length_le; omega)
     subst this; exact hρ
 
+/-- If `Pm f d h` is nonzero, some configuration `ρ` realizes `h` as its history at time
+`h.length`, with the exploration at that time agreeing with replaying `h`. -/
 theorem Pm_pos_config (f d : Site) {h : List Bool} (hne : Pm f d h ≠ 0) :
-    ∃ ρ : Config squareGraph, history ρ f d h.length = h ∧ explore ρ f d h.length = replay f d h := by
+    ∃ ρ : Config squareGraph, history ρ f d h.length = h ∧
+      explore ρ f d h.length = replay f d h := by
   obtain ⟨ρ, hρ⟩ := nonempty_of_measure_ne_zero hne
   exact ⟨ρ, hρ, by rw [explore_eq_replay, hρ]⟩
 
@@ -434,6 +488,9 @@ theorem Pm_pos_config (f d : Site) {h : List Bool} (hne : Pm f d h ≠ 0) :
 def MinF (f d : Site) (N : ℕ) (h : List Bool) : Prop :=
   (replay f d h).forced = N ∧ ∀ i < h.length, (replay f d (h.take i)).forced < N
 
+/-- If the walk's forced count reaches at least `N ≥ 1`, some history `h` is minimal for `N`
+(`MinF f d N h`) and is realized as the walk's history at time `h.length`: take the history at
+the first exploration time whose forced count reaches `N`. -/
 theorem minF_exists (f d : Site) {N : ℕ} (hN : 1 ≤ N) {ρ : Config squareGraph}
     (hρ : (N : ℕ∞) ≤ forcedCount ρ f d) : ∃ h, MinF f d N h ∧ history ρ f d h.length = h := by
   classical
@@ -479,6 +536,9 @@ theorem minF_exists (f d : Site) {N : ℕ} (hN : 1 ≤ N) {ρ : Config squareGra
     rw [← forced_explore]
     exact hmin i hi
 
+/-- Two histories both minimal for the same forced count `N` and both realized by the same walk
+`ρ` must be equal: whichever is a strict prefix of the other cannot yet reach forced count `N`,
+contradicting minimality of the longer one. -/
 theorem minF_unique (f d : Site) {N : ℕ} {h₁ h₂ : List Bool} (h1 : MinF f d N h₁)
     (h2 : MinF f d N h₂) {ρ : Config squareGraph} (hρ₁ : history ρ f d h₁.length = h₁)
     (hρ₂ : history ρ f d h₂.length = h₂) : h₁ = h₂ := by
@@ -495,6 +555,8 @@ theorem minF_unique (f d : Site) {N : ℕ} {h₁ h₂ : List Bool} (h1 : MinF f 
     omega
   · exact hp.eq_of_length (by omega)
 
+/-- The event that the forced count reaches at least `N ≥ 1` decomposes as a union, over the
+minimal histories `h` reaching `N`, of the events that `h` is the walk's history. -/
 theorem K_event_eq (f d : Site) {N : ℕ} (hN : 1 ≤ N) :
     {ρ : Config squareGraph | (N : ℕ∞) ≤ forcedCount ρ f d} =
       ⋃ h : {h : List Bool // MinF f d N h}, {ρ | history ρ f d h.1.length = h.1} := by
@@ -509,6 +571,9 @@ theorem K_event_eq (f d : Site) {N : ℕ} (hN : 1 ≤ N) :
     rw [hm.1] at this
     exact this
 
+/-- The event that the forced count reaches at least `M ≥ N` decomposes as a union, over the
+minimal histories `h` reaching `N`, of that event intersected with `h` being the walk's
+history. -/
 theorem K_event_inter_eq (f d : Site) {N : ℕ} (hN : 1 ≤ N) (M : ℕ) (hNM : N ≤ M) :
     {ρ : Config squareGraph | (M : ℕ∞) ≤ forcedCount ρ f d} =
       ⋃ h : {h : List Bool // MinF f d N h},
@@ -523,6 +588,9 @@ theorem K_event_inter_eq (f d : Site) {N : ℕ} (hN : 1 ≤ N) (M : ℕ) (hNM : 
   · rintro ⟨_, -, hρ⟩
     exact hρ
 
+/-- Sets indexed by distinct minimal histories for the same `N`, each contained in the event that
+its own history occurs, are pairwise disjoint, since distinct minimal histories cannot both be
+realized by the same walk (`minF_unique`). -/
 theorem K_disjoint (f d : Site) (N : ℕ)
     (S : {h : List Bool // MinF f d N h} → Set (Config squareGraph))
     (hS : ∀ h, S h ⊆ {ρ | history ρ f d h.1.length = h.1}) :
@@ -533,6 +601,8 @@ theorem K_disjoint (f d : Site) (N : ℕ)
   apply hne
   exact Subtype.ext (minF_unique f d h₁.2 h₂.2 (hS h₁ h1) (hS h₂ h2))
 
+/-- The event that the forced count reaches at least `N` is measurable, as a countable union over
+times `n` and over histories `h` whose replay reaches forced count `N`. -/
 theorem measurableSet_K (f : Site) {d : Site} (hd : IsUnit d) (N : ℕ) :
     MeasurableSet {ρ : Config squareGraph | (N : ℕ∞) ≤ forcedCount ρ f d} := by
   have : {ρ : Config squareGraph | (N : ℕ∞) ≤ forcedCount ρ f d} =
@@ -549,6 +619,9 @@ theorem measurableSet_K (f : Site) {d : Site} (hd : IsUnit d) (N : ℕ) :
   exact MeasurableSet.iUnion (fun n =>
     MeasurableSet.iUnion (fun h => measurableSet_history f hd n h.1))
 
+/-- The probability that the forced count reaches at least `N ≥ 1` equals the sum, over the
+minimal histories `h` reaching `N`, of `Pm f d h`, since the corresponding events are measurable
+and pairwise disjoint. -/
 theorem K_measure_eq (f : Site) {d : Site} (hd : IsUnit d) {N : ℕ} (hN : 1 ≤ N) :
     uniformLaw clockwise {ρ | (N : ℕ∞) ≤ forcedCount ρ f d} =
       ∑' h : {h : List Bool // MinF f d N h}, Pm f d h.1 := by
@@ -556,6 +629,9 @@ theorem K_measure_eq (f : Site) {d : Site} (hd : IsUnit d) {N : ℕ} (hN : 1 ≤
     (fun h => measurableSet_history_len f hd h.1)]
   rfl
 
+/-- The probability that the forced count reaches at least `M ≥ N` equals the sum, over the
+minimal histories `h` reaching `N`, of the probability that `h` occurs and the forced count then
+reaches `M`. -/
 theorem K_measure_step (f : Site) {d : Site} (hd : IsUnit d) {N : ℕ} (hN : 1 ≤ N) (M : ℕ)
     (hNM : N ≤ M) :
     uniformLaw clockwise {ρ | (M : ℕ∞) ≤ forcedCount ρ f d} =

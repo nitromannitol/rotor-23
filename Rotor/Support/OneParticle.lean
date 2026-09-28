@@ -4,6 +4,16 @@ for `lem:boundary-routing` (2) and (3) and `lem:decreasing-positions` (i).
 -/
 import Rotor.Support.NoRepeat
 
+/-!
+# Invariants of the one-particle-at-a-time boundary routing
+
+Tracks a state machine that carries out the boundary order `es` of a finite set `S` one particle
+at a time. Proves the `OneInv` invariant holds initially and is preserved by each step, that a
+finishing stage gives a complete boundary routing and stays finished, and bounds the number of
+steps taken before finishing using a potential function `pot` that strictly increases on every
+non-finishing move.
+-/
+
 open Finset
 
 namespace Rotor
@@ -49,7 +59,8 @@ theorem countP_boundaryOrder (S : Finset V) (es : List (V × V)) (hes : IsBounda
 /-- The invariant holds initially. -/
 theorem oneInv_init (S : Finset V) (ρ : Config G) (es : List (V × V))
     (hes : IsBoundaryOrder G S es) :
-    OneInv π S ρ es { ξ := boundaryInit S ρ, queue := es, tracked := none, acted := [], route := [] } where
+    OneInv π S ρ es
+      { ξ := boundaryInit S ρ, queue := es, tracked := none, acted := [], route := [] } where
   run_eq := rfl
   legal := trivial
   queue_suffix := List.suffix_refl es
@@ -141,12 +152,14 @@ def trackedIn (S : Finset V) (s : OneState G) : ℤ :=
 def pot (S : Finset V) (es : List (V × V)) (s : OneState G) : ℤ :=
   2 * s.acted.length + ((es.length : ℤ) - s.queue.length) - trackedIn S s
 
+/-- `trackedIn` never takes a negative value. -/
 theorem trackedIn_nonneg (S : Finset V) (s : OneState G) : 0 ≤ trackedIn S s := by
   unfold trackedIn
   split
   · split_ifs <;> simp
   · simp
 
+/-- `trackedIn` is at most `1`. -/
 theorem trackedIn_le_one (S : Finset V) (s : OneState G) : trackedIn S s ≤ 1 := by
   unfold trackedIn
   split
@@ -187,6 +200,10 @@ theorem pot_ge (S : Finset V) (ρ : Config G) (es : List (V × V)) (hes : IsBoun
     push_cast
     linarith
 
+/-- If no stage before time `n` is finishing, the number of steps taken is bounded by twice the
+number of actuations plus the length of the boundary order: from `pot_ge`, `n` is at most the
+potential, and the potential is bounded above by `2 * s.acted.length + es.length` since
+`trackedIn` is nonnegative and the queue length is nonnegative. -/
 theorem oneRouting_length (S : Finset V) (ρ : Config G) (es : List (V × V))
     (hes : IsBoundaryOrder G S es) (n : ℕ) (hnd : ∀ m < n, ¬ OneDone π S ρ es m) :
     n ≤ 2 * (oneRouting π S ρ es n).acted.length + es.length := by

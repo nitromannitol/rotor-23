@@ -1,11 +1,22 @@
 import Rotor.Support.BlockRoute
 
+/-!
+# Grid blocks and their routing
+
+Adjacency lemmas for the square lattice graph closed under translation, the fixed `4`-by-`4`
+block with its boundary `bd4` and the explicit routing table between boundary vertices through
+the copy `copy0` of `P⋆`, and the general block `blockCorner x y z` of side `4` tiling the box
+`Dset x y r` indexed by `Zset r`, with its interior, boundary, and the bonds `Fset x y r`
+between vertices of the box.
+-/
+
 open Finset
 
 namespace Rotor
 
 /-! ### Adjacency by cases, translation -/
 
+/-- An adjacent pair `v, w` differs by one of the four unit steps in a coordinate. -/
 theorem adj_unit_cases {v w : Site} (h : squareGraph.Adj v w) :
     (w.1 = v.1 + 1 ∧ w.2 = v.2) ∨ (w.1 = v.1 - 1 ∧ w.2 = v.2) ∨
     (w.1 = v.1 ∧ w.2 = v.2 + 1) ∨ (w.1 = v.1 ∧ w.2 = v.2 - 1) := by
@@ -13,16 +24,22 @@ theorem adj_unit_cases {v w : Site} (h : squareGraph.Adj v w) :
   rcases abs_cases (v.1 - w.1) with ⟨h1, _⟩ | ⟨h1, _⟩ <;>
     rcases abs_cases (v.2 - w.2) with ⟨h2, _⟩ | ⟨h2, _⟩ <;> omega
 
-theorem adj_add_right_iff (u v c : Site) : squareGraph.Adj (u + c) (v + c) ↔ squareGraph.Adj u v := by
+/-- Adjacency in the square lattice graph is invariant under translating both endpoints by
+the same vector `c`. -/
+theorem adj_add_right_iff (u v c : Site) :
+    squareGraph.Adj (u + c) (v + c) ↔ squareGraph.Adj u v := by
   rw [squareGraph_adj, squareGraph_adj]
   simp only [Prod.fst_add, Prod.snd_add, add_sub_add_right_eq_sub]
 
+/-- Translating a path by a fixed vector `c` gives a path. -/
 theorem isPath_map_add {l : List Site} (h : IsPath squareGraph l) (c : Site) :
     IsPath squareGraph (l.map (· + c)) := by
   refine ⟨h.1.map (add_left_injective c), ?_⟩
   rw [List.isChain_map]
   exact h.2.imp (fun a b hab => (adj_add_right_iff a b c).2 hab)
 
+/-- Applying a function `f` to both a list `l` and a traversed window `q` preserves the
+traversal relation. -/
 theorem traverses_map {l q : List Site} (h : Traverses l q) (f : Site → Site) :
     Traverses (l.map f) (q.map f) := by
   obtain ⟨i, h⟩ := h
@@ -34,6 +51,7 @@ theorem traverses_map {l q : List Site} (h : Traverses l q) (f : Site → Site) 
 
 /-! ### The fixed block -/
 
+/-- A vertex lies in `bd4` iff it lies in the box `inBox4` and on one of its four sides. -/
 theorem mem_bd4 (v : Site) : v ∈ bd4 ↔ inBox4 v ∧ (v.1 = 0 ∨ v.1 = 4 ∨ v.2 = 0 ∨ v.2 = 4) := by
   obtain ⟨a, b⟩ := v
   constructor
@@ -44,8 +62,10 @@ theorem mem_bd4 (v : Site) : v ∈ bd4 ↔ inBox4 v ∧ (v.1 = 0 ∨ v.1 = 4 ∨
     simp only at h1 h2 h3 h4 h
     interval_cases a <;> interval_cases b <;> first | decide | omega
 
+/-- `bd4` has `16` vertices. -/
 theorem bd4_length : bd4.length = 16 := rfl
 
+/-- Any two distinct boundary vertices of `bd4` are joined by a route from the lookup table. -/
 theorem route_of_mem {s t : Site} (hs : s ∈ bd4) (ht : t ∈ bd4) (hne : s ≠ t) :
     ∃ l, OkRoute l s t := by
   obtain ⟨i, hi, rfl⟩ := List.mem_iff_getElem.1 hs
@@ -81,36 +101,46 @@ def InteriorB (c v : Site) : Prop := c.1 < v.1 ∧ v.1 < c.1 + 4 ∧ c.2 < v.2 �
 /-- The copy of `P⋆` in the block with corner `c`. -/
 def copyAt (c : Site) : List Site := copy0.map (· + c)
 
+/-- The copy `copyAt c` has `6` vertices. -/
 theorem copyAt_length (c : Site) : (copyAt c).length = 6 := by
   simp [copyAt, copy0, pstar]
 
+/-- Every vertex of the copy `copyAt c` lies in the interior of the block with corner `c`. -/
 theorem interiorB_of_mem_copyAt {c v : Site} (h : v ∈ copyAt c) : InteriorB c v := by
   simp only [copyAt, copy0, pstar, List.map_map, List.mem_map, List.mem_cons, List.mem_nil_iff,
     or_false, Function.comp] at h
   unfold InteriorB
   rcases h with ⟨u, hu, rfl⟩
-  rcases hu with rfl | rfl | rfl | rfl | rfl | rfl <;> simp only [Prod.fst_add, Prod.snd_add] <;> omega
+  rcases hu with rfl | rfl | rfl | rfl | rfl | rfl <;>
+    simp only [Prod.fst_add, Prod.snd_add] <;> omega
 
+/-- An interior vertex of a block lies in the block. -/
 theorem inBlock_of_interiorB {c v : Site} (h : InteriorB c v) : InBlock c v := by
   unfold InteriorB at h; unfold InBlock; omega
 
+/-- An interior vertex of a block is not on its boundary. -/
 theorem not_onBdry_of_interiorB {c v : Site} (h : InteriorB c v) : ¬ OnBdry c v := by
   unfold InteriorB at h; unfold OnBdry InBlock; omega
 
+/-- A vertex of a block adjacent to a vertex outside the block lies on the block's boundary. -/
 theorem onBdry_of_adj_not {c v w : Site} (hv : InBlock c v) (hw : ¬ InBlock c w)
     (h : squareGraph.Adj v w) : OnBdry c v := by
   have := adj_unit_cases h
   unfold InBlock at hv hw; unfold OnBdry InBlock; omega
 
+/-- A vertex in the interior of two blocks of the grid forces the two block indices to
+agree. -/
 theorem interiorB_unique (x y : Site) {z z' : ℤ × ℤ} {v : Site}
     (h : InteriorB (blockCorner x y z) v) (h' : InteriorB (blockCorner x y z') v) : z = z' := by
   unfold InteriorB blockCorner at h h'
   exact Prod.ext (by omega) (by omega)
 
+/-- A block vertex on the grid's leftmost column `v.1 = x.1` lies on the block's boundary. -/
 theorem onBdry_of_col (x y : Site) (z : ℤ × ℤ) {v : Site} (hv : InBlock (blockCorner x y z) v)
     (hcol : v.1 = x.1) : OnBdry (blockCorner x y z) v := by
   unfold InBlock blockCorner at hv; unfold OnBdry InBlock blockCorner; omega
 
+/-- A block vertex on the grid's bottom row `v.2 = y.2` lies on the block's boundary. -/
 theorem onBdry_of_row (x y : Site) (z : ℤ × ℤ) {v : Site} (hv : InBlock (blockCorner x y z) v)
     (hrow : v.2 = y.2) : OnBdry (blockCorner x y z) v := by
   unfold InBlock blockCorner at hv; unfold OnBdry InBlock blockCorner; omega
@@ -155,14 +185,18 @@ noncomputable def Fset (x y : Site) (r : ℕ) : Finset (Sym2 Site) :=
   ((Dset x y r ×ˢ Dset x y r).filter (fun p => squareGraph.Adj p.1 p.2)).image
     (fun p => s(p.1, p.2))
 
+/-- `v ∈ Dset x y r` iff its coordinates lie within `4r` of `x.1` and `y.2` respectively. -/
 theorem mem_Dset {x y : Site} {r : ℕ} {v : Site} : v ∈ Dset x y r ↔
     x.1 - 4 * r ≤ v.1 ∧ v.1 ≤ x.1 + 4 * r ∧ y.2 - 4 * r ≤ v.2 ∧ v.2 ≤ y.2 + 4 * r := by
   simp [Dset, and_assoc]
 
+/-- `z ∈ Zset r` iff both coordinates lie in `[-r, r - 1]`. -/
 theorem mem_Zset {r : ℕ} {z : ℤ × ℤ} : z ∈ Zset r ↔
     -(r : ℤ) ≤ z.1 ∧ z.1 ≤ r - 1 ∧ -(r : ℤ) ≤ z.2 ∧ z.2 ≤ r - 1 := by
   simp [Zset, and_assoc]
 
+/-- `b ∈ Fset x y r` iff `b` is the edge of an adjacent pair of vertices of the box
+`Dset x y r`. -/
 theorem mem_Fset {x y : Site} {r : ℕ} {b : Sym2 Site} : b ∈ Fset x y r ↔
     ∃ u v, u ∈ Dset x y r ∧ v ∈ Dset x y r ∧ squareGraph.Adj u v ∧ b = s(u, v) := by
   unfold Fset
@@ -174,6 +208,7 @@ theorem mem_Fset {x y : Site} {r : ℕ} {b : Sym2 Site} : b ∈ Fset x y r ↔
   · rintro ⟨u, v, hu, hv, h, rfl⟩
     exact ⟨(u, v), by rw [mem_filter, mem_product]; exact ⟨⟨hu, hv⟩, h⟩, rfl⟩
 
+/-- Every vertex of a block indexed within `Zset r` lies in the box `Dset x y r`. -/
 theorem mem_Dset_of_inBlock {x y : Site} {r : ℕ} {z : ℤ × ℤ} (hz : z ∈ Zset r) {v : Site}
     (hv : InBlock (blockCorner x y z) v) : v ∈ Dset x y r := by
   rw [mem_Zset] at hz; rw [mem_Dset]; unfold InBlock blockCorner at hv; omega
@@ -184,7 +219,8 @@ theorem exists_block_of_adj {x y : Site} {r : ℕ} {u v : Site} (hu : u ∈ Dset
     ∃ z ∈ Zset r, InBlock (blockCorner x y z) u ∧ InBlock (blockCorner x y z) v := by
   rw [mem_Dset] at hu hv
   have hc := adj_unit_cases h
-  refine ⟨(min ((min u.1 v.1 - x.1) / 4) (r - 1), min ((min u.2 v.2 - y.2) / 4) (r - 1)), ?_, ?_, ?_⟩
+  refine ⟨(min ((min u.1 v.1 - x.1) / 4) (r - 1), min ((min u.2 v.2 - y.2) / 4) (r - 1)),
+    ?_, ?_, ?_⟩
   · rw [mem_Zset]; simp only; omega
   · unfold InBlock blockCorner; simp only; omega
   · unfold InBlock blockCorner; simp only; omega

@@ -13,6 +13,17 @@ Bernoulli(1/8) laws.
 -/
 import Mathlib
 
+/-!
+# The Liggett--Schonmann--Stacey domination input
+
+Sets up the Bernoulli product measure on `(ℤ × ℤ → Bool)`, the notions of an increasing event and
+of `k`-dependence needed to state Liggett--Schonmann--Stacey's domination theorem, and records
+that theorem, in the instance used by the paper, as the assumed proposition
+`Rotor.External.LSS`: some `ε > 0` makes every `2`-dependent field with one-site probabilities at
+most `2ε` dominated, on increasing events, by an independent Bernoulli(`1/8`) field. This result
+is cited, not proved, here.
+-/
+
 open MeasureTheory ProbabilityTheory
 
 namespace Rotor.External
@@ -22,8 +33,10 @@ namespace Rotor.External
 -- verbatim (changing it would change what those statements say).
 set_option linter.deprecated false in
 /-- The Bernoulli law on `Bool` with success probability `p`. -/
-noncomputable def bernoulli (p : NNReal) (hp : p ≤ 1) : Measure Bool := (PMF.bernoulli p hp).toMeasure
+noncomputable def bernoulli (p : NNReal) (hp : p ≤ 1) :
+    Measure Bool := (PMF.bernoulli p hp).toMeasure
 
+/-- `bernoulli p hp` is a probability measure, inherited from the underlying `PMF`. -/
 instance (p : NNReal) (hp : p ≤ 1) : IsProbabilityMeasure (bernoulli p hp) :=
   PMF.toMeasure.isProbabilityMeasure _
 
@@ -41,6 +54,7 @@ def KDependent (k : ℕ) (μ : Measure (ℤ × ℤ → Bool)) : Prop :=
   ∀ I J : Finset (ℤ × ℤ), (∀ i ∈ I, ∀ j ∈ J, (k : ℤ) < max |i.1 - j.1| |i.2 - j.2|) →
     IndepFun (fun ω : ℤ × ℤ → Bool => (fun i : I => ω i)) (fun ω => (fun j : J => ω j)) μ
 
+/-- `1/8` is a valid success probability: it lies in `[0, 1]`. -/
 theorem eighth_le_one : (1 / 8 : NNReal) ≤ 1 := by
   rw [div_le_one (by norm_num)]; norm_num
 

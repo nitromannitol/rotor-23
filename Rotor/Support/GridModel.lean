@@ -1,6 +1,19 @@
 import Rotor.Support.Surgery
 import Rotor.Support.LowerParams
 
+/-!
+# The marked block model for the pivotal comparison
+
+Builds the grid model behind Lemma 5.3: `GIdx x y r` indexes both the box bonds (`Fset x y r`)
+and the block marks (`Zset r`), `bondsOf`/`marksOf` read off the two halves of a configuration,
+and `GEvent x y r` is the increasing event that some path is valid in the resulting marked
+configuration. The pivotal comparison `gEvent_pivot_le` bounds the pivotal mass of a bond by
+that of the block containing it, using the surgery of `Rotor.Support.Surgery`, and
+`gridPar_mono` telescopes this bound over all blocks to compare the event's probability at the
+uniform parameters `gridPar x y r ε ∅` with the fully processed parameters
+`gridPar x y r ε (Zset r)`.
+-/
+
 open Finset Classical
 
 namespace Rotor
@@ -25,10 +38,13 @@ def GEvent : Set (GIdx x y r → Bool) :=
   {ω | ∃ l, ValidPath x y (Dset x y r) (Zset r) (gridCopy x y) (bondsOf x y r ω)
     (marksOf x y r ω) l}
 
+/-- On a bond `b` of the box, `bondsOf` just reads off the `Sum.inl` coordinate of `ω`. -/
 theorem bondsOf_apply (ω : GIdx x y r → Bool) (b : ↥(Fset x y r)) :
     bondsOf x y r ω b.1 = ω (Sum.inl b) := by
   unfold bondsOf extF; rw [dif_pos b.2]
 
+/-- `GEvent x y r` is an increasing event: opening more bonds and marks preserves the
+existence of a valid path. -/
 theorem gEvent_incr : IncrEvent (GEvent x y r) := by
   rintro ω ω' hle ⟨l, hopen, hh, hl, hD, hm⟩
   refine ⟨l, isOpenPath_mono hopen (fun i hi h => ?_), hh, hl, hD, fun z hz hT => ?_⟩
@@ -40,6 +56,8 @@ theorem gEvent_incr : IncrEvent (GEvent x y r) := by
     rw [dif_pos hz] at this ⊢
     exact hle _ this
 
+/-- Updating the `Sum.inl b` coordinate of `ω` updates exactly the bond `b.1` of
+`bondsOf x y r ω`, leaving the rest unchanged. -/
 theorem bondsOf_update_inl (ω : GIdx x y r → Bool) (b : ↥(Fset x y r)) (v : Bool) :
     bondsOf x y r (Function.update ω (Sum.inl b) v) =
       Function.update (bondsOf x y r ω) b.1 v := by
@@ -56,6 +74,8 @@ theorem bondsOf_update_inl (ω : GIdx x y r → Bool) (b : ↥(Fset x y r)) (v :
       exact hb (congrArg Subtype.val (Sum.inl.inj heq))
     · rw [dif_neg h, dif_neg h]
 
+/-- Updating a bond coordinate of `ω` does not change the marks read off it, since `marksOf`
+depends only on the `Sum.inr` coordinates. -/
 theorem marksOf_update_inl (ω : GIdx x y r → Bool) (b : ↥(Fset x y r)) (v : Bool) :
     marksOf x y r (Function.update ω (Sum.inl b) v) = marksOf x y r ω := by
   funext z
@@ -64,6 +84,8 @@ theorem marksOf_update_inl (ω : GIdx x y r → Bool) (b : ↥(Fset x y r)) (v :
   · rw [Function.update_of_ne (by simp)]
   · rfl
 
+/-- Updating a mark coordinate of `ω` does not change the bonds read off it, since `bondsOf`
+depends only on the `Sum.inl` coordinates. -/
 theorem bondsOf_update_inr (ω : GIdx x y r → Bool) (z : ↥(Zset r)) (v : Bool) :
     bondsOf x y r (Function.update ω (Sum.inr z) v) = bondsOf x y r ω := by
   funext b
@@ -73,6 +95,8 @@ theorem bondsOf_update_inr (ω : GIdx x y r → Bool) (z : ↥(Zset r)) (v : Boo
     rw [Function.update_of_ne (by simp)]
   · rfl
 
+/-- Updating the `Sum.inr z` coordinate of `ω` updates exactly the mark at `z.1`, leaving the
+rest of `marksOf x y r ω` unchanged. -/
 theorem marksOf_update_inr (ω : GIdx x y r → Bool) (z : ↥(Zset r)) (v : Bool) :
     marksOf x y r (Function.update ω (Sum.inr z) v) =
       Function.update (marksOf x y r ω) z.1 v := by
@@ -113,14 +137,18 @@ noncomputable def touchSet (z : ℤ × ℤ) : Finset (GIdx x y r) :=
 /-- The vertices of the block with corner `c`. -/
 noncomputable def blockVerts (c : Site) : Finset Site := Icc c.1 (c.1 + 4) ×ˢ Icc c.2 (c.2 + 4)
 
+/-- The block with corner `c` has exactly the `5 × 5 = 25` sites of a `4`-step square. -/
 theorem card_blockVerts (c : Site) : (blockVerts c).card = 25 := by
   rw [blockVerts, card_product, Int.card_Icc, Int.card_Icc,
     show c.1 + 4 + 1 - c.1 = 5 by ring, show c.2 + 4 + 1 - c.2 = 5 by ring]
   rfl
 
+/-- `blockVerts c` is exactly the set of sites satisfying `InBlock c`. -/
 theorem mem_blockVerts {c v : Site} : v ∈ blockVerts c ↔ InBlock c v := by
   simp [blockVerts, InBlock, and_assoc]
 
+/-- At most `100` box bonds touch a single block, by surjecting from its `25` sites times
+`4` directions onto the touching bonds. -/
 theorem card_touching_le (c : Site) : ((Fset x y r).filter (Touches c)).card ≤ 100 := by
   have hsurj : Set.SurjOn (fun p : Site × Dir => s(p.1, p.1 + dirVec p.2))
       ↑(blockVerts c ×ˢ (Finset.univ : Finset Dir)) ↑((Fset x y r).filter (Touches c)) := by
@@ -139,6 +167,8 @@ theorem card_touching_le (c : Site) : ((Fset x y r).filter (Touches c)).card ≤
   simp only [card_product, card_blockVerts, card_univ, Fintype.card_fin] at this
   omega
 
+/-- The model coordinates touching block `z` number at most `100`, transferred from
+`card_touching_le` along the injection into `Sym2 Site`. -/
 theorem card_touchSet_le (z : ℤ × ℤ) : (touchSet x y r z).card ≤ 100 := by
   refine le_trans (Finset.card_le_card_of_injOn
     (fun j : GIdx x y r => Sum.elim (fun b => b.1) (fun _ => s(x, x)) j) ?_ ?_)
@@ -243,6 +273,7 @@ theorem gEvent_pivot_le {par : GIdx x y r → ℝ} (hpar : IsParam par)
 /-- `b` lies inside block `z`. -/
 def Inside (z : ℤ × ℤ) (b : Sym2 Site) : Prop := ∀ v ∈ b, InBlock (blockCorner x y z) v
 
+/-- Every unordered pair `b : Sym2 α` has at least one member. -/
 theorem sym2_exists_mem {α : Type*} (b : Sym2 α) : ∃ v, v ∈ b :=
   Sym2.ind (fun u w => ⟨u, Sym2.mem_mk_left u w⟩) b
 
@@ -251,6 +282,7 @@ noncomputable def gridPar (ε : ℝ) (W : Finset (ℤ × ℤ)) : GIdx x y r → 
   Sum.elim (fun b => if ∃ z ∈ W, Inside x y z b.1 then 1 / 2 - ε else 1 / 2)
     (fun z => if z.1 ∈ W then 1 else 0)
 
+/-- `gridPar x y r ε W` is a valid parameter assignment: every coordinate lies in `[0, 1]`. -/
 theorem gridPar_isParam {ε : ℝ} (hε : 0 ≤ ε) (hε' : ε ≤ 1 / 4) (W : Finset (ℤ × ℤ)) :
     IsParam (gridPar x y r ε W) := by
   intro j
@@ -263,6 +295,7 @@ noncomputable def newSet (W : Finset (ℤ × ℤ)) (z : ℤ × ℤ) : Finset (GI
   Finset.univ.filter (fun j => ∃ b : ↥(Fset x y r), j = Sum.inl b ∧ Inside x y z b.1 ∧
     ¬ ∃ z' ∈ W, Inside x y z' b.1)
 
+/-- The coordinates lowered when processing block `z` after `W` all touch `z`. -/
 theorem newSet_subset (W : Finset (ℤ × ℤ)) (z : ℤ × ℤ) :
     newSet x y r W z ⊆ touchSet x y r z := by
   intro j hj
@@ -272,6 +305,7 @@ theorem newSet_subset (W : Finset (ℤ × ℤ)) (z : ℤ × ℤ) :
   obtain ⟨v, hv⟩ := sym2_exists_mem b.1
   exact ⟨mem_univ _, b, rfl, v, hv, hin v hv⟩
 
+/-- `newSet` only ever contains bond (`Sum.inl`) coordinates, never a mark coordinate. -/
 theorem inr_notMem_newSet (W : Finset (ℤ × ℤ)) (z : ℤ × ℤ) (z' : ↥(Zset r)) :
     Sum.inr z' ∉ newSet x y r W z := by
   unfold newSet
@@ -279,6 +313,9 @@ theorem inr_notMem_newSet (W : Finset (ℤ × ℤ)) (z : ℤ × ℤ) (z' : ↥(Z
   rintro ⟨-, b, h, -⟩
   simp at h
 
+/-- Passing from `gridPar ... W` to `gridPar ... (insert z W)` sets the mark of `z` to `1`
+and lowers by `ε` exactly the bonds newly inside `z`, leaving every other coordinate
+unchanged. -/
 theorem gridPar_insert (ε : ℝ) (W : Finset (ℤ × ℤ)) {z : ℤ × ℤ} (hz : z ∈ Zset r)
     (hzW : z ∉ W) :
     gridPar x y r ε (insert z W) = fun j => if j = Sum.inr ⟨z, hz⟩ then 1 else
@@ -357,6 +394,8 @@ theorem gridPar_step {ε : ℝ} (hε : 0 < ε) (hε' : ε ≤ 1 / 4)
         ≤ ε * 2 ^ 100 * 100 * (4 ^ 100 * 2 ^ 100) * 2 ^ 100 := by gcongr
       _ ≤ 1 := hεK
 
+/-- Telescoping `gridPar_step` over `Finset.induction_on`: processing any set of blocks `W`
+starting from the empty parameters never decreases the probability of `GEvent`. -/
 theorem gridPar_mono {ε : ℝ} (hε : 0 < ε) (hε' : ε ≤ 1 / 4)
     (hεK : ε * 2 ^ 100 * 100 * (4 ^ 100 * 2 ^ 100) * 2 ^ 100 ≤ 1) :
     ∀ W : Finset (ℤ × ℤ), W ⊆ Zset r →
@@ -370,6 +409,8 @@ theorem gridPar_mono {ε : ℝ} (hε : 0 < ε) (hε' : ε ≤ 1 / 4)
     exact (ih (fun a ha => hsub (mem_insert_of_mem ha))).trans
       (gridPar_step x y r hε hε' hεK W hz hzW)
 
+/-- With no blocks processed, every bond has parameter `1/2` and every mark has parameter
+`0`. -/
 theorem gridPar_empty (ε : ℝ) :
     gridPar x y r ε ∅ = Sum.elim (fun _ => (1 / 2 : ℝ)) (fun _ => 0) := by
   funext j
@@ -377,6 +418,8 @@ theorem gridPar_empty (ε : ℝ) :
   · simp [gridPar]
   · simp [gridPar]
 
+/-- With every block processed, every bond has parameter `1/2 - ε` and every mark has
+parameter `1`. -/
 theorem gridPar_full (ε : ℝ) :
     gridPar x y r ε (Zset r) = Sum.elim (fun _ => 1 / 2 - ε) (fun _ => (1 : ℝ)) := by
   funext j

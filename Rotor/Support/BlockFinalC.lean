@@ -6,6 +6,18 @@ import Rotor.Support.BlockAssembly
 import Rotor.Support.BlockFinalA
 import Rotor.Support.BlockFinalB
 
+/-!
+# The block-live-paths estimate
+
+Proves `block_live_paths_proof`, the paper's `lem:block-live-paths`: for a well-separated
+family of blocks whose marked-block probabilities stay below a threshold, there is a
+uniform mixing rate `η` for the abelian criterion that is stable under a small
+total-variation perturbation of the single-site law. Assembled from the marked block
+field and its domination by the unmarked block event (`Rotor.Support.BlockAssembly`) and
+the coarse king-path estimates and constants (`Rotor.Support.BlockFinalA`,
+`Rotor.Support.BlockFinalB`).
+-/
+
 open Filter Topology MeasureTheory
 open scoped ENNReal
 
@@ -14,6 +26,7 @@ namespace Rotor
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite] (π : Mechanism G)
   (P : DoublyPeriodic G)
 
+/-- The total variation distance from a measure to itself is zero. -/
 theorem tvDist_self {α : Type*} [MeasurableSpace α] (μ : Measure α) : tvDist μ μ = 0 := by
   unfold tvDist
   simp

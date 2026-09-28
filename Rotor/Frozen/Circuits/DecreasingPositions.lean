@@ -27,6 +27,18 @@ import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
 import Rotor.Bridge.Abelian
 
+/-!
+# Decreasing positions
+
+This file assembles the two parts of Lemma 2.7 into the single frozen statement
+`Rotor.Frozen.decreasing_positions`. Part (i) turns a particle that reaches a vertex `y` outside a
+finite set `S` under a one-particle-at-a-time boundary routing into a live path from a vertex of
+`S` to `y` whose other vertices avoid `S`. Part (ii) turns membership of `y` in the `n`-fold
+odometer image `Φ^[n] {x}` into a path from `x` to `y`, contained in `Φ^[n] {x}`, that is live at
+all but at most `n - 1` internal vertices; its proof is built from `decreasing_positions_ii`
+together with the abelian property furnished by `Rotor.Bridge.abelian_holds`.
+-/
+
 open Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
@@ -45,4 +57,5 @@ theorem Rotor.Frozen.decreasing_positions (π : Mechanism G)
           (∀ v ∈ l, v ∈ (Φ π ρ)^[n] {x}) ∧ (liveFailures π ρ l).card ≤ n - 1)
 -- FROZEN-STATEMENT-END
 := ⟨fun S _ y hy es hes hvis => decreasing_positions_i π S ρ y hy es hes hvis,
-    fun x y n _ hdef hy => decreasing_positions_ii π (Rotor.Bridge.abelian_holds G) hG ρ x n y hdef hy⟩
+    fun x y n _ hdef hy =>
+        decreasing_positions_ii π (Rotor.Bridge.abelian_holds G) hG ρ x n y hdef hy⟩

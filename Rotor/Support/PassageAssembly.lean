@@ -6,6 +6,8 @@ import Rotor.Frozen.Square.Exploration
 import Rotor.Frozen.Square.ConstrainedBonds
 
 /-!
+# Proposition 5.1: live paths and the reach event
+
 Proposition 5.1 (`prop:square-passage`), part 8: from live paths to the reach event.  A live
 path reaching graph distance `R` yields (Lemma 5.2) a directed open dual path from the face on
 the right of its first edge to a face at `ℓ^∞` distance about `R/2`; if the exploration from
@@ -20,6 +22,8 @@ namespace Rotor
 
 /-! ### Distances -/
 
+/-- The graph distance on `squareGraph` is bounded by the `ℓ¹` distance, by induction on the
+`ℓ¹` distance and moving one coordinate step at a time toward `w`. -/
 theorem dist_le_l1 (u w : Site) : (squareGraph.dist u w : ℤ) ≤ |w.1 - u.1| + |w.2 - u.2| := by
   have hconn := squareGraph_connected
   suffices h : ∀ n : ℕ, ∀ u w : Site, (|w.1 - u.1| + |w.2 - u.2|).toNat = n →
@@ -77,6 +81,8 @@ theorem dist_le_l1 (u w : Site) : (squareGraph.dist u w : ℤ) ≤ |w.1 - u.1| +
     dsimp only at h1 ⊢
     omega
 
+/-- The graph distance is at most twice the `ℓ^∞` distance, since the `ℓ¹` distance used by
+`dist_le_l1` is at most `2` times the `ℓ^∞` distance. -/
 theorem dist_le_two_linf (u w : Site) : (squareGraph.dist u w : ℤ) ≤ 2 * linfDist w u := by
   have := dist_le_l1 u w
   unfold linfDist
@@ -86,15 +92,22 @@ theorem dist_le_two_linf (u w : Site) : (squareGraph.dist u w : ℤ) ≤ 2 * lin
   have h2 : |w2 - u2| ≤ max |w1 - u1| |w2 - u2| := le_max_right _ _
   omega
 
+/-- `linfDist a b = linfDist b a`. -/
 theorem linfDist_comm (a b : Site) : linfDist a b = linfDist b a := by
   simp [linfDist, abs_sub_comm]
 
+/-- The face immediately to the right of an edge is at `ℓ^∞` distance at most `1` from its
+source vertex `v`, checked case by case on the direction `a`. -/
 theorem rightFace_near (v : Site) (a : Dir) : linfDist (rightFace v a) v ≤ 1 := by
   obtain ⟨v1, v2⟩ := v
   fin_cases a <;> simp [rightFace, dirVec, linfDist, abs_eq_max_neg]
 
 /-! ### Finite components have visited faces beyond them -/
 
+/-- If `g` lies in a finite component of the complement of the visited set `V`, some point of `V`
+is at least as far from `f₀` as `g` is: take `z` maximizing `linfDist · f₀` in that component; a
+neighbor of `z` one step farther from `f₀` must lie in `V`, since otherwise it would extend the
+component and contradict the maximality of `z`. -/
 theorem exists_far_visited {V : Finset Site} {g f₀ : Site} (h : InFiniteComponent V g) :
     ∃ g' ∈ V, linfDist g f₀ ≤ linfDist g' f₀ := by
   rw [inFiniteComponent_iff] at h
@@ -106,7 +119,8 @@ theorem exists_far_visited {V : Finset Site} {g f₀ : Site} (h : InFiniteCompon
   simp only [Set.Finite.mem_toFinset, Set.mem_setOf_eq] at hz
   have hzV : z ∉ V := AvoidReach.notMem hgV hz
   -- a neighbour of `z` one step farther from `f₀`
-  obtain ⟨z', hadj, hfar⟩ : ∃ z' : Site, squareGraph.Adj z z' ∧ linfDist z' f₀ = linfDist z f₀ + 1 := by
+  obtain ⟨z', hadj, hfar⟩ : ∃ z' : Site,
+      squareGraph.Adj z z' ∧ linfDist z' f₀ = linfDist z f₀ + 1 := by
     obtain ⟨z1, z2⟩ := z; obtain ⟨f1, f2⟩ := f₀
     simp only [linfDist]
     rcases le_or_gt |z2 - f2| |z1 - f1| with hx | hx
@@ -137,6 +151,9 @@ theorem exists_far_visited {V : Finset Site} {g f₀ : Site} (h : InFiniteCompon
 def NonTerm (f d : Site) : Set (Config squareGraph) :=
   {ρ | ∀ n, (explore ρ f d n).active ≠ []}
 
+/-- If the exploration from `f` never terminates, it eventually visits a face at `ℓ^∞` distance at
+least `R'` from `f`: otherwise every bond it ever tests would lie in the fixed finite set
+`boxBonds f R'`, but no bond is tested twice, so testing enough bonds is impossible. -/
 theorem nonTerm_subset_reach (f : Site) {d : Site} (hd : IsUnit d) (R' : ℕ) :
     NonTerm f d ⊆ ReachEvent f d R' := by
   intro ρ hρ
@@ -164,6 +181,9 @@ theorem nonTerm_subset_reach (f : Site) {d : Site} (hd : IsUnit d) (R' : ℕ) :
 
 /-! ### Live paths reach far faces -/
 
+/-- Liveness at index `j` of `l` is inherited by any prefix `l.take m` still long enough to keep
+`j` internal, since `List.getElem_take` shows the two lists agree at the indices `j - 1`, `j` and
+`j + 1` that the live condition reads. -/
 theorem liveAtIndex_take {ρ : Config squareGraph} {l : List Site} {m j : ℕ}
     (h : LiveAtIndex clockwise ρ l j) (hj : j + 1 < (l.take m).length) :
     LiveAtIndex clockwise ρ (l.take m) j := by
@@ -172,6 +192,8 @@ theorem liveAtIndex_take {ρ : Config squareGraph} {l : List Site} {m j : ℕ}
   simp only [List.get_eq_getElem, List.getElem_take] at hlive ⊢
   exact hlive
 
+/-- Every prefix `l.take m` of a live path `l` is itself live, by `liveAtIndex_take` at each
+internal index. -/
 theorem isLive_take {ρ : Config squareGraph} {l : List Site} (h : IsLive clockwise ρ l) (m : ℕ) :
     IsLive clockwise ρ (l.take m) := by
   intro j hj0 hj1
@@ -179,6 +201,12 @@ theorem isLive_take {ρ : Config squareGraph} {l : List Site} (h : IsLive clockw
     rw [List.length_take] at hj1; omega
   exact liveAtIndex_take (h j hj0 hj1') hj1
 
+/-- A live path from the edge `u → v` reaching graph distance `R` forces the exploration from the
+face `f₀ = rightFace u (dirOf (v - u))` either to reach `ℓ^∞` distance about `R / 2` or to never
+terminate: the live path yields (Lemma 5.2, `square_dual_path`) a directed open dual path from
+`f₀` to a face `g` at that distance, and if the exploration terminates then Lemma 5.4 (ii),
+`square_exploration`, puts `g` itself or, via `exists_far_visited`, some visited face at least as
+far in the visited set. -/
 theorem liveReach_subset (u v : Site) (R : ℕ) (hR : 8 ≤ R) :
     liveReachEvent clockwise u v R ⊆
       ReachEvent (rightFace u (dirOf (v - u))) (1, 0) (R / 2 - 3) ∪
@@ -203,7 +231,8 @@ theorem liveReach_subset (u v : Site) (R : ℕ) (hR : 8 ≤ R) :
   have hl'path : IsPath squareGraph l' := ⟨hl.1.sublist (List.take_sublist _ _), hl.2.take _⟩
   have hl'live : IsLive clockwise ρ l' := isLive_take hlive _
   have hget : ∀ k, k < i + 1 → l'[k]? = l[k]? := fun k hk => List.getElem?_take_of_lt hk
-  have hy0 : l'[l'.length - 2]? = l[i - 1]? := by rw [hlen', show i + 1 - 2 = i - 1 by omega]; exact hget _ (by omega)
+  have hy0 : l'[l'.length - 2]? = l[i - 1]? := by
+    rw [hlen', show i + 1 - 2 = i - 1 by omega]; exact hget _ (by omega)
   have hy1 : l'[l'.length - 1]? = some l[i] := by
     rw [hlen', Nat.add_sub_cancel, hget i (by omega)]; exact List.getElem?_eq_getElem hi
   obtain ⟨y₀, hy₀⟩ : ∃ y₀, l[i - 1]? = some y₀ := ⟨_, List.getElem?_eq_getElem (by omega)⟩
@@ -246,6 +275,9 @@ theorem liveReach_subset (u v : Site) (R : ℕ) (hR : 8 ≤ R) :
 
 /-! ### Non-termination has probability zero -/
 
+/-- If `ReachEvent f d R'` has probability at most `C' e^{-c' R'}` for every `R' ≥ 1`, then
+`NonTerm f d` has probability zero, since `NonTerm f d ⊆ ReachEvent f d R'` for every `R'` and the
+exponential bound can be made smaller than any `ε > 0`. -/
 theorem nonTerm_measure_zero (f : Site) {d : Site} (hd : IsUnit d) {C' c' : ℝ} (hc' : 0 < c')
     (hC' : 0 < C')
     (hR : ∀ R' : ℕ, 1 ≤ R' →
@@ -284,6 +316,10 @@ theorem nonTerm_measure_zero (f : Site) {d : Site} (hd : IsUnit d) {C' c' : ℝ}
 
 /-! ### Proposition 5.1 -/
 
+/-- Proposition 5.1: an exponential bound `C e^{-cR}` on the probability of the live-and-reach
+event `liveReachEvent clockwise u v R`, for adjacent `u`, `v` and `R ≥ 1`, obtained from the
+constrained-bonds bound together with `liveReach_subset` and `nonTerm_measure_zero`, splitting on
+whether `R < 8`. -/
 theorem square_passage_proof :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ (u v : Site), squareGraph.Adj u v → ∀ R : ℕ, 1 ≤ R →
       uniformLaw clockwise (liveReachEvent clockwise u v R) ≤
@@ -305,7 +341,8 @@ theorem square_passage_proof :
           apply ENNReal.ofReal_le_ofReal
           apply Real.one_le_exp_iff.2
           nlinarith
-      _ ≤ ENNReal.ofReal ((C' * Real.exp (7 * c' / 2) + Real.exp (4 * c')) * Real.exp (-(c' / 2) * R)) := by
+      _ ≤ ENNReal.ofReal
+          ((C' * Real.exp (7 * c' / 2) + Real.exp (4 * c')) * Real.exp (-(c' / 2) * R)) := by
           apply ENNReal.ofReal_le_ofReal
           have : 0 ≤ C' * Real.exp (7 * c' / 2) := by positivity
           nlinarith [Real.exp_pos (-(c' / 2) * R)]
@@ -318,7 +355,8 @@ theorem square_passage_proof :
           uniformLaw clockwise (NonTerm f₀ (1, 0)) := measure_union_le _ _
       _ = uniformLaw clockwise (ReachEvent f₀ (1, 0) (R / 2 - 3)) := by rw [hnull, add_zero]
       _ ≤ ENNReal.ofReal (C' * Real.exp (-c' * ((R / 2 - 3 : ℕ) : ℝ))) := hreach f₀ (1, 0) hd₀ _ hR'
-      _ ≤ ENNReal.ofReal ((C' * Real.exp (7 * c' / 2) + Real.exp (4 * c')) * Real.exp (-(c' / 2) * R)) := by
+      _ ≤ ENNReal.ofReal
+          ((C' * Real.exp (7 * c' / 2) + Real.exp (4 * c')) * Real.exp (-(c' / 2) * R)) := by
           apply ENNReal.ofReal_le_ofReal
           have hcast : ((R / 2 - 3 : ℕ) : ℝ) = ((R / 2 : ℕ) : ℝ) - 3 := by
             rw [Nat.cast_sub (by omega)]; norm_num

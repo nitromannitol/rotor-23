@@ -3,6 +3,8 @@ import Rotor.Support.Boundary
 import Rotor.Support.KingWalks
 
 /-!
+# The excursion argument for the pendant counterexample
+
 The excursion argument of the pendant counterexample (`rotor.tex:2247-2290`), for the
 clockwise rotor walk on `ℤ²` started at `o`.  If the walk returns to `o` at time `r` for the
 first time and the traversals before `r` are distinct, then with `k(v)` the number of
@@ -23,7 +25,9 @@ namespace Rotor
 /-- The sum of the two coordinates. -/
 def cs (p : Site) : ℤ := p.1 + p.2
 
-theorem cs_sum {ι : Type*} (s : Finset ι) (f : ι → Site) : cs (∑ i ∈ s, f i) = ∑ i ∈ s, cs (f i) := by
+/-- `cs` is additive over a finite sum: `cs (∑ i ∈ s, f i) = ∑ i ∈ s, cs (f i)`. -/
+theorem cs_sum {ι : Type*} (s : Finset ι) (f : ι → Site) :
+    cs (∑ i ∈ s, f i) = ∑ i ∈ s, cs (f i) := by
   simp only [cs, Prod.fst_sum, Prod.snd_sum, sum_add_distrib]
 
 /-- The coordinate sum of the first `k ≤ 4` exits after the direction `d` is at least `-2`. -/
@@ -36,6 +40,8 @@ theorem cs_exits_west (k : ℕ) (hk1 : 1 ≤ k) (hk3 : k ≤ 3) :
     1 ≤ cs (∑ j ∈ range k, dirVec ((3 : Dir) + (j : Dir) + 1)) := by
   interval_cases k <;> decide
 
+/-- Every edge of `squareGraph` is a king step: the difference `w - v` is one of the four unit
+lattice vectors, each at `ℓ^∞`-distance `1`. -/
 theorem kingStep_of_adj {v w : Site} (h : squareGraph.Adj v w) : KingStep v w := by
   refine ⟨h.ne, ?_⟩
   rcases adj_sub_mem h with h' | h' | h' | h' <;> rw [h'] <;> simp [linf]
@@ -60,6 +66,7 @@ def kOut (v : Site) : ℕ := deps σ o v r
 /-- The in-degree: arrivals at `v` before `r`. -/
 def kIn (v : Site) : ℕ := ((range r).filter (fun a => Y (a + 1) = v)).card
 
+/-- `kOut σ o r v` unfolds to the number of times before `r` that the walk departs from `v`. -/
 theorem kOut_eq (v : Site) : kOut σ o r v = ((range r).filter (fun a => Y a = v)).card := rfl
 
 /-- Balance: the closed walk enters each vertex as often as it leaves it. -/
@@ -71,10 +78,13 @@ theorem kIn_eq_kOut (h : FirstReturn σ o r) (v : Site) : kIn σ o r v = kOut σ
   simp only [show Y 0 = o from rfl, h.ret] at h1 h2
   omega
 
+/-- `deps σ o v` is monotone in the time bound: `a ≤ b` gives `deps σ o v a ≤ deps σ o v b`. -/
 theorem deps_mono (v : Site) {a b : ℕ} (hab : a ≤ b) : deps σ o v a ≤ deps σ o v b := by
   unfold deps
   exact card_le_card (filter_subset_filter _ (Finset.range_mono hab))
 
+/-- If the walk is at `v` at time `a < b`, the departure count strictly increases:
+`deps σ o v a < deps σ o v b`, since the departure at `a` is already counted. -/
 theorem deps_lt_of_eq (v : Site) {a b : ℕ} (hab : a < b) (ha : Y a = v) :
     deps σ o v a < deps σ o v b := by
   have h1 := deps_succ σ o v a
@@ -82,6 +92,8 @@ theorem deps_lt_of_eq (v : Site) {a b : ℕ} (hab : a < b) (ha : Y a = v) :
   have h2 := deps_mono σ o v (show a + 1 ≤ b by omega)
   omega
 
+/-- A departure from `v` before `r` has departure-count strictly below the total out-degree
+`kOut σ o r v`. -/
 theorem deps_lt_kOut {v : Site} {a : ℕ} (ha : a < r) (hv : Y a = v) :
     deps σ o v a < kOut σ o r v :=
   deps_lt_of_eq σ o v ha hv
@@ -119,10 +131,13 @@ theorem exists_deps_eq {v : Site} {j : ℕ} (hj : j < kOut σ o r v) :
     · omega
     · omega
 
+/-- Consecutive positions of the walk are adjacent: `squareGraph.Adj (Y a) (Y (a + 1))`. -/
 theorem adj_succ (a : ℕ) : squareGraph.Adj (Y a) (Y (a + 1)) := by
   rw [X_succ_eq]
   exact adj_add_dirVec _ _
 
+/-- The step `Y (a + 1) - Y a` taken at time `a` equals `dirVec` of the initial rotor at `Y a`,
+advanced by the number of earlier departures from `Y a` and turned once more. -/
 theorem sub_succ (a : ℕ) :
     Y (a + 1) - Y a = dirVec (dir0 σ (Y a) + (deps σ o (Y a) a : Dir) + 1) := by
   rw [X_succ_eq]
@@ -191,6 +206,8 @@ theorem cs_sum_exits_ge (h : FirstReturn σ o r) (v : Site) :
   rw [sum_exits]
   exact cs_exits_ge _ _ (kOut_le_four σ o r h v)
 
+/-- If `v` carries a west rotor and `1 ≤ kOut σ o r v ≤ 3`, the coordinate sum of the steps out
+of `v` is at least `1`, by `cs_exits_west`. -/
 theorem cs_sum_exits_west (v : Site) (hW : dir0 σ v = 3) (h1 : 1 ≤ kOut σ o r v)
     (h3 : kOut σ o r v ≤ 3) :
     1 ≤ cs (∑ a ∈ (range r).filter (fun a => Y a = v), (Y (a + 1) - Y a)) := by
@@ -217,18 +234,22 @@ open Classical in
 noncomputable def Uset : Finset Site :=
   (lowSet σ o r).filter (fun v => Relation.ReflTransGen (lowStep σ o r) o v)
 
+/-- `v ∈ visitedSet σ o r` iff the walk is at `v` at some time before `r`. -/
 theorem mem_visitedSet {v : Site} : v ∈ visitedSet σ o r ↔ ∃ a, a < r ∧ Y a = v := by
   simp [visitedSet]
 
+/-- `v` has a positive out-degree iff `v` is visited before `r`. -/
 theorem kOut_pos_iff (v : Site) : 1 ≤ kOut σ o r v ↔ v ∈ visitedSet σ o r := by
   rw [kOut_eq, Nat.one_le_iff_ne_zero, Ne, card_eq_zero, ← Ne, ← nonempty_iff_ne_empty,
     mem_visitedSet]
   simp [Finset.Nonempty]
 
+/-- `v ∈ lowSet σ o r` iff `1 ≤ kOut σ o r v ≤ 3`. -/
 theorem mem_lowSet {v : Site} : v ∈ lowSet σ o r ↔ 1 ≤ kOut σ o r v ∧ kOut σ o r v ≤ 3 := by
   rw [lowSet, mem_filter, ← kOut_pos_iff]
   tauto
 
+/-- `v ∈ highSet σ o r` iff `kOut σ o r v = 4`. -/
 theorem mem_highSet {v : Site} : v ∈ highSet σ o r ↔ kOut σ o r v = 4 := by
   rw [highSet, mem_filter, ← kOut_pos_iff]
   constructor
@@ -236,26 +257,36 @@ theorem mem_highSet {v : Site} : v ∈ highSet σ o r ↔ kOut σ o r v = 4 := b
   · exact fun h => ⟨by omega, h⟩
 
 open Classical in
+/-- `v ∈ Uset σ o r` iff `v ∈ lowSet σ o r` and `v` is reachable from `o` by a chain of
+`lowStep`s. -/
 theorem mem_Uset {v : Site} :
     v ∈ Uset σ o r ↔ v ∈ lowSet σ o r ∧ Relation.ReflTransGen (lowStep σ o r) o v := by
   unfold Uset
   exact mem_filter
 
+/-- `Uset σ o r ⊆ lowSet σ o r`. -/
 theorem Uset_subset_lowSet : Uset σ o r ⊆ lowSet σ o r := fun _ hv => ((mem_Uset σ o r).1 hv).1
 
+/-- The origin `o` lies in `Uset σ o r`, since `kOut σ o r o = 1` puts it in `lowSet`. -/
 theorem o_mem_Uset (h : FirstReturn σ o r) : o ∈ Uset σ o r :=
-  (mem_Uset σ o r).2 ⟨(mem_lowSet σ o r).2 (by rw [kOut_o σ o r h]; omega), Relation.ReflTransGen.refl⟩
+  (mem_Uset σ o r).2
+    ⟨(mem_lowSet σ o r).2 (by rw [kOut_o σ o r h]; omega), Relation.ReflTransGen.refl⟩
 
+/-- `Uset σ o r` extends along a king step into `lowSet`: from `v ∈ Uset σ o r` and a king step
+to `w ∈ lowSet σ o r`, `w ∈ Uset σ o r`. -/
 theorem mem_Uset_of_step {v w : Site} (hv : v ∈ Uset σ o r) (hw : w ∈ lowSet σ o r)
     (hvw : KingStep v w) : w ∈ Uset σ o r :=
   (mem_Uset σ o r).2 ⟨hw, ((mem_Uset σ o r).1 hv).2.tail ⟨hw, hvw⟩⟩
 
+/-- `Uset σ o r` and `highSet σ o r` are disjoint: a vertex of `U` has `kOut ≤ 3`, so it cannot
+have `kOut = 4`. -/
 theorem not_mem_highSet_of_mem_Uset {v : Site} (hv : v ∈ Uset σ o r) : v ∉ highSet σ o r := by
   intro hH
   have := ((mem_lowSet σ o r).1 (Uset_subset_lowSet σ o r hv)).2
   rw [mem_highSet] at hH
   omega
 
+/-- The converse disjointness: a vertex of `highSet σ o r` does not lie in `Uset σ o r`. -/
 theorem not_mem_Uset_of_mem_highSet {v : Site} (hv : v ∈ highSet σ o r) : v ∉ Uset σ o r :=
   fun hU => not_mem_highSet_of_mem_Uset σ o r hU hv
 
@@ -311,24 +342,31 @@ noncomputable def outU : Finset ℕ := (range r).filter (fun a => Y a ∈ Uset �
 noncomputable def inU : Finset ℕ := (range r).filter (fun a => Y (a + 1) ∈ Uset σ o r)
 
 /-- Traversals inside `U`. -/
-noncomputable def innerU : Finset ℕ := (range r).filter (fun a => Y a ∈ Uset σ o r ∧ Y (a + 1) ∈ Uset σ o r)
+noncomputable def innerU : Finset ℕ :=
+  (range r).filter (fun a => Y a ∈ Uset σ o r ∧ Y (a + 1) ∈ Uset σ o r)
 
 /-- Traversals leaving `U`. -/
-noncomputable def crossOut : Finset ℕ := (range r).filter (fun a => Y a ∈ Uset σ o r ∧ Y (a + 1) ∉ Uset σ o r)
+noncomputable def crossOut : Finset ℕ :=
+  (range r).filter (fun a => Y a ∈ Uset σ o r ∧ Y (a + 1) ∉ Uset σ o r)
 
 /-- Traversals entering `U`. -/
-noncomputable def crossIn : Finset ℕ := (range r).filter (fun a => Y a ∉ Uset σ o r ∧ Y (a + 1) ∈ Uset σ o r)
+noncomputable def crossIn : Finset ℕ :=
+  (range r).filter (fun a => Y a ∉ Uset σ o r ∧ Y (a + 1) ∈ Uset σ o r)
 
 /-- The adjacent pairs `(v, x)` with `v ∈ U` and `x ∈ H`. -/
 noncomputable def bpairs : Finset (Site × Site) :=
   ((Uset σ o r) ×ˢ (highSet σ o r)).filter (fun p => squareGraph.Adj p.1 p.2)
 
+/-- A sum over `outU σ o r` splits into its part over `innerU σ o r` (traversals staying inside
+`U`) and over `crossOut σ o r` (traversals leaving `U`). -/
 theorem sum_outU_split {M : Type*} [AddCommMonoid M] (f : ℕ → M) :
     ∑ a ∈ outU σ o r, f a = ∑ a ∈ innerU σ o r, f a + ∑ a ∈ crossOut σ o r, f a := by
   rw [← sum_filter_add_sum_filter_not (outU σ o r) (fun a => Y (a + 1) ∈ Uset σ o r)]
   unfold outU innerU crossOut
   rw [filter_filter, filter_filter]
 
+/-- A sum over `inU σ o r` splits into its part over `innerU σ o r` and over `crossIn σ o r`
+(traversals entering `U`). -/
 theorem sum_inU_split {M : Type*} [AddCommMonoid M] (f : ℕ → M) :
     ∑ a ∈ inU σ o r, f a = ∑ a ∈ innerU σ o r, f a + ∑ a ∈ crossIn σ o r, f a := by
   rw [← sum_filter_add_sum_filter_not (inU σ o r) (fun a => Y a ∈ Uset σ o r)]
@@ -338,6 +376,9 @@ theorem sum_inU_split {M : Type*} [AddCommMonoid M] (f : ℕ → M) :
   · exact sum_congr (filter_congr (fun a _ => and_comm)) (fun _ _ => rfl)
   · exact sum_congr (filter_congr (fun a _ => and_comm)) (fun _ _ => rfl)
 
+/-- For `v ∈ Uset σ o r`, filtering `outU σ o r` to the departures from `v` gives the same set
+as filtering all times before `r`, since every departure from `v` is already a departure
+from `U`. -/
 theorem filter_outU_eq {v : Site} (hv : v ∈ Uset σ o r) :
     (outU σ o r).filter (fun a => Y a = v) = (range r).filter (fun a => Y a = v) := by
   unfold outU
@@ -347,6 +388,8 @@ theorem filter_outU_eq {v : Site} (hv : v ∈ Uset σ o r) :
   · exact fun h => h.2
   · exact fun h => ⟨h ▸ hv, h⟩
 
+/-- Grouping `outU σ o r` by the departure vertex:
+`∑ a ∈ outU σ o r, f (Y a) = ∑ v ∈ Uset σ o r, kOut σ o r v • f v`. -/
 theorem sum_outU_fiber {M : Type*} [AddCommMonoid M] (f : Site → M) :
     ∑ a ∈ outU σ o r, f (Y a) = ∑ v ∈ Uset σ o r, kOut σ o r v • f v := by
   rw [← sum_fiberwise_of_maps_to (s := outU σ o r) (t := Uset σ o r) (g := Y)
@@ -355,12 +398,15 @@ theorem sum_outU_fiber {M : Type*} [AddCommMonoid M] (f : Site → M) :
   rw [filter_outU_eq σ o r hv, kOut_eq, ← sum_const]
   exact sum_congr rfl (fun a ha => by rw [(mem_filter.1 ha).2])
 
+/-- Grouping `inU σ o r` by the arrival vertex:
+`∑ a ∈ inU σ o r, f (Y (a + 1)) = ∑ v ∈ Uset σ o r, kIn σ o r v • f v`. -/
 theorem sum_inU_fiber {M : Type*} [AddCommMonoid M] (f : Site → M) :
     ∑ a ∈ inU σ o r, f (Y (a + 1)) = ∑ v ∈ Uset σ o r, kIn σ o r v • f v := by
   rw [← sum_fiberwise_of_maps_to (s := inU σ o r) (t := Uset σ o r) (g := fun a => Y (a + 1))
     (fun a ha => (mem_filter.1 ha).2)]
   refine sum_congr rfl (fun v hv => ?_)
-  have : (inU σ o r).filter (fun a => Y (a + 1) = v) = (range r).filter (fun a => Y (a + 1) = v) := by
+  have : (inU σ o r).filter (fun a => Y (a + 1) = v) =
+      (range r).filter (fun a => Y (a + 1) = v) := by
     unfold inU
     rw [filter_filter]
     refine filter_congr (fun a _ => ?_)
@@ -376,6 +422,8 @@ theorem sum_outU_eq_sum_inU (h : FirstReturn σ o r) :
   rw [sum_outU_fiber σ o r (fun v => v), sum_inU_fiber σ o r (fun v => v)]
   exact sum_congr rfl (fun v _ => by rw [kIn_eq_kOut σ o r h])
 
+/-- `outU σ o r` and `inU σ o r` have the same cardinality, from the fiberwise balance
+`kIn = kOut`. -/
 theorem card_outU_eq_card_inU (h : FirstReturn σ o r) : (outU σ o r).card = (inU σ o r).card := by
   rw [card_eq_sum_ones, card_eq_sum_ones]
   have h1 := sum_outU_fiber σ o r (fun _ => (1 : ℕ))
@@ -383,6 +431,8 @@ theorem card_outU_eq_card_inU (h : FirstReturn σ o r) : (outU σ o r).card = (i
   rw [h1, h2]
   exact sum_congr rfl (fun v _ => by rw [kIn_eq_kOut σ o r h])
 
+/-- `crossOut σ o r` and `crossIn σ o r` have the same cardinality, by subtracting the common
+`innerU` part from `card_outU_eq_card_inU`. -/
 theorem card_crossOut_eq_card_crossIn (h : FirstReturn σ o r) :
     (crossOut σ o r).card = (crossIn σ o r).card := by
   have h1 := card_outU_eq_card_inU σ o r h
@@ -390,6 +440,8 @@ theorem card_crossOut_eq_card_crossIn (h : FirstReturn σ o r) :
   rw [← card_eq_sum_ones, ← card_eq_sum_ones, ← card_eq_sum_ones] at h1
   omega
 
+/-- The traversed edges before `r` are distinct: `a ↦ (Y a, Y (a + 1))` is injective on
+`range r`, restating `FirstReturn.inj`. -/
 theorem traversal_injOn (h : FirstReturn σ o r) :
     Set.InjOn (fun a => (Y a, Y (a + 1))) ↑(range r) := by
   intro a ha b hb hab
@@ -399,6 +451,9 @@ theorem traversal_injOn (h : FirstReturn σ o r) :
   · exact h.inj a b h' hb hab
   · exact h.inj b a h' ha hab.symm
 
+/-- A traversal in `crossOut σ o r` lands on a pair in `bpairs σ o r`: leaving `U` can only
+reach a vertex of `highSet σ o r`, since a return to `o` or to another vertex of `lowSet` would
+keep it in `U`. -/
 theorem crossOut_maps (h : FirstReturn σ o r) {a : ℕ} (ha : a ∈ crossOut σ o r) :
     (Y a, Y (a + 1)) ∈ bpairs σ o r := by
   obtain ⟨har, hU, hnU⟩ := mem_filter.1 ha
@@ -414,19 +469,24 @@ theorem crossOut_maps (h : FirstReturn σ o r) {a : ℕ} (ha : a ∈ crossOut σ
     exact hnU (mem_Uset_of_step σ o r hU ((mem_lowSet σ o r).2 ⟨h1, by omega⟩)
       (kingStep_of_adj (adj_succ σ o a)))
 
+/-- A traversal in `crossIn σ o r` lands, reversed, on a pair in `bpairs σ o r`: the vertex
+outside `U` it departs from must lie in `highSet σ o r`. -/
 theorem crossIn_maps (h : FirstReturn σ o r) {a : ℕ} (ha : a ∈ crossIn σ o r) :
     (Y (a + 1), Y a) ∈ bpairs σ o r := by
   obtain ⟨har, hnU, hU⟩ := mem_filter.1 ha
   rw [mem_range] at har
   refine mem_filter.2 ⟨mem_product.2 ⟨hU, ?_⟩, (adj_succ σ o a).symm⟩
   show Y a ∈ highSet σ o r
-  have h1 : 1 ≤ kOut σ o r (Y a) := (kOut_pos_iff σ o r _).2 ((mem_visitedSet σ o r).2 ⟨a, har, rfl⟩)
+  have h1 : 1 ≤ kOut σ o r (Y a) :=
+    (kOut_pos_iff σ o r _).2 ((mem_visitedSet σ o r).2 ⟨a, har, rfl⟩)
   have h4 := kOut_le_four σ o r h (Y a)
   rw [mem_highSet]
   by_contra hne
   exact hnU (mem_Uset_of_step σ o r hU ((mem_lowSet σ o r).2 ⟨h1, by omega⟩)
     (kingStep_of_adj (adj_succ σ o a)).symm)
 
+/-- The reversed traversals of `crossIn σ o r` cover all of `bpairs σ o r`: every boundary pair
+is realized, using `exists_traverse_of_high` to find the traversal. -/
 theorem crossIn_image (h : FirstReturn σ o r) :
     (crossIn σ o r).image (fun a => (Y (a + 1), Y a)) = bpairs σ o r := by
   ext p
@@ -443,6 +503,8 @@ theorem crossIn_image (h : FirstReturn σ o r) :
     · rw [hav]; exact hv
     · rw [hxa, hav]
 
+/-- `(crossIn σ o r).card = (bpairs σ o r).card`, since the reversed-traversal map of
+`crossIn_image` is injective. -/
 theorem card_crossIn (h : FirstReturn σ o r) : (crossIn σ o r).card = (bpairs σ o r).card := by
   rw [← crossIn_image σ o r h, card_image_of_injOn]
   intro a ha b hb hab
@@ -451,6 +513,9 @@ theorem card_crossIn (h : FirstReturn σ o r) : (crossIn σ o r).card = (bpairs 
   simp only [Prod.mk.injEq] at hab ⊢
   exact ⟨hab.2, hab.1⟩
 
+/-- The traversals of `crossOut σ o r` also cover all of `bpairs σ o r`: the image is contained
+in `bpairs` by `crossOut_maps` and has the right cardinality by `card_crossOut_eq_card_crossIn`
+and `card_crossIn`. -/
 theorem crossOut_image (h : FirstReturn σ o r) :
     (crossOut σ o r).image (fun a => (Y a, Y (a + 1))) = bpairs σ o r := by
   refine eq_of_subset_of_card_le ?_ ?_
@@ -462,12 +527,16 @@ theorem crossOut_image (h : FirstReturn σ o r) :
         (fun a ha => mem_coe.2 (mem_of_mem_filter a (mem_coe.1 ha)))
     rw [card_image_of_injOn hinj, card_crossOut_eq_card_crossIn σ o r h, card_crossIn σ o r h]
 
+/-- Transferring a sum over `crossOut σ o r` to a sum over `bpairs σ o r`, via the bijection
+`crossOut_image`. -/
 theorem sum_crossOut (h : FirstReturn σ o r) {M : Type*} [AddCommMonoid M] (g : Site × Site → M) :
     ∑ a ∈ crossOut σ o r, g (Y a, Y (a + 1)) = ∑ p ∈ bpairs σ o r, g p := by
   rw [← crossOut_image σ o r h, sum_image]
   exact (traversal_injOn σ o r h).mono
     (fun a ha => mem_coe.2 (mem_of_mem_filter a (mem_coe.1 ha)))
 
+/-- Transferring a sum over `crossIn σ o r`, evaluated at the reversed traversal, to a sum over
+`bpairs σ o r`, via the bijection `crossIn_image`. -/
 theorem sum_crossIn (h : FirstReturn σ o r) {M : Type*} [AddCommMonoid M] (g : Site × Site → M) :
     ∑ a ∈ crossIn σ o r, g (Y (a + 1), Y a) = ∑ p ∈ bpairs σ o r, g p := by
   rw [← crossIn_image σ o r h, sum_image]
@@ -479,6 +548,8 @@ theorem sum_crossIn (h : FirstReturn σ o r) {M : Type*} [AddCommMonoid M] (g : 
 
 /-! ### The discrete divergence theorem on `H` -/
 
+/-- The reversed boundary pairs `(x, v)` of `bpairs σ o r` lie in the graph boundary
+`bdry (highSet σ o r)`: `x ∈ H`, `v ∉ H`, and they are adjacent. -/
 theorem bpairs_swap_subset : (bpairs σ o r).image Prod.swap ⊆ bdry (highSet σ o r) := by
   intro e he
   obtain ⟨p, hp, rfl⟩ := mem_image.1 he
@@ -486,6 +557,8 @@ theorem bpairs_swap_subset : (bpairs σ o r).image Prod.swap ⊆ bdry (highSet �
   obtain ⟨hv, hx⟩ := mem_product.1 hp
   exact mem_bdry.2 ⟨hx, not_mem_highSet_of_mem_Uset σ o r hv, hadj.symm⟩
 
+/-- The boundary-successor map `bsucc` preserves membership in the reversed `bpairs σ o r`: the
+new outer endpoint stays in `Uset σ o r`, by `mem_Uset_of_adj_high`. -/
 theorem bpairs_swap_invariant (h : FirstReturn σ o r) :
     ∀ e ∈ (bpairs σ o r).image Prod.swap,
       bsucc (highSet σ o r) e ∈ (bpairs σ o r).image Prod.swap := by
@@ -501,6 +574,8 @@ theorem bpairs_swap_invariant (h : FirstReturn σ o r) :
   refine mem_filter.2 ⟨mem_product.2 ⟨?_, hx'⟩, hadj'.symm⟩
   exact mem_Uset_of_adj_high σ o r h hv hx' hadj' hv' hstep
 
+/-- The boundary steps of `U` telescope to zero: `∑ p ∈ bpairs σ o r, (p.2 - p.1) = 0`, from the
+discrete divergence theorem `sum_bdry_eq_zero` on `highSet σ o r`. -/
 theorem sum_bpairs (h : FirstReturn σ o r) : ∑ p ∈ bpairs σ o r, (p.2 - p.1) = 0 := by
   have h0 := sum_bdry_eq_zero (highSet σ o r) _ (bpairs_swap_subset σ o r)
     (bpairs_swap_invariant σ o r h)
@@ -513,6 +588,8 @@ theorem sum_bpairs (h : FirstReturn σ o r) : ∑ p ∈ bpairs σ o r, (p.2 - p.
 
 /-! ### The boundary cancellation `eq:boundary-cancellation` -/
 
+/-- `eq:boundary-cancellation`: the sum over `Uset σ o r` of the steps taken out of each vertex
+vanishes, combining the `outU`/`inU` splittings with the boundary telescoping `sum_bpairs`. -/
 theorem sum_Uset_exits (h : FirstReturn σ o r) :
     ∑ v ∈ Uset σ o r, ∑ a ∈ (range r).filter (fun a => Y a = v), (Y (a + 1) - Y a) = 0 := by
   have e0 : ∑ v ∈ Uset σ o r, ∑ a ∈ (range r).filter (fun a => Y a = v), (Y (a + 1) - Y a) =
@@ -535,6 +612,8 @@ theorem sum_Uset_exits (h : FirstReturn σ o r) :
 
 /-! ### The counting inequality -/
 
+/-- Every `v ∈ Uset σ o r` is reachable from `o` by a chain of king steps all of whose
+intermediate vertices also lie in `Uset σ o r`. -/
 theorem reflTransGen_Uset {v : Site} (hv : v ∈ Uset σ o r) :
     Relation.ReflTransGen (fun a b => b ∈ Uset σ o r ∧ KingStep a b) o v := by
   have hv' := ((mem_Uset σ o r).1 hv).2
@@ -549,7 +628,8 @@ theorem excursion_core (h : FirstReturn σ o r) :
     ∃ U : Finset Site, KConn o U ∧ U.card ≤ 3 * (U.filter (fun v => dir0 σ v ≠ 3)).card := by
   refine ⟨Uset σ o r, kconn_of_reflTransGen (o_mem_Uset σ o r h)
     (fun v hv => reflTransGen_Uset σ o r hv), ?_⟩
-  have h0 : ∑ v ∈ Uset σ o r, cs (∑ a ∈ (range r).filter (fun a => Y a = v), (Y (a + 1) - Y a)) = 0 := by
+  have h0 : ∑ v ∈ Uset σ o r,
+      cs (∑ a ∈ (range r).filter (fun a => Y a = v), (Y (a + 1) - Y a)) = 0 := by
     rw [← cs_sum, sum_Uset_exits σ o r h]
     rfl
   have hle : ∑ v ∈ Uset σ o r, (if dir0 σ v = 3 then (1 : ℤ) else -2) ≤

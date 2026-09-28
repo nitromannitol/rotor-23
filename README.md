@@ -200,7 +200,7 @@ The five pairs are `MainSquare`, `MainDegreeThree`, `PerturbationsSquare`,
 build and depend only on `propext`, `Classical.choice` and `Quot.sound`, and
 `Audit/StatementRegression.lean` checks locally that each solution statement is
 exactly the challenge statement and mentions no repository constant.  The
-comparator was run on all five pairs on 2026-09-24, at commit `b9303b6`, and
+comparator was run on all five pairs on 2026-09-27, at commit `f5c29c7`, and
 every pair passed with the Lean kernel and with the independent nanoda
 kernel; results and reproduction steps are in
 [`Audit/COMPARATOR_RUNS.md`](Audit/COMPARATOR_RUNS.md).  The workflow

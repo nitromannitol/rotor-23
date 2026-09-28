@@ -4,6 +4,8 @@ import Rotor.Support.KingPaths
 import Rotor.Support.DegreeThreePassage
 
 /-!
+# Coordinate identities for the dual edges of the square lattice
+
 Coordinate identities for the dual edges of the square lattice (`rotor.tex:1541-1551`): the
 dual edge of `v → v + dirVec a` runs from the face on its right to the face on its left, and
 the four dual edges at `v` form the unit square around `v` traversed counterclockwise.
@@ -13,24 +15,32 @@ open Fin.NatCast
 
 namespace Rotor
 
+/-- The left face of `v → v + dirVec a` equals the right face of `v → v + dirVec (a - 1)`. -/
 theorem leftFace_eq (v : Site) (a : Dir) : leftFace v a = rightFace v (a - 1) := by
   fin_cases a
   · simp [leftFace, rightFace, dirVec]; omega
   all_goals simp [leftFace, rightFace, dirVec]
 
+/-- The right and left faces of a directed edge are adjacent in the dual lattice. -/
 theorem adj_rightFace_leftFace (v : Site) (a : Dir) :
     squareGraph.Adj (rightFace v a) (leftFace v a) := by
   rw [squareGraph_adj]
   fin_cases a <;> simp [leftFace, rightFace, dirVec]
 
+/-- The primal edge whose rotation gives the dual edge `rightFace v a → leftFace v a` has
+tail `v`. -/
 theorem primalTail_dual (v : Site) (a : Dir) : primalTail (rightFace v a) (leftFace v a) = v := by
   obtain ⟨x, y⟩ := v
   fin_cases a <;> simp [primalTail, leftFace, rightFace, dirVec]
 
+/-- The primal edge whose rotation gives the dual edge `rightFace v a → leftFace v a` has
+direction `a`. -/
 theorem primalDir_dual (v : Site) (a : Dir) : primalDir (rightFace v a) (leftFace v a) = a := by
   obtain ⟨x, y⟩ := v
   fin_cases a <;> simp [primalDir, leftFace, rightFace, dirVec, dirOf]
 
+/-- Rewrites `DualOpen ρ f g` in terms of the rank at the primal edge `v → nbr v a`, given that
+`f → g` rotates that edge (`primalTail f g = v`, `primalDir f g = a`). -/
 theorem dualOpen_of_eq (ρ : Config squareGraph) {f g : Site} {v : Site} {a : Dir}
     (hv : primalTail f g = v) (ha : primalDir f g = a) :
     DualOpen ρ f g ↔ rank clockwise ρ v (nbr v a) = 2 ∨ rank clockwise ρ v (nbr v a) = 3 := by
@@ -42,6 +52,8 @@ theorem dualOpen_iff (ρ : Config squareGraph) (v : Site) (a : Dir) :
       rank clockwise ρ v (nbr v a) = 2 ∨ rank clockwise ρ v (nbr v a) = 3 :=
   dualOpen_of_eq ρ (primalTail_dual v a) (primalDir_dual v a)
 
+/-- The clockwise offset from `b` to `a` in `{1, …, 4}` added back to `b` returns `a`, checked
+by `decide` over `Fin 4`. -/
 theorem fin4_offset (a b : Fin 4) :
     b + ((((a - b).val + 3) % 4 + 1 : ℕ) : Fin 4) = a := by
   revert a b
@@ -65,21 +77,26 @@ theorem rank_clockwise (ρ : Config squareGraph) (v : Site) (a : Dir) :
     congr 1
     exact fin4_offset a b
 
+/-- For `1 ≤ k ≤ 4`, the edge `k` steps clockwise from the initial rotor has rank `k`. -/
 theorem rank_add (ρ : Config squareGraph) (v : Site) (k : ℕ) (hk1 : 1 ≤ k) (hk4 : k ≤ 4) :
     rank clockwise ρ v (nbr v ((nbr v).symm (ρ v) + (k : Dir))) = k := by
   rw [rank_clockwise, add_sub_cancel_left]
   interval_cases k <;> rfl
 
+/-- The rank of the edge in direction `a`, read back as a `Dir`-valued offset, equals the offset
+`a - (nbr v).symm (ρ v)`. -/
 theorem val_cast_rank (ρ : Config squareGraph) (v : Site) (a : Dir) :
     ((rank clockwise ρ v (nbr v a) : ℕ) : Dir).val = (a - (nbr v).symm (ρ v)).val := by
   rw [rank_clockwise, Fin.val_natCast]
   have := (a - (nbr v).symm (ρ v)).isLt
   omega
 
+/-- Every rank is at least `1`. -/
 theorem rank_pos' (ρ : Config squareGraph) (v : Site) (a : Dir) :
     1 ≤ rank clockwise ρ v (nbr v a) := by
   rw [rank_eq_cycRank]; exact cycRank_pos _ (clockwise.cyclic v) _ _
 
+/-- Every rank is at most `4`, since it counts an offset among the four directions. -/
 theorem rank_le_four (ρ : Config squareGraph) (v : Site) (a : Dir) :
     rank clockwise ρ v (nbr v a) ≤ 4 := by
   rw [rank_eq_cycRank]
@@ -101,12 +118,16 @@ def faces (v : Site) (c : Dir) : ℕ → List Site
   | 0 => [rightFace v c]
   | n + 1 => rightFace v c :: faces v (c - 1) n
 
+/-- The first face listed by `faces v c n` is `rightFace v c`. -/
 theorem faces_head (v : Site) (c : Dir) (n : ℕ) : (faces v c n).head? = some (rightFace v c) := by
   cases n <;> rfl
 
+/-- `faces v c n` is never the empty list. -/
 theorem faces_ne_nil (v : Site) (c : Dir) (n : ℕ) : faces v c n ≠ [] := by
   cases n <;> simp [faces]
 
+/-- The last face listed by `faces v c n` is `rightFace v (c - n)`, taking the list's proven
+nonemptiness as the index proof. -/
 theorem faces_getLast (v : Site) (c : Dir) : ∀ n : ℕ,
     (faces v c n).getLast (faces_ne_nil v c n) = rightFace v (c - (n : Dir))
   | 0 => by simp [faces]
@@ -118,6 +139,7 @@ theorem faces_getLast (v : Site) (c : Dir) : ∀ n : ℕ,
     simp only [Fin.val_sub, Fin.val_natCast, Fin.val_one]
     omega
 
+/-- The last face listed by `faces v c n` is `rightFace v (c - n)`, as an `Option`. -/
 theorem faces_getLast? (v : Site) (c : Dir) (n : ℕ) :
     (faces v c n).getLast? = some (rightFace v (c - (n : Dir))) := by
   rw [List.getLast?_eq_some_getLast (faces_ne_nil v c n), faces_getLast]
@@ -125,6 +147,8 @@ theorem faces_getLast? (v : Site) (c : Dir) (n : ℕ) :
 /-- The relation of open dual edges. -/
 def DualStep (ρ : Config squareGraph) (f g : Site) : Prop := DualOpen ρ f g ∧ squareGraph.Adj f g
 
+/-- If every rank from `c` down to `c - (n - 1)` at `v` is `2` or `3`, then `faces v c n` is a
+chain of open dual edges. -/
 theorem faces_chain (ρ : Config squareGraph) (v : Site) : ∀ (c : Dir) (n : ℕ),
     (∀ j < n, rank clockwise ρ v (nbr v (c - (j : Dir))) = 2 ∨
       rank clockwise ρ v (nbr v (c - (j : Dir))) = 3) →
@@ -151,13 +175,17 @@ theorem faces_chain (ρ : Config squareGraph) (v : Site) : ∀ (c : Dir) (n : �
 noncomputable def segAt (ρ : Config squareGraph) (v : Site) (a_p a_w : Dir) : List Site :=
   faces v (a_p - 1) (rank clockwise ρ v (nbr v a_p) - 1 - rank clockwise ρ v (nbr v a_w))
 
+/-- The first face of `segAt ρ v a_p a_w` is `rightFace v (a_p - 1)`. -/
 theorem segAt_head (ρ : Config squareGraph) (v : Site) (a_p a_w : Dir) :
     (segAt ρ v a_p a_w).head? = some (rightFace v (a_p - 1)) := faces_head _ _ _
 
+/-- `segAt ρ v a_p a_w` is never the empty list. -/
 theorem segAt_ne_nil (ρ : Config squareGraph) (v : Site) (a_p a_w : Dir) :
     segAt ρ v a_p a_w ≠ [] :=
   faces_ne_nil _ _ _
 
+/-- When the rank at the exit direction `a_w` is strictly less than at the entrance direction
+`a_p`, the last face of `segAt ρ v a_p a_w` is `rightFace v a_w`. -/
 theorem segAt_getLast (ρ : Config squareGraph) (v : Site) {a_p a_w : Dir}
     (hlt : rank clockwise ρ v (nbr v a_w) < rank clockwise ρ v (nbr v a_p)) :
     (segAt ρ v a_p a_w).getLast? = some (rightFace v a_w) := by
@@ -171,6 +199,8 @@ theorem segAt_getLast (ρ : Config squareGraph) (v : Site) {a_p a_w : Dir}
   simp only [Fin.val_sub, Fin.val_natCast, Fin.val_one] at h1 h2 ⊢
   omega
 
+/-- When the rank at `a_w` is strictly less than at `a_p`, `segAt ρ v a_p a_w` is a chain of
+open dual edges. -/
 theorem segAt_chain (ρ : Config squareGraph) (v : Site) {a_p a_w : Dir}
     (hlt : rank clockwise ρ v (nbr v a_w) < rank clockwise ρ v (nbr v a_p)) :
     (segAt ρ v a_p a_w).IsChain (DualStep ρ) := by
@@ -193,6 +223,7 @@ def LiveFwd (ρ : Config squareGraph) : List Site → Prop
   | p :: v :: w :: rest => LiveAt clockwise ρ p v w ∧ LiveFwd ρ (v :: w :: rest)
   | _ => True
 
+/-- If `LiveAt` holds at every consecutive triple of a list, the list satisfies `LiveFwd`. -/
 theorem liveFwd_of_forall (ρ : Config squareGraph) : ∀ (l : List Site),
     (∀ i (h : i + 2 < l.length), LiveAt clockwise ρ l[i] l[i + 1] l[i + 2]) → LiveFwd ρ l
   | p :: v :: w :: rest, h => by
@@ -203,6 +234,7 @@ theorem liveFwd_of_forall (ρ : Config squareGraph) : ∀ (l : List Site),
   | [_], _ => trivial
   | [_, _], _ => trivial
 
+/-- `IsLive` for a path implies `LiveFwd`, by matching indices with `liveAt_of_isLive`. -/
 theorem liveFwd_of_isLive {ρ : Config squareGraph} {l : List Site}
     (hl : IsLive clockwise ρ l) : LiveFwd ρ l := by
   refine liveFwd_of_forall ρ l (fun i hi => ?_)
@@ -230,6 +262,7 @@ def last2 : List Site → Site × Site
   | [p, v] => (p, v)
   | _ => (0, 0)
 
+/-- The last two entries of a list of length `≥ 2` are given by `last2`. -/
 theorem last2_eq : ∀ (p v : Site) (rest : List Site),
     (p :: v :: rest)[(p :: v :: rest).length - 2]? = some (last2 (p :: v :: rest)).1 ∧
     (p :: v :: rest)[(p :: v :: rest).length - 1]? = some (last2 (p :: v :: rest)).2
@@ -242,6 +275,7 @@ theorem last2_eq : ∀ (p v : Site) (rest : List Site),
       List.getElem?_cons_succ, List.getElem?_cons_succ]
     exact ⟨h1, h2⟩
 
+/-- `dualWalk ρ (p :: v :: rest)` is never the empty list. -/
 theorem dualWalk_ne_nil (ρ : Config squareGraph) : ∀ (p v : Site) (rest : List Site),
     dualWalk ρ (p :: v :: rest) ≠ []
   | p, v, [] => by simp [dualWalk]
@@ -250,6 +284,8 @@ theorem dualWalk_ne_nil (ρ : Config squareGraph) : ∀ (p v : Site) (rest : Lis
     intro _
     exact dualWalk_ne_nil ρ v w rest
 
+/-- The last face of `dualWalk ρ (p :: v :: rest)` is the right face of the edge between the
+walk's last two vertices, as given by `last2`. -/
 theorem dualWalk_getLast (ρ : Config squareGraph) : ∀ (p v : Site) (rest : List Site),
     (dualWalk ρ (p :: v :: rest)).getLast? =
       some (rightFace (last2 (p :: v :: rest)).1
@@ -260,6 +296,8 @@ theorem dualWalk_getLast (ρ : Config squareGraph) : ∀ (p v : Site) (rest : Li
       dualWalk_getLast ρ v w rest]
     rfl
 
+/-- For a live chain, the first face of `dualWalk ρ (p :: v :: rest)` is
+`rightFace p (dirOf (v - p))`. -/
 theorem dualWalk_head (ρ : Config squareGraph) : ∀ (p v : Site) (rest : List Site),
     (p :: v :: rest).IsChain squareGraph.Adj → LiveFwd ρ (p :: v :: rest) →
     (dualWalk ρ (p :: v :: rest)).head? = some (rightFace p (dirOf (v - p)))
@@ -288,6 +326,8 @@ theorem dualWalk_head (ρ : Config squareGraph) : ∀ (p v : Site) (rest : List 
       rw [← List.dropLast_append_getLast hne, hd, List.cons_append, List.head?_cons] at hhead
       exact hhead
 
+/-- For a live chain `l`, `dualWalk ρ l` is a chain of open dual edges, built by concatenating
+the segments `segAt` at each internal vertex. -/
 theorem dualWalk_chain (ρ : Config squareGraph) : ∀ (l : List Site),
     l.IsChain squareGraph.Adj → LiveFwd ρ l → (dualWalk ρ l).IsChain (DualStep ρ)
   | p :: v :: w :: rest, hch, hlive => by

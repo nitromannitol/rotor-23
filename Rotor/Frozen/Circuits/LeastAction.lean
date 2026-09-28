@@ -27,6 +27,16 @@ import Rotor.Bridge.Abelian
 
 open Rotor
 
+/-!
+# The least-action principle for legal routings
+
+States Lemma 2.2 of `rotor.tex`: among legal routings from a common initial state, a stable
+routing is least in the sense that any other legal routing actuates each vertex no more often,
+and two stable legal routings from the same start have equal length, equal final state, and
+actuate every vertex equally often. The statement is discharged from the abelian property
+`External.Abelian` cited in the paper.
+-/
+
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
 omit [G.LocallyFinite] in

@@ -4,6 +4,8 @@ import Rotor.Support.WalkMeasurable
 import Rotor.External.AngelHolroyd
 
 /-!
+# Shift invariance and the zero-one law for recurrence
+
 The lattice shift of a doubly periodic graph with a periodic mechanism is a mechanism
 automorphism, so recurrence from `shift z o` for the shifted configuration is recurrence from
 `o` for the original one.  With recurrence independent of the starting vertex (Angel-Holroyd,
@@ -27,6 +29,8 @@ def shiftAut (hπ : P.Periodic π) (z : ℤ × ℤ) : MechAut π where
   next := fun v a => congrArg Subtype.val (hπ z v a)
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The mechanism automorphism `shiftAut` acts on a configuration exactly as
+`shiftConfig` does: the two maps agree pointwise on every vertex. -/
 theorem shiftAut_act (hπ : P.Periodic π) (z : ℤ × ℤ) (ρ : Config G) :
     (P.shiftAut hπ z).act ρ = P.shiftConfig z ρ := by
   funext v
@@ -34,12 +38,19 @@ theorem shiftAut_act (hπ : P.Periodic π) (z : ℤ × ℤ) (ρ : Config G) :
   rfl
 
 omit [G.LocallyFinite] in
+/-- Shifting both the configuration and the base vertex by the same lattice
+element `z` preserves recurrence, since `shiftAut` is a mechanism automorphism
+carrying `shiftConfig` to the shift of the vertex. -/
 theorem recurrent_shiftConfig (hπ : P.Periodic π) (z : ℤ × ℤ) (ρ : Config G) (o : V) :
     Recurrent π (P.shiftConfig z ρ) (P.shift z o) ↔ Recurrent π ρ o := by
   rw [← P.shiftAut_act hπ z]
   exact (P.shiftAut hπ z).recurrent_act ρ o
 
 omit [G.LocallyFinite] in
+/-- The recurrence event `{ρ | Recurrent π ρ o}` is invariant under the preimage
+of `shiftConfig z`: shifting the configuration preserves recurrence from `o`,
+using that recurrence does not depend on the starting vertex
+(`External.RecurrentOfRecurrent`) to absorb the corresponding shift of `o`. -/
 theorem shiftConfig_preimage_recurrent [Infinite V] (hG : G.Connected)
     (hAH : External.RecurrentOfRecurrent G) (hπ : P.Periodic π) (z : ℤ × ℤ) (o : V) :
     P.shiftConfig z ⁻¹' {ρ | Recurrent π ρ o} = {ρ | Recurrent π ρ o} := by

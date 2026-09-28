@@ -6,6 +6,15 @@ coordinate, and changing all coordinates changes it by at most the sum.  Support
 -/
 import Rotor.Periodic
 
+/-!
+# Total variation and product laws
+
+Changing the law of one coordinate of a finite product measure changes the probability of any
+event by at most the total variation distance of that coordinate, and changing all coordinates
+changes it by at most the sum of the coordinate distances. This supports `lem:block-live-paths`,
+where the one-vertex laws are perturbed by an amount `δ`.
+-/
+
 open MeasureTheory ProbabilityTheory
 open scoped ENNReal
 
@@ -33,6 +42,7 @@ theorem abs_sub_le_tvDist (μ ν : Measure α) [IsProbabilityMeasure μ] [IsProb
   rw [abs_le]
   constructor <;> linarith
 
+/-- Total variation distance is nonnegative, from the `∅` case of `abs_sub_le_tvDist`. -/
 theorem tvDist_nonneg (μ ν : Measure α) [IsProbabilityMeasure μ] [IsProbabilityMeasure ν] :
     0 ≤ tvDist μ ν :=
   (abs_nonneg _).trans (abs_sub_le_tvDist μ ν ∅)
@@ -58,8 +68,8 @@ theorem pi_one_coord_le (κ κ' : ∀ i, Measure (α i)) [∀ i, IsProbabilityMe
   have h1 : Measure.pi κ B = ((κ i).prod R) (e '' B) := by
     rw [← (measurePreserving_piFinSuccAbove κ i).measure_preimage hBe.nullMeasurableSet, hpre]
   have h2 : Measure.pi κ' B = ((κ' i).prod R) (e '' B) := by
-    rw [hR, ← hrest, ← (measurePreserving_piFinSuccAbove κ' i).measure_preimage hBe.nullMeasurableSet,
-      hpre]
+    rw [hR, ← hrest,
+      ← (measurePreserving_piFinSuccAbove κ' i).measure_preimage hBe.nullMeasurableSet, hpre]
   rw [h1, h2, Measure.prod_apply_symm hBe, Measure.prod_apply_symm hBe]
   -- the sections
   set f : (∀ j, α (i.succAbove j)) → ℝ≥0∞ := fun y => κ' i ((fun x => (x, y)) ⁻¹' (e '' B))
@@ -104,6 +114,8 @@ variable {n : ℕ} {α : Fin (n + 1) → Type*} [∀ i, MeasurableSpace (α i)]
 def switched (ν ν' : ∀ i, Measure (α i)) (k : ℕ) : ∀ i, Measure (α i) :=
   fun i => if (i : ℕ) < k then ν' i else ν i
 
+/-- Each coordinate `switched ν ν' k i` is a probability measure, since it is either `ν i` or
+`ν' i`. -/
 instance (ν ν' : ∀ i, Measure (α i)) [∀ i, IsProbabilityMeasure (ν i)]
     [∀ i, IsProbabilityMeasure (ν' i)] (k : ℕ) (i : Fin (n + 1)) :
     IsProbabilityMeasure (switched ν ν' k i) := by

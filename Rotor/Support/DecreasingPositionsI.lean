@@ -19,6 +19,16 @@ from `S` to `y`.
 import Rotor.Support.EulerPath
 import Rotor.Support.Passage
 
+/-!
+# Decreasing positions, part (i)
+
+Proves `lem:decreasing-positions` (i): a particle of a one-particle-at-a-time boundary routing
+that visits `y` forces a live path from `S` to `y`. The argument tracks the traversed edges,
+shows the surviving edges (after deleting oppositely directed pairs) balance in-degree and
+out-degree outside `S ∪ {y}` with an excess of one at `y`, and extracts an Eulerian-style path
+from this imbalance.
+-/
+
 open Finset
 
 namespace Rotor
@@ -28,6 +38,8 @@ variable (π : Mechanism G)
 
 /-! ### The current route starts at the tracked particle -/
 
+/-- By induction on `n`: if a particle is tracked at stage `n`, it is the head of the route
+built so far. -/
 theorem route_head (S : Finset V) (ρ : Config G) (es : List (V × V)) (n : ℕ) (p : V)
     (h : (oneRouting π S ρ es n).tracked = some p) :
     (oneRouting π S ρ es n).route.head? = some p := by
@@ -120,6 +132,8 @@ theorem mem_traversed_of_le_count (S : Finset V) (ξ : RState G) (vs : List V) (
 
 /-! ### Degrees in the traversed set -/
 
+/-- For a duplicate-free list, the cardinality of the finset obtained by filtering `p` on its
+`toFinset` equals the count of list elements satisfying `p`. -/
 theorem card_filter_toFinset {α : Type*} [DecidableEq α] (L : List α) (hL : L.Nodup)
     (p : α → Prop) [DecidablePred p] :
     (L.toFinset.filter p).card = L.countP (fun a => decide (p a)) := by
@@ -175,7 +189,8 @@ theorem indeg_eq_outdeg_add [G.LocallyFinite] (S : Finset V) (ρ : Config G) (es
     simp only [decide_eq_true_eq]
     exact fun h => hv (h ▸ this)
   -- the actuation edges have as many tails at `v` as actuations of `v`
-  have hout : (traversed π S (boundaryInit S ρ) s.acted.reverse).countP (fun e => decide (e.1 = v)) =
+  have hout :
+      (traversed π S (boundaryInit S ρ) s.acted.reverse).countP (fun e => decide (e.1 = v)) =
       s.acted.reverse.count v := by
     have h := traversed_map_fst π S (boundaryInit S ρ) s.acted.reverse
     conv_rhs => rw [← h]
@@ -198,6 +213,8 @@ theorem indeg_eq_outdeg_add [G.LocallyFinite] (S : Finset V) (ρ : Config G) (es
 /-- The surviving edges: those whose reverse was not traversed. -/
 def survive (E : Finset (V × V)) : Finset (V × V) := E.filter (fun e => e.swap ∉ E)
 
+/-- The in-degree of the surviving edges at `v` plus the number of paired (both directions
+present) incoming edges equals the original in-degree at `v`. -/
 theorem indeg_survive (E : Finset (V × V)) (v : V) :
     indeg (survive E) v + (E.filter (fun e => e.2 = v ∧ e.swap ∈ E)).card = indeg E v := by
   unfold indeg survive
@@ -211,6 +228,8 @@ theorem indeg_survive (E : Finset (V × V)) (v : V) :
   simp only [Finset.mem_filter]
   tauto
 
+/-- The out-degree of the surviving edges at `v` plus the number of paired outgoing edges
+equals the original out-degree at `v`. -/
 theorem outdeg_survive (E : Finset (V × V)) (v : V) :
     outdeg (survive E) v + (E.filter (fun e => e.1 = v ∧ e.swap ∈ E)).card = outdeg E v := by
   unfold outdeg survive
@@ -254,10 +273,14 @@ theorem survive_balance [G.LocallyFinite] (S : Finset V) (ρ : Config G) (es : L
 
 /-! ### From the surviving path to a live path -/
 
+/-- If the `k`-th rotor iterate from `v` already points to `w`, the rank of `w` from `v` is at
+most `k`. -/
 theorem rank'_le (ρ : Config G) (v w : V) (hw : G.Adj v w) (k : ℕ) (hk : 0 < k)
     (h : (((π.next v) ^ k) (ρ v)).1 = w) : rank' π ρ v w hw ≤ k :=
   Nat.find_min' _ ⟨hk, Subtype.ext h⟩
 
+/-- If no rotor iterate from `v` up to `C` points to `w`, the rank of `w` from `v` exceeds
+`C`. -/
 theorem lt_rank' (ρ : Config G) (v w : V) (hw : G.Adj v w) (C : ℕ)
     (h : ∀ k, 0 < k → k ≤ C → (((π.next v) ^ k) (ρ v)).1 ≠ w) : C < rank' π ρ v w hw := by
   unfold rank' rank

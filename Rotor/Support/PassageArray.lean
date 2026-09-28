@@ -23,15 +23,22 @@ universe u
 variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 variable (π : Mechanism G) (P : DoublyPeriodic G)
 
-/-! ### The shift action on configurations -/
+/-!
+# Directional limits of the passage time via Kingman's theorem
+
+### The shift action on configurations -/
 
 namespace DoublyPeriodic
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The rotor at `v` in the shifted configuration `P.shiftConfig z ρ` is the `z`-shift of the
+rotor that `ρ` assigns at `P.shift (-z) v`. -/
 theorem shiftConfig_val (z : ℤ × ℤ) (ρ : Config G) (v : V) :
     (P.shiftConfig z ρ v).1 = P.shift z (ρ (P.shift (-z) v)).1 := rfl
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- Shifting configurations composes additively:
+`P.shiftConfig z (P.shiftConfig w ρ) = P.shiftConfig (z + w) ρ`. -/
 theorem shiftConfig_add (z w : ℤ × ℤ) (ρ : Config G) :
     P.shiftConfig z (P.shiftConfig w ρ) = P.shiftConfig (z + w) ρ := by
   funext v
@@ -40,6 +47,7 @@ theorem shiftConfig_add (z w : ℤ × ℤ) (ρ : Config G) :
   rw [← P.shift_add, neg_add, ← P.shift_add, add_comm (-w) (-z)]
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- Shifting by the zero lattice vector fixes every configuration: `P.shiftConfig 0 ρ = ρ`. -/
 theorem shiftConfig_zero (ρ : Config G) : P.shiftConfig 0 ρ = ρ := by
   funext v
   apply Subtype.ext
@@ -47,6 +55,8 @@ theorem shiftConfig_zero (ρ : Config G) : P.shiftConfig 0 ρ = ρ := by
   rw [neg_zero, P.shift_zero, P.shift_zero]
 
 omit [DecidableEq V] in
+/-- `P.shiftConfig z` is measurable: each output coordinate factors through the (finite-valued)
+coordinate of `ρ` at the shifted vertex. -/
 theorem measurable_shiftConfig (z : ℤ × ℤ) : Measurable (P.shiftConfig z) := by
   refine measurable_pi_lambda _ (fun v => ?_)
   -- the coordinate at `v` is a function of the coordinate at `shift (-z) v`
@@ -81,6 +91,9 @@ theorem arr_shift (hπ : P.Periodic π) (hAb : External.Abelian G) [Infinite V] 
     congr 1
     abel
   rw [hs m, hs n, (P.mechAut π hπ (-z)).τ_act hAb hG]
+
+/-- The array `arr π P ρ o z` is subadditive: `arr ... l n ≤ arr ... l m + arr ... m n`, from the
+triangle inequality for `τ`. -/
 theorem arr_subadd (hAb : External.Abelian G) [Infinite V] (hG : G.Connected)
     (o : V) (z : ℤ × ℤ) (l m n : ℕ) (ρ : Config G) :
     arr π P ρ o z l n ≤ arr π P ρ o z l m + arr π P ρ o z m n := by
@@ -88,6 +101,7 @@ theorem arr_subadd (hAb : External.Abelian G) [Infinite V] (hG : G.Connected)
   exact_mod_cast τ_triangle π hAb hG ρ _ _ _
 
 omit [G.LocallyFinite] in
+/-- The passage-time array `arr π P ρ o z m n` is nonnegative. -/
 theorem arr_nonneg (o : V) (z : ℤ × ℤ) (m n : ℕ) (ρ : Config G) : 0 ≤ arr π P ρ o z m n := by
   unfold arr; positivity
 
@@ -107,6 +121,8 @@ theorem dist_shift_nsmul_le (hπ : P.Periodic π) (hG : G.Connected) (o : V) (z 
     nlinarith
 
 omit [G.LocallyFinite] in
+/-- `arr π P ρ o z 0 n ≤ n * G.dist o (P.shift z o)`, combining `τ_le_dist` with the linear
+distance bound `dist_shift_nsmul_le`. -/
 theorem arr_le (hπ : P.Periodic π) (hG : G.Connected) (o : V) (z : ℤ × ℤ) (n : ℕ) (ρ : Config G) :
     arr π P ρ o z 0 n ≤ n * G.dist o (P.shift z o) := by
   unfold arr
@@ -115,6 +131,8 @@ theorem arr_le (hπ : P.Periodic π) (hG : G.Connected) (o : V) (z : ℤ × ℤ)
   have h2 := dist_shift_nsmul_le π P hπ hG o z n
   exact_mod_cast h1.trans h2
 
+/-- `ρ ↦ arr π P ρ o z m n` is measurable, since `τ` is measurable and `G` is countable under
+connectedness. -/
 theorem measurable_arr (hAb : External.Abelian G) [Infinite V] (hG : G.Connected)
     (o : V) (z : ℤ × ℤ) (m n : ℕ) :
     Measurable (fun ρ => arr π P ρ o z m n) := by
@@ -182,6 +200,7 @@ theorem τ_four (hAb : External.Abelian G) [Infinite V] (hG : G.Connected) (ρ :
   have h₂ := key x₂ x₁ y₂ y₁
   rw [G.dist_comm (u := x₂), G.dist_comm (u := y₂)] at h₂
   constructor <;> linarith only [h₁, h₂]
+
 /-- The array from `o` at the shifted rotors is the array from `shift (-w) o`. -/
 theorem arr_shiftConfig (hπ : P.Periodic π) (hAb : External.Abelian G) [Infinite V]
     (hG : G.Connected) (ρ : Config G) (o : V) (z w : ℤ × ℤ) (n : ℕ) :
@@ -194,6 +213,7 @@ theorem arr_shiftConfig (hπ : P.Periodic π) (hAb : External.Abelian G) [Infini
     congr 1
     abel
   rw [hs (0 • z), hs (n • z), (P.mechAut π hπ w).τ_act hAb hG]
+
 /-- The arrays from two base points differ by a bounded amount. -/
 theorem arr_base_diff (hπ : P.Periodic π) (hAb : External.Abelian G) [Infinite V]
     (hG : G.Connected) (ρ : Config G) (o o' : V) (z : ℤ × ℤ) (n : ℕ) :
@@ -203,6 +223,7 @@ theorem arr_base_diff (hπ : P.Periodic π) (hAb : External.Abelian G) [Infinite
     (P.mechAut π hπ (n • z)).dist_act hG, two_mul] using
     τ_four π hAb hG ρ o o'
       (P.shift (n • z) o) (P.shift (n • z) o')
+
 /-- The limit of the array from any base point is the same. -/
 theorem tendsto_arr_of_base (hπ : P.Periodic π) (hAb : External.Abelian G) [Infinite V]
     (hG : G.Connected) (ρ : Config G) (o o' : V) (z : ℤ × ℤ) (c : ℝ)
@@ -219,6 +240,10 @@ theorem tendsto_arr_of_base (hπ : P.Periodic π) (hAb : External.Abelian G) [In
     simpa only [abs_sub_comm] using
       arr_base_diff π P hπ hAb hG ρ o o' z n
   simpa only [sub_div, add_sub_cancel, add_zero] using h.add hdiff
+
+/-- The a.s. limit `γ` from `exists_dirLimit` is a.s. invariant under every lattice shift `w`,
+by combining the invariance of `μ`, the shift identity `arr_shiftConfig`, and uniqueness of
+limits with `tendsto_arr_of_base`. -/
 theorem dirLimit_shift_invariant (hπ : P.Periodic π) (hAb : External.Abelian G) [Infinite V]
     (hG : G.Connected) (μ : Measure (Config G)) (hinv : P.Invariant μ) (o : V) (z w : ℤ × ℤ)
     (γ : Config G → ℝ)
@@ -291,6 +316,8 @@ theorem exists_of_ae (μ : Measure (Config G)) [IsProbabilityMeasure μ] {p : Co
     (h : ∀ᵐ ρ ∂μ, p ρ) : ∃ ρ, p ρ := by
   exact h.exists
 omit [G.LocallyFinite] in
+/-- The directional constant `c` in `IsDirLimit π P μ z c` is unique: any two witnesses agree
+at some point `ρ`, where the limit is unique. -/
 theorem IsDirLimit.unique [Infinite V] (μ : Measure (Config G)) [IsProbabilityMeasure μ]
     {z : ℤ × ℤ} {c c' : ℝ} (h : IsDirLimit π P μ z c) (h' : IsDirLimit π P μ z c') : c = c' := by
   obtain ⟨o⟩ : Nonempty V := inferInstance
@@ -298,6 +325,8 @@ theorem IsDirLimit.unique [Infinite V] (μ : Measure (Config G)) [IsProbabilityM
   exact tendsto_nhds_unique (hρ o) (hρ' o)
 
 omit [G.LocallyFinite] in
+/-- The directional constant `c` is nonnegative, since it is a limit of nonnegative ratios
+`arr .../n`. -/
 theorem IsDirLimit.nonneg [Infinite V] (μ : Measure (Config G)) [IsProbabilityMeasure μ]
     {z : ℤ × ℤ} {c : ℝ} (h : IsDirLimit π P μ z c) : 0 ≤ c := by
   obtain ⟨o⟩ : Nonempty V := inferInstance
@@ -315,6 +344,8 @@ theorem arr_div_le (hπ : P.Periodic π) (hG : G.Connected) (o : V) (z : ℤ × 
     exact_mod_cast (this.trans (le_of_eq (mul_comm _ _)))
 
 omit [G.LocallyFinite] in
+/-- The directional constant `c` is at most the one-step distance `G.dist o (P.shift z o)`, via
+the bound `arr_div_le`. -/
 theorem IsDirLimit.le_dist [Infinite V] (hπ : P.Periodic π) (hG : G.Connected)
     (μ : Measure (Config G)) [IsProbabilityMeasure μ] {z : ℤ × ℤ} {c : ℝ}
     (h : IsDirLimit π P μ z c) (o : V) : c ≤ G.dist o (P.shift z o) := by
@@ -322,23 +353,31 @@ theorem IsDirLimit.le_dist [Infinite V] (hπ : P.Periodic π) (hG : G.Connected)
   exact le_of_tendsto' (hρ o) (fun n => arr_div_le π P hπ hG o z n ρ)
 
 omit [G.LocallyFinite] in
+/-- The passage time from a vertex to itself is `0`. -/
 theorem τ_self (hG : G.Connected) (ρ : Config G) (x : V) : τ π ρ x x = 0 := by
   have := τ_le_dist π hG ρ x x
   rwa [SimpleGraph.dist_self, Nat.le_zero] at this
 
 omit [G.LocallyFinite] in
+/-- The zero lattice vector has directional constant `0`: `arr π P ρ o 0 n = 0` for every `o`
+and `n`, since the base point never moves and `τ_self` vanishes. -/
 theorem isDirLimit_zero (hG : G.Connected) (μ : Measure (Config G)) : IsDirLimit π P μ 0 0 := by
   refine ae_of_all _ fun ρ o => ?_
   simpa only [arr, smul_zero, P.shift_zero, τ_self π hG,
     Nat.cast_zero, zero_div] using
     (tendsto_const_nhds :
       Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0))
+
 omit [G.LocallyFinite] in
+/-- The array in direction `k • z` up to `n` equals the array in direction `z` up to `k * n`:
+`arr π P ρ o (k • z) 0 n = arr π P ρ o z 0 (k * n)`. -/
 theorem arr_nsmul (o : V) (z : ℤ × ℤ) (k n : ℕ) (ρ : Config G) :
     arr π P ρ o (k • z) 0 n = arr π P ρ o z 0 (k * n) := by
   simp only [arr, zero_smul, mul_nsmul]
 
 omit [G.LocallyFinite] in
+/-- The directional constant scales along multiples of the direction: `IsDirLimit π P μ z c`
+gives `IsDirLimit π P μ (k • z) (k * c)`, via `arr_nsmul`. -/
 theorem IsDirLimit.nsmul (hG : G.Connected) (μ : Measure (Config G)) {z : ℤ × ℤ} {c : ℝ}
     (h : IsDirLimit π P μ z c) (k : ℕ) : IsDirLimit π P μ (k • z) (k * c) := by
   rcases Nat.eq_zero_or_pos k with rfl | hk
@@ -379,6 +418,7 @@ theorem τ_shift_shift (hπ : P.Periodic π) (hAb : External.Abelian G) [Infinit
     P.shiftConfig_zero] at this
   exact this
 
+/-- `ρ ↦ arr π P ρ o z 0 n / n` is integrable, bounded by the constant `G.dist o (P.shift z o)`. -/
 theorem integrable_arr_div (hπ : P.Periodic π) (hAb : External.Abelian G) [Infinite V]
     (hG : G.Connected) (μ : Measure (Config G)) [IsProbabilityMeasure μ] (o : V) (z : ℤ × ℤ)
     (n : ℕ) : Integrable (fun ρ => (arr π P ρ o z 0 n : ℝ) / n) μ := by

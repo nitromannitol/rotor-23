@@ -15,6 +15,15 @@ import Rotor.External.LSS
 import Rotor.External.SubcriticalDecay
 import Rotor.Support.SubcubicRecurrence
 
+/-!
+# Subcubic recurrence
+
+States Proposition 4.1 of `rotor.tex` as a frozen, pinned theorem: on an infinite connected
+graph of maximum degree three, equipped with an arbitrary rotor mechanism, if the initial
+rotors are independent and uniform then almost surely the graph contains no infinite live path.
+The proof is supplied by `subcubic_recurrence_proof` from `Rotor.Support.SubcubicRecurrence`.
+-/
+
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
 

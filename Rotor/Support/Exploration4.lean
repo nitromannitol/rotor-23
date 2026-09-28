@@ -2,6 +2,8 @@ import Rotor.Support.QueryAtoms
 import Rotor.Support.StepProb
 
 /-!
+# The reached-set exploration
+
 The exploration of `rotor.tex:1320-1340` (Section 4):
 
   "Fix a directed edge `e = o → x` and add it to a first-in, first-out queue.  For every
@@ -56,6 +58,7 @@ noncomputable def qStep (o : V) (ρ : Config G) (s : QueueState V) : QueueState 
 def qInit (o x : V) : QueueState V := { queue := [(o, x)], M := fun _ => 0, hist := [] }
 
 omit [G.LocallyFinite] in
+/-- `rankOf` at `v` depends on `ρ` only through the rotor `ρ v`. -/
 theorem rankOf_congr {ρ ρ' : Config G} {v : V} (h : ρ v = ρ' v) (u : V) :
     rankOf π ρ v u = rankOf π ρ' v u := by
   unfold rankOf
@@ -63,6 +66,7 @@ theorem rankOf_congr {ρ ρ' : Config G} {v : V} (h : ρ v = ρ' v) (u : V) :
   · exact rank_congr π v h _
   · rfl
 
+/-- `newEdges` at `v` depends on `ρ` only through the rotor `ρ v`, via `rankOf_congr`. -/
 theorem newEdges_congr {ρ ρ' : Config G} {v : V} (h : ρ v = ρ' v) (o : V) (m r : ℕ) :
     newEdges π ρ o v m r = newEdges π ρ' o v m r := by
   unfold newEdges
@@ -70,6 +74,8 @@ theorem newEdges_congr {ρ ρ' : Config G} {v : V} (h : ρ v = ρ' v) (o : V) (m
   ext w
   simp only [mem_filter, mem_univ, true_and, rank_congr π v h w]
 
+/-- One processing step appends the tail vertex of the head edge to the history exactly when
+it was not already reached. -/
 theorem qStep_hist (o : V) (ρ : Config G) (s : QueueState V) :
     (qStep π o ρ s).hist = match s.queue with
       | [] => s.hist
@@ -113,11 +119,15 @@ variable (o x : V) (ρ : Config G)
 /-- The state after `t` processing steps. -/
 noncomputable abbrev St (t : ℕ) : QueueState V := (qProc π o x).run ρ t
 
+/-- At time `0` the run is the initial state `qInit o x`. -/
 theorem St_zero : St π o x ρ 0 = qInit o x := rfl
 
+/-- The run advances by one processing step `qStep` at each time step. -/
 theorem St_succ (t : ℕ) : St π o x ρ (t + 1) = qStep π o ρ (St π o x ρ t) :=
   QueryProcess.run_succ _ _ _
 
+/-- Unfolds membership in `newEdges`: an edge `v → w` is added exactly when `w` is a neighbor
+other than `o` whose rank at `v` lies strictly between `m` and `r`. -/
 theorem mem_newEdges {v : V} {m r : ℕ} {e : V × V} :
     e ∈ newEdges π ρ o v m r ↔ e.1 = v ∧ ∃ h : G.Adj v e.2, e.2 ≠ o ∧
       m < rank π ρ v ⟨e.2, h⟩ ∧ rank π ρ v ⟨e.2, h⟩ < r := by
@@ -129,9 +139,12 @@ theorem mem_newEdges {v : V} {m r : ℕ} {e : V × V} :
   · rintro ⟨h1, h2, h3, h4, h5⟩
     exact ⟨⟨e.2, h2⟩, ⟨h3, h4, h5⟩, Prod.ext h1.symm rfl⟩
 
+/-- A step from an empty queue does nothing. -/
 theorem qStep_queue_nil {s : QueueState V} (hq : s.queue = []) : qStep π o ρ s = s := by
   simp only [qStep, hq]
 
+/-- Processing the head edge `u → v` drops it from the queue and appends `newEdges` exactly
+when `r_v(u)` exceeds the current `M_v`. -/
 theorem qStep_queue_cons {s : QueueState V} {u v : V} {rest : List (V × V)}
     (hq : s.queue = (u, v) :: rest) :
     (qStep π o ρ s).queue = rest ++
@@ -139,6 +152,8 @@ theorem qStep_queue_cons {s : QueueState V} {u v : V} {rest : List (V × V)}
   simp only [qStep, hq]
   split_ifs <;> simp
 
+/-- Processing the head edge `u → v` updates `M_v` to `r_v(u)` exactly when `r_v(u)` exceeds
+the current `M_v`, and leaves `M` unchanged otherwise. -/
 theorem qStep_M_cons {s : QueueState V} {u v : V} {rest : List (V × V)}
     (hq : s.queue = (u, v) :: rest) :
     (qStep π o ρ s).M = if rankOf π ρ v u ≤ s.M v then s.M
@@ -146,6 +161,7 @@ theorem qStep_M_cons {s : QueueState V} {u v : V} {rest : List (V × V)}
   simp only [qStep, hq]
   split_ifs <;> rfl
 
+/-- `M_v` is nondecreasing across a single processing step. -/
 theorem M_le_qStep (s : QueueState V) (v : V) : s.M v ≤ (qStep π o ρ s).M v := by
   rcases hq : s.queue with _ | ⟨⟨u, v'⟩, rest⟩
   · rw [qStep_queue_nil π o ρ hq]
@@ -158,6 +174,7 @@ theorem M_le_qStep (s : QueueState V) (v : V) : s.M v ≤ (qStep π o ρ s).M v 
         exact (not_le.1 h).le
       · rw [Function.update_of_ne hv]
 
+/-- By induction on `t'` via `M_le_qStep`, `M_v` is nondecreasing along the run. -/
 theorem M_mono {t t' : ℕ} (h : t ≤ t') (v : V) : (St π o x ρ t).M v ≤ (St π o x ρ t').M v := by
   induction t' with
   | zero => rw [Nat.le_zero.1 h]
@@ -167,11 +184,13 @@ theorem M_mono {t t' : ℕ} (h : t ≤ t') (v : V) : (St π o x ρ t).M v ≤ (S
     · rw [Nat.le_antisymm h h']
 
 omit [G.LocallyFinite] in
+/-- `r_v(u)` is always at least `1` for adjacent `v`, `u`, since it is a cyclic rank. -/
 theorem rankOf_pos {v u : V} (h : G.Adj v u) : 1 ≤ rankOf π ρ v u := by
   unfold rankOf
   rw [dif_pos h, rank_eq_cycRank]
   exact cycRank_pos _ (π.cyclic v) _ _
 
+/-- `r_v(u)` is at most the degree of `v`, since it is a rank among the neighbors of `v`. -/
 theorem rankOf_le_degree (v u : V) : rankOf π ρ v u ≤ G.degree v := by
   unfold rankOf
   split_ifs
@@ -180,10 +199,12 @@ theorem rankOf_le_degree (v u : V) : rankOf π ρ v u ≤ G.degree v := by
   · exact Nat.zero_le _
 
 omit [G.LocallyFinite] in
+/-- Unfolds `rankOf` at an adjacent pair to the underlying `rank`. -/
 theorem rankOf_eq {v u : V} (h : G.Adj v u) : rankOf π ρ v u = rank π ρ v ⟨u, h⟩ := by
   unfold rankOf
   rw [dif_pos h]
 
+/-- By induction on `t`, every edge ever in the queue joins adjacent vertices. -/
 theorem queue_adj (hox : G.Adj o x) : ∀ t : ℕ, ∀ e ∈ (St π o x ρ t).queue, G.Adj e.1 e.2
   | 0, e, he => by
     simp only [St_zero, qInit, List.mem_singleton] at he
@@ -202,6 +223,8 @@ theorem queue_adj (hox : G.Adj o x) : ∀ t : ℕ, ∀ e ∈ (St π o x ρ t).qu
         · obtain ⟨h1, h2, -⟩ := (mem_newEdges π o ρ).1 he
           rw [h1]; exact h2
 
+/-- By induction on `t`: a vertex has been reached (is in the history) exactly when its `M`
+value is positive. -/
 theorem mem_hist_iff_M_pos (hox : G.Adj o x) : ∀ (t : ℕ) (v : V),
     v ∈ (St π o x ρ t).hist ↔ 0 < (St π o x ρ t).M v
   | 0, v => by
@@ -216,7 +239,8 @@ theorem mem_hist_iff_M_pos (hox : G.Adj o x) : ∀ (t : ℕ) (v : V),
       have hr := rankOf_pos π ρ hadj
       rw [qStep_M_cons π o ρ hq]
       have hhist : (qStep π o ρ (St π o x ρ t)).hist =
-          if v' ∈ (St π o x ρ t).hist then (St π o x ρ t).hist else (St π o x ρ t).hist ++ [v'] := by
+          if v' ∈ (St π o x ρ t).hist then (St π o x ρ t).hist
+            else (St π o x ρ t).hist ++ [v'] := by
         rw [qStep_hist, hq]
       rw [hhist]
       by_cases hv : v = v'
@@ -240,6 +264,8 @@ theorem mem_hist_iff_M_pos (hox : G.Adj o x) : ∀ (t : ℕ) (v : V),
           · rw [if_pos hle]; exact ih v
           · rw [if_neg hle, Function.update_of_ne hv]; exact ih v
 
+/-- At most `r - m - 1` edges are added when processing an entry of rank `r` into `v` with
+current `M_v = m`, since the ranks added lie strictly between `m` and `r`. -/
 theorem length_newEdges_le (v : V) (m r : ℕ) : (newEdges π ρ o v m r).length ≤ r - m - 1 := by
   unfold newEdges
   rw [List.length_map, Finset.length_toList]

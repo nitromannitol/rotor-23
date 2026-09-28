@@ -2,6 +2,8 @@ import Rotor.Support.PendantBasics
 import Rotor.Support.WalkBasics
 
 /-!
+# The induced walk on `ℤ²` from the walk on `G_M`
+
 The rotor walk on `G_M` and the induced walk on `ℤ²` (`rotor.tex:2230-2238`): "Deleting each
 two-step visit to a leaf leaves a rotor walk on `ℤ²` whose initial rotors are independent and
 point west with probability `(M+1)/(M+4)`."  The induced initial rotor at `v` is the last
@@ -29,18 +31,25 @@ def induce (ρ : Config (pendantGraph M)) : Config squareGraph :=
 /-- The number of leaves visited before the next lattice move, from neighbour index `k`. -/
 def leafVisits (k : Fin (M + 4)) : ℕ := if (k : ℕ) ≤ 2 then 0 else M + 3 - k
 
+/-- `nbrIdx` is a left inverse of `pendantNbrLattice M v`: the neighbour index recovered from
+its `k`-th neighbour is `k` itself. -/
 theorem nbrIdx_nbrLattice (v : Site) (k : Fin (M + 4)) :
     nbrIdx M (pendantNbrLattice M v k) = k := by
   simp [nbrIdx]
 
+/-- The clockwise mechanism's turn at a lattice vertex `v` sends its `k`-th neighbour, in the
+order `N, E, S, W, L_1, …, L_M`, to its `(k + 1)`-th neighbour. -/
 theorem pendantMech_next_inl (v : Site) (k : Fin (M + 4)) :
     (pendantMech M).next (.inl v) (pendantNbrLattice M v k) = pendantNbrLattice M v (k + 1) := by
   simpa [pendantMech] using pendantTurn_pow M v 1 k
 
+/-- For `k < 4`, the `k`-th neighbour of `v` under `pendantNbrLattice` is the lattice vertex
+reached by stepping from `v` in direction `k`. -/
 theorem pendantNbrLattice_val_lattice (v : Site) (k : Fin (M + 4)) (h : (k : ℕ) < 4) :
     (pendantNbrLattice M v k).1 = .inl (v + dirVec ⟨k, h⟩) := by
   simp [pendantNbrLattice, h]
 
+/-- For `k ≥ 4`, the `k`-th neighbour of `v` under `pendantNbrLattice` is the leaf `(v, k - 4)`. -/
 theorem pendantNbrLattice_val_leaf (v : Site) (k : Fin (M + 4)) (h : ¬ (k : ℕ) < 4) :
     (pendantNbrLattice M v k).1 = .inr (v, ⟨k - 4, by omega⟩) := by
   simp [pendantNbrLattice, h]
@@ -76,6 +85,8 @@ theorem step_leaf (ρ : Config (pendantGraph M)) (v : Site) (k : Fin (M + 4))
   simp only [step, hnext, leaf_nbr_val, Function.update_eq_self]
   rfl
 
+/-- One step from a lattice vertex `v` whose rotor points at leaf index `k` (with
+`3 ≤ k < M + 3`) lands the walker at one of `v`'s leaves. -/
 theorem step_to_leaf (ρ : Config (pendantGraph M)) (v : Site) (k : Fin (M + 4))
     (hρ : ρ (.inl v) = pendantNbrLattice M v k) (hk : 3 ≤ (k : ℕ)) (hkM : (k : ℕ) < M + 3) :
     ∃ i : Fin M, (step (pendantMech M) ⟨.inl v, ρ⟩).pos = .inr (v, i) := by
@@ -142,6 +153,8 @@ theorem leaf_phase (v : Site) : ∀ (n : ℕ) (ρ : Config (pendantGraph M)) (k 
         rw [show Even (j' + 2) ↔ Even j' by simp [Nat.even_add]]
         exact this
 
+/-- Updating the rotor at `v` to its `k`-th neighbour updates the induced square-lattice rotor
+configuration only at `v`, replacing it with `latDir M k`. -/
 theorem induce_update (ρ : Config (pendantGraph M)) (v : Site) (k : Fin (M + 4)) :
     induce M (Function.update ρ (.inl v) (pendantNbrLattice M v k)) =
       Function.update (induce M ρ) v (nbr v (latDir M k)) := by
@@ -151,12 +164,15 @@ theorem induce_update (ρ : Config (pendantGraph M)) (v : Site) (k : Fin (M + 4)
     simp [induce, nbrIdx_nbrLattice]
   · simp [induce, Function.update_of_ne hw]
 
+/-- Every neighbour index `k ≥ 3`, whether the west lattice direction itself or a leaf, induces
+the lattice direction `W` (`3`). -/
 theorem latDir_of_ge (k : Fin (M + 4)) (hk : 3 ≤ (k : ℕ)) : latDir M k = 3 := by
   unfold latDir
   split_ifs with h
   · exact Fin.ext (by show (k : ℕ) = 3; omega)
   · rfl
 
+/-- The last leaf index induces the lattice direction `W`, a special case of `latDir_of_ge`. -/
 theorem latDir_lastLeaf : latDir M (lastLeaf M) = 3 :=
   latDir_of_ge M (lastLeaf M) (by simp [lastLeaf])
 
@@ -190,6 +206,8 @@ theorem step_lattice (ρ : Config (pendantGraph M)) (v : Site) (k : Fin (M + 4))
   congr 3
   simp [latDir, hlt]
 
+/-- Advancing the neighbour index `k` by one advances the induced lattice direction by one,
+provided `k` is not in the interior of the leaf range, i.e. `k ≤ 2` or `k = M + 3`. -/
 theorem latDir_succ (k : Fin (M + 4)) (hk : (k : ℕ) ≤ 2 ∨ (k : ℕ) = M + 3) :
     latDir M (k + 1) = latDir M k + 1 := by
   have hk1 : ((k + 1 : Fin (M + 4)) : ℕ) = (k + 1) % (M + 4) := by
@@ -213,21 +231,34 @@ variable (ρ : Config (pendantGraph M)) (o : Site)
 
 /-- The induced square-lattice walk. -/
 noncomputable abbrev Ysq (s : ℕ) : Site := X clockwise (induce M ρ) o s
+
+/-- The rotor configuration of the induced square-lattice walk at time `s`. -/
 noncomputable abbrev σsq (s : ℕ) : Config squareGraph := rot clockwise (induce M ρ) o s
+
+/-- The position of the walk on `G_M` at time `t`. -/
 noncomputable abbrev Xpend (t : ℕ) : PVertex M := X (pendantMech M) ρ (.inl o) t
+
+/-- The rotor configuration of the walk on `G_M` at time `t`. -/
 noncomputable abbrev ρpend (t : ℕ) : Config (pendantGraph M) := rot (pendantMech M) ρ (.inl o) t
 
 /-- The times of the lattice moves of the walk on `G_M`. -/
 noncomputable def latTime : ℕ → ℕ
   | 0 => 2 * leafVisits M (nbrIdx M (ρ (.inl o)))
-  | s + 1 => latTime s + 1 + 2 * leafVisits M (nbrIdx M (ρpend M ρ o (latTime s + 1) (.inl (Ysq M ρ o (s + 1)))))
+  | s + 1 => latTime s + 1 +
+      2 * leafVisits M (nbrIdx M (ρpend M ρ o (latTime s + 1) (.inl (Ysq M ρ o (s + 1)))))
 
+/-- The walk on `G_M` is additive in time: running it for `t + k` steps agrees with iterating
+`step` a further `k` times from the state after `t` steps. -/
 theorem walk_add (t k : ℕ) : walk (pendantMech M) ρ (.inl o) (t + k) =
     (step (pendantMech M))^[k] (walk (pendantMech M) ρ (.inl o) t) := by
   rw [walk, walk, add_comm, Function.iterate_add_apply]
 
+/-- Unfolds the state of the walk on `G_M` at time `t` into its position `Xpend` and rotor
+configuration `ρpend`. -/
 theorem walk_eq (t : ℕ) : walk (pendantMech M) ρ (.inl o) t = ⟨Xpend M ρ o t, ρpend M ρ o t⟩ := rfl
 
+/-- The number of leaves visited before the next lattice move is at most `M`, the number of
+leaves at a vertex. -/
 theorem leafVisits_le (k : Fin (M + 4)) : leafVisits M k ≤ M := by
   unfold leafVisits; split_ifs <;> omega
 
@@ -238,7 +269,8 @@ theorem leaf_phase_at (t : ℕ) (v : Site) (hpos : Xpend M ρ o t = .inl v) :
       induce M (ρpend M ρ o (t + 2 * leafVisits M k)) = induce M (ρpend M ρ o t) ∧
       ∃ k' : Fin (M + 4), ρpend M ρ o (t + 2 * leafVisits M k) (.inl v) = pendantNbrLattice M v k' ∧
         ((k' : ℕ) ≤ 2 ∨ (k' : ℕ) = M + 3)) ∧
-    ∀ j ≤ 2 * leafVisits M k, Xpend M ρ o (t + j) = .inl v ∨ ∃ i : Fin M, Xpend M ρ o (t + j) = .inr (v, i) := by
+    ∀ j ≤ 2 * leafVisits M k,
+      Xpend M ρ o (t + j) = .inl v ∨ ∃ i : Fin M, Xpend M ρ o (t + j) = .inr (v, i) := by
   intro k
   have hρ : ρpend M ρ o t (.inl v) = pendantNbrLattice M v k := by
     simp [k, nbrIdx]
@@ -259,7 +291,8 @@ theorem leaf_phase_at (t : ℕ) (v : Site) (hpos : Xpend M ρ o t = .inl v) :
     rw [hlv]
     refine ⟨?_, fun j hj => ?_⟩
     · have hwalk : walk (pendantMech M) ρ (.inl o) (t + 2 * (M + 3 - k)) =
-          ⟨.inl v, Function.update (ρpend M ρ o t) (.inl v) (pendantNbrLattice M v (lastLeaf M))⟩ := by
+          ⟨.inl v,
+            Function.update (ρpend M ρ o t) (.inl v) (pendantNbrLattice M v (lastLeaf M))⟩ := by
         rw [walk_add, hw, hend]
       refine ⟨?_, ?_, lastLeaf M, ?_, Or.inr rfl⟩
       · show (walk (pendantMech M) ρ (.inl o) (t + 2 * (M + 3 - k))).pos = _
@@ -273,7 +306,8 @@ theorem leaf_phase_at (t : ℕ) (v : Site) (hpos : Xpend M ρ o t = .inl v) :
     · have hj' := hpos' j hj
       have hwj : walk (pendantMech M) ρ (.inl o) (t + j) =
           (step (pendantMech M))^[j] ⟨.inl v, ρpend M ρ o t⟩ := by rw [walk_add, hw]
-      show (walk (pendantMech M) ρ (.inl o) (t + j)).pos = _ ∨ ∃ i, (walk (pendantMech M) ρ (.inl o) (t + j)).pos = _
+      show (walk (pendantMech M) ρ (.inl o) (t + j)).pos = _ ∨
+        ∃ i, (walk (pendantMech M) ρ (.inl o) (t + j)).pos = _
       rw [hwj]
       by_cases he : Even j
       · exact Or.inl (hj'.1 he)
@@ -283,7 +317,8 @@ theorem leaf_phase_at (t : ℕ) (v : Site) (hpos : Xpend M ρ o t = .inl v) :
 theorem sim : ∀ s : ℕ,
     Xpend M ρ o (latTime M ρ o s) = .inl (Ysq M ρ o s) ∧
     induce M (ρpend M ρ o (latTime M ρ o s)) = σsq M ρ o s ∧
-    ∃ k : Fin (M + 4), ρpend M ρ o (latTime M ρ o s) (.inl (Ysq M ρ o s)) = pendantNbrLattice M (Ysq M ρ o s) k ∧
+    ∃ k : Fin (M + 4),
+      ρpend M ρ o (latTime M ρ o s) (.inl (Ysq M ρ o s)) = pendantNbrLattice M (Ysq M ρ o s) k ∧
       ((k : ℕ) ≤ 2 ∨ (k : ℕ) = M + 3)
   | 0 => by
     obtain ⟨h1, h2, k, hk, hk2⟩ := (leaf_phase_at M ρ o 0 o rfl).1
@@ -297,7 +332,8 @@ theorem sim : ∀ s : ℕ,
     -- the lattice move
     have hw1 : walk (pendantMech M) ρ (.inl o) (latTime M ρ o s + 1) =
         ⟨.inl (Ysq M ρ o s + dirVec (latDir M (k + 1))),
-          Function.update (ρpend M ρ o (latTime M ρ o s)) (.inl (Ysq M ρ o s)) (pendantNbrLattice M (Ysq M ρ o s) (k + 1))⟩ := by
+          Function.update (ρpend M ρ o (latTime M ρ o s)) (.inl (Ysq M ρ o s))
+            (pendantNbrLattice M (Ysq M ρ o s) (k + 1))⟩ := by
       rw [walk_add, walk_eq, hpos, Function.iterate_one, hstep]
     -- the square walk
     have hσ : rot clockwise (induce M ρ) o s (X clockwise (induce M ρ) o s) =
@@ -305,7 +341,8 @@ theorem sim : ∀ s : ℕ,
       show σsq M ρ o s (Ysq M ρ o s) = _
       rw [← hind]; simp [induce, hk, nbrIdx_nbrLattice]
     have hY : Ysq M ρ o (s + 1) = Ysq M ρ o s + dirVec (latDir M (k + 1)) := by
-      show X clockwise (induce M ρ) o (s + 1) = X clockwise (induce M ρ) o s + dirVec (latDir M (k + 1))
+      show X clockwise (induce M ρ) o (s + 1) =
+        X clockwise (induce M ρ) o s + dirVec (latDir M (k + 1))
       rw [X_succ, hσ, latDir_succ M k hk2]
       show (turnAt _ _).1 = _
       rw [turnAt_nbr]
@@ -329,9 +366,12 @@ theorem sim : ∀ s : ℕ,
     rw [hind1] at this
     simpa [latTime] using this
 
+/-- The lattice-move time strictly increases from one circuit to the next:
+`latTime (s + 1) ≥ latTime s + 1`. -/
 theorem latTime_succ_ge (s : ℕ) : latTime M ρ o s + 1 ≤ latTime M ρ o (s + 1) := by
   simp only [latTime]; omega
 
+/-- `latTime M ρ o` is monotone in the circuit count, by induction using `latTime_succ_ge`. -/
 theorem latTime_mono {s s' : ℕ} (h : s ≤ s') : latTime M ρ o s ≤ latTime M ρ o s' := by
   induction s' with
   | zero => rw [Nat.le_zero.1 h]
@@ -340,6 +380,8 @@ theorem latTime_mono {s s' : ℕ} (h : s ≤ s') : latTime M ρ o s ≤ latTime 
     · exact (ih (by omega)).trans (by have := latTime_succ_ge M ρ o s'; omega)
     · rw [Nat.le_antisymm h h']
 
+/-- The `s`-th lattice-move time is at least `s`: each circuit of the induced walk consumes at
+least one step of the walk on `G_M`. -/
 theorem le_latTime (s : ℕ) : s ≤ latTime M ρ o s := by
   induction s with
   | zero => exact Nat.zero_le _
@@ -348,7 +390,8 @@ theorem le_latTime (s : ℕ) : s ≤ latTime M ρ o s := by
 /-- The lattice move at time `latTime s`. -/
 theorem lattice_move (s : ℕ) :
     Xpend M ρ o (latTime M ρ o s + 1) = .inl (Ysq M ρ o (s + 1)) ∧
-    traversal (pendantMech M) ρ (.inl o) (latTime M ρ o s) = (.inl (Ysq M ρ o s), .inl (Ysq M ρ o (s + 1))) := by
+    traversal (pendantMech M) ρ (.inl o) (latTime M ρ o s) =
+      (.inl (Ysq M ρ o s), .inl (Ysq M ρ o (s + 1))) := by
   obtain ⟨hpos, hind, k, hk, hk2⟩ := sim M ρ o s
   obtain ⟨hlt, hstep⟩ := step_lattice M (ρpend M ρ o (latTime M ρ o s)) (Ysq M ρ o s) k hk hk2
   have hw1 : walk (pendantMech M) ρ (.inl o) (latTime M ρ o s + 1) =
@@ -361,7 +404,8 @@ theorem lattice_move (s : ℕ) :
     show σsq M ρ o s (Ysq M ρ o s) = _
     rw [← hind]; simp [induce, hk, nbrIdx_nbrLattice]
   have hY : Ysq M ρ o (s + 1) = Ysq M ρ o s + dirVec (latDir M (k + 1)) := by
-    show X clockwise (induce M ρ) o (s + 1) = X clockwise (induce M ρ) o s + dirVec (latDir M (k + 1))
+    show X clockwise (induce M ρ) o (s + 1) =
+      X clockwise (induce M ρ) o s + dirVec (latDir M (k + 1))
     rw [X_succ, hσ, latDir_succ M k hk2]
     show (turnAt _ _).1 = _
     rw [turnAt_nbr]
@@ -374,17 +418,24 @@ theorem lattice_move (s : ℕ) :
 /-- Between consecutive lattice moves the walker is at the current lattice vertex or one of
 its leaves. -/
 theorem pos_between (s t : ℕ) (h1 : latTime M ρ o s < t) (h2 : t ≤ latTime M ρ o (s + 1)) :
-    Xpend M ρ o t = .inl (Ysq M ρ o (s + 1)) ∨ ∃ i : Fin M, Xpend M ρ o t = .inr (Ysq M ρ o (s + 1), i) := by
+    Xpend M ρ o t = .inl (Ysq M ρ o (s + 1)) ∨
+      ∃ i : Fin M, Xpend M ρ o t = .inr (Ysq M ρ o (s + 1), i) := by
   have hpos1 := (lattice_move M ρ o s).1
-  have := (leaf_phase_at M ρ o (latTime M ρ o s + 1) (Ysq M ρ o (s + 1)) hpos1).2 (t - (latTime M ρ o s + 1))
+  have := (leaf_phase_at M ρ o (latTime M ρ o s + 1) (Ysq M ρ o (s + 1)) hpos1).2
+    (t - (latTime M ρ o s + 1))
     (by simp only [latTime] at h2; omega)
   rwa [Nat.add_sub_cancel' (by omega)] at this
 
+/-- Before the first lattice-move time, the walk on `G_M` is still in its initial leaf phase:
+the walker is at `o` or one of `o`'s leaves. -/
 theorem pos_initial (t : ℕ) (ht : t ≤ latTime M ρ o 0) :
     Xpend M ρ o t = .inl o ∨ ∃ i : Fin M, Xpend M ρ o t = .inr (o, i) := by
   have := (leaf_phase_at M ρ o 0 o rfl).2 t (by simpa [latTime] using ht)
   simpa using this
 
+/-- Every time `t` past the first lattice-move time falls strictly between two consecutive
+lattice-move times `latTime s` and `latTime (s + 1)`, taking `s` least with
+`t ≤ latTime (s + 1)`. -/
 theorem exists_between (t : ℕ) (ht : latTime M ρ o 0 < t) :
     ∃ s, latTime M ρ o s < t ∧ t ≤ latTime M ρ o (s + 1) := by
   classical
@@ -411,6 +462,9 @@ theorem visits_subset_of_no_return (h : ∀ s, 1 ≤ s → Ysq M ρ o s ≠ o) :
   · rw [ht] at h'
     exact Sum.inl_ne_inr h'
 
+/-- If the induced square-lattice walk never returns to `o` after time `0`, the walk on `G_M`
+is not recurrent at `.inl o`: `visits_subset_of_no_return` bounds its return times to `o`, and a
+bounded set of times is finite. -/
 theorem not_recurrent_of_no_return (h : ∀ s, 1 ≤ s → Ysq M ρ o s ≠ o) :
     ¬ Recurrent (pendantMech M) ρ (.inl o) := by
   intro hrec

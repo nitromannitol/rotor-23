@@ -1,6 +1,8 @@
 import Rotor.Support.PathReductionIII
 
 /-!
+# Theorem 1.1: the shape conclusions with the sandwich clause
+
 The shape conclusions of Theorem 1.1 with the sandwich clause (`rotor.tex:120-124`, the
 second display of the theorem): the proof of `prop:path-reduction`(iii) with the sandwich
 `(1-ε) n B ⊆ A_n ⊆ (1+ε) n B` retained from `prop:circuit-shape`.
@@ -16,6 +18,12 @@ namespace Rotor
 variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite] (π : Mechanism G)
   (P : DoublyPeriodic G)
 
+/-- The shape conclusions of Theorem 1.1, combining `path_reduction_i`, `path_reduction_ii`,
+`passage_limit_proof`, `circuit_shape_proof`, and `circuit_clock_proof`: almost surely the walk
+never gets stuck, its visited set rescaled by `1/n` Hausdorff-converges to a fixed compact convex
+body `B` with a `κ, c > 0` sandwich `(1 - ε) n B ⊆ A_n ⊆ (1 + ε) n B` on the way, its range at time
+`t` rescaled by `t^{-1/3}` Hausdorff-converges to `κ • B`, and its range cardinality divided by
+`t^{2/3}` converges to `c`. -/
 theorem shape_sandwich_proof (hFLP : External.OneCircuit G) (hAb : External.Abelian G)
     (hHP : External.VisitsAllOfVisitsOne G) (hK : External.Kingman.{u}) [Infinite V]
     (hG : G.Connected) (hdeg : ∃ D : ℕ, ∀ v, G.degree v ≤ D) (μ : Measure (Config G))
@@ -25,7 +33,8 @@ theorem shape_sandwich_proof (hFLP : External.OneCircuit G) (hAb : External.Abel
       ∃ κ c : ℝ, 0 < κ ∧ 0 < c ∧
         ∀ᵐ ρ ∂μ, (∀ n : ℕ, T π ρ o n < ⊤) ∧
           Tendsto (fun n : ℕ =>
-            Metric.hausdorffDist ((n : ℝ)⁻¹ • ((fun x => P.emb x - P.emb o) '' (A π ρ o n : Set V))) B)
+            Metric.hausdorffDist ((n : ℝ)⁻¹ •
+              ((fun x => P.emb x - P.emb o) '' (A π ρ o n : Set V))) B)
             atTop (𝓝 0) ∧
           (∀ ε : ℝ, 0 < ε → ε < 1 → ∀ᶠ n : ℕ in atTop,
             (∀ x : V, P.emb x - P.emb o ∈ ((1 - ε) * n) • B → x ∈ A π ρ o n) ∧

@@ -3,6 +3,8 @@ import Rotor.Support.ChainWeight
 import Rotor.Support.BlockGeom
 
 /-!
+# Invariance and ergodicity of product laws under the lattice
+
 Invariance and ergodicity of product laws under the translation lattice,
 `rotor.tex:1494-1496` ("the uniform product law is invariant and ergodic under the
 translation lattice") and `rotor.tex:1506-1508` ("If the one-vertex laws are invariant under
@@ -26,9 +28,12 @@ def shiftVEquiv (z : ℤ × ℤ) : V ≃ V where
   right_inv := P.shift_neg_shift z
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The equivalence `shiftVEquiv z` acts on a vertex the same way as `shift z`. -/
 theorem shiftVEquiv_apply (z : ℤ × ℤ) (v : V) : P.shiftVEquiv z v = P.shift z v := rfl
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- Shifting a configuration by `z` agrees with transporting the pointwise-shifted family
+`fun w => shiftNbr z (ρ w)` along the vertex relabeling `shiftVEquiv z`. -/
 theorem shiftConfig_eq_piCongrLeft (z : ℤ × ℤ) (ρ : Config G) :
     P.shiftConfig z ρ = Equiv.piCongrLeft (fun v => G.neighborSet v) (P.shiftVEquiv z)
       (fun w => P.shiftNbr z (ρ w)) := by
@@ -41,6 +46,7 @@ theorem shiftConfig_eq_piCongrLeft (z : ℤ × ℤ) (ρ : Config G) :
   exact congrArg (fun u => (ρ u).1) (P.shift_shift_neg z w)
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- `shiftNbr z` is measurable, since the neighbor-set carries the top `MeasurableSpace`. -/
 theorem measurable_shiftNbr (z : ℤ × ℤ) (v : V) : Measurable (P.shiftNbr z (v := v)) :=
   measurable_from_top
 
@@ -132,6 +138,8 @@ theorem infinitePi_inter_of_disjoint (μ : ∀ i, Measure (X i)) [∀ i, IsProba
       Measure.infinitePi μ (T.restrict ⁻¹' (T.restrict '' B)) at h1
   rwa [hA.preimage_image S, hB.preimage_image T] at h1
 
+/-- A finite union, over `Finset.range n`, of sets each lying in `measurableCylinders X` is again
+in `measurableCylinders X`, proved by induction on `n`. -/
 theorem biUnion_range_mem_measurableCylinders (c : ℕ → Set (∀ i, X i))
     (hc : ∀ i, c i ∈ measurableCylinders X) :
     ∀ n : ℕ, ⋃ i ∈ Finset.range n, c i ∈ measurableCylinders X
@@ -172,7 +180,8 @@ theorem exists_cylinder_approx (μ : Measure (∀ i, X i)) [IsFiniteMeasure μ] 
       · obtain ⟨i, hi⟩ := Set.mem_iUnion.1 hx1
         rcases Nat.lt_or_ge i n with hin | hin
         · refine Or.inr (Set.mem_iUnion₂.2 ⟨i, Finset.mem_range.2 hin, ?_⟩)
-          exact Set.mem_symmDiff.2 (Or.inl ⟨hi, fun h => hx2 (Set.mem_iUnion₂.2 ⟨i, Finset.mem_range.2 hin, h⟩)⟩)
+          exact Set.mem_symmDiff.2 (Or.inl ⟨hi, fun h => hx2
+            (Set.mem_iUnion₂.2 ⟨i, Finset.mem_range.2 hin, h⟩)⟩)
         · refine Or.inl (Set.mem_iUnion.2 ⟨i - n, ?_⟩)
           rw [Nat.sub_add_cancel hin]; exact hi
       · obtain ⟨i, hi, hxi⟩ := Set.mem_iUnion₂.1 hx1

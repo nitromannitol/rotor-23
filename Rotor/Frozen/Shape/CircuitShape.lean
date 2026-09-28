@@ -24,6 +24,17 @@ import Rotor.External.HolroydPropp
 import Rotor.External.LSS
 import Rotor.Support.CircuitShape
 
+/-!
+# Proposition 3.3: the circuit shape theorem
+
+Frozen statement of Proposition 3.3 of `rotor.tex` (`prop:circuit-shape`): given a passage
+function `f` satisfying the conclusion of `prop:passage-limit`, the passage-ball identity almost
+surely, and a positive lower bound on `f` over the unit sphere, the ball `B = {f ≤ 1}` is compact,
+convex and contains the origin in its interior, and the rescaled range after `n` circuits
+converges to `B` in Hausdorff distance almost surely, with the two-sided containment for large
+`n`. The proof is discharged by `circuit_shape_proof`.
+-/
+
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
 

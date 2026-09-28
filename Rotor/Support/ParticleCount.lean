@@ -6,6 +6,16 @@ require at least `deg(u) + 1` incoming traversals at `u`").
 -/
 import Rotor.Support.RoutingBasics
 
+/-!
+# Particle-count bookkeeping along a routing
+
+Tracks the number of chips at each vertex as a routing proceeds. `arrivals` counts the
+traversed edges landing at a given vertex outside the routed set `S`, and `run_σ_eq` expresses
+the resulting particle count as the initial count plus arrivals minus the number of times the
+vertex was actuated. This is the arithmetic behind the legality bound used in
+`lem:boundary-routing`.
+-/
+
 open Finset
 
 namespace Rotor
@@ -18,18 +28,25 @@ the arrivals at `x`. -/
 def arrivals (S : Finset V) (ξ : RState G) (vs : List V) (x : V) : ℕ :=
   (traversed π S ξ vs).countP (fun e => e.2 = x)
 
+/-- The empty routing traverses no edges. -/
 @[simp] theorem traversed_nil (S : Finset V) (ξ : RState G) : traversed π S ξ [] = [] := rfl
 
+/-- Traversing `v :: vs` starts with the edge from `v` to its post-rotor target
+`(π.next v (ξ.ρ v)).1`, followed by the edges traversed by `vs` from the state after actuating
+`v`. -/
 @[simp] theorem traversed_cons (S : Finset V) (ξ : RState G) (v : V) (vs : List V) :
     traversed π S ξ (v :: vs) =
       (v, (π.next v (ξ.ρ v)).1) :: traversed π S (actuate π S ξ v) vs := rfl
 
+/-- Traversing a concatenated routing `vs ++ ws` is the concatenation of traversing `vs` and
+then traversing `ws` from the state reached after `vs`. -/
 theorem traversed_append (S : Finset V) (ξ : RState G) (vs ws : List V) :
     traversed π S ξ (vs ++ ws) = traversed π S ξ vs ++ traversed π S (run π S ξ vs) ws := by
   induction vs generalizing ξ with
   | nil => rfl
   | cons v vs ih => simp [ih]
 
+/-- The routing `vs` traverses exactly `vs.length` edges, one per actuation. -/
 theorem length_traversed (S : Finset V) (ξ : RState G) (vs : List V) :
     (traversed π S ξ vs).length = vs.length := by
   induction vs generalizing ξ with

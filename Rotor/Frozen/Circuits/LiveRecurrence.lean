@@ -25,6 +25,16 @@ import Rotor.Bridge.Abelian
 import Rotor.Bridge.OneCircuit
 import Rotor.Bridge.HolroydPropp
 
+/-!
+# Live recurrence
+
+States Proposition 2.8 of `rotor.tex` as a frozen, pinned theorem: if `G` contains no infinite
+live path, then the boundary routing of every nonempty finite set terminates, `T(n) < ⊤` for
+every `n`, and the rotor walk is recurrent. The proof combines König's lemma with
+`lem:boundary-routing`, `lem:decreasing-positions`, `prop:circuit-iterate`, and Holroyd-Propp
+Lemma 6, all assembled by `live_recurrence_proof`.
+-/
+
 open Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
@@ -35,4 +45,5 @@ theorem Rotor.Frozen.live_recurrence
     (ρ : Config G) (o : V) (h : ¬ ∃ x : ℕ → V, IsInfPath G x ∧ IsInfLive π ρ x) :
     AllTerminate π ρ ∧ (∀ n : ℕ, T π ρ o n < ⊤) ∧ Recurrent π ρ o
 -- FROZEN-STATEMENT-END
-:= live_recurrence_proof π (Rotor.Bridge.oneCircuit_holds G) (Rotor.Bridge.abelian_holds G) (Rotor.Bridge.visitsAllOfVisitsOne_holds G) hG ρ o h
+:= live_recurrence_proof π (Rotor.Bridge.oneCircuit_holds G) (Rotor.Bridge.abelian_holds G)
+    (Rotor.Bridge.visitsAllOfVisitsOne_holds G) hG ρ o h

@@ -5,6 +5,14 @@ functions of disjoint finite sets of coordinates are independent.  Support for
 -/
 import Rotor.Law
 
+/-!
+# Independence under product measures
+
+Records that the coordinate projections of `Measure.infinitePi` are mutually independent, and
+that measurable functions built from disjoint finite sets of coordinates are independent of one
+another. This supplies the `2`-dependence of the block field used in `lem:block-live-paths`.
+-/
+
 open MeasureTheory ProbabilityTheory
 
 namespace Rotor

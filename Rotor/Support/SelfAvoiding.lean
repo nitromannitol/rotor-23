@@ -1,6 +1,8 @@
 import Rotor.Support.ChainWeight
 
 /-!
+# Self-avoiding extensions and the killed chain's weight
+
 The killed nonbacktracking chain as a weighted count of self-avoiding paths,
 `rotor.tex:1400-1432`.  Paths are listed most recent first; `NodupExt G l n` is the set of
 self-avoiding extensions of `l` by `n` vertices and `W π l n` the total weight of these
@@ -33,10 +35,15 @@ variable (G) in
 /-- A path with at least two vertices, listed most recent first. -/
 def Adm (l : List V) : Prop := l.Nodup ∧ l.IsChain G.Adj ∧ 2 ≤ l.length
 
+/-- `NodupExt G l 0` is the singleton `{l}`. -/
 @[simp] theorem NodupExt_zero (l : List V) : NodupExt G l 0 = {l} := rfl
+
+/-- `NodupExt G l (n + 1)` is the union of one-step extensions of `NodupExt G l n`. -/
 @[simp] theorem NodupExt_succ (l : List V) (n : ℕ) :
     NodupExt G l (n + 1) = (NodupExt G l n).biUnion (ext1 G) := rfl
 
+/-- `c :: b :: rest` is a one-step extension of `b :: rest` iff `c` is adjacent to `b` and
+not already in the path. -/
 theorem mem_ext1_cons {b c : V} {rest : List V} :
     c :: b :: rest ∈ ext1 G (b :: rest) ↔ G.Adj b c ∧ c ∉ b :: rest := by
   simp only [ext1, mem_image, mem_filter, SimpleGraph.mem_neighborFinset, List.cons.injEq,
@@ -47,6 +54,8 @@ theorem mem_ext1_cons {b c : V} {rest : List V} :
   · rintro ⟨h1, h2⟩
     exact ⟨c, ⟨h1, h2⟩, rfl⟩
 
+/-- Every one-step extension `q` of `l` arises by prepending a fresh neighbor `c` of the head
+of `l`. -/
 theorem exists_of_mem_ext1 {l q : List V} (h : q ∈ ext1 G l) :
     ∃ b rest c, l = b :: rest ∧ G.Adj b c ∧ c ∉ b :: rest ∧ q = c :: b :: rest := by
   match l with
@@ -56,15 +65,19 @@ theorem exists_of_mem_ext1 {l q : List V} (h : q ∈ ext1 G l) :
     obtain ⟨c, ⟨h1, h2⟩, rfl⟩ := h
     exact ⟨b, rest, c, rfl, h1, h2, rfl⟩
 
+/-- The tail of a one-step extension of `l` is `l` itself. -/
 theorem tail_of_mem_ext1 {l q : List V} (h : q ∈ ext1 G l) : q.tail = l := by
   obtain ⟨b, rest, c, rfl, -, -, rfl⟩ := exists_of_mem_ext1 h
   rfl
 
+/-- The one-step extension sets of distinct paths are disjoint. -/
 theorem ext1_disjoint {l l' : List V} (h : l ≠ l') : Disjoint (ext1 G l) (ext1 G l') := by
   rw [Finset.disjoint_left]
   intro q hq hq'
   exact h ((tail_of_mem_ext1 hq).symm.trans (tail_of_mem_ext1 hq'))
 
+/-- Dropping the first `n` vertices of an `n`-step self-avoiding extension of `l` recovers
+`l`. -/
 theorem drop_of_mem_NodupExt {l : List V} : ∀ {n : ℕ} {q : List V}, q ∈ NodupExt G l n →
     q.drop n = l
   | 0, q, h => by simpa using h
@@ -75,6 +88,7 @@ theorem drop_of_mem_NodupExt {l : List V} : ∀ {n : ℕ} {q : List V}, q ∈ No
     rw [List.drop_succ_cons]
     exact drop_of_mem_NodupExt hq'
 
+/-- An `n`-step self-avoiding extension of `l` has length `l.length + n`. -/
 theorem length_of_mem_NodupExt {l : List V} : ∀ {n : ℕ} {q : List V}, q ∈ NodupExt G l n →
     q.length = l.length + n
   | 0, q, h => by simp at h; subst h; rfl
@@ -86,6 +100,7 @@ theorem length_of_mem_NodupExt {l : List V} : ∀ {n : ℕ} {q : List V}, q ∈ 
     simp only [List.length_cons] at this ⊢
     omega
 
+/-- Every self-avoiding extension of an admissible path is itself admissible. -/
 theorem adm_of_mem_NodupExt {l : List V} (hl : Adm G l) : ∀ {n : ℕ} {q : List V},
     q ∈ NodupExt G l n → Adm G q
   | 0, q, h => by simp at h; subst h; exact hl
@@ -97,6 +112,8 @@ theorem adm_of_mem_NodupExt {l : List V} (hl : Adm G l) : ∀ {n : ℕ} {q : Lis
     refine ⟨List.nodup_cons.2 ⟨hc, hnd⟩, ?_, by simp only [List.length_cons] at hlen ⊢; omega⟩
     exact List.isChain_cons.2 ⟨fun y hy => by simp at hy; subst hy; exact hadj.symm, hch⟩
 
+/-- Extending by `j + n` steps factors as extending by `j` then by `n` more from each
+result. -/
 theorem NodupExt_add (l : List V) (j : ℕ) : ∀ n : ℕ,
     NodupExt G l (j + n) = (NodupExt G l j).biUnion (fun q => NodupExt G q n)
   | 0 => by simp
@@ -104,12 +121,14 @@ theorem NodupExt_add (l : List V) (j : ℕ) : ∀ n : ℕ,
     rw [← add_assoc, NodupExt_succ, NodupExt_add l j n, biUnion_biUnion]
     rfl
 
+/-- The `n`-step extension sets of distinct paths are disjoint. -/
 theorem NodupExt_disjoint {q q' : List V} (hne : q ≠ q') (n : ℕ) :
     Disjoint (NodupExt G q n) (NodupExt G q' n) := by
   rw [Finset.disjoint_left]
   intro x hx hx'
   exact hne ((drop_of_mem_NodupExt hx).symm.trans (drop_of_mem_NodupExt hx'))
 
+/-- The `n`-step extension sets of the members of `NodupExt G l j` are pairwise disjoint. -/
 theorem pairwiseDisjoint_NodupExt (l : List V) (j n : ℕ) :
     ((NodupExt G l j : Set (List V))).PairwiseDisjoint (fun q => NodupExt G q n) :=
   fun _ _ _ _ hne => NodupExt_disjoint hne n
@@ -117,12 +136,17 @@ theorem pairwiseDisjoint_NodupExt (l : List V) (j n : ℕ) :
 /-- The total weight of the self-avoiding extensions by `n` vertices. -/
 noncomputable def W (l : List V) (n : ℕ) : ℝ := ∑ q ∈ NodupExt G l n, wt π q
 
+/-- `W π l 0` is just the weight `wt π l` of `l` itself. -/
 @[simp] theorem W_zero (l : List V) : W π l 0 = wt π l := by simp [W]
 
+/-- Splitting `j + n` steps: the total weight after `j + n` steps is the sum, over the
+`j`-step extensions, of their `n`-step weights. -/
 theorem W_add (l : List V) (j n : ℕ) : W π l (j + n) = ∑ q ∈ NodupExt G l j, W π q n := by
   rw [W, NodupExt_add, sum_biUnion (pairwiseDisjoint_NodupExt l j n)]
   rfl
 
+/-- The one-step weight of `b :: a :: rest` is its own weight times the total step
+probability `pStep π a b c` over fresh neighbors `c` of `b`. -/
 theorem W_one (b a : V) (rest : List V) : W π (b :: a :: rest) 1 =
     wt π (b :: a :: rest) *
       ∑ c ∈ (G.neighborFinset b).filter (fun c => c ∉ b :: a :: rest), pStep π a b c := by
@@ -131,6 +155,8 @@ theorem W_one (b a : V) (rest : List V) : W π (b :: a :: rest) 1 =
   · intro x _ y _ hxy
     simpa using hxy
 
+/-- For a vertex of degree at most `3`, the total step probability over any subset of its
+neighbors is at most `1`. -/
 theorem sum_pStep_filter_le {a b : V} (h3 : G.degree b ≤ 3) (hab : G.Adj b a)
     (P : V → Prop) [DecidablePred P] :
     ∑ c ∈ (G.neighborFinset b).filter P, pStep π a b c ≤ 1 := by
@@ -142,6 +168,7 @@ theorem sum_pStep_filter_le {a b : V} (h3 : G.degree b ≤ 3) (hab : G.Adj b a)
         have : (G.degree b : ℝ) ≤ 3 := by exact_mod_cast h3
         linarith
 
+/-- Under the degree bound, one step of the chain never increases the weight. -/
 theorem W_one_le (h3 : ∀ v : V, G.degree v ≤ 3) {q : List V} (hq : Adm G q) : W π q 1 ≤ wt π q := by
   obtain ⟨hnd, hch, hlen⟩ := hq
   match q with
@@ -155,22 +182,27 @@ theorem W_one_le (h3 : ∀ v : V, G.degree v ≤ 3) {q : List V} (hq : Adm G q) 
           mul_le_mul_of_nonneg_left (sum_pStep_filter_le π (h3 b) hab _) (wt_nonneg π _)
       _ = wt π (b :: a :: rest) := mul_one _
 
+/-- Under the degree bound, `W π l` is nonincreasing at each step. -/
 theorem W_succ_le (h3 : ∀ v : V, G.degree v ≤ 3) {l : List V} (hl : Adm G l) (n : ℕ) :
     W π l (n + 1) ≤ W π l n := by
   rw [W_add, W]
   exact sum_le_sum (fun q hq => W_one_le π h3 (adm_of_mem_NodupExt hl hq))
 
+/-- Under the degree bound, `W π l n` never exceeds the initial weight `wt π l`. -/
 theorem W_le_wt (h3 : ∀ v : V, G.degree v ≤ 3) {l : List V} (hl : Adm G l) : ∀ n : ℕ,
     W π l n ≤ wt π l
   | 0 => by simp
   | n + 1 => (W_succ_le π h3 hl n).trans (W_le_wt h3 hl n)
 
+/-- Under the degree bound, `W π l` is antitone in the number of steps. -/
 theorem W_antitone (h3 : ∀ v : V, G.degree v ≤ 3) {l : List V} (hl : Adm G l) {n n' : ℕ}
     (h : n ≤ n') : W π l n' ≤ W π l n := by
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le h
   rw [W_add, W]
   exact sum_le_sum (fun q hq => W_le_wt π h3 (adm_of_mem_NodupExt hl hq) k)
 
+/-- Under the degree bound, the weight can drop by at most a factor of `3` per step: any
+`j`-step self-avoiding extension `q` of `l` has `wt π q ≥ (1/3)^j * wt π l`. -/
 theorem wt_ge_of_mem_NodupExt (h3 : ∀ v : V, G.degree v ≤ 3) {l : List V} (hl : Adm G l) :
     ∀ {j : ℕ} {q : List V}, q ∈ NodupExt G l j → (1 / 3 : ℝ) ^ j * wt π l ≤ wt π q
   | 0, q, h => by simp at h; subst h; simp
@@ -205,6 +237,8 @@ variable (G) in
 def Stuck (q : List V) : Prop :=
   ∃ b rest, q = b :: rest ∧ ((G.neighborFinset b).filter (fun c => c ∉ q)).card ≤ 1
 
+/-- The step set at `b` excludes at least the returning neighbor, so it has at most
+`G.degree b - 1` elements. -/
 theorem card_stepSet_le_pred (b : V) (a c : G.neighborSet b) :
     (stepSet π b a c).card ≤ G.degree b - 1 := by
   have hc : c ∉ stepSet π b a c := by
@@ -216,6 +250,7 @@ theorem card_stepSet_le_pred (b : V) (a c : G.neighborSet b) :
     _ = G.degree b - 1 := by rw [card_erase_of_mem (mem_univ c), card_univ,
         G.card_neighborSet_eq_degree]
 
+/-- Under the degree bound, a single step probability `pStep π a b c` is at most `2/3`. -/
 theorem pStep_le_two_thirds {a b c : V} (h3 : G.degree b ≤ 3) : pStep π a b c ≤ 2 / 3 := by
   unfold pStep
   split_ifs with h
@@ -230,6 +265,8 @@ theorem pStep_le_two_thirds {a b c : V} (h3 : G.degree b ≤ 3) : pStep π a b c
     linarith
   · positivity
 
+/-- At a stuck path (at most one self-avoiding continuation), one step of the chain loses at
+least a third of the weight. -/
 theorem W_one_le_of_stuck (h3 : ∀ v : V, G.degree v ≤ 3) {q : List V} (hq : Adm G q)
     (hs : Stuck G q) : W π q 1 ≤ 2 / 3 * wt π q := by
   obtain ⟨hnd, hch, hlen⟩ := hq

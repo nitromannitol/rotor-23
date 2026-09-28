@@ -13,6 +13,16 @@ last edges are read off through `l[i]?`.  The dual path has distinct faces
 import Rotor.Dual
 import Rotor.Support.SquareDual
 
+/-!
+# The dual path alongside a live path
+
+States Lemma 5.2 of `rotor.tex` (`lem:square-dual-path`): a live nearest-neighbor path
+`x_0, …, x_m` in the square lattice has, running alongside it, a directed path of open dual
+edges from the face to the right of its first edge `x_0 → x_1` to the face to the right of its
+last edge `x_{m-1} → x_m`. The dual path is required to visit distinct faces, matching the
+paper's use of the word "path".
+-/
+
 open Rotor
 
 -- FROZEN-STATEMENT-BEGIN

@@ -2,9 +2,13 @@ import Rotor.Support.RootPotential
 import Rotor.Frozen.Square.ForcedTests
 
 /-!
-Proposition 5.1 (`prop:square-passage`), part 7: the constants.  With `a = e^{c/2}` the layer
-cake constant is finite, and the choice `n₀ = ⌊εR⌋ + 1` with `ε` small makes every term of the
-reach bound exponentially small in `R`.
+# Constants for the square-lattice reach bound
+
+Proves part 7 of Proposition 5.1 (`prop:square-passage`): assembling the constants for the
+final exponential bound on `ReachEvent`. With `a = exp(c / 2)` the layer-cake constant
+`Mconst` is finite, and the choice `n₀ = ⌊εR⌋ + 1` with `ε` small makes each of the three
+terms of the reach bound exponentially small in `R`, so `reach_exp_bound` combines them into
+a single exponential decay `C' exp(-c' R)`.
 -/
 
 open Finset MeasureTheory ENNReal Classical
@@ -13,6 +17,8 @@ namespace Rotor
 
 /-! ### Real-analysis bookkeeping -/
 
+/-- A term `(β R + γ) exp(-α R)` with a linear prefactor is bounded by a constant times
+`exp(-(α / 2) R)`, absorbing the polynomial growth into half the exponential rate. -/
 theorem exp_decay_poly {α β γ : ℝ} (hα : 0 < α) (hβ : 0 ≤ β) (hγ : 0 ≤ γ) (R : ℕ) :
     (β * R + γ) * Real.exp (-α * R) ≤ (2 * β / α + γ) * Real.exp (-(α / 2) * R) := by
   have hx : 0 ≤ (α / 2) * R := by positivity
@@ -68,6 +74,9 @@ theorem exists_exp_decay_three {α₁ α₂ α₃ β₁ β₂ β₃ γ₁ γ₂ 
 
 /-! ### The layer-cake constant is finite -/
 
+/-- With `a = exp(c / 2)`, the layer-cake constant `Mconst a c C` is bounded by the
+closed-form constant `1 + C exp(-c / 2) / (1 - exp(-c / 2))`, by summing the geometric
+series of terms `(a ^ (s + 1) - a ^ s) * C exp(-c (s + 1))`. -/
 theorem Mconst_le_ofReal {c C : ℝ} (hc : 0 < c) (hC : 0 < C) :
     Mconst (ENNReal.ofReal (Real.exp (c / 2))) c C ≤
       ENNReal.ofReal (1 + C * Real.exp (-c / 2) / (1 - Real.exp (-c / 2))) := by
@@ -107,6 +116,8 @@ theorem Mconst_le_ofReal {c C : ℝ} (hc : 0 < c) (hC : 0 < C) :
 
 /-! ### The three terms -/
 
+/-- Bounds the first term `(4 / 3)(3 / 4) ^ (n₀ / 3)` of the reach estimate by an exponential
+`exp(-(ε log(4 / 3) / 3) R)` in `R`, using `n₀ ≥ ε R`. -/
 theorem term1_bound {ε : ℝ} {n₀ R : ℕ} (hn₀ge : ε * R ≤ n₀) :
     (4 / 3 : ℝ) * (3 / 4) ^ ((n₀ : ℝ) / 3) ≤
       (0 * R + 4 / 3) * Real.exp (-(ε * Real.log (4 / 3) / 3) * R) := by
@@ -121,6 +132,7 @@ theorem term1_bound {ε : ℝ} {n₀ R : ℕ} (hn₀ge : ε * R ≤ n₀) :
   have := mul_le_mul_of_nonneg_left hn₀ge hpos.le
   nlinarith
 
+/-- The natural-number floor `R / 2` is at least `(R - 1) / 2` as a real number. -/
 theorem half_floor_ge (R : ℕ) : ((R / 2 : ℕ) : ℝ) ≥ ((R : ℝ) - 1) / 2 := by
   have := Nat.div_add_mod R 2
   have h2 : R % 2 ≤ 1 := by omega
@@ -128,6 +140,8 @@ theorem half_floor_ge (R : ℕ) : ((R / 2 : ℕ) : ℝ) ≥ ((R : ℝ) - 1) / 2 
   have h4 : ((R % 2 : ℕ) : ℝ) ≤ 1 := by exact_mod_cast h2
   linarith
 
+/-- Bounds the second term `n₀ Q ^ n₀ / exp(c / 2) ^ ⌊R / 2⌋` of the reach estimate by a
+linear-times-exponential expression in `R`, using `n₀ ≤ εR + 1` and `ε log Q ≤ c / 8`. -/
 theorem term2_bound {c Q ε : ℝ} (hc : 0 < c) (hQ : 1 ≤ Q) (hε : 0 ≤ ε)
     (hεlog : ε * Real.log Q ≤ c / 8) {n₀ R : ℕ} (hn₀le : (n₀ : ℝ) ≤ ε * R + 1) :
     (n₀ : ℝ) * (Q ^ n₀ / Real.exp (c / 2) ^ (R / 2)) ≤
@@ -165,12 +179,15 @@ theorem term2_bound {c Q ε : ℝ} (hc : 0 < c) (hQ : 1 ≤ Q) (hε : 0 ≤ ε)
         rw [div_eq_mul_one_div]
         exact mul_le_mul hn₀le (mul_le_mul_of_nonneg_right hQn hinv0)
           (mul_nonneg (pow_nonneg hQpos.le _) hinv0) hεR
-    _ ≤ (ε * R + 1) * ((Q * Real.exp (c / 8 * R)) * (Real.exp (c / 4) * Real.exp (-(c / 4) * R))) := by
+    _ ≤ (ε * R + 1) *
+        ((Q * Real.exp (c / 8 * R)) * (Real.exp (c / 4) * Real.exp (-(c / 4) * R))) := by
         exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hden
           (mul_nonneg hQpos.le (Real.exp_pos _).le)) hεR
     _ = (ε * Q * Real.exp (c / 4) * R + Q * Real.exp (c / 4)) * Real.exp (-(c / 8) * R) := by
         rw [mul_assoc Q, hE]; ring
 
+/-- Bounds the third term `n₀ C exp(-c (R - ⌊R / 2⌋))` of the reach estimate by a
+linear-times-exponential expression in `R`, using `n₀ ≤ εR + 1`. -/
 theorem term3_bound {c C ε : ℝ} (hc : 0 < c) (hC : 0 < C) (hε : 0 ≤ ε) {n₀ R : ℕ}
     (hn₀le : (n₀ : ℝ) ≤ ε * R + 1) :
     (n₀ : ℝ) * (C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) ≤
@@ -193,10 +210,15 @@ theorem term3_bound {c C ε : ℝ} (hc : 0 < c) (hC : 0 < C) (hε : 0 ≤ ε) {n
 
 /-! ### The exponential bound for the reach event -/
 
+/-- Assembles `reachEvent_measure_le` and the forced-tests bound
+`Rotor.Frozen.square_forced_tests` into an explicit bound on
+`uniformLaw clockwise (ReachEvent f d R)` by the sum of the three terms
+`(4 / 3)(3 / 4) ^ (n₀ / 3)`, `n₀ Q ^ n₀ / E ^ ⌊R / 2⌋`, and `C n₀ exp(-c (R - ⌊R / 2⌋))`. -/
 theorem reach_le_ofReal (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {c C : ℝ}
     (hC : 0 < C)
     (hCB : ∀ (x : Site) (r : ℕ), 1 ≤ r →
-      bondLaw (1 / 2) half_le_one (constrainedCrossing x r) ≤ ENNReal.ofReal (C * Real.exp (-c * r)))
+      bondLaw (1 / 2) half_le_one (constrainedCrossing x r) ≤
+        ENNReal.ofReal (C * Real.exp (-c * r)))
     {E : ℝ} (hE1 : 1 ≤ E) {Q : ℝ} (hQ1 : 1 ≤ Q)
     (hq : ENNReal.ofReal E * Mconst (ENNReal.ofReal E) c C ≤ ENNReal.ofReal Q)
     (R n₀ : ℕ) (hR : 1 ≤ R) (hn₀ : 1 ≤ n₀) :
@@ -213,12 +235,15 @@ theorem reach_le_ofReal (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {
     (ENNReal.ofReal_pow hEpos.le _).symm
   have hterm : ∀ j ∈ Finset.range n₀,
       (ENNReal.ofReal E * Mconst (ENNReal.ofReal E) c C) ^ j / ENNReal.ofReal E ^ (R / 2) +
-        ENNReal.ofReal (C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) * uniformLaw clockwise (KEvent f d j) ≤
+        ENNReal.ofReal (C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) *
+          uniformLaw clockwise (KEvent f d j) ≤
       ENNReal.ofReal (Q ^ n₀ / E ^ (R / 2) + C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) := by
     intro j hj
     rw [Finset.mem_range] at hj
-    have hnn1 : 0 ≤ Q ^ n₀ / E ^ (R / 2) := div_nonneg (pow_nonneg hQpos.le _) (pow_nonneg hEpos.le _)
-    have hnn2 : 0 ≤ C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ)) := mul_nonneg hC.le (Real.exp_pos _).le
+    have hnn1 : 0 ≤ Q ^ n₀ / E ^ (R / 2) :=
+      div_nonneg (pow_nonneg hQpos.le _) (pow_nonneg hEpos.le _)
+    have hnn2 : 0 ≤ C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ)) :=
+      mul_nonneg hC.le (Real.exp_pos _).le
     rw [ENNReal.ofReal_add hnn1 hnn2]
     gcongr
     · rw [hapow]
@@ -229,18 +254,21 @@ theorem reach_le_ofReal (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {
         _ ≤ ENNReal.ofReal (Q ^ n₀ / E ^ (R / 2)) := by
             apply ENNReal.ofReal_le_ofReal
             exact div_le_div_of_nonneg_right (pow_le_pow_right₀ hQ1 hj.le) (pow_nonneg hEpos.le _)
-    · calc ENNReal.ofReal (C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) * uniformLaw clockwise (KEvent f d j)
+    · calc ENNReal.ofReal (C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) *
+            uniformLaw clockwise (KEvent f d j)
           ≤ ENNReal.ofReal (C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) * 1 := by
             gcongr; exact prob_le_one
         _ = _ := mul_one _
   have hsum : ∑ j ∈ Finset.range n₀, ((ENNReal.ofReal E * Mconst (ENNReal.ofReal E) c C) ^ j /
       ENNReal.ofReal E ^ (R / 2) +
-      ENNReal.ofReal (C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) * uniformLaw clockwise (KEvent f d j)) ≤
+      ENNReal.ofReal (C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) *
+        uniformLaw clockwise (KEvent f d j)) ≤
       ENNReal.ofReal (n₀ * (Q ^ n₀ / E ^ (R / 2) + C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ)))) := by
     calc _ ≤ ∑ j ∈ Finset.range n₀, ENNReal.ofReal (Q ^ n₀ / E ^ (R / 2) +
           C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) := Finset.sum_le_sum hterm
       _ = _ := by
-          rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, ENNReal.ofReal_mul (Nat.cast_nonneg _),
+          rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul,
+            ENNReal.ofReal_mul (Nat.cast_nonneg _),
             ENNReal.ofReal_natCast]
   refine (hmain.trans (add_le_add hK hsum)).trans ?_
   have hnn1 : 0 ≤ Q ^ n₀ / E ^ (R / 2) := div_nonneg (pow_nonneg hQpos.le _) (pow_nonneg hEpos.le _)
@@ -250,7 +278,8 @@ theorem reach_le_ofReal (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {
 /-- The reach bound, with constants depending only on those of Lemma 5.3. -/
 theorem reach_exp_bound {c C : ℝ} (hc : 0 < c) (hC : 0 < C)
     (hCB : ∀ (x : Site) (r : ℕ), 1 ≤ r →
-      bondLaw (1 / 2) half_le_one (constrainedCrossing x r) ≤ ENNReal.ofReal (C * Real.exp (-c * r))) :
+      bondLaw (1 / 2) half_le_one (constrainedCrossing x r) ≤
+        ENNReal.ofReal (C * Real.exp (-c * r))) :
     ∃ C' c' : ℝ, 0 < c' ∧ 0 < C' ∧ ∀ (f d : Site), squareGraph.Adj f (f + d) → ∀ R : ℕ, 1 ≤ R →
       uniformLaw clockwise (ReachEvent f d R) ≤ ENNReal.ofReal (C' * Real.exp (-c' * R)) := by
   have hE1 : 1 ≤ Real.exp (c / 2) := Real.one_le_exp_iff.2 (by linarith)
@@ -260,7 +289,8 @@ theorem reach_exp_bound {c C : ℝ} (hc : 0 < c) (hC : 0 < C)
       div_nonneg (by positivity) (by linarith)
     linarith
   have hM := Mconst_le_ofReal hc hC
-  obtain ⟨Q, hQdef⟩ : ∃ Q : ℝ, Q = Real.exp (c / 2) * (1 + C * Real.exp (-c / 2) / (1 - Real.exp (-c / 2))) :=
+  obtain ⟨Q, hQdef⟩ : ∃ Q : ℝ,
+      Q = Real.exp (c / 2) * (1 + C * Real.exp (-c / 2) / (1 - Real.exp (-c / 2))) :=
     ⟨_, rfl⟩
   have hQ1 : 1 ≤ Q := by rw [hQdef]; nlinarith
   have hQpos : 0 < Q := by linarith
@@ -298,7 +328,8 @@ theorem reach_exp_bound {c C : ℝ} (hc : 0 < c) (hC : 0 < C)
   have ht2 := term2_bound hc hQ1 hεpos.le hεlog hn₀le
   have ht3 := term3_bound hc hC hεpos.le hn₀le
   have hb := hbound R
-  have hsplit : (n₀ : ℝ) * (Q ^ n₀ / Real.exp (c / 2) ^ (R / 2) + C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) =
+  have hsplit : (n₀ : ℝ) * (Q ^ n₀ / Real.exp (c / 2) ^ (R / 2) +
+      C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) =
       (n₀ : ℝ) * (Q ^ n₀ / Real.exp (c / 2) ^ (R / 2)) +
         (n₀ : ℝ) * (C * Real.exp (-c * ((R - R / 2 : ℕ) : ℝ))) := by ring
   rw [hsplit]

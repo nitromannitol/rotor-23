@@ -22,6 +22,16 @@ apart, and the first is the paper's wording in Section 4.
 -/
 import Rotor.Periodic
 
+/-!
+# The path and block events of Sections 3-5
+
+Defines the events used in the recurrence and scaling-limit arguments of Sections 3, 4 and 5:
+the almost-live-path event `L_η(u → v, R)`, the hypothesis that its probability vanishes
+uniformly in the first edge as `R → ∞`, the event that a live path starting with a given edge
+reaches a given graph distance, the block event `C_z` used in the renewal argument, and the
+event that a live path is infinite.
+-/
+
 open MeasureTheory Filter Topology
 
 namespace Rotor

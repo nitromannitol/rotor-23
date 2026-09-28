@@ -165,13 +165,6 @@ theorem exists_prior_return_of_lt_visits (π : Mechanism G) (ρ : Config G) (o :
   simpa [visits] using hcardbelow
 
 omit [G.LocallyFinite] in
-/-- Restates `mem_R`: a vertex lies in the range `R t` exactly when the walk visits it by time
-`t`. -/
-theorem mem_R_iff (π : Mechanism G) (ρ : Config G) (o : V) (t : ℕ) (x : V) :
-    x ∈ R π ρ o t ↔ ∃ s ≤ t, X π ρ o s = x := by
-  simp [R, Finset.mem_image]
-
-omit [G.LocallyFinite] in
 /-- Among the visits to `x` at times up to `a`, there is a last one, after which the walk does
 not return to `x` before time `a`. -/
 theorem exists_last_visit_le (π : Mechanism G) (ρ : Config G) (o : V)
@@ -179,7 +172,7 @@ theorem exists_last_visit_le (π : Mechanism G) (ρ : Config G) (o : V)
     ∃ t ≤ a, X π ρ o t = x ∧
       ∀ u, t < u → u ≤ a → X π ρ o u ≠ x := by
   classical
-  obtain ⟨t₀, ht₀, hxt₀⟩ := (mem_R_iff π ρ o a x).1 hx
+  obtain ⟨t₀, ht₀, hxt₀⟩ := (Rotor.mem_R π ρ o a x).1 hx
   let S : Finset ℕ := (range (a + 1)).filter (fun t => X π ρ o t = x)
   have hSt₀ : t₀ ∈ S := by
     rw [mem_filter]

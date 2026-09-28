@@ -2,6 +2,8 @@ import Rotor.Support.PendantInduced
 import Rotor.Frozen.Circuits.OneCircuit
 
 /-!
+# The first return of the induced walk
+
 The first return of the induced walk (`rotor.tex:2245-2252`): the lattice edges traversed
 by the walk on `G_M` up to the induced walk's first return to `o` are distinct, by
 `lem:one-circuit` applied to `G_M`, because the walk has visited `o` at most `M + 1` times
@@ -14,6 +16,8 @@ namespace Rotor
 
 variable (M : ℕ) (ρ : Config (pendantGraph M)) (o : Site)
 
+/-- The duration of the initial leaf phase, `latTime M ρ o 0`, is `2n` for some `n ≤ M`: it is
+even, with `n` the number of leaf visits determined by the rotor at `o`. -/
 theorem latTime_zero_even : ∃ n ≤ M, latTime M ρ o 0 = 2 * n :=
   ⟨leafVisits M (nbrIdx M (ρ (.inl o))), leafVisits_le M _, rfl⟩
 
@@ -76,6 +80,8 @@ theorem visits_le_of_no_return {r : ℕ} (hr : ∀ s, 1 ≤ s → s < r → Ysq 
     _ = n + 1 := card_range _
     _ ≤ M + 1 := by omega
 
+/-- `T (pendantMech M) ρ (.inl o) 0 ≤ 0`: the walk starts at `o` with zero visits, which already
+witnesses completion of the zeroth circuit. -/
 theorem T_zero_le : T (pendantMech M) ρ (.inl o) 0 ≤ 0 :=
   T_le_of_mem _ _ _ _ ⟨rfl, Nat.zero_le _⟩
 

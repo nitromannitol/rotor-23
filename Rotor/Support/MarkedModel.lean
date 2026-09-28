@@ -1,10 +1,24 @@
 import Rotor.Support.GridBlocks
 import Rotor.Support.Forcing
 
+/-!
+# Windows, path traversal, and the marked model
+
+`Traverses l w` says the list `w` occurs, forwards or backwards, as a contiguous window of `l`;
+this file proves its basic algebra (the empty window, closure under reversal, composition through
+a container list, and localization to one side of a concatenation whose middle piece the window
+avoids). It also shows `IsOpenPath` is monotone under changes to the bond configuration away from
+the bonds of the path, and builds the marked model: `ValidPath`, the block copies `gridCopy`, and
+the surgery configuration `surgeryConfig` that forces a chosen route `q` open while closing every
+other bond that touches an interior vertex of `q`.
+-/
+
 namespace Rotor
 
 /-! ### Windows of a list -/
 
+/-- Given `w.length = n`, the window `(l.drop i).take n` equals `w` iff `l[i + j]? = w[j]?` for
+every `j < n`. -/
 theorem window_iff {l w : List Site} {i n : ℕ} (hw : w.length = n) :
     (l.drop i).take n = w ↔ ∀ j < n, l[i + j]? = w[j]? := by
   constructor
@@ -18,6 +32,7 @@ theorem window_iff {l w : List Site} {i n : ℕ} (hw : w.length = n) :
     · exact h k hk
     · rw [List.getElem?_eq_none (by omega)]
 
+/-- If the window `(l.drop i).take n` of `l` equals a nonempty `w`, then `i + n ≤ l.length`. -/
 theorem window_le {l w : List Site} {i n : ℕ} (h : (l.drop i).take n = w) (hw : w.length = n)
     (hn : 0 < n) : i + n ≤ l.length := by
   have h1 := (window_iff hw).1 h (n - 1) (by omega)
@@ -26,8 +41,11 @@ theorem window_le {l w : List Site} {i n : ℕ} (h : (l.drop i).take n = w) (hw 
   have := (List.getElem?_eq_some_iff.1 h1).1
   omega
 
+/-- The empty list is traversed by any list `l`, witnessed by the window at index `0`. -/
 theorem traverses_nil (l : List Site) : Traverses l [] := ⟨0, Or.inl (by simp)⟩
 
+/-- If `l` traverses `w` then `l.reverse` also traverses `w`: reversing the list turns a
+forward-window witness into a backward one and vice versa. -/
 theorem traverses_reverse {l w : List Site} (h : Traverses l w) : Traverses l.reverse w := by
   rcases Nat.eq_zero_or_pos w.length with h0 | hpos
   · rw [List.eq_nil_of_length_eq_zero h0]; exact traverses_nil _
@@ -48,6 +66,8 @@ theorem traverses_reverse {l w : List Site} (h : Traverses l w) : Traverses l.re
     have := key w.reverse List.length_reverse h
     rwa [List.reverse_reverse] at this
 
+/-- If `q` occurs as the window of `p` at index `i`, then any `w` traversed by `q` is also
+traversed by `p`, at the shifted window index. -/
 theorem traverses_of_window {p q w : List Site} {i : ℕ} (h : (p.drop i).take q.length = q)
     (hq : Traverses q w) : Traverses p w := by
   obtain ⟨j, hj⟩ := hq
@@ -68,6 +88,8 @@ theorem traverses_of_window {p q w : List Site} {i : ℕ} (h : (p.drop i).take q
   · exact ⟨i + j, Or.inl (key w rfl hj)⟩
   · exact ⟨i + j, Or.inr (key w.reverse List.length_reverse hj)⟩
 
+/-- `Traverses` is transitive: if `p` traverses `q` and `q` traverses `w`, then `p` traverses
+`w`, via `traverses_of_window`. -/
 theorem traverses_trans {p q w : List Site} (h₁ : Traverses p q) (h₂ : Traverses q w) :
     Traverses p w := by
   obtain ⟨i, h₁⟩ := h₁
@@ -76,6 +98,9 @@ theorem traverses_trans {p q w : List Site} (h₁ : Traverses p q) (h₂ : Trave
   · rw [← List.length_reverse] at h
     exact traverses_of_window h (traverses_reverse h₂)
 
+/-- If `p` traverses `w`, then for every consecutive pair of indices `i, i + 1` in `w` there is a
+matching consecutive pair `k, k + 1` in `p`, in the same or the reversed order according to which
+orientation of the window occurs. -/
 theorem traverses_pair {p w : List Site} (h : Traverses p w) {i : ℕ} (hi : i + 1 < w.length) :
     ∃ k, k + 1 < p.length ∧ ((p[k]? = w[i]? ∧ p[k + 1]? = w[i + 1]?) ∨
       (p[k]? = w[i + 1]? ∧ p[k + 1]? = w[i]?)) := by
@@ -102,6 +127,7 @@ theorem traverses_pair {p w : List Site} (h : Traverses p w) {i : ℕ} (hi : i +
       have := (List.getElem?_eq_some_iff.1 h1).1; omega
     exact ⟨_, hlt, Or.inr ⟨h0, h1⟩⟩
 
+/-- Every vertex of a traversed list `w` is a vertex of the traversing list `p`. -/
 theorem mem_of_traverses {p w : List Site} (h : Traverses p w) {v : Site} (hv : v ∈ w) :
     v ∈ p := by
   obtain ⟨i, h⟩ := h
@@ -162,6 +188,8 @@ theorem traverses_append_of_disjoint {l₁ l₂ l₃ w : List Site} (h : Travers
 
 /-! ### Open paths under changed configurations -/
 
+/-- `IsOpenPath` is monotone along the bonds of the path: if `l` is open for `ω` and every bond
+of `l` open in `ω` is also open in `ω'`, then `l` is open for `ω'` too. -/
 theorem isOpenPath_mono {ω ω' : BondConfig} {l : List Site} (h : IsOpenPath ω l)
     (h' : ∀ i (hi : i + 1 < l.length), ω s(l[i], l[i + 1]) = true →
       ω' s(l[i], l[i + 1]) = true) : IsOpenPath ω' l := by
@@ -169,6 +197,8 @@ theorem isOpenPath_mono {ω ω' : BondConfig} {l : List Site} (h : IsOpenPath ω
   rw [List.isChain_iff_getElem] at h2
   exact ⟨h.1, List.isChain_iff_getElem.2 (fun i hi => h' i hi (h2 i hi))⟩
 
+/-- If `ω'` agrees with `ω` on every bond of `l`, then `IsOpenPath ω l` transfers to
+`IsOpenPath ω' l`, via `isOpenPath_mono`. -/
 theorem isOpenPath_of_agree {ω ω' : BondConfig} {l : List Site} (h : IsOpenPath ω l)
     (h' : ∀ i (hi : i + 1 < l.length), ω' s(l[i], l[i + 1]) = ω s(l[i], l[i + 1])) :
     IsOpenPath ω' l :=
@@ -185,6 +215,8 @@ theorem exists_used_of_update {ω : BondConfig} {e : Sym2 Site} {l : List Site}
   refine isOpenPath_of_agree h (fun i hi => ?_)
   rw [Function.update_of_ne (hcon i hi), Function.update_of_ne (hcon i hi)]
 
+/-- Updating the state of a bond `e` that no consecutive pair of `l` equals does not affect
+whether `l` is an open path. -/
 theorem isOpenPath_update_of_not_used {ω : BondConfig} {e : Sym2 Site} {l : List Site} {b : Bool}
     (h : IsOpenPath ω l) (hno : ∀ i (hi : i + 1 < l.length), s(l[i], l[i + 1]) ≠ e) :
     IsOpenPath (Function.update ω e b) l :=
@@ -216,15 +248,20 @@ vertices and the bond `e`, keep the rest. -/
 noncomputable def surgeryConfig (ω : BondConfig) (q : List Site) (e : Sym2 Site) : BondConfig :=
   fun b => if QBond q b then true else if TouchesInternal q b ∨ b = e then false else ω b
 
+/-- Every bond of the route `q` is opened by the surgery configuration. -/
 theorem surgeryConfig_of_qbond {ω : BondConfig} {q : List Site} {e b : Sym2 Site}
     (h : QBond q b) : surgeryConfig ω q e b = true := by
   unfold surgeryConfig; rw [if_pos h]
 
+/-- Away from the bonds of `q`, the bonds touching an internal vertex of `q`, and `e`, the surgery
+configuration agrees with `ω`. -/
 theorem surgeryConfig_eq_of_not {ω : BondConfig} {q : List Site} {e b : Sym2 Site}
     (h1 : ¬ QBond q b) (h2 : ¬ TouchesInternal q b) (h3 : b ≠ e) :
     surgeryConfig ω q e b = ω b := by
   unfold surgeryConfig; rw [if_neg h1, if_neg (by tauto)]
 
+/-- `surgeryConfig ω q e` is `true` at `b` iff `b` is a bond of `q`, or `b` neither touches an
+internal vertex of `q` nor equals `e` and was already open in `ω`. -/
 theorem surgeryConfig_true_iff {ω : BondConfig} {q : List Site} {e b : Sym2 Site} :
     surgeryConfig ω q e b = true ↔
       QBond q b ∨ (¬ TouchesInternal q b ∧ b ≠ e ∧ ω b = true) := by
@@ -234,6 +271,7 @@ theorem surgeryConfig_true_iff {ω : BondConfig} {q : List Site} {e b : Sym2 Sit
   · simp only [false_iff]; tauto
   · push Not at h2; simp [h1, h2]
 
+/-- Every endpoint of a bond of `q` is a vertex of `q`. -/
 theorem qbond_mem {q : List Site} {b : Sym2 Site} (h : QBond q b) {v : Site} (hv : v ∈ b) :
     v ∈ q := by
   obtain ⟨i, u, u', hu, hu', rfl⟩ := h
@@ -241,6 +279,7 @@ theorem qbond_mem {q : List Site} {b : Sym2 Site} (h : QBond q b) {v : Site} (hv
   · exact List.mem_of_getElem? hu
   · exact List.mem_of_getElem? hu'
 
+/-- If `b` touches an internal vertex of `q`, then `b` has an endpoint lying in `q`. -/
 theorem touchesInternal_mem {q : List Site} {b : Sym2 Site} (h : TouchesInternal q b) :
     ∃ v ∈ b, v ∈ q := by
   obtain ⟨i, -, -, u, hu, hub⟩ := h

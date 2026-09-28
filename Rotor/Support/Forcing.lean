@@ -3,7 +3,10 @@ import Rotor.Support.BlockRoute
 
 namespace Rotor
 
-/-! ### Degree-two forcing
+/-!
+# Degree-two forcing along an open path
+
+### Degree-two forcing
 
 If every internal vertex of the path `q` has only its two `q`-bonds open, and neither endpoint of
 the open path `p` is an internal vertex of `q`, then `p` contains `q` consecutively as soon as it
@@ -22,6 +25,9 @@ section Forcing
 
 variable (ω : BondConfig) {q p : List Site}
 
+/-- If `p` and `q` agree on the two consecutive positions `i, i + 1` and `j, j + 1`, then, using
+that `q` is forced and that the endpoints of the open path `p` lie off `q`, `p` continues to agree
+with `q` in the forward direction as far as `q` extends past `j`. -/
 theorem forced_forward (hq : ForcedPath ω q) (hp : IsOpenPath ω p) (he : EndsOff q p)
     {i j : ℕ} (hi : i + 1 < p.length) (_hj : j + 1 < q.length)
     (h0 : p[i]? = q[j]?) (h1 : p[i + 1]? = q[j + 1]?) :
@@ -55,6 +61,8 @@ theorem forced_forward (hq : ForcedPath ω q) (hp : IsOpenPath ω p) (he : EndsO
       omega
     · exact ⟨hlt, e1, hw.trans h.symm⟩
 
+/-- The mirror image of `forced_forward`: `p` continues to agree with `q` in the backward
+direction, as far back toward the start of `q` as `j` allows. -/
 theorem forced_backward (hq : ForcedPath ω q) (hp : IsOpenPath ω p) (he : EndsOff q p)
     {i j : ℕ} (hi : i + 1 < p.length) (hj : j + 1 < q.length)
     (h0 : p[i]? = q[j]?) (h1 : p[i + 1]? = q[j + 1]?) :
@@ -90,6 +98,9 @@ theorem forced_backward (hq : ForcedPath ω q) (hp : IsOpenPath ω p) (he : Ends
         (List.getElem?_inj (by omega) hp.1.1).1 (hw.trans (h.symm.trans e1.symm))
       omega
 
+/-- Combining `forced_forward` and `forced_backward`: once `p` agrees with `q` on two consecutive
+positions, `q` occurs verbatim as the contiguous segment of `p` of length `q.length` starting at
+index `i - j`. -/
 theorem segment_of_forced (hq : ForcedPath ω q) (hp : IsOpenPath ω p) (he : EndsOff q p)
     {i j : ℕ} (hi : i + 1 < p.length) (hj : j + 1 < q.length)
     (h0 : p[i]? = q[j]?) (h1 : p[i + 1]? = q[j + 1]?) :
@@ -114,18 +125,24 @@ theorem segment_of_forced (hq : ForcedPath ω q) (hp : IsOpenPath ω p) (he : En
         exact hf.2.2
   · rw [List.getElem?_eq_none (by omega)]
 
+/-- The forcing property is preserved under reversal: if every internal vertex of `q` forces its
+two `q`-neighbors, the same holds for `q.reverse`. -/
 theorem forcedPath_reverse (h : ForcedPath ω q) : ForcedPath ω q.reverse := by
   intro i hi hi' u w hu hadj hopen
   rw [List.length_reverse] at hi'
   rw [List.getElem?_reverse (by omega)] at hu
   rcases h (q.length - 1 - i) (by omega) (by omega) u w hu hadj hopen with h' | h'
   · right
-    rw [List.getElem?_reverse (by omega), show q.length - 1 - (i + 1) = q.length - 1 - i - 1 by omega]
+    rw [List.getElem?_reverse (by omega),
+      show q.length - 1 - (i + 1) = q.length - 1 - i - 1 by omega]
     exact h'
   · left
-    rw [List.getElem?_reverse (by omega), show q.length - 1 - (i - 1) = q.length - 1 - i + 1 by omega]
+    rw [List.getElem?_reverse (by omega),
+      show q.length - 1 - (i - 1) = q.length - 1 - i + 1 by omega]
     exact h'
 
+/-- `p`'s endpoints stay off the internal vertices of `q.reverse` whenever they are off those
+of `q`. -/
 theorem endsOff_reverse (h : EndsOff q p) : EndsOff q.reverse p := by
   intro i hi hi'
   rw [List.length_reverse] at hi'

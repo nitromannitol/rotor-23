@@ -2,6 +2,8 @@ import Rotor.Support.WalkBasics
 import Rotor.Law
 
 /-!
+# Measurability of the rotor walk in the initial configuration
+
 Measurability of the rotor walk in the initial configuration: the position `X_t` and every
 rotor `ρ_t(v)` are measurable functions of `ρ`, by induction on `t`, and therefore the
 recurrence event `{ρ : Recurrent π ρ o}` is measurable (a countable intersection of countable
@@ -16,6 +18,8 @@ namespace Rotor
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [Countable V]
 variable (π : Mechanism G) (o : V)
 
+/-- By simultaneous induction on `t`, both the position level sets `{ρ | X π ρ o t = x}` and the
+rotor level sets `{ρ | rot π ρ o t v = a}` are measurable in the initial configuration `ρ`. -/
 theorem measurableSet_X_rot : ∀ t : ℕ,
     (∀ x : V, MeasurableSet {ρ : Config G | X π ρ o t = x}) ∧
     (∀ (v : V) (a : G.neighborSet v), MeasurableSet {ρ : Config G | rot π ρ o t v = a})
@@ -59,6 +63,8 @@ theorem measurableSet_X_rot : ∀ t : ℕ,
       rw [this]
       exact ((hX v).inter (hrot v _)).union ((hX v).compl.inter (hrot v a))
 
+/-- The position level set `{ρ | X π ρ o t = x}` is measurable, taken from
+`measurableSet_X_rot`. -/
 theorem measurableSet_X_eq (t : ℕ) (x : V) : MeasurableSet {ρ : Config G | X π ρ o t = x} :=
   (measurableSet_X_rot π o t).1 x
 

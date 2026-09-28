@@ -33,6 +33,18 @@ How the paper's objects are modelled here:
 -/
 import Mathlib
 
+/-!
+# The rotor walk on the square lattice
+
+Models the rotor walk of Bou-Rabee--Peres on the square lattice `ℤ²`.  `Dir` numbers the four
+outgoing edges at a site in the clockwise order `N, E, S, W`, and `turn` advances one step in
+this cyclic order, realizing the rotor mechanism `π_v`.  `State` bundles a walker position with
+a rotor configuration; `step`, `walk`, `X` and `rot` iterate the mechanism to produce the walk's
+position and rotor state at each time.  `R`, `T` and `A` record the range, the completion time
+of the first `n` circuits, and the range after `n` circuits, following `rotor.tex:179-225`;
+`Recurrent` says every site is visited infinitely often.
+-/
+
 namespace Rotor
 
 /-- A site of the square lattice `ℤ²`. -/

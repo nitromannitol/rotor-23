@@ -4,7 +4,11 @@ open Finset Classical
 
 namespace Rotor
 
-/-! ### From connections to box crossings -/
+/-!
+# Ingredients for the Lemma 5.3 decay estimate
+
+### From connections to box crossings
+-/
 
 /-- A path from `x` reaching `ℓ^∞` distance `r` crosses the box. -/
 theorem boxCrossing_of_path {ω : BondConfig} {x : Site} {r : ℕ} {l : List Site}
@@ -56,6 +60,7 @@ theorem boxCrossing_of_path {ω : BondConfig} {x : Site} {r : ℕ} {l : List Sit
 noncomputable def sphere (x : Site) (r : ℕ) : Finset Site :=
   ((Icc (x.1 - r) (x.1 + r)) ×ˢ (Icc (x.2 - r) (x.2 + r))).filter (fun y => linfDist y x = r)
 
+/-- `y ∈ sphere x r` iff `linfDist y x = r`. -/
 theorem mem_sphere {x : Site} {r : ℕ} {y : Site} : y ∈ sphere x r ↔ linfDist y x = r := by
   unfold sphere
   rw [mem_filter, mem_product, mem_Icc, mem_Icc]
@@ -68,6 +73,8 @@ theorem mem_sphere {x : Site} {r : ℕ} {y : Site} : y ∈ sphere x r ↔ linfDi
     have h2 := abs_le.1 (le_trans (le_max_right _ _) h.le)
     omega
 
+/-- The sphere `sphere x r` has at most `(2 * r + 1) ^ 2` points, the size of the box that
+encloses it. -/
 theorem card_sphere_le (x : Site) (r : ℕ) : (sphere x r).card ≤ (2 * r + 1) ^ 2 := by
   refine le_trans (card_filter_le _ _) ?_
   rw [card_product, Int.card_Icc, Int.card_Icc,
@@ -87,6 +94,8 @@ def PFEvent (x y : Site) (r : ℕ) : Set BondConfig :=
 def ConnEvent (x y : Site) (r : ℕ) : Set BondConfig :=
   {ω | ∃ l, IsOpenPath ω l ∧ l.head? = some x ∧ l.getLast? = some y ∧ ∀ v ∈ l, v ∈ Dset x y r}
 
+/-- An open path `l` staying inside `Dset x y r` is still open after replacing `ω₁` by `ω₂` when
+the two agree on the edges of `Fset x y r`, since every edge of `l` lies in `Fset x y r`. -/
 theorem isOpenPath_congr_F {x y : Site} {r : ℕ} {ω₁ ω₂ : BondConfig}
     (h : ∀ b ∈ Fset x y r, ω₁ b = ω₂ b) {l : List Site} (hD : ∀ v ∈ l, v ∈ Dset x y r)
     (hl : IsOpenPath ω₁ l) : IsOpenPath ω₂ l := by
@@ -95,6 +104,7 @@ theorem isOpenPath_congr_F {x y : Site} {r : ℕ} {ω₁ ω₂ : BondConfig}
   exact (h _ (mem_Fset.2 ⟨l[i], l[i + 1], hD _ (List.getElem_mem _), hD _ (List.getElem_mem _),
     hadj, rfl⟩)).symm
 
+/-- Membership in `PFEvent x y r` depends only on the bond values on `Fset x y r`. -/
 theorem pfEvent_determined (x y : Site) (r : ℕ) :
     BondDetermined (Fset x y r) (PFEvent x y r) := by
   intro ω ω' h
@@ -104,6 +114,7 @@ theorem pfEvent_determined (x y : Site) (r : ℕ) :
   · rintro ⟨l, hl, hh, hlast, hD, hp⟩
     exact ⟨l, isOpenPath_congr_F (fun b hb => (h b hb).symm) hD hl, hh, hlast, hD, hp⟩
 
+/-- Membership in `ConnEvent x y r` depends only on the bond values on `Fset x y r`. -/
 theorem connEvent_determined (x y : Site) (r : ℕ) :
     BondDetermined (Fset x y r) (ConnEvent x y r) := by
   intro ω ω' h
@@ -113,12 +124,16 @@ theorem connEvent_determined (x y : Site) (r : ℕ) :
   · rintro ⟨l, hl, hh, hlast, hD⟩
     exact ⟨l, isOpenPath_congr_F (fun b hb => (h b hb).symm) hD hl, hh, hlast, hD⟩
 
+/-- Every configuration in `constrainedCrossing x r` lies in `PFEvent x y r` for some `y` on the
+sphere `sphere x r`. -/
 theorem constrainedCrossing_subset (x : Site) (r : ℕ) :
     constrainedCrossing x r ⊆ ⋃ y ∈ sphere x r, PFEvent x y r := by
   rintro ω ⟨l, hl, hh, hin, ⟨y, hy, hyr⟩, hp⟩
   rw [Set.mem_iUnion₂]
   exact ⟨y, mem_sphere.2 hyr, l, hl, hh, hy, fun v hv => mem_Dset_of_linf hyr (hin v hv), hp⟩
 
+/-- When `y` lies at `ℓ^∞` distance `r` from `x`, every configuration witnessing `ConnEvent x y r`
+also witnesses `boxCrossing x r`. -/
 theorem connEvent_subset_boxCrossing {x y : Site} {r : ℕ} (hy : linfDist y x = r) :
     ConnEvent x y r ⊆ boxCrossing x r := by
   rintro ω ⟨l, hl, hh, hlast, -⟩
@@ -126,6 +141,8 @@ theorem connEvent_subset_boxCrossing {x y : Site} {r : ℕ} (hy : linfDist y x =
   rw [List.getLast?_eq_getElem?] at hlast
   exact List.mem_of_getElem? hlast
 
+/-- A path that traverses the translated pattern copy `copyAt c` contains that pattern, since
+`copyAt c` equals `pstar` shifted by `(1, 1) + c`. -/
 theorem containsPattern_of_traverses {l : List Site} {c : Site} (h : Traverses l (copyAt c)) :
     ContainsPattern l := by
   obtain ⟨i, h⟩ := h
@@ -139,6 +156,8 @@ theorem containsPattern_of_traverses {l : List Site} {c : Site} (h : Traverses l
 
 /-! ### The real-number bound -/
 
+/-- For `r ≥ 1`, the polynomial-times-exponential quantity `(2r + 1)^2 · C e^{-cr}` is bounded by
+`144 C / c^2 · e^{-(c/2) r}`, absorbing the quadratic prefactor into a slower exponential decay. -/
 theorem poly_exp_bound {c C : ℝ} (hc : 0 < c) (hC : 0 < C) (r : ℕ) (hr : 1 ≤ r) :
     (((2 * r + 1) ^ 2 : ℕ) : ℝ) * (C * Real.exp (-c * r)) ≤
       144 * C / c ^ 2 * Real.exp (-(c / 2) * r) := by

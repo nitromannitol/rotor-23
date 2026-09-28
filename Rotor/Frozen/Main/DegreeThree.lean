@@ -21,6 +21,17 @@ import Rotor.Bridge.OneCircuit
 import Rotor.Bridge.HolroydPropp
 import Rotor.Support.MainDegreeThree
 
+/-!
+# Theorem 1.1: the degree-three case
+
+Frozen statement of Theorem 1.1 of `rotor.tex` (`thm:main`) for a doubly periodic graph of
+maximum degree three with a doubly periodic mechanism: recurrence, almost-sure finiteness of
+every circuit-completion time, convergence of the rescaled range after `n` circuits to a compact
+convex body `B` containing the origin in its interior, the two-sided containment for large `n`,
+and the range exponent `2/3` for the range at time `t`. The proof is discharged by
+`main_degree_three_proof`, drawing on the bridge lemmas for the external inputs of Sections 2-4.
+-/
+
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
 
@@ -46,4 +57,5 @@ theorem Rotor.Frozen.main_degree_three
           (κ • B)) atTop (𝓝 0) ∧
         Tendsto (fun t : ℕ => ((R π ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c)
 -- FROZEN-STATEMENT-END
-:= main_degree_three_proof π P (Rotor.Bridge.oneCircuit_holds G) (Rotor.Bridge.abelian_holds G) (Rotor.Bridge.visitsAllOfVisitsOne_holds G) Rotor.Bridge.kingman_holds hLSS hG hπ h3 o
+:= main_degree_three_proof π P (Rotor.Bridge.oneCircuit_holds G) (Rotor.Bridge.abelian_holds G)
+    (Rotor.Bridge.visitsAllOfVisitsOne_holds G) Rotor.Bridge.kingman_holds hLSS hG hπ h3 o

@@ -2,6 +2,8 @@ import Rotor.External.Kingman
 import LatticeProb.Prob.Kingman
 
 /-!
+# Kingman's subadditive ergodic theorem from the library
+
 `External.Kingman` proved from the shared library's Kingman subadditive ergodic theorem
 (`LatticeProb.Prob.Kingman`, Kingman 1968 Theorems 3 and 5).
 

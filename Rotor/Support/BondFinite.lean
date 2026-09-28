@@ -2,6 +2,8 @@ import Rotor.Support.ExplProb
 import Rotor.Dual
 
 /-!
+# Finite-bond percolation events and monotonicity
+
 Proposition 5.1 (`prop:square-passage`), part 2: Bernoulli(1/2) bond percolation on finitely
 many bonds.  Events determined by a finite set of bonds are counted uniformly over the
 configurations of those bonds; flipping a bond open does not decrease the probability of an
@@ -16,6 +18,8 @@ namespace Rotor
 def cylBonds (F : Finset (Sym2 Site)) (ξ : Sym2 Site → Bool) : Set BondConfig :=
   {ω | ∀ b ∈ F, ω b = ξ b}
 
+/-- `cylBonds F ξ` is measurable, being a finite intersection of preimages of singletons under the
+coordinate projections `ω ↦ ω b` for `b ∈ F`. -/
 theorem measurableSet_cylBonds (F : Finset (Sym2 Site)) (ξ : Sym2 Site → Bool) :
     MeasurableSet (cylBonds F ξ) := by
   have : cylBonds F ξ = ⋂ b ∈ F, (fun ω : BondConfig => ω b) ⁻¹' {ξ b} := by
@@ -25,13 +29,17 @@ theorem measurableSet_cylBonds (F : Finset (Sym2 Site)) (ξ : Sym2 Site → Bool
     (fun b _ => measurable_pi_apply b MeasurableSet.of_discrete)
 
 set_option linter.deprecated false in
+/-- Under the Bernoulli(1/2) bond law, the cylinder set `cylBonds F ξ` fixing finitely many bonds
+`F` to the values `ξ` has measure `(1/2) ^ F.card`, via the product measure identity
+`Measure.infinitePi_pi`. -/
 theorem bondLaw_half_cyl (F : Finset (Sym2 Site)) (ξ : Sym2 Site → Bool) :
     bondLaw (1 / 2) half_le_one (cylBonds F ξ) = (1 / 2 : ℝ≥0∞) ^ F.card := by
   have hset : cylBonds F ξ = Set.pi (↑F) (fun b => {ξ b}) := by
     ext ω; simp [cylBonds, Set.pi]
   rw [hset]
   unfold bondLaw
-  have key := Measure.infinitePi_pi (μ := fun _ : Sym2 Site => External.bernoulli (1 / 2) half_le_one)
+  have key := Measure.infinitePi_pi
+    (μ := fun _ : Sym2 Site => External.bernoulli (1 / 2) half_le_one)
     (s := F) (t := fun b => {ξ b}) (fun _ _ => MeasurableSet.of_discrete)
   refine key.trans ?_
   have hb : ∀ b, External.bernoulli (1 / 2) half_le_one {ξ b} = 1 / 2 := by
@@ -52,6 +60,8 @@ def extF (F : Finset (Sym2 Site)) (ξ : ↥F → Bool) : BondConfig :=
 /-- The restriction of `ω` to `F`. -/
 def resF (F : Finset (Sym2 Site)) (ω : BondConfig) : ↥F → Bool := fun b => ω b.1
 
+/-- `ω` lies in the cylinder set of the extension `extF F ξ` iff `ω`'s restriction to `F` is
+`ξ`. -/
 theorem mem_cylBonds_extF (F : Finset (Sym2 Site)) (ξ : ↥F → Bool) (ω : BondConfig) :
     ω ∈ cylBonds F (extF F ξ) ↔ resF F ω = ξ := by
   constructor
@@ -64,6 +74,7 @@ theorem mem_cylBonds_extF (F : Finset (Sym2 Site)) (ξ : ↥F → Bool) (ω : Bo
     rw [← h]
     simp [extF, hb, resF]
 
+/-- Distinct partial configurations `ξ ≠ ξ'` on `F` give disjoint cylinder sets. -/
 theorem cylBonds_extF_disjoint (F : Finset (Sym2 Site)) {ξ ξ' : ↥F → Bool} (h : ξ ≠ ξ') :
     Disjoint (cylBonds F (extF F ξ)) (cylBonds F (extF F ξ')) := by
   rw [Set.disjoint_left]
@@ -71,6 +82,8 @@ theorem cylBonds_extF_disjoint (F : Finset (Sym2 Site)) {ξ ξ' : ↥F → Bool}
   rw [mem_cylBonds_extF] at h1 h2
   exact h (h1.symm.trans h2)
 
+/-- For an `F`-determined event `E`, intersecting it with the cylinder set for `ξ` gives that
+whole cylinder set if `extF F ξ ∈ E`, and the empty set otherwise. -/
 theorem determined_inter_cyl (F : Finset (Sym2 Site)) {E : Set BondConfig} (hE : BondDetermined F E)
     (ξ : ↥F → Bool) :
     E ∩ cylBonds F (extF F ξ) = if extF F ξ ∈ E then cylBonds F (extF F ξ) else ∅ := by
@@ -83,12 +96,17 @@ theorem determined_inter_cyl (F : Finset (Sym2 Site)) {E : Set BondConfig} (hE :
     intro hω hcyl
     exact hξ ((hE _ _ (fun b hb => hcyl b hb)).1 hω)
 
+/-- The cylinder sets `cylBonds F (extF F ξ)`, as `ξ` ranges over all partial configurations on
+`F`, cover all of `BondConfig`. -/
 theorem iUnion_cylBonds_extF (F : Finset (Sym2 Site)) :
     ⋃ ξ : ↥F → Bool, cylBonds F (extF F ξ) = Set.univ := by
   ext ω
   simp only [Set.mem_iUnion, Set.mem_univ, iff_true]
   exact ⟨resF F ω, by rw [mem_cylBonds_extF]⟩
 
+/-- An `F`-determined event `E` is measurable: it is the union, over partial configurations `ξ`
+on `F`, of the sets `E ∩ cylBonds F (extF F ξ)`, each of which is a cylinder set or empty by
+`determined_inter_cyl`. -/
 theorem measurableSet_of_determined (F : Finset (Sym2 Site)) {E : Set BondConfig}
     (hE : BondDetermined F E) : MeasurableSet E := by
   have : E = ⋃ ξ : ↥F → Bool, (E ∩ cylBonds F (extF F ξ)) := by
@@ -129,10 +147,12 @@ theorem bondLaw_half_le_of_flip (F : Finset (Sym2 Site)) {E₁ E₂ : Set BondCo
   rw [bondLaw_half_eq_sum F h₁, bondLaw_half_eq_sum F h₂]
   rw [← Finset.sum_filter, ← Finset.sum_filter]
   simp only [Finset.sum_const, nsmul_eq_mul]
-  refine (ENNReal.mul_le_mul_iff_left (pow_ne_zero _ (by norm_num)) (ENNReal.pow_ne_top (by norm_num))).2
+  refine (ENNReal.mul_le_mul_iff_left (pow_ne_zero _ (by norm_num))
+    (ENNReal.pow_ne_top (by norm_num))).2
     (Nat.cast_le.2 ?_)
   -- the injection `ξ ↦ ξ[b := true]`
-  refine Finset.card_le_card_of_injOn (fun ξ : ↥F → Bool => Function.update ξ (⟨b, hb⟩ : ↥F) true) ?_ ?_
+  refine Finset.card_le_card_of_injOn
+    (fun ξ : ↥F → Bool => Function.update ξ (⟨b, hb⟩ : ↥F) true) ?_ ?_
   · intro ξ hξ
     simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq] at hξ ⊢
     have := hflip _ hξ
@@ -141,7 +161,8 @@ theorem bondLaw_half_le_of_flip (F : Finset (Sym2 Site)) {E₁ E₂ : Set BondCo
       by_cases hcb : c = b
       · subst hcb
         simp [extF, hb]
-      · have hne : ∀ (hc : c ∈ F), (⟨c, hc⟩ : ↥F) ≠ ⟨b, hb⟩ := fun hc h => hcb (congrArg Subtype.val h)
+      · have hne : ∀ (hc : c ∈ F), (⟨c, hc⟩ : ↥F) ≠ ⟨b, hb⟩ :=
+          fun hc h => hcb (congrArg Subtype.val h)
         by_cases hc : c ∈ F
         · simp [extF, hc, Function.update_of_ne (hne hc), Function.update_of_ne hcb]
         · simp [extF, hc, Function.update_of_ne hcb]

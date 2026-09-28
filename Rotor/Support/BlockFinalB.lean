@@ -5,6 +5,15 @@ uniform in the directed edge; the choice of `η` with `s^{-η} (7/8)^{c₁} < 1`
 -/
 import Rotor.Events
 
+/-!
+# Analytic constants for the block estimate
+
+Assembles the ingredients behind the block criterion `Criterion π μ η`: a general lemma
+reducing the criterion to a directed-edge-uniform bound tending to zero, the explicit choice
+of `η` making `(7/8)^{c₁} (1/s)^η < 1` (`rotor.tex:1274`), and the geometric decay of the
+resulting block bound `(7/8)^{⌊c₁ R - c₂⌋₊ - 10} (1/s)^{⌈η R⌉₊}` to zero as `R → ∞`.
+-/
+
 open Filter Topology MeasureTheory
 open scoped ENNReal
 
@@ -75,8 +84,10 @@ theorem tendsto_geom_bound {s c₁ c₂ η : ℝ} (hs0 : 0 < s) (hs1 : s ≤ 1) 
         mul_le_mul h1 h2 (by positivity) (by positivity)
     _ = (7 / 8 : ℝ) ^ (-(c₂ + 11)) * (1 / s) * ((7 / 8 : ℝ) ^ c₁ * (1 / s) ^ η) ^ R := by
         rw [show c₁ * R - c₂ - 11 = c₁ * R + (-(c₂ + 11)) by ring,
-          Real.rpow_add (by norm_num : (0 : ℝ) < 7 / 8), Real.rpow_add (by positivity : (0 : ℝ) < 1 / s),
-          Real.rpow_mul (by norm_num : (0 : ℝ) ≤ 7 / 8), Real.rpow_mul (by positivity : (0 : ℝ) ≤ 1 / s),
+          Real.rpow_add (by norm_num : (0 : ℝ) < 7 / 8),
+          Real.rpow_add (by positivity : (0 : ℝ) < 1 / s),
+          Real.rpow_mul (by norm_num : (0 : ℝ) ≤ 7 / 8),
+          Real.rpow_mul (by positivity : (0 : ℝ) ≤ 1 / s),
           Real.rpow_natCast, Real.rpow_natCast, Real.rpow_one, mul_pow]
         ring
 

@@ -2,6 +2,8 @@ import Rotor.Support.SquareDual
 import Rotor.Support.KingPaths
 
 /-!
+# The discrete divergence theorem for boundary walks
+
 The discrete divergence theorem behind `eq:boundary-cancellation` (`rotor.tex:2280-2290`):
 the edge boundary of a finite set `K ⊂ ℤ²` is traversed by a successor map (the boundary
 walk keeping `K` on the left); it is a permutation of the boundary edges, consecutive edges
@@ -16,13 +18,16 @@ namespace Rotor
 /-- Counterclockwise rotation of a lattice vector. -/
 def rotL' (d : Site) : Site := (-d.2, d.1)
 
+/-- Two counterclockwise rotations negate the vector: `rotL' (rotL' d) = -d`. -/
 theorem rotL'_rotL' (d : Site) : rotL' (rotL' d) = -d := by
   ext <;> simp [rotL']
 
 /-- The edge boundary of `K`: directed edges from `K` to its complement. -/
 def bdry (K : Finset Site) : Finset (Site × Site) :=
-  K.biUnion (fun h => ((squareGraph.neighborFinset h).filter (fun x => x ∉ K)).image (fun x => (h, x)))
+  K.biUnion (fun h =>
+      ((squareGraph.neighborFinset h).filter (fun x => x ∉ K)).image (fun x => (h, x)))
 
+/-- `e ∈ bdry K` iff `e.1 ∈ K`, `e.2 ∉ K`, and `e.1` and `e.2` are adjacent in `squareGraph`. -/
 theorem mem_bdry {K : Finset Site} {e : Site × Site} :
     e ∈ bdry K ↔ e.1 ∈ K ∧ e.2 ∉ K ∧ squareGraph.Adj e.1 e.2 := by
   simp only [bdry, mem_biUnion, mem_image, mem_filter, SimpleGraph.mem_neighborFinset]
@@ -49,7 +54,10 @@ theorem adj_sub_mem {h x : Site} (hadj : squareGraph.Adj h x) :
   rcases abs_cases (a - c) with ⟨h1, h1'⟩ | ⟨h1, h1'⟩ <;>
   rcases abs_cases (b - d) with ⟨h2, h2'⟩ | ⟨h2, h2'⟩ <;> omega
 
-theorem adj_of_unit {h x : Site} (hu : x - h = (1, 0) ∨ x - h = (-1, 0) ∨ x - h = (0, 1) ∨ x - h = (0, -1)) :
+/-- Converse of `adj_sub_mem`: if `x - h` is one of the four unit directions then `h` and `x`
+are adjacent in `squareGraph`. -/
+theorem adj_of_unit {h x : Site}
+    (hu : x - h = (1, 0) ∨ x - h = (-1, 0) ∨ x - h = (0, 1) ∨ x - h = (0, -1)) :
     squareGraph.Adj h x := by
   rw [squareGraph_adj]
   obtain ⟨a, b⟩ := h; obtain ⟨c, d⟩ := x
@@ -57,10 +65,12 @@ theorem adj_of_unit {h x : Site} (hu : x - h = (1, 0) ∨ x - h = (-1, 0) ∨ x 
   rcases hu with ⟨h1, h2⟩ | ⟨h1, h2⟩ | ⟨h1, h2⟩ | ⟨h1, h2⟩ <;>
     rw [show a - c = -(c - a) by ring, show b - d = -(d - b) by ring, h1, h2] <;> simp
 
+/-- Rotating a unit direction counterclockwise gives another unit direction. -/
 theorem rotL'_unit {d : Site} (hd : d = (1, 0) ∨ d = (-1, 0) ∨ d = (0, 1) ∨ d = (0, -1)) :
     rotL' d = (1, 0) ∨ rotL' d = (-1, 0) ∨ rotL' d = (0, 1) ∨ rotL' d = (0, -1) := by
   rcases hd with rfl | rfl | rfl | rfl <;> simp [rotL']
 
+/-- The successor map `bsucc` sends a boundary edge of `K` to another boundary edge of `K`. -/
 theorem bsucc_mem {K : Finset Site} {e : Site × Site} (he : e ∈ bdry K) : bsucc K e ∈ bdry K := by
   obtain ⟨hh, hx, hadj⟩ := mem_bdry.1 he
   have hu := adj_sub_mem hadj
@@ -134,14 +144,19 @@ theorem bsucc_injOn (K : Finset Site) : Set.InjOn (bsucc K) ↑(bdry K) := by
 
 /-- The faces at the two ends of the dual edge of a boundary edge. -/
 def f₀ (e : Site × Site) : Site := rightFace e.1 (dirOf (e.2 - e.1))
+/-- `f₁ e`, the face to the left of the directed edge `e`, is the other endpoint of its dual
+edge, opposite `f₀ e`. -/
 def f₁ (e : Site × Site) : Site := leftFace e.1 (dirOf (e.2 - e.1))
 
 /-- Clockwise rotation. -/
 def rotR' (d : Site) : Site := (d.2, -d.1)
 
+/-- Clockwise rotation undoes counterclockwise rotation: `rotR' (rotL' d) = d`. -/
 theorem rotR'_rotL' (d : Site) : rotR' (rotL' d) = d := by
   ext <;> simp [rotR', rotL']
 
+/-- The dual edge of a boundary edge `e` runs from `f₀ e` to `f₁ e` along the primal direction
+`e.2 - e.1` rotated counterclockwise. -/
 theorem f₁_sub_f₀ {e : Site × Site} (hadj : squareGraph.Adj e.1 e.2) :
     f₁ e - f₀ e = rotL' (e.2 - e.1) := by
   have hu := adj_sub_mem hadj
@@ -166,6 +181,8 @@ theorem f₁_sub_f₀ {e : Site × Site} (hadj : squareGraph.Adj e.1 e.2) :
     subst hc hd
     simp [leftFace, rightFace, dirOf, dirVec, rotL']
 
+/-- Inverse of `f₁_sub_f₀`: the primal edge direction `e.2 - e.1` is the clockwise rotation of
+the dual edge direction `f₁ e - f₀ e`. -/
 theorem sub_eq_rotR' {e : Site × Site} (hadj : squareGraph.Adj e.1 e.2) :
     e.2 - e.1 = rotR' (f₁ e - f₀ e) := by
   rw [f₁_sub_f₀ hadj, rotR'_rotL']
@@ -210,7 +227,8 @@ theorem sum_bdry_eq_zero (K : Finset Site) (S : Finset (Site × Site)) (hS : S �
       exact hinv e he
     · rw [Finset.card_image_of_injOn ((bsucc_injOn K).mono (Finset.coe_subset.2 hS))]
   have hsum : ∑ e ∈ S, f₁ e = ∑ e ∈ S, f₀ e := by
-    calc ∑ e ∈ S, f₁ e = ∑ e ∈ S, f₀ (bsucc K e) := Finset.sum_congr rfl (fun e he => (f₀_bsucc (hS he)).symm)
+    calc ∑ e ∈ S, f₁ e = ∑ e ∈ S, f₀ (bsucc K e) :=
+          Finset.sum_congr rfl (fun e he => (f₀_bsucc (hS he)).symm)
       _ = ∑ e ∈ S.image (bsucc K), f₀ e :=
           (Finset.sum_image ((bsucc_injOn K).mono (Finset.coe_subset.2 hS))).symm
       _ = ∑ e ∈ S, f₀ e := by rw [himg]

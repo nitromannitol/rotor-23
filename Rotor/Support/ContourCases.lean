@@ -1,6 +1,8 @@
 import Rotor.Support.ContourCtx
 
 /-!
+# Lemma 5.5: the `S` and `W` contour cases
+
 Lemma 5.5 (`lem:square-active-list`), part 3: the two instances of the contour context.  For
 `σ = S` the curve is the double of the dual curve closed by the bond `S`; for `σ = W` it is the
 doubled path closed by the chord through the `E`-midpoint, the centre of the square and the
@@ -145,6 +147,9 @@ end SCase
 
 /-! ### The `S` case at a stage of the exploration -/
 
+/-- In the `S` case, once the head bond's `sideS` test comes back `false`, the active list at
+this stage of `explore` has no further elements: `rest = []`, obtained by building the `S`
+contour context `ctxS` and reading off its `active_eq`. -/
 theorem active_list_S (f : Site) {d : Site} (hd : IsUnit d) (ρ : Config squareGraph) (n : ℕ)
     {e : Site × Site} {rest : List (Site × Site)} (he : (explore ρ f d n).active = e :: rest)
     (hS : TestedAs (explore ρ f d n).tested (sideS e.1 e.2) false) : rest = [] := by
@@ -178,17 +183,23 @@ theorem active_list_S (f : Site) {d : Site} (hd : IsUnit d) (ρ : Config squareG
 
 /-! ### The `W` instance -/
 
+/-- `rotR` undoes `rotL`: `rotR (rotL u) = u` for every `u`. -/
 theorem rotR_rotL (u : Site) : rotR (rotL u) = u := by
   obtain ⟨a, b⟩ := u; simp [rotL, rotR]
 
+/-- `rotL` undoes `rotR`: `rotL (rotR u) = u` for every `u`. -/
 theorem rotL_rotR (u : Site) : rotL (rotR u) = u := by
   obtain ⟨a, b⟩ := u; simp [rotL, rotR]
 
+/-- For a unit vector `n`, `a + a` never equals `z + z + n`: the two sides disagree in
+coordinate parity, checked case by case on the four unit vectors. -/
 theorem double_ne_double_add_unit {n : Site} (hn : IsUnit n) (a z : Site) : a + a ≠ z + z + n := by
   intro h
   obtain ⟨a1, a2⟩ := a; obtain ⟨z1, z2⟩ := z
   rcases hn with rfl | rfl | rfl | rfl <;> simp only [Prod.mk_add_mk, Prod.mk.injEq] at h <;> omega
 
+/-- For a unit vector `n`, `a + a` never equals `z + z + (n + rotL n)`: `n + rotL n` has both
+coordinates odd, so the two sides disagree in parity, checked case by case. -/
 theorem double_ne_oddodd {n : Site} (hn : IsUnit n) (a z : Site) :
     a + a ≠ z + z + (n + rotL n) := by
   intro h
@@ -196,6 +207,8 @@ theorem double_ne_oddodd {n : Site} (hn : IsUnit n) (a z : Site) :
   rcases hn with rfl | rfl | rfl | rfl <;>
     simp only [rotL, Prod.mk_add_mk, Prod.mk.injEq] at h <;> omega
 
+/-- For unit vectors `u` and `n`, `a + a + u` never equals `z + z + (n + rotL n)`, checked case
+by case on both unit vectors' four values. -/
 theorem mid_ne_oddodd {u n : Site} (hu : IsUnit u) (hn : IsUnit n) (a z : Site) :
     a + a + u ≠ z + z + (n + rotL n) := by
   intro h
@@ -203,21 +216,28 @@ theorem mid_ne_oddodd {u n : Site} (hu : IsUnit u) (hn : IsUnit n) (a z : Site) 
   rcases hu with rfl | rfl | rfl | rfl <;> rcases hn with rfl | rfl | rfl | rfl <;>
     simp only [rotL, Prod.mk_add_mk, Prod.mk.injEq] at h <;> omega
 
+/-- For a unit vector `u`, `a + a + u` never equals `z + z`: the two sides disagree in parity,
+checked case by case on the four unit vectors. -/
 theorem mid_ne_double {u : Site} (hu : IsUnit u) (a z : Site) : a + a + u ≠ z + z := by
   intro h
   obtain ⟨a1, a2⟩ := a; obtain ⟨z1, z2⟩ := z
   rcases hu with rfl | rfl | rfl | rfl <;> simp only [Prod.mk_add_mk, Prod.mk.injEq] at h <;> omega
 
+/-- Doubling is injective on `Site`: `a + a = b + b` forces `a = b`, since `ℤ` has no
+`2`-torsion. -/
 theorem double_inj {a b : Site} (h : a + a = b + b) : a = b := by
   obtain ⟨a1, a2⟩ := a; obtain ⟨b1, b2⟩ := b
   simp only [Prod.mk_add_mk, Prod.mk.injEq] at h ⊢
   omega
 
+/-- Both coordinates of `z + z + (n + rotL n)` are odd, for any unit vector `n`. -/
 theorem oddodd_coords {n : Site} (hn : IsUnit n) (z : Site) :
     Odd (z + z + (n + rotL n)).1 ∧ Odd (z + z + (n + rotL n)).2 := by
   obtain ⟨z1, z2⟩ := z
   rcases hn with rfl | rfl | rfl | rfl <;> simp only [rotL, Prod.mk_add_mk, Int.odd_iff] <;> omega
 
+/-- A unit vector and its `rotL` rotation never cancel: `n + rotL n ≠ 0`, checked on the four
+unit vectors. -/
 theorem unit_add_rotL_ne_zero {n : Site} (hn : IsUnit n) : n + rotL n ≠ 0 := by
   rcases hn with rfl | rfl | rfl | rfl <;> decide
 
@@ -231,6 +251,8 @@ def chordW (x n : Site) : List Site :=
 def curveW (l xs : List Site) (k : ℕ) (x n : Site) : List Site :=
   dbl (pathP l xs k) ++ chordW x n
 
+/-- Consecutive points of `chordW x n` differ by a unit vector, so `chordW` is a chain of unit
+steps. -/
 theorem chordW_isChain {n : Site} (hn : IsUnit n) (x : Site) :
     (chordW x n).IsChain (fun a b => IsUnit (b - a)) := by
   have hrot := isUnit_rotL hn
@@ -240,10 +262,13 @@ theorem chordW_isChain {n : Site} (hn : IsUnit n) (x : Site) :
   · convert hrot using 1; abel
   · convert hn using 1; abel
 
+/-- The four points of `chordW x n` are pairwise distinct, checked case by case on the four
+unit vectors `n`. -/
 theorem chordW_nodup {n : Site} (hn : IsUnit n) (x : Site) : (chordW x n).Nodup := by
   obtain ⟨x1, x2⟩ := x
   rcases hn with rfl | rfl | rfl | rfl <;> simp [chordW, rotL, Prod.ext_iff] <;> omega
 
+/-- Membership in `chordW x n` unfolds to `q` being one of its four listed points. -/
 theorem mem_chordW {n x q : Site} : q ∈ chordW x n ↔
     q = x + (x + n) ∨ q = x + (x + n + rotL n) ∨ q = (x + rotL n) + (x + n + rotL n) ∨
       q = (x + n + rotL n) + (x + n + rotL n) := by
@@ -486,6 +511,9 @@ end WCase
 
 /-! ### The `W` case at a stage of the exploration -/
 
+/-- In the `W` case, once the head bond's `sideW` test comes back `false`, the active list at
+this stage of `explore` has no further elements: `rest = []`, obtained by building the `W`
+contour context `ctxW` and reading off its `active_eq`. -/
 theorem active_list_W (f : Site) {d : Site} (hd : IsUnit d) (ρ : Config squareGraph) (n : ℕ)
     {e : Site × Site} {rest : List (Site × Site)} (he : (explore ρ f d n).active = e :: rest)
     (hW : TestedAs (explore ρ f d n).tested (sideW e.1 e.2) false) : rest = [] := by

@@ -2,6 +2,8 @@ import Rotor.Support.ExplProb
 import Rotor.Support.DualGuards
 
 /-!
+# No open directed dual path contains the pattern
+
 Proposition 5.1 (`prop:square-passage`), part 1: a directed path of open dual edges contains
 no translate of `P_⋆` in either direction (`rotor.tex:1673-1676`): three consecutive dual edges
 of the pattern share a primal tail, and at most two edges at a vertex have rank `2` or `3`.
@@ -13,25 +15,33 @@ namespace Rotor
 
 /-! ### No open directed dual path contains the pattern -/
 
+/-- At most two of three distinct rotor directions at a vertex are open at once. -/
 theorem openAt_three (d k₁ k₂ k₃ : Dir) (h12 : k₁ ≠ k₂) (h23 : k₂ ≠ k₃) (h13 : k₁ ≠ k₃) :
     ¬ (openAt k₁ d = true ∧ openAt k₂ d = true ∧ openAt k₃ d = true) := by
   revert d k₁ k₂ k₃; decide
 
+/-- `primalTail` is translation-equivariant: shifting both endpoints by `z` shifts the
+common primal tail by `z`. -/
 theorem primalTail_add (z a b : Site) : primalTail (z + a) (z + b) = z + primalTail a b := by
   have : z + b - (z + a) = b - a := by abel
   simp only [primalTail, this]
   try (ext <;> simp <;> ring)
 
+/-- `primalDir` is translation-invariant: it depends only on the difference `b - a`. -/
 theorem primalDir_add (z a b : Site) : primalDir (z + a) (z + b) = primalDir a b := by
   have : z + b - (z + a) = b - a := by abel
   simp only [primalDir, this]
 
+/-- The dual edge `a b` is open iff the rotor at the common primal tail is open in the
+direction `primalDir a b`. -/
 theorem dualOpen_iff_openAt_tail (ρ : Config squareGraph) {a b : Site} (h : squareGraph.Adj a b) :
     DualOpen ρ a b ↔ openAt (primalDir a b) (dir0 ρ (primalTail a b)) = true := by
   have := dualOpen_iff_openAt ρ (primalTail a b) (primalDir a b)
   rw [dualEdge_primal h] at this
   rw [this]
 
+/-- If `q` is a chain for `DualOpen ρ` and `a`, `b` are consecutive entries of `q` at
+positions `i`, `i + 1`, the dual edge `a b` is open. -/
 theorem isChain_dualOpen_getElem {ρ : Config squareGraph} {q : List Site}
     (hq : q.IsChain (DualOpen ρ)) {i : ℕ} {a b : Site} (ha : q[i]? = some a)
     (hb : q[i + 1]? = some b) : DualOpen ρ a b := by
@@ -44,7 +54,12 @@ theorem isChain_dualOpen_getElem {ρ : Config squareGraph} {q : List Site}
   rw [← ha, ← hb]; exact this
 
 /-- Adjacency of two sites differing by a unit vector, by trying the four directions. -/
-macro "adj_unit_tac" : tactic => `(tactic| (apply adj_of_unit; first | (left; ext <;> simp <;> omega) | (right; left; ext <;> simp <;> omega) | (right; right; left; ext <;> simp <;> omega) | (right; right; right; ext <;> simp <;> omega)))
+macro "adj_unit_tac" : tactic =>
+  `(tactic| (apply adj_of_unit; first
+    | (left; ext <;> simp <;> omega)
+    | (right; left; ext <;> simp <;> omega)
+    | (right; right; left; ext <;> simp <;> omega)
+    | (right; right; right; ext <;> simp <;> omega)))
 
 /-- Three consecutive open dual edges with a common primal tail are impossible. -/
 theorem no_three_open (ρ : Config squareGraph) {v : Site} {a₀ a₁ a₂ a₃ : Site}
@@ -58,6 +73,8 @@ theorem no_three_open (ρ : Config squareGraph) {v : Site} {a₀ a₁ a₂ a₃ 
   rw [dualOpen_iff_openAt_tail ρ h23, t2] at o2
   exact openAt_three (dir0 ρ v) _ _ _ d01 d12 d02 ⟨o0, o1, o2⟩
 
+/-- If a length-`6` window of `q` starting at `i` equals `P`, the entries of `q` and `P` agree
+at every matching index `j < 6`. -/
 theorem pattern_getElem? {q : List Site} {i : ℕ} {P : List Site} (h : (q.drop i).take 6 = P)
     {j : ℕ} (hj : j < 6) : q[i + j]? = P[j]? := by
   rw [← h, List.getElem?_take_of_lt hj, List.getElem?_drop]

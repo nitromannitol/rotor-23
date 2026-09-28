@@ -5,6 +5,16 @@ hand against the paper.
 -/
 import Rotor.Basic
 
+/-!
+# Model guards for the rotor mechanism
+
+Small computable checks that the definitions of `Rotor/Basic.lean` reproduce the walk and
+timing conventions of the paper: the first steps of the walk from the all-north rotor
+configuration, the base case `T ρ o 0 = 0`, and the initial range `A ρ o 0 = {o}`. Each guard
+pins one concrete value that can be checked directly against the corresponding display in
+`rotor.tex`.
+-/
+
 namespace Rotor.Z2
 
 /-- With every rotor initially pointing north, the first step turns the rotor at

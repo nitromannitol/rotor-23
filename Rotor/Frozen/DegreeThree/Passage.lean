@@ -21,6 +21,17 @@ import Rotor.External.LSS
 import Rotor.External.SubcriticalDecay
 import Rotor.Support.DegreeThreePassage
 
+/-!
+# Degree-three passage probability
+
+This file packages `degree_three_passage_proof` as the frozen statement
+`Rotor.Frozen.degree_three_passage`: on a doubly periodic graph of maximum degree three with an
+arbitrary rotor mechanism and independent uniform initial rotors, there are constants `c, C > 0`,
+depending on the graph through the growth of its balls, such that for every directed edge `u → v`
+and every `R ≥ 1` the probability that a live path starting `u → v` reaches graph distance `R`
+from `u` is at most `C * exp (-c * R)`.
+-/
+
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
 

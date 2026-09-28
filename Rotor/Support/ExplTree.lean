@@ -2,6 +2,8 @@ import Rotor.Support.ExplInv
 import Rotor.Support.ExplCover
 
 /-!
+# The depth-first tree structure of the exploration
+
 The depth-first structure of the exploration (`rotor.tex:1885-1900`): the active list is the
 concatenation of the remaining frames along the current branch `f = x_0, …, x_j`, deepest
 first; each remaining frame lies after the tree edge to the next branch vertex in the
@@ -21,6 +23,8 @@ def frameOf (f d : Site) (p : Option Site) (z : Site) : List (Site × Site) :=
   | none => edgesFrom f d
   | some p => continuations p z
 
+/-- Every edge of `frameOf f d p z` has tail `f` when `z` is the root (`p = none`), and tail `z`
+otherwise. -/
 theorem frameOf_tail (f d : Site) (p : Option Site) (z : Site) :
     ∀ e ∈ frameOf f d p z, e.1 = (match p with | none => f | some _ => z) := by
   cases p with
@@ -58,6 +62,8 @@ structure DFS (f d : Site) (s : ExplState) (xs : List Site) (Fs : List (List (Si
     Prop extends DFS₀ f d s xs Fs where
   head_ne : s.active ≠ [] → ∃ F, Fs[0]? = some F ∧ F ≠ []
 
+/-- The initial exploration state `explInit f d`, with branch `[f]` and frame list
+`[edgesFrom f d]`, satisfies the unnormalized depth-first structure `DFS₀`. -/
 theorem dfs₀_init (f d : Site) :
     DFS₀ f d (explInit f d) [f] [edgesFrom f d] where
   len := rfl
@@ -90,6 +96,8 @@ theorem dfs₀_init (f d : Site) :
   head_ne_root := by simp [explInit]
   tail_earlier := by simp [explInit]
 
+/-- The initial exploration state satisfies the normalized depth-first structure `DFS`: the
+head frame `edgesFrom f d` is nonempty. -/
 theorem dfs_init (f d : Site) : DFS f d (explInit f d) [f] [edgesFrom f d] where
   toDFS₀ := dfs₀_init f d
   head_ne := fun _ => ⟨edgesFrom f d, rfl, by simp [edgesFrom]⟩
@@ -103,9 +111,13 @@ theorem sublist_cons_split {α : Type*} {a : α} {l l' : List α} (h : a :: l <+
   obtain ⟨q, q', rfl⟩ := List.append_of_mem ha
   exact ⟨q, q' ++ r₂, by simp, hl.trans (List.sublist_append_right _ _)⟩
 
+/-- Indexing commutes with mapping `List.filter P` over `Fs`: `(Fs.map (List.filter P))[i]?`
+equals `(Fs[i]?).map (List.filter P)`, an instance of `List.getElem?_map`. -/
 theorem getElem?_map_filter (P : Site × Site → Bool) (Fs : List (List (Site × Site))) (i : ℕ) :
     (Fs.map (List.filter P))[i]? = (Fs[i]?).map (List.filter P) := List.getElem?_map ..
 
+/-- An open test `(x, w, true)` in `T ++ [(a, b, o)]` either already lies in `T`, or is the
+appended test itself, forcing `o = true`, `x = a`, and `w = b`. -/
 theorem tested_append_open {T : List (Site × Site × Bool)} {a b : Site} {o : Bool}
     {x w : Site} (h : (x, w, true) ∈ T ++ [(a, b, o)]) :
     (x, w, true) ∈ T ∨ (o = true ∧ x = a ∧ w = b) := by
@@ -114,6 +126,8 @@ theorem tested_append_open {T : List (Site × Site × Bool)} {a b : Site} {o : B
   · simp only [List.mem_singleton, Prod.mk.injEq] at h
     exact Or.inr ⟨h.2.2.symm, h.1, h.2.1⟩
 
+/-- A test `(x, w, o')` in `T ++ [(a, b, o)]`, of any orientation, either already lies in `T`,
+or is the appended test itself, forcing `x = a`, `w = b`, and `o' = o`. -/
 theorem tested_append_any {T : List (Site × Site × Bool)} {a b : Site} {o : Bool}
     {x w : Site} {o' : Bool} (h : (x, w, o') ∈ T ++ [(a, b, o)]) :
     (x, w, o') ∈ T ∨ (x = a ∧ w = b ∧ o' = o) := by
@@ -129,7 +143,8 @@ theorem tail_earlier_append {f : Site} {T : List (Site × Site × Bool)}
     (a b : Site) (o : Bool) (ha : o = true → a = f ∨ ∃ p, (p, a, true) ∈ T) :
     ∀ k (hk : k < (T ++ [(a, b, o)]).length), (T ++ [(a, b, o)])[k].2.2 = true →
       (T ++ [(a, b, o)])[k].1 = f ∨ ∃ k' < k, ∃ (hk' : k' < (T ++ [(a, b, o)]).length),
-        (T ++ [(a, b, o)])[k'].2.1 = (T ++ [(a, b, o)])[k].1 ∧ (T ++ [(a, b, o)])[k'].2.2 = true := by
+        (T ++ [(a, b, o)])[k'].2.1 = (T ++ [(a, b, o)])[k].1 ∧
+          (T ++ [(a, b, o)])[k'].2.2 = true := by
   intro k hk hopen
   rw [List.length_append, List.length_singleton] at hk
   rcases Nat.lt_or_ge k T.length with hkT | hkT
@@ -471,7 +486,8 @@ theorem dfs₀_drop {f d : Site} {s : ExplState} {x : Site} {xs' : List Site}
   tail_earlier := h.tail_earlier
 
 /-- Every depth-first structure normalizes. -/
-theorem dfs_of_dfs₀ {f d : Site} {s : ExplState} : ∀ (xs : List Site) (Fs : List (List (Site × Site))),
+theorem dfs_of_dfs₀ {f d : Site} {s : ExplState} :
+    ∀ (xs : List Site) (Fs : List (List (Site × Site))),
     DFS₀ f d s xs Fs → ∃ xs' Fs', DFS f d s xs' Fs' := by
   intro xs
   induction xs with
@@ -494,6 +510,8 @@ theorem dfs_of_dfs₀ {f d : Site} {s : ExplState} : ∀ (xs : List Site) (Fs : 
       · exact ih Fs' (dfs₀_drop h (List.cons_ne_nil _ _))
     · exact ⟨x :: xs', (e :: F₁) :: Fs', ⟨h, fun _ => ⟨e :: F₁, rfl, List.cons_ne_nil _ _⟩⟩⟩
 
+/-- One step of the exploration preserves the normalized depth-first structure `DFS`, by
+combining `dfs₀_step` with the normalization `dfs_of_dfs₀`. -/
 theorem dfs_step {f d : Site} {s : ExplState} (hinv : ExplInv s) {xs : List Site}
     {Fs : List (List (Site × Site))} (h : DFS f d s xs Fs) (ρ : Config squareGraph) :
     ∃ xs' Fs', DFS f d (explStep ρ s) xs' Fs' := by

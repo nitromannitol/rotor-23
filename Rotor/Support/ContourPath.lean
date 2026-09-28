@@ -4,10 +4,14 @@ import Rotor.Support.ExplCover
 import Rotor.Support.ExplChain
 
 /-!
-Lemma 5.5 (`lem:square-active-list`, `rotor.tex:1926-1990`), part 1: the closed dual curve of
-the `S` case (`curveS`) and the open path `pathP` from the tail of the closed side up the
-first-visit tree to the current branch and down to the tail of `E`; their steps, positions,
-predecessors, chain and nodup properties; chain versions of the doubled-walk lemmas.
+# The closed curve and open path of the active list
+
+Proves part 1 of Lemma 5.5 (`lem:square-active-list`, `rotor.tex:1926-1990`): the closed
+dual curve `curveS` of the `S` case, formed by the chain from the tail of the closed side up
+the first-visit tree to the current branch and down to the tail of `E`, and the open path
+`pathP` obtained by dropping its closing vertex. Establishes their steps, positions,
+predecessors, chain and nodup properties, together with chain versions of the doubled-walk
+lemmas from `Rotor.Support.Separation`.
 -/
 
 open Finset List Fin.NatCast
@@ -16,6 +20,9 @@ namespace Rotor
 
 /-! ### The shape of the active list -/
 
+/-- When the active list of a DFS run is nonempty with head `e`, decomposes `xs` and `Fs`
+into their heads and shows that the tail of the active list is `e`'s frame remainder
+together with the rest of the stack, and that `e` starts at the current vertex `x`. -/
 theorem dfs_head_shape {f d : Site} {s : ExplState} {xs : List Site}
     {Fs : List (List (Site × Site))} (h : DFS f d s xs Fs) {e : Site × Site}
     {rest : List (Site × Site)} (hact : s.active = e :: rest) :
@@ -81,6 +88,8 @@ theorem not_open_of_closed {s : ExplState} (hinv : ExplInv s) {a b : Site}
 
 /-! ### The branch as a chain of adjacent faces -/
 
+/-- The branch vertices of a `DFS₀` run form a chain of unit steps: consecutive branch
+vertices are tree-adjacent, hence differ by a unit vector. -/
 theorem branch_adj {f d : Site} {s : ExplState} (hinv : ExplInv s) {xs : List Site}
     {Fs : List (List (Site × Site))} (h : DFS₀ f d s xs Fs) :
     xs.IsChain (fun a b => IsUnit (b - a)) := by
@@ -94,6 +103,8 @@ theorem branch_adj {f d : Site} {s : ExplState} (hinv : ExplInv s) {xs : List Si
   rw [e]
   rcases this with h | h | h | h <;> rw [h] <;> simp [IsUnit]
 
+/-- The vertices of a `ChainTo` witness list form a chain of unit steps, since consecutive
+vertices are tested-adjacent. -/
 theorem chain_adj {s : ExplState} (hinv : ExplInv s) {xs : List Site} {z : Site} {l : List Site}
     (hl : ChainTo s xs z l) : l.IsChain (fun a b => IsUnit (b - a)) := by
   refine hl.chain.imp (fun {a b} hab => ?_)
@@ -104,6 +115,7 @@ theorem chain_adj {s : ExplState} (hinv : ExplInv s) {xs : List Site} {z : Site}
   rw [e]
   rcases this with h | h | h | h <;> rw [h] <;> simp [IsUnit]
 
+/-- Every vertex of a `ChainTo` witness list has been visited. -/
 theorem chain_subset_visited {s : ExplState} {xs : List Site} {z : Site} {l : List Site}
     (hl : ChainTo s xs z l) : ∀ y ∈ l, y ∈ s.visited := hl.visited
 
@@ -114,28 +126,36 @@ theorem chain_subset_visited {s : ExplState} {xs : List Site} {z : Site} {l : Li
 def curveS (l xs : List Site) (k : ℕ) (SW : Site) : List Site :=
   l ++ ((xs.take k).reverse ++ [SW])
 
+/-- The negative of a unit vector is a unit vector. -/
 theorem isUnit_neg {u : Site} (hu : IsUnit u) : IsUnit (-u) := by
   rcases hu with rfl | rfl | rfl | rfl <;> simp [IsUnit]
 
+/-- If `b - a` is a unit vector, so is `a - b`. -/
 theorem isUnit_sub_comm {a b : Site} (h : IsUnit (b - a)) : IsUnit (a - b) := by
   have : a - b = -(b - a) := by abel
   rw [this]; exact isUnit_neg h
 
+/-- A `ChainTo` witness list is nonempty. -/
 theorem chain_ne_nil {s : ExplState} {xs : List Site} {z : Site} {l : List Site}
     (hl : ChainTo s xs z l) : l ≠ [] := by
   intro h; have := hl.head; rw [h] at this; simp at this
 
+/-- The head of the reversed initial segment `(xs.take k).reverse` is `xs[k - 1]`, the last
+element taken. -/
 theorem take_reverse_head? {xs : List Site} {k : ℕ} (hk : k < xs.length) (hk0 : 0 < k) :
     ((xs.take k).reverse).head? = some xs[k - 1] := by
   rw [List.head?_reverse, List.getLast?_eq_getElem?, List.length_take, min_eq_left hk.le]
   rw [List.getElem?_take_of_lt (by omega), List.getElem?_eq_getElem (by omega)]
 
+/-- The last element of the reversed initial segment `((x :: xs').take k).reverse` is the
+head `x`, for `k > 0`. -/
 theorem take_reverse_getLast? {x : Site} {xs' : List Site} {k : ℕ} (hk0 : 0 < k) :
     (((x :: xs').take k).reverse).getLast? = some x := by
   rw [List.getLast?_reverse]
   obtain ⟨k', rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩
   simp
 
+/-- The reversed initial segment of the branch vertices is also a chain of unit steps. -/
 theorem take_reverse_isChain {f d : Site} {s : ExplState} (hinv : ExplInv s) {xs : List Site}
     {Fs : List (List (Site × Site))} (h : DFS₀ f d s xs Fs) (k : ℕ) :
     ((xs.take k).reverse).IsChain (fun a b => IsUnit (b - a)) := by
@@ -235,7 +255,8 @@ theorem curveS_tail_nodup {f d : Site} {s : ExplState} {x : Site} {xs' : List Si
       rw [List.getElem?_eq_getElem (by omega : i < (x :: xs').length)] at hiy
       simpa using hiy)
     exact absurd hik (by omega)
-  refine List.nodup_append.2 ⟨hnd.2, List.nodup_append.2 ⟨hseg_nodup, List.nodup_singleton _, ?_⟩, ?_⟩
+  refine List.nodup_append.2 ⟨hnd.2,
+    List.nodup_append.2 ⟨hseg_nodup, List.nodup_singleton _, ?_⟩, ?_⟩
   · intro a ha b hb hab
     simp only [List.mem_singleton] at hb
     subst b
@@ -281,7 +302,8 @@ theorem curveS_three {f d : Site} {s : ExplState} {x : Site} {xs' : List Site}
     · exfalso
       have h0 : 0 < xs'.length := by simp only [List.length_cons] at hk; omega
       simp only [List.getElem_cons_succ] at hlast
-      have := h.tree 0 x xs'[0] rfl (List.getElem?_eq_getElem (by simp only [List.length_cons]; omega))
+      have := h.tree 0 x xs'[0] rfl
+        (List.getElem?_eq_getElem (by simp only [List.length_cons]; omega))
       rw [← hlast] at this
       exact hnt1 this
     · simp only [List.length_nil]; omega
@@ -300,6 +322,7 @@ theorem curveS_three {f d : Site} {s : ExplState} {x : Site} {xs' : List Site}
 
 /-! ### Steps and vertices of the curve -/
 
+/-- `(a, b)` is a step of `w` iff `a` and `b` are consecutive entries of `w`. -/
 theorem mem_steps_iff {w : List Site} {a b : Site} :
     (a, b) ∈ steps w ↔ ∃ i : ℕ, (w[i]? = some a ∧ w[i + 1]? = some b) := by
   unfold steps
@@ -321,6 +344,7 @@ theorem mem_steps_iff {w : List Site} {a b : Site} :
     simp only [Option.some.injEq] at ha hb
     rw [ha, hb]
 
+/-- Appending `b` after a list ending in `a` creates the step `(a, b)`. -/
 theorem steps_append_singleton {w : List Site} {a : Site} (hc : w.getLast? = some a) (b : Site) :
     (a, b) ∈ steps (w ++ [b]) := by
   have hne : w ≠ [] := by intro h; rw [h] at hc; simp at hc
@@ -331,6 +355,7 @@ theorem steps_append_singleton {w : List Site} {a : Site} (hc : w.getLast? = som
   · rw [show w.length - 1 + 1 = w.length by omega, List.getElem?_append_right le_rfl]
     simp
 
+/-- A step of `w₁` remains a step after appending `w₂`. -/
 theorem steps_of_steps_prefix {w₁ w₂ : List Site} {a b : Site} (h : (a, b) ∈ steps w₁) :
     (a, b) ∈ steps (w₁ ++ w₂) := by
   rw [mem_steps_iff] at h ⊢
@@ -339,6 +364,7 @@ theorem steps_of_steps_prefix {w₁ w₂ : List Site} {a b : Site} (h : (a, b) �
   exact ⟨i, by rw [List.getElem?_append_left (by omega)]; exact ha,
     by rw [List.getElem?_append_left hi]; exact hb⟩
 
+/-- A step of `w₂` remains a step after prepending `w₁`. -/
 theorem steps_of_steps_suffix {w₁ w₂ : List Site} {a b : Site} (h : (a, b) ∈ steps w₂) :
     (a, b) ∈ steps (w₁ ++ w₂) := by
   rw [mem_steps_iff] at h ⊢
@@ -356,7 +382,8 @@ theorem curveS_pre_getLast? {x : Site} {xs' : List Site} {l : List Site} {k : �
   · subst hk0
     simpa using hlast
   · rw [List.getLast?_append_of_ne_nil _ (by
-      intro h0; have := take_reverse_getLast? (x := x) (xs' := xs') hk0; rw [h0] at this; simp at this)]
+      intro h0; have := take_reverse_getLast? (x := x) (xs' := xs') hk0; rw [h0] at this;
+        simp at this)]
     exact take_reverse_getLast? hk0
 
 /-- The last step of the curve is `x → SW`. -/
@@ -369,11 +396,14 @@ theorem curveS_last_step {x : Site} {xs' : List Site} {SW : Site} {l : List Site
 
 /-! ### Positions on the curve -/
 
+/-- Within the chain part of `curveS`, its entries agree with `l`. -/
 theorem curveS_getElem?_chain {l xs : List Site} {k : ℕ} {SW : Site} {i : ℕ} (hi : i < l.length) :
     (curveS l xs k SW)[i]? = l[i]? := by
   unfold curveS
   rw [List.getElem?_append_left hi]
 
+/-- Within the branch segment of `curveS`, its entries are `xs` read backwards from
+`xs[k - 1]`. -/
 theorem curveS_getElem?_seg {l xs : List Site} {k : ℕ} {SW : Site} (hk : k ≤ xs.length) {i : ℕ}
     (hi : i < k) : (curveS l xs k SW)[l.length + i]? = xs[k - 1 - i]? := by
   unfold curveS
@@ -383,6 +413,7 @@ theorem curveS_getElem?_seg {l xs : List Site} {k : ℕ} {SW : Site} (hk : k ≤
   simp only [List.length_take, min_eq_left hk]
   rw [List.getElem?_take_of_lt (by omega)]
 
+/-- The entry of `curveS` right after the branch segment is the closing vertex `SW`. -/
 theorem curveS_getElem?_last {l xs : List Site} {k : ℕ} {SW : Site} (hk : k ≤ xs.length) :
     (curveS l xs k SW)[l.length + k]? = some SW := by
   unfold curveS
@@ -390,6 +421,8 @@ theorem curveS_getElem?_last {l xs : List Site} {k : ℕ} {SW : Site} (hk : k �
     List.getElem?_append_right (by simp only [List.length_reverse, List.length_take]; omega)]
   simp [List.length_take, min_eq_left hk]
 
+/-- The length of `curveS` is the chain length plus the branch length plus one, for the
+closing vertex. -/
 theorem curveS_length {l xs : List Site} {k : ℕ} {SW : Site} (hk : k ≤ xs.length) :
     (curveS l xs k SW).length = l.length + k + 1 := by
   unfold curveS
@@ -434,6 +467,8 @@ theorem mem_curveS {l xs : List Site} {k : ℕ} {SW y : Site} :
   unfold curveS
   simp [List.mem_append, List.mem_reverse]
 
+/-- Among the vertices of the chain `l`, only the junction `xs[k]` can also lie on the
+branch `xs`. -/
 theorem chain_mem_branch {s : ExplState} {xs : List Site} {SW : Site} {l : List Site}
     (hl : ChainTo s xs SW l) {k : ℕ} (hk : k < xs.length) (hlast : l.getLast? = some xs[k]) :
     ∀ y ∈ l, y ∈ xs → y = xs[k] := by
@@ -471,6 +506,8 @@ theorem branch_notMem_curveS {f d : Site} {s : ExplState} {xs : List Site}
     have := (List.Nodup.getElem_inj_iff hnd).1 this
     omega
 
+/-- Every vertex of `curveS` has been visited: the chain vertices by `hl`, the branch
+segment by `hxs`, and the closing vertex `SW` by `hSW`. -/
 theorem curveS_subset_visited {s : ExplState} {xs : List Site} {SW : Site} {l : List Site}
     (hl : ChainTo s xs SW l) (hxs : ∀ y ∈ xs, y ∈ s.visited) (hSW : SW ∈ s.visited) {k : ℕ} :
     ∀ y ∈ curveS l xs k SW, y ∈ s.visited := by
@@ -524,6 +561,8 @@ theorem curveS_pred {s : ExplState} {x : Site} {xs' : List Site} {SW : Site} {l 
       (by omega)
     simpa using this
 
+/-- The vertex just before the tail of the chain `l` is not on the branch `xs`, since `l`'s
+initial segment avoids `xs`. -/
 theorem chain_pred_notMem_branch {s : ExplState} {xs : List Site} {SW : Site} {l : List Site}
     (hl : ChainTo s xs SW l) (hlen : 2 ≤ l.length) : l[l.length - 2] ∉ xs := by
   apply hl.dropLast_notMem
@@ -566,6 +605,9 @@ theorem curveS_junction_pred {s : ExplState} {x : Site} {xs' : List Site} {SW : 
 
 /-! ### Chain versions of the doubled-walk lemmas -/
 
+/-- Chain version of `mem_of_double_mem_dbl`: if `p + p` lies in `dbl c` for a unit-step
+chain `c`, it must come from doubling a vertex of `c` itself, since the double of a point
+can never equal a bond midpoint; hence `p ∈ c`. -/
 theorem mem_of_double_mem_dbl' {c : List Site} (hc : c.IsChain (fun a b => IsUnit (b - a)))
     {p : Site} (h : p + p ∈ dbl c) : p ∈ c := by
   rcases mem_dbl.1 h with ⟨a, ha, hpa⟩ | ⟨s, hs, hab⟩
@@ -581,6 +623,8 @@ theorem mem_of_double_mem_dbl' {c : List Site} (hc : c.IsChain (fun a b => IsUni
     simp only [Prod.mk_add_mk, Prod.mk.injEq] at hab
     omega
 
+/-- For a unit-step chain `c`, the point `z + z + v` (a doubled bond midpoint) lies in
+`dbl c` iff the bond between `z` and `z + v` is a step of `c`. -/
 theorem mid_mem_dbl_iff' {c : List Site} (hc : c.IsChain (fun a b => IsUnit (b - a))) {z v : Site}
     (hv : IsUnit v) : z + z + v ∈ dbl c ↔ (z, z + v) ∈ steps c ∨ (z + v, z) ∈ steps c := by
   constructor
@@ -603,6 +647,8 @@ theorem mid_mem_dbl_iff' {c : List Site} (hc : c.IsChain (fun a b => IsUnit (b -
     · exact mem_dbl.2 (Or.inr ⟨_, h, by simp; abel⟩)
     · exact mem_dbl.2 (Or.inr ⟨_, h, by simp; abel⟩)
 
+/-- Every point of `dbl c`, for a unit-step chain `c`, has an even first or second
+coordinate. -/
 theorem mem_dbl_even' {c : List Site} (hc : c.IsChain (fun a b => IsUnit (b - a))) {q : Site}
     (hq : q ∈ dbl c) : Even q.1 ∨ Even q.2 := by
   rcases mem_dbl.1 hq with ⟨a, -, rfl⟩ | ⟨s, hs, rfl⟩
@@ -617,6 +663,7 @@ theorem mem_dbl_even' {c : List Site} (hc : c.IsChain (fun a b => IsUnit (b - a)
     · exact Or.inl ⟨a1, by omega⟩
     · exact Or.inl ⟨a1, by omega⟩
 
+/-- A point with both coordinates odd cannot lie in `dbl c`, for a unit-step chain `c`. -/
 theorem oddodd_notMem_dbl' {c : List Site} (hc : c.IsChain (fun a b => IsUnit (b - a))) {q : Site}
     (h1 : Odd q.1) (h2 : Odd q.2) : q ∉ dbl c := by
   intro hq
@@ -624,6 +671,8 @@ theorem oddodd_notMem_dbl' {c : List Site} (hc : c.IsChain (fun a b => IsUnit (b
   · exact (Int.not_even_iff_odd.2 h1) h
   · exact (Int.not_even_iff_odd.2 h2) h
 
+/-- The doubled-lattice image `dbl c` of a unit-step chain `c` is again a unit-step
+chain. -/
 theorem dbl_isChain {c : List Site} (hc : c.IsChain (fun a b => IsUnit (b - a))) :
     (dbl c).IsChain (fun a b => IsUnit (b - a)) := by
   rw [List.isChain_iff_getElem]
@@ -644,38 +693,49 @@ theorem dbl_isChain {c : List Site} (hc : c.IsChain (fun a b => IsUnit (b - a)))
 /-- The chain from the tail of `σ` up to the junction, then the branch down to `x`. -/
 def pathP (l xs : List Site) (k : ℕ) : List Site := l ++ (xs.take k).reverse
 
+/-- `curveS` is `pathP` followed by the closing vertex `SW`. -/
 theorem curveS_eq_pathP (l xs : List Site) (k : ℕ) (SW : Site) :
     curveS l xs k SW = pathP l xs k ++ [SW] := by
   unfold curveS pathP; rw [List.append_assoc]
 
+/-- `pathP` is nonempty, since its chain part `l` is. -/
 theorem pathP_ne_nil {s : ExplState} {xs : List Site} {z : Site} {l : List Site}
     (hl : ChainTo s xs z l) (k : ℕ) : pathP l xs k ≠ [] := by
   unfold pathP; simp [chain_ne_nil hl]
 
+/-- The head of `pathP` is the head `z` of the chain `l`. -/
 theorem pathP_head? {s : ExplState} {xs : List Site} {z : Site} {l : List Site}
     (hl : ChainTo s xs z l) (k : ℕ) : (pathP l xs k).head? = some z := by
   unfold pathP; rw [List.head?_append_of_ne_nil _ (chain_ne_nil hl), hl.head]
 
+/-- The last vertex of `pathP` is the current face `x`. -/
 theorem pathP_getLast? {x : Site} {xs' : List Site} {l : List Site} {k : ℕ}
     (hk : k < (x :: xs').length) (hlast : l.getLast? = some (x :: xs')[k]) :
     (pathP l (x :: xs') k).getLast? = some x := curveS_pre_getLast? hk hlast
 
+/-- The length of `pathP` is the chain length plus the branch length. -/
 theorem pathP_length {l xs : List Site} {k : ℕ} (hk : k ≤ xs.length) :
     (pathP l xs k).length = l.length + k := by
   unfold pathP; simp [List.length_take, min_eq_left hk]
 
+/-- Membership in `pathP`: a vertex lies on it iff it is on the chain `l` or among the
+first `k` branch vertices. -/
 theorem mem_pathP {l xs : List Site} {k : ℕ} {y : Site} :
     y ∈ pathP l xs k ↔ y ∈ l ∨ y ∈ xs.take k := by
   unfold pathP; simp
 
+/-- Every vertex of `pathP` also lies on `curveS`. -/
 theorem mem_curveS_of_mem_pathP {l xs : List Site} {k : ℕ} {SW y : Site} (h : y ∈ pathP l xs k) :
     y ∈ curveS l xs k SW := by
   rw [curveS_eq_pathP]; exact List.mem_append_left _ h
 
+/-- Every step of `pathP` is also a step of `curveS`. -/
 theorem steps_curveS_of_steps_pathP {l xs : List Site} {k : ℕ} {SW a b : Site}
     (h : (a, b) ∈ steps (pathP l xs k)) : (a, b) ∈ steps (curveS l xs k SW) := by
   rw [curveS_eq_pathP]; exact steps_of_steps_prefix h
 
+/-- A step of `w ++ [t]` is either a step already in `w`, or the new closing step from the
+last vertex of `w` to `t`. -/
 theorem steps_append_singleton_cases {w : List Site} {t a b : Site}
     (h : (a, b) ∈ steps (w ++ [t])) : (a, b) ∈ steps w ∨ (w.getLast? = some a ∧ b = t) := by
   rw [mem_steps_iff] at h
@@ -698,6 +758,8 @@ theorem steps_append_singleton_cases {w : List Site} {t a b : Site}
       simp only [List.getElem?_cons_zero, Option.some.injEq] at hb
       exact hb.symm
 
+/-- Concatenating two lists creates the joining step from the last vertex of the first to
+the head of the second. -/
 theorem mem_steps_append_of_getLast?_head? {w₁ w₂ : List Site} {a b : Site}
     (h1 : w₁.getLast? = some a) (h2 : w₂.head? = some b) : (a, b) ∈ steps (w₁ ++ w₂) := by
   rcases w₂ with _ | ⟨b', w₂'⟩
@@ -707,6 +769,8 @@ theorem mem_steps_append_of_getLast?_head? {w₁ w₂ : List Site} {a b : Site}
     rw [show w₁ ++ b' :: w₂' = (w₁ ++ [b']) ++ w₂' by simp]
     exact steps_of_steps_prefix (steps_append_singleton h1 b')
 
+/-- A step of `w₁ ++ w₂` is a step of `w₁`, a step of `w₂`, or the joining step between
+them. -/
 theorem mem_steps_append {w₁ w₂ : List Site} {a b : Site} (h : (a, b) ∈ steps (w₁ ++ w₂)) :
     (a, b) ∈ steps w₁ ∨ (a, b) ∈ steps w₂ ∨ (w₁.getLast? = some a ∧ w₂.head? = some b) := by
   rw [mem_steps_iff] at h
@@ -733,6 +797,7 @@ theorem mem_steps_append {w₁ w₂ : List Site} {a b : Site} (h : (a, b) ∈ st
       · rw [← hb, List.getElem?_append_right (by omega),
           show i + 1 - w₁.length = i - w₁.length + 1 by omega]
 
+/-- Every step of a chain satisfies the chain's relation `R`. -/
 theorem steps_of_isChain {R : Site → Site → Prop} {w : List Site} (h : w.IsChain R) {a b : Site}
     (hs : (a, b) ∈ steps w) : R a b := by
   rw [mem_steps_iff] at hs
@@ -745,6 +810,8 @@ theorem steps_of_isChain {R : Site → Site → Prop} {w : List Site} (h : w.IsC
   simp only [Option.some.injEq] at ha hb
   rw [← ha, ← hb]; exact this
 
+/-- Every step `(a, b)` of the reversed initial segment `(xs.take k).reverse` is a branch
+step reversed in position: `a = xs[j + 1]` and `b = xs[j]` for some `j + 1 < k`. -/
 theorem steps_reverse_take {xs : List Site} {k : ℕ} (hk : k ≤ xs.length) {a b : Site}
     (h : (a, b) ∈ steps ((xs.take k).reverse)) :
     ∃ j, ∃ (hj : j + 1 < k), a = xs[j + 1]'(by omega) ∧ b = xs[j]'(by omega) := by
@@ -766,16 +833,20 @@ theorem steps_reverse_take {xs : List Site} {k : ℕ} (hk : k ≤ xs.length) {a 
     simp only [Option.some.injEq] at hb
     exact hb.symm
 
+/-- Within the chain part of `pathP`, its entries agree with `l`. -/
 theorem pathP_getElem?_chain {l xs : List Site} {k : ℕ} {i : ℕ} (hi : i < l.length) :
     (pathP l xs k)[i]? = l[i]? := by
   unfold pathP; rw [List.getElem?_append_left hi]
 
+/-- Within the branch segment of `pathP`, its entries are `xs` read backwards from
+`xs[k - 1]`. -/
 theorem pathP_getElem?_seg {l xs : List Site} {k : ℕ} (hk : k ≤ xs.length) {i : ℕ} (hi : i < k) :
     (pathP l xs k)[l.length + i]? = xs[k - 1 - i]? := by
   have := curveS_getElem?_seg (l := l) (SW := (0, 0)) hk hi
   rw [curveS_eq_pathP, List.getElem?_append_left (by rw [pathP_length hk]; omega)] at this
   exact this
 
+/-- The branch step `xs[j + 1] → xs[j]` is a step of `pathP`, for `j + 1 < k`. -/
 theorem pathP_step_seg {l xs : List Site} {k : ℕ} (hk : k ≤ xs.length) {j : ℕ} (hj : j + 1 < k) :
     ((xs[j + 1]'(by omega)), (xs[j]'(by omega))) ∈ steps (pathP l xs k) := by
   rw [mem_steps_iff]
@@ -786,6 +857,7 @@ theorem pathP_step_seg {l xs : List Site} {k : ℕ} (hk : k ≤ xs.length) {j : 
       pathP_getElem?_seg hk (by omega), show k - 1 - (k - 1 - j) = j by omega]
     exact List.getElem?_eq_getElem _
 
+/-- The step from the junction `xs[k]` down to `xs[k - 1]` is a step of `pathP`. -/
 theorem pathP_step_junction {l xs : List Site} {k : ℕ} (hk : k < xs.length) (hk0 : 0 < k)
     (hlast : l.getLast? = some xs[k]) : (xs[k], xs[k - 1]'(by omega)) ∈ steps (pathP l xs k) := by
   rw [mem_steps_iff]
@@ -797,6 +869,8 @@ theorem pathP_step_junction {l xs : List Site} {k : ℕ} (hk : k < xs.length) (h
       show k - 1 - 0 = k - 1 by omega]
     exact List.getElem?_eq_getElem _
 
+/-- The step of `pathP` into the current face `x`: from the parent `xs[1]` when `k ≥ 1`, and
+from a child of `x` on the chain when `k = 0`. -/
 theorem pathP_pred {s : ExplState} {x : Site} {xs' : List Site} {τ : Site} {l : List Site}
     (hl : ChainTo s (x :: xs') τ l) {k : ℕ} (hk : k < (x :: xs').length)
     (hlast : l.getLast? = some (x :: xs')[k]) (hne : τ ≠ x) :
@@ -808,6 +882,8 @@ theorem pathP_pred {s : ExplState} {x : Site} {xs' : List Site} {τ : Site} {l :
   · exact ⟨p, h, hp⟩
   · exact absurd h.symm hne
 
+/-- The step of `pathP` into the junction `xs[k]`: from a child of it on the chain when the
+chain reaches beyond it, or `xs[k]` is itself the chain's endpoint `τ`. -/
 theorem pathP_junction_pred {s : ExplState} {x : Site} {xs' : List Site} {τ : Site}
     {l : List Site} (hl : ChainTo s (x :: xs') τ l) {k : ℕ} (hk : k < (x :: xs').length)
     (hlast : l.getLast? = some (x :: xs')[k]) :
@@ -823,19 +899,26 @@ theorem pathP_junction_pred {s : ExplState} {x : Site} {xs' : List Site} {τ : S
       exact absurd (hl' ▸ List.mem_cons_self) hc₀x
   · exact Or.inr hτ
 
+/-- Branch vertices above the junction are not on `pathP`, following from the same fact for
+`curveS`. -/
 theorem branch_notMem_pathP {f d : Site} {s : ExplState} {xs : List Site}
     {Fs : List (List (Site × Site))} (h : DFS₀ f d s xs Fs) {τ : Site} {l : List Site}
     (hl : ChainTo s xs τ l) {k : ℕ} (hk : k < xs.length) (hlast : l.getLast? = some xs[k])
     {j : ℕ} (hj : j < xs.length) (hjk : k < j) : xs[j] ∉ pathP l xs k :=
   fun hm => branch_notMem_curveS h hl hk hlast hj hjk (mem_curveS_of_mem_pathP (SW := τ) hm)
 
+/-- Every branch vertex before the junction, `xs[j]` for `j < k`, lies on `pathP`. -/
 theorem branch_mem_pathP {l xs : List Site} {k j : ℕ} (hj : j < k) (hjl : j < xs.length) :
     xs[j] ∈ pathP l xs k := by
   unfold pathP
   apply List.mem_append_right
   rw [List.mem_reverse]
-  exact List.mem_of_getElem? (by rw [List.getElem?_take_of_lt hj]; exact List.getElem?_eq_getElem hjl)
+  exact List.mem_of_getElem? (by
+    rw [List.getElem?_take_of_lt hj]
+    exact List.getElem?_eq_getElem hjl)
 
+/-- `pathP` is a chain of unit steps: the chain part, the reversed branch segment, and the
+join between them are each unit steps. -/
 theorem pathP_isChain {f d : Site} {s : ExplState} (hinv : ExplInv s) {xs : List Site}
     {Fs : List (List (Site × Site))} (h : DFS₀ f d s xs Fs) {τ : Site} {l : List Site}
     (hl : ChainTo s xs τ l) {k : ℕ} (hk : k < xs.length) (hlast : l.getLast? = some xs[k]) :
@@ -858,6 +941,7 @@ theorem pathP_isChain {f d : Site} {s : ExplState} (hinv : ExplInv s) {xs : List
     simp only at hadj'
     exact isUnit_of_adj hadj'
 
+/-- `pathP` has no repeated vertices, derived from the simplicity of `curveS`. -/
 theorem pathP_nodup {f d : Site} {s : ExplState} {x : Site} {xs' : List Site}
     {Fs : List (List (Site × Site))} (h : DFS₀ f d s (x :: xs') Fs) {τ : Site} {l : List Site}
     (hl : ChainTo s (x :: xs') τ l) {k : ℕ} (hk : k < (x :: xs').length)
@@ -870,6 +954,8 @@ theorem pathP_nodup {f d : Site} {s : ExplState} {x : Site} {xs' : List Site}
   rw [← hcons, List.nodup_cons]
   exact ⟨fun hτ => hdisj τ hτ τ (List.mem_singleton_self _) rfl, hnd⟩
 
+/-- Every step of `pathP` corresponds to a tested open bond, in one direction or the
+other. -/
 theorem pathP_step_tested {f d : Site} {s : ExplState} {xs : List Site}
     {Fs : List (List (Site × Site))} (h : DFS₀ f d s xs Fs) {τ : Site} {l : List Site}
     (hl : ChainTo s xs τ l) {k : ℕ} (hk : k < xs.length) (hlast : l.getLast? = some xs[k])

@@ -6,6 +6,18 @@ sequence all of whose finite prefixes are members.  Used in the proof of
 -/
 import Mathlib
 
+/-!
+# König's lemma for prefix-closed families of lists
+
+This file proves a list version of König's lemma: if `P` is a prefix-closed property of finite
+lists (`hpre`), each list has only finitely many one-step extensions satisfying `P` (`hfin`), and
+`P` holds of lists of arbitrarily large length (`hlong`), then there is an infinite sequence all of
+whose finite prefixes satisfy `P` (`konig`). The proof builds the sequence coordinatewise, at each
+step choosing an extension that remains `Extendable`, i.e. still has members of every further
+length (`Extendable.step`), and assembles these choices into a nested sequence of finite lists
+(`konigSeq`).
+-/
+
 namespace Rotor
 
 variable {α : Type*}
@@ -14,6 +26,8 @@ variable {α : Type*}
 def Extendable (P : List α → Prop) (l : List α) : Prop :=
   ∀ n : ℕ, ∃ q : List α, P q ∧ l <+: q ∧ n ≤ q.length
 
+/-- If `P` is closed under dropping the last element, then `P` holds of every prefix of a list
+satisfying `P`. -/
 theorem P_of_prefix (P : List α → Prop) (hpre : ∀ l a, P (l ++ [a]) → P l) :
     ∀ q : List α, P q → ∀ l, l <+: q → P l := by
   intro q
@@ -28,6 +42,7 @@ theorem P_of_prefix (P : List α → Prop) (hpre : ∀ l a, P (l ++ [a]) → P l
     · exact hq
     · exact ih (hpre q a hq) l hl'
 
+/-- An extendable list itself satisfies `P` (taking the length-`0`-extension witness). -/
 theorem Extendable.P (P : List α → Prop) (hpre : ∀ l a, P (l ++ [a]) → P l) (l : List α)
     (h : Extendable P l) : P l := by
   obtain ⟨q, hq, hl, -⟩ := h 0

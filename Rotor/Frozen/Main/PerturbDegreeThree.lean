@@ -19,6 +19,18 @@ import Rotor.Bridge.OneCircuit
 import Rotor.Bridge.HolroydPropp
 import Rotor.Support.MainDegreeThree
 
+/-!
+# Small perturbations of the rotor mechanism on degree-three graphs
+
+Proves the degree-three case of Proposition 1.2: on a doubly periodic graph all of whose
+vertices have degree at most three, every mechanism whose per-vertex rotor law is sufficiently
+close in total variation to uniform is recurrent, and, when its marginals are also invariant
+under the periodic action, the walk satisfies the scaling limit giving the range exponent `2/3`.
+The proof assembles the abelian property, the one-circuit and Holroyd-Propp reductions, and
+Kingman's subadditive theorem with the external `LSS` hypothesis, none of which are derived in
+this repository.
+-/
+
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
 
@@ -48,5 +60,6 @@ theorem Rotor.Frozen.perturbations_degree_three
           (κ • B)) atTop (𝓝 0) ∧
         Tendsto (fun t : ℕ => ((R π ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c))
 -- FROZEN-STATEMENT-END
-:= perturbations_degree_three_proof π P (Rotor.Bridge.oneCircuit_holds G) (Rotor.Bridge.abelian_holds G)
+:= perturbations_degree_three_proof π P (Rotor.Bridge.oneCircuit_holds G)
+    (Rotor.Bridge.abelian_holds G)
     (Rotor.Bridge.visitsAllOfVisitsOne_holds G) Rotor.Bridge.kingman_holds hLSS hG hπ h3

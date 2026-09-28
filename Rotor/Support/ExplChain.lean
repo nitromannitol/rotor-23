@@ -2,6 +2,8 @@ import Rotor.Support.ExplTree
 import Rotor.Support.Ring
 
 /-!
+# Parent chains, outer heads, and vanishing winding numbers
+
 Parent chains in the first-visit tree, the outer-component invariant of the active heads, and
 the vanishing of winding numbers on unbounded components: the remaining inputs to the contour
 argument of Lemma 5.5.
@@ -22,6 +24,8 @@ structure ChainTo (s : ExplState) (xs : List Site) (z : Site) (l : List Site) : 
   nodup : l.Nodup
   visited : ∀ y ∈ l, y ∈ s.visited
 
+/-- The root `f` of the DFS run lies in the branch `xs`, since it is `xs.getLast?` by the
+`DFS₀` hypothesis `h.root`. -/
 theorem root_mem_branch {f d : Site} {s : ExplState} {xs : List Site}
     {Fs : List (List (Site × Site))} (h : DFS₀ f d s xs Fs) : f ∈ xs :=
   List.mem_of_mem_getLast? h.root
@@ -42,7 +46,8 @@ theorem exists_chainTo_aux {f d : Site} {s : ExplState} {xs : List Site}
   have hzvis : z ∈ s.visited := h.open_head _ hzmem hopen
   have hzf : z ≠ f := h.head_ne_root _ hzmem hopen
   by_cases hzx : z ∈ xs
-  · refine ⟨[z], ⟨rfl, by simpa using hzx, by simp, List.isChain_singleton _, List.nodup_singleton _,
+  · refine ⟨[z], ⟨rfl, by simpa using hzx, by simp, List.isChain_singleton _,
+      List.nodup_singleton _,
       by simpa using hzvis⟩, ?_⟩
     intro y hy
     simp only [List.mem_singleton] at hy
@@ -113,6 +118,9 @@ theorem exists_chainTo_aux {f d : Site} {s : ExplState} {xs : List Site}
           · exact Or.inl hyf
           · exact Or.inr ⟨j, by omega, hj, hjy, hjopen⟩
 
+/-- Every visited face `z` admits a chain `l` witnessing `ChainTo s xs z l`: the singleton chain
+works when `z = f`, and otherwise the chain comes from `exists_chainTo_aux` applied to the index
+of `z`'s parent step. -/
 theorem exists_chainTo {f d : Site} {s : ExplState} {xs : List Site}
     {Fs : List (List (Site × Site))} (h : DFS₀ f d s xs Fs) (hnd : s.tested.Nodup)
     {z : Site} (hz : z ∈ s.visited) : ∃ l, ChainTo s xs z l := by
@@ -131,6 +139,8 @@ theorem exists_chainTo {f d : Site} {s : ExplState} {xs : List Site}
 /-- The heads of the active edges are not enclosed by the visited set. -/
 def ExplOuter (s : ExplState) : Prop := ∀ e ∈ s.active, ¬ InFiniteComponent s.visited e.2
 
+/-- The face `f + u` does not lie in a finite component of the complement of `{f}`, for a unit
+step `u`: the ray `f + (n + 1) • u`, `n ∈ ℕ`, is an infinite injective path avoiding `f`. -/
 theorem not_inFiniteComponent_singleton (f : Site) {u : Site} (hu : IsUnit u) :
     ¬ InFiniteComponent {f} (f + u) := by
   rw [inFiniteComponent_iff]
@@ -164,6 +174,8 @@ theorem not_inFiniteComponent_singleton (f : Site) {u : Site} (hu : IsUnit u) :
   simp only [add_sub_cancel_left] at this
   rcases hu with rfl | rfl | rfl | rfl <;> simp [Prod.ext_iff] at this <;> omega
 
+/-- The initial exploration state `explInit f d` satisfies `ExplOuter`: each of the four edges
+leaving `f` has a unit head relative to `f`, so `not_inFiniteComponent_singleton` applies. -/
 theorem explOuter_init (f : Site) {d : Site} (hd : IsUnit d) : ExplOuter (explInit f d) := by
   intro e he
   simp only [explInit]
@@ -175,6 +187,8 @@ theorem explOuter_init (f : Site) {d : Site} (hd : IsUnit d) : ExplOuter (explIn
   rw [he2]
   exact not_inFiniteComponent_singleton f this
 
+/-- `ExplOuter` is preserved by one exploration step: `explStep` filters the active list down to
+edges whose head is neither visited nor in a finite component of the visited set. -/
 theorem explOuter_step (ρ : Config squareGraph) {s : ExplState} : ExplOuter (explStep ρ s) := by
   intro e he
   rcases h : s.active with _ | ⟨e', rest⟩
@@ -186,6 +200,8 @@ theorem explOuter_step (ρ : Config squareGraph) {s : ExplState} : ExplOuter (ex
     simp only [decide_eq_true_eq, not_or] at this
     exact this.2
 
+/-- `ExplOuter` holds after every number `n` of exploration steps, by induction from
+`explOuter_init` and `explOuter_step`. -/
 theorem explOuter_explore (ρ : Config squareGraph) (f : Site) {d : Site} (hd : IsUnit d) :
     ∀ n : ℕ, ExplOuter (explore ρ f d n)
   | 0 => explOuter_init f hd
@@ -193,6 +209,8 @@ theorem explOuter_explore (ρ : Config squareGraph) (f : Site) {d : Site} (hd : 
 
 /-! ### Winding numbers vanish on unbounded components -/
 
+/-- If every point of the closed walk `c` lies at height `≤ y.2`, so `y` is far above `c`, the
+winding number `wind c y` is `0`. -/
 theorem wind_eq_zero_of_far_up {c : List Site} {y : Site} (hy : ∀ p ∈ c, p.2 ≤ y.2) :
     wind c y = 0 := by
   unfold wind
@@ -203,6 +221,8 @@ theorem wind_eq_zero_of_far_up {c : List Site} {y : Site} (hy : ∀ p ∈ c, p.2
   unfold stepWind
   split_ifs with h <;> [omega; rfl]
 
+/-- If every point of the closed walk `c` lies at height `≥ y.2 + 1`, so `y` is far below `c`,
+the winding number `wind c y` is `0`. -/
 theorem wind_eq_zero_of_far_down {c : List Site} {y : Site} (hy : ∀ p ∈ c, y.2 + 1 ≤ p.2) :
     wind c y = 0 := by
   unfold wind
@@ -231,7 +251,7 @@ theorem wind_eq_zero_of_far_left {c : List Site} (hc : IsClosedWalk c) {y : Site
   dsimp only at h1 ⊢
   rcases hu with ⟨h, h'⟩ | ⟨h, h'⟩ | ⟨h, h'⟩ | ⟨h, h'⟩ <;> subst h h' <;> split_ifs <;> omega
 
-/-- A point lattice-connected off `c` to points arbitrarily far away has winding number zero. -/
+/-- Every element of a list of integers `l` is at most `l.foldr max 0`, by induction on `l`. -/
 theorem le_foldr_max (l : List ℤ) : ∀ x ∈ l, x ≤ l.foldr max 0 := by
   induction l with
   | nil => simp
@@ -241,6 +261,10 @@ theorem le_foldr_max (l : List ℤ) : ∀ x ∈ l, x ≤ l.foldr max 0 := by
     · exact le_max_left _ _
     · exact (ih x hx).trans (le_max_right _ _)
 
+/-- If `y` is connected off `c` by a chain of lattice-adjacent points avoiding `c` reaching points
+arbitrarily far away, then `wind c y = 0`: the winding number is invariant along such a chain by
+`wind_eq_of_reflTransGen`, and once `y` is moved past the bounding box of `c` in some direction,
+one of the four directional vanishing lemmas applies. -/
 theorem wind_eq_zero_of_unbounded {c : List Site} (hc : IsClosedWalk c) {y : Site}
     (h : ∀ M : ℤ, ∃ z, Relation.ReflTransGen (OffAdj c) y z ∧ (M < |z.1| ∨ M < |z.2|)) :
     wind c y = 0 := by
@@ -257,11 +281,13 @@ theorem wind_eq_zero_of_unbounded {c : List Site} (hc : IsClosedWalk c) {y : Sit
     · rw [abs_of_nonneg h0] at hz
       exact wind_eq_zero_of_far (fun p hp => by have := (hM p hp).1; rw [abs_le] at this; omega)
     · rw [abs_of_neg h0] at hz
-      exact wind_eq_zero_of_far_left hc (fun p hp => by have := (hM p hp).1; rw [abs_le] at this; omega)
+      exact wind_eq_zero_of_far_left hc
+        (fun p hp => by have := (hM p hp).1; rw [abs_le] at this; omega)
   · rcases le_or_gt 0 z.2 with h0 | h0
     · rw [abs_of_nonneg h0] at hz
       exact wind_eq_zero_of_far_up (fun p hp => by have := (hM p hp).2; rw [abs_le] at this; omega)
     · rw [abs_of_neg h0] at hz
-      exact wind_eq_zero_of_far_down (fun p hp => by have := (hM p hp).2; rw [abs_le] at this; omega)
+      exact wind_eq_zero_of_far_down
+        (fun p hp => by have := (hM p hp).2; rw [abs_le] at this; omega)
 
 end Rotor

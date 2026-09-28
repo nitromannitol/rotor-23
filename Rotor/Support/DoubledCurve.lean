@@ -1,6 +1,8 @@
 import Rotor.Support.Winding
 
 /-!
+# The doubled closed walk
+
 The doubled closed walk `2a, a + b, 2b, …` of a closed lattice walk, on which the sides of a
 simple curve are the odd-odd points next to the midpoints of its edges: for a step `a → b`
 with direction `d`, the left point is `a + b + rotL d` and the right point `a + b + rotR d`,
@@ -19,14 +21,17 @@ def dbl : List Site → List Site
   | [a] => [a + a]
   | a :: b :: l => (a + a) :: (a + b) :: dbl (b :: l)
 
+/-- The doubled walk of a nonempty list is nonempty. -/
 theorem dbl_ne_nil {c : List Site} (hc : c ≠ []) : dbl c ≠ [] := by
   rcases c with _ | ⟨a, _ | ⟨b, l⟩⟩ <;> simp_all [dbl]
 
+/-- The head of the doubled walk is the doubled head of `c`. -/
 theorem dbl_head? : ∀ (c : List Site), (dbl c).head? = c.head?.map (fun a => a + a)
   | [] => rfl
   | [_] => rfl
   | _ :: _ :: _ => rfl
 
+/-- The last point of the doubled walk is the doubled last point of `c`. -/
 theorem dbl_getLast? : ∀ (c : List Site), (dbl c).getLast? = c.getLast?.map (fun a => a + a)
   | [] => rfl
   | [a] => rfl
@@ -36,6 +41,8 @@ theorem dbl_getLast? : ∀ (c : List Site), (dbl c).getLast? = c.getLast?.map (f
     show ((a + a) :: (a + b) :: dbl (b :: l)).getLast? = _
     rw [hq, List.getLast?_cons_cons, List.getLast?_cons_cons, ← hq, ih, List.getLast?_cons_cons]
 
+/-- A point of the doubled walk is either a doubled point `a + a` of `c`, or the midpoint
+`s.1 + s.2` of one of its steps. -/
 theorem mem_dbl : ∀ {c : List Site} {q : Site},
     q ∈ dbl c ↔ (∃ a ∈ c, q = a + a) ∨ ∃ s ∈ steps c, q = s.1 + s.2
   | [], q => by simp [dbl, steps]
@@ -55,6 +62,8 @@ theorem mem_dbl : ∀ {c : List Site} {q : Site},
       · exact Or.inr (Or.inl rfl)
       · exact Or.inr (Or.inr (Or.inr ⟨s, hs, rfl⟩))
 
+/-- Every step of the doubled walk comes from a step `t` of `c`, as either its first half
+`(t.1 + t.1, t.1 + t.2)` or its second half `(t.1 + t.2, t.2 + t.2)`. -/
 theorem mem_steps_dbl : ∀ {c : List Site} {s : Site × Site},
     s ∈ steps (dbl c) ↔ ∃ t ∈ steps c, s = (t.1 + t.1, t.1 + t.2) ∨ s = (t.1 + t.2, t.2 + t.2)
   | [], s => by simp [dbl, steps]
@@ -114,6 +123,8 @@ theorem mem_dbl_even {c : List Site} (hc : IsClosedWalk c) {q : Site} (hq : q �
     · exact Or.inl ⟨a1, by omega⟩
     · exact Or.inl ⟨a1, by omega⟩
 
+/-- An odd-odd point is never on the doubled walk, since every point of `dbl c` has an even
+coordinate (`mem_dbl_even`). -/
 theorem oddodd_notMem_dbl {c : List Site} (hc : IsClosedWalk c) {q : Site} (h1 : Odd q.1)
     (h2 : Odd q.2) : q ∉ dbl c := by
   intro hq
@@ -121,6 +132,8 @@ theorem oddodd_notMem_dbl {c : List Site} (hc : IsClosedWalk c) {q : Site} (h1 :
   · exact (Int.not_even_iff_odd.2 h1) h
   · exact (Int.not_even_iff_odd.2 h2) h
 
+/-- Restates unit-step-ness for a list given directly as an `IsChain` with unit increments,
+rather than via `IsClosedWalk`. -/
 theorem steps_unit' {c : List Site} (hch : c.IsChain (fun a b => IsUnit (b - a)))
     {s : Site × Site} (hs : s ∈ steps c) : IsUnit (s.2 - s.1) := by
   unfold steps at hs
@@ -150,7 +163,8 @@ theorem dbl_nodup_of_nodup : ∀ {t : List Site}, t.Nodup → t.IsChain (fun a b
     have hnd' := List.nodup_cons.1 hnd
     have ih := dbl_nodup_of_nodup hnd'.2 hch'.2
     show ((b + b) :: (b + c) :: dbl (c :: l)).Nodup
-    have hmem : ∀ q ∈ dbl (c :: l), (∃ a ∈ c :: l, q = a + a) ∨ ∃ s ∈ steps (c :: l), q = s.1 + s.2 :=
+    have hmem : ∀ q ∈ dbl (c :: l),
+        (∃ a ∈ c :: l, q = a + a) ∨ ∃ s ∈ steps (c :: l), q = s.1 + s.2 :=
       fun q hq => mem_dbl.1 hq
     have hunit : ∀ s ∈ steps (c :: l), IsUnit (s.2 - s.1) := fun s hs => steps_unit' hch'.2 hs
     have hsteps_mem : ∀ s ∈ steps (c :: l), s.1 ∈ c :: l ∧ s.2 ∈ c :: l := fun s hs => mem_steps hs
@@ -258,7 +272,8 @@ theorem rev_notMem_steps {c : List Site} (hc : IsClosedWalk c) (hnd : c.tail.Nod
   have h2 : (b + b, b + a) ∈ steps (dbl c) := mem_steps_dbl.2 ⟨(b, a), hs', Or.inl rfl⟩
   rw [add_comm b a] at h2
   -- in `zip (dbl c) (dbl c).tail` a head determines its step when the tail is nodup
-  have key : ∀ {l : List Site}, l.tail.Nodup → ∀ {p q q' : Site}, (q, p) ∈ steps l → (q', p) ∈ steps l → q = q' := by
+  have key : ∀ {l : List Site}, l.tail.Nodup → ∀ {p q q' : Site},
+      (q, p) ∈ steps l → (q', p) ∈ steps l → q = q' := by
     intro l hl p q q' hq hq'
     unfold steps at hq hq'
     obtain ⟨i, hi, hi'⟩ := List.mem_iff_getElem.1 hq
@@ -286,12 +301,14 @@ def leftPt (a b : Site) : Site := a + b + rotL (b - a)
 /-- The right point of the step `a → b`. -/
 def rightPt (a b : Site) : Site := a + b + rotR (b - a)
 
+/-- The left point of a unit step has both coordinates odd. -/
 theorem leftPt_odd {a b : Site} (h : IsUnit (b - a)) : Odd (leftPt a b).1 ∧ Odd (leftPt a b).2 := by
   obtain ⟨a1, a2⟩ := a; obtain ⟨b1, b2⟩ := b
   rw [isUnit_iff'] at h
   simp only [leftPt, rotL, Prod.mk_sub_mk, Prod.mk_add_mk, Int.odd_iff]
   omega
 
+/-- The right point of a unit step has both coordinates odd. -/
 theorem rightPt_odd {a b : Site} (h : IsUnit (b - a)) :
     Odd (rightPt a b).1 ∧ Odd (rightPt a b).2 := by
   obtain ⟨a1, a2⟩ := a; obtain ⟨b1, b2⟩ := b
@@ -337,6 +354,7 @@ theorem wind_cross_horizontal_count {c : List Site} (hc : IsClosedWalk c) (a : S
   unfold wind at hA ⊢
   linarith
 
+/-- Restates `List.count_eq_one_of_mem` for a list of steps. -/
 theorem count_eq_one_of_mem_nodup {l : List (Site × Site)} (h : l.Nodup) {s : Site × Site}
     (hs : s ∈ l) : l.count s = 1 := List.count_eq_one_of_mem h hs
 
@@ -381,7 +399,8 @@ theorem wind_dbl_left_sub_right {c : List Site} (hc : IsClosedWalk c) (hnd : c.t
   rcases hu' with ⟨e1, e2⟩ | ⟨e1, e2⟩ | ⟨e1, e2⟩ | ⟨e1, e2⟩ <;> subst b1 b2
   · -- east: the doubled step `m → m + (1, 0)`, `m = a + b`
     set m : Site := (a1, a2) + (a1 + 1, a2) with hm
-    have hm1 : m + (1, 0) = (a1 + 1, a2) + (a1 + 1, a2) := by rw [hm]; simp only [Prod.mk_add_mk, Prod.mk.injEq]; constructor <;> ring
+    have hm1 : m + (1, 0) = (a1 + 1, a2) + (a1 + 1, a2) := by
+      rw [hm]; simp only [Prod.mk_add_mk, Prod.mk.injEq]; constructor <;> ring
     have hm2 : m + (0, 1) = leftPt (a1, a2) (a1 + 1, a2) := by
       rw [hm]; simp [leftPt, rotL]
     have hm3 : m + (0, -1) = rightPt (a1, a2) (a1 + 1, a2) := by
@@ -392,7 +411,8 @@ theorem wind_dbl_left_sub_right {c : List Site} (hc : IsClosedWalk c) (hnd : c.t
     simp
   · -- west: the doubled step `m + (1, 0) → m`
     set m : Site := (a1, a2) + (a1 - 1, a2) with hm
-    have hm1 : m + (1, 0) = (a1, a2) + (a1, a2) := by rw [hm]; simp only [Prod.mk_add_mk, Prod.mk.injEq]; constructor <;> ring
+    have hm1 : m + (1, 0) = (a1, a2) + (a1, a2) := by
+      rw [hm]; simp only [Prod.mk_add_mk, Prod.mk.injEq]; constructor <;> ring
     have hm2 : m + (0, 1) = rightPt (a1, a2) (a1 - 1, a2) := by
       rw [hm]; simp [rightPt, rotR]
     have hm3 : m + (0, -1) = leftPt (a1, a2) (a1 - 1, a2) := by
@@ -404,7 +424,8 @@ theorem wind_dbl_left_sub_right {c : List Site} (hc : IsClosedWalk c) (hnd : c.t
     linarith
   · -- north: the doubled step `m → m + (0, 1)`
     set m : Site := (a1, a2) + (a1, a2 + 1) with hm
-    have hm1 : m + (0, 1) = (a1, a2 + 1) + (a1, a2 + 1) := by rw [hm]; simp only [Prod.mk_add_mk, Prod.mk.injEq]; constructor <;> ring
+    have hm1 : m + (0, 1) = (a1, a2 + 1) + (a1, a2 + 1) := by
+      rw [hm]; simp only [Prod.mk_add_mk, Prod.mk.injEq]; constructor <;> ring
     have hm2 : m + (-1, 0) = leftPt (a1, a2) (a1, a2 + 1) := by
       rw [hm]; simp [leftPt, rotL]
     have hm3 : m + (1, 0) = rightPt (a1, a2) (a1, a2 + 1) := by
@@ -415,7 +436,8 @@ theorem wind_dbl_left_sub_right {c : List Site} (hc : IsClosedWalk c) (hnd : c.t
     simp
   · -- south: the doubled step `m + (0, 1) → m`
     set m : Site := (a1, a2) + (a1, a2 - 1) with hm
-    have hm1 : m + (0, 1) = (a1, a2) + (a1, a2) := by rw [hm]; simp only [Prod.mk_add_mk, Prod.mk.injEq]; constructor <;> ring
+    have hm1 : m + (0, 1) = (a1, a2) + (a1, a2) := by
+      rw [hm]; simp only [Prod.mk_add_mk, Prod.mk.injEq]; constructor <;> ring
     have hm2 : m + (-1, 0) = rightPt (a1, a2) (a1, a2 - 1) := by
       rw [hm]; simp [rightPt, rotR]
     have hm3 : m + (1, 0) = leftPt (a1, a2) (a1, a2 - 1) := by

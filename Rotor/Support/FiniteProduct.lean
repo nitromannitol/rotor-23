@@ -1,6 +1,8 @@
 import Rotor.Support.BondFinite
 
 /-!
+# Finite product models with a parameter per coordinate
+
 Lemma 5.3 (`lem:square-constrained-bonds`), part 1: finite product models with a parameter for
 every coordinate.  The probability of an event is affine in each parameter, the slope being the
 probability that the coordinate is pivotal (for increasing events); a map that changes at most
@@ -24,6 +26,8 @@ noncomputable def fpw (par : ι → ℝ) (ω : ι → Bool) : ℝ :=
 def IsParam (par : ι → ℝ) : Prop := ∀ i, 0 ≤ par i ∧ par i ≤ 1
 
 omit [DecidableEq ι] in
+/-- The weight `fpw par ω` is nonnegative: each factor is `par i` or `1 - par i`, both
+nonnegative since `par` is a parameter. -/
 theorem fpw_nonneg {par : ι → ℝ} (hpar : IsParam par) (ω : ι → Bool) : 0 ≤ fpw par ω :=
   Finset.prod_nonneg (fun i _ => by
     split_ifs
@@ -34,9 +38,11 @@ theorem fpw_nonneg {par : ι → ℝ} (hpar : IsParam par) (ω : ι → Bool) : 
 noncomputable def fpr (par : ι → ℝ) (A : Set (ι → Bool)) : ℝ :=
   ∑ ω, if ω ∈ A then fpw par ω else 0
 
+/-- The probability `fpr par A` is nonnegative, as a sum of the nonnegative weights `fpw par`. -/
 theorem fpr_nonneg {par : ι → ℝ} (hpar : IsParam par) (A : Set (ι → Bool)) : 0 ≤ fpr par A :=
   Finset.sum_nonneg (fun ω _ => by split_ifs; exacts [fpw_nonneg hpar ω, le_rfl])
 
+/-- `fpr par` is monotone in the event: enlarging `A` to `B` only adds nonnegative weight. -/
 theorem fpr_mono {par : ι → ℝ} (hpar : IsParam par) {A B : Set (ι → Bool)} (h : A ⊆ B) :
     fpr par A ≤ fpr par B := by
   refine Finset.sum_le_sum (fun ω _ => ?_)
@@ -46,6 +52,8 @@ theorem fpr_mono {par : ι → ℝ} (hpar : IsParam par) {A B : Set (ι → Bool
   · exact fpw_nonneg hpar ω
   · exact le_rfl
 
+/-- The weights `fpw par` sum to `1` over all configurations: `fpw par` is a genuine probability
+distribution, expanding the sum-over-configurations as a product of sums over each coordinate. -/
 theorem sum_fpw {par : ι → ℝ} : ∑ ω, fpw par ω = 1 := by
   have h := Finset.prod_univ_sum (t := fun _ : ι => (Finset.univ : Finset Bool))
     (f := fun i b => if b = true then par i else 1 - par i)
@@ -55,9 +63,11 @@ theorem sum_fpw {par : ι → ℝ} : ∑ ω, fpw par ω = 1 := by
   unfold fpw
   exact h.symm
 
+/-- The probability of the whole configuration space is `1`, from `sum_fpw`. -/
 theorem fpr_univ {par : ι → ℝ} : fpr par Set.univ = 1 := by
   unfold fpr; simp [sum_fpw]
 
+/-- Every event has probability at most `1`, by monotonicity (`fpr_mono`) up to `fpr_univ`. -/
 theorem fpr_le_one {par : ι → ℝ} (hpar : IsParam par) (A : Set (ι → Bool)) : fpr par A ≤ 1 := by
   rw [← fpr_univ (par := par)]
   exact fpr_mono hpar (Set.subset_univ A)
@@ -68,6 +78,9 @@ theorem fpr_le_one {par : ι → ℝ} (hpar : IsParam par) (A : Set (ι → Bool
 noncomputable def fpwE (par : ι → ℝ) (i : ι) (τ : {j // j ≠ i} → Bool) : ℝ :=
   ∏ j : {j // j ≠ i}, if τ j then par j.1 else 1 - par j.1
 
+/-- Splitting off coordinate `i`: the weight of the configuration built from bit `b` at `i` and
+`τ` on the rest is the coordinate-`i` factor times the weight `fpwE` of `τ` on the other
+coordinates. -/
 theorem fpw_symm (par : ι → ℝ) (i : ι) (b : Bool) (τ : {j // j ≠ i} → Bool) :
     fpw par ((Equiv.piSplitAt i (fun _ => Bool)).symm (b, τ)) =
       (if b then par i else 1 - par i) * fpwE par i τ := by
@@ -81,6 +94,8 @@ theorem fpw_symm (par : ι → ℝ) (i : ι) (b : Bool) (τ : {j // j ≠ i} →
     simp [Equiv.piSplitAt_symm_apply, hj]
 
 omit [Fintype ι] in
+/-- Updating coordinate `i` of a split configuration to `b'` just replaces the split bit,
+leaving the other coordinates `τ` unchanged. -/
 theorem update_symm (i : ι) (b b' : Bool) (τ : {j // j ≠ i} → Bool) :
     Function.update ((Equiv.piSplitAt i (fun _ => Bool)).symm (b, τ)) i b' =
       (Equiv.piSplitAt i (fun _ => Bool)).symm (b', τ) := by
@@ -108,6 +123,9 @@ def Pivot (i : ι) (A : Set (ι → Bool)) : Set (ι → Bool) :=
 def IncrEvent (A : Set (ι → Bool)) : Prop :=
   ∀ ω ω' : ι → Bool, (∀ j, ω j = true → ω' j = true) → ω ∈ A → ω' ∈ A
 
+/-- For an increasing event `A`, the probability that coordinate `i` is pivotal is the
+difference of the two conditional sums with the bit at `i` forced to `true` and to `false`,
+since pivotality of `i` reduces to `true`-inclusion holding without `false`-inclusion. -/
 theorem fpr_piv (par : ι → ℝ) (i : ι) {A : Set (ι → Bool)} (hA : IncrEvent A) :
     fpr par (Pivot i A) = (∑ τ, if (Equiv.piSplitAt i (fun _ => Bool)).symm (true, τ) ∈ A
         then fpwE par i τ else 0) -
@@ -144,6 +162,8 @@ theorem fpr_piv (par : ι → ℝ) (i : ι) {A : Set (ι → Bool)} (hA : IncrEv
 
 /-! ### Changing one parameter -/
 
+/-- `fpwE` depends on the parameters only through their values away from `i`: parameters
+agreeing off `i` give equal weights on `{j // j ≠ i}`. -/
 theorem fpwE_congr {par par' : ι → ℝ} (i : ι) (h : ∀ j, j ≠ i → par' j = par j)
     (τ : {j // j ≠ i} → Bool) : fpwE par' i τ = fpwE par i τ := by
   unfold fpwE
@@ -158,12 +178,15 @@ theorem fpr_change {par par' : ι → ℝ} (i : ι) (h : ∀ j, j ≠ i → par'
   simp only [fpwE_congr i h]
   ring
 
+/-- The probability of the pivotal event at `i` is unchanged by varying the parameter at `i`
+itself, since `fpr_piv` expresses it through `fpwE`, which does not see coordinate `i`. -/
 theorem fpr_pivot_congr {par par' : ι → ℝ} (i : ι) (h : ∀ j, j ≠ i → par' j = par j)
     {A : Set (ι → Bool)} (hA : IncrEvent A) :
     fpr par' (Pivot i A) = fpr par (Pivot i A) := by
   rw [fpr_piv par i hA, fpr_piv par' i hA]
   simp only [fpwE_congr i h]
 
+/-- The pivotal probability is nonnegative, from `fpr_nonneg`. -/
 theorem fpr_pivot_nonneg {par : ι → ℝ} (hpar : IsParam par) (i : ι) (A : Set (ι → Bool)) :
     0 ≤ fpr par (Pivot i A) := fpr_nonneg hpar _
 
@@ -182,7 +205,8 @@ theorem fpr_le_of_map {par : ι → ℝ} (hpar : IsParam par) {S T : Set (ι →
       ≤ ∑ ω ∈ Finset.univ.filter (fun ω => ω ∈ S), K * fpw par (φ ω) :=
         Finset.sum_le_sum (fun ω hω => hwt ω (Finset.mem_filter.1 hω).2)
     _ = K * ∑ ω ∈ Finset.univ.filter (fun ω => ω ∈ S), fpw par (φ ω) := by rw [Finset.mul_sum]
-    _ = K * ∑ ω' ∈ Finset.univ, ∑ ω ∈ (Finset.univ.filter (fun ω => ω ∈ S)).filter (fun ω => φ ω = ω'),
+    _ = K * ∑ ω' ∈ Finset.univ,
+        ∑ ω ∈ (Finset.univ.filter (fun ω => ω ∈ S)).filter (fun ω => φ ω = ω'),
           fpw par (φ ω) := by
         rw [Finset.sum_fiberwise_of_maps_to (fun ω _ => Finset.mem_univ (φ ω))]
     _ = K * ∑ ω' ∈ Finset.univ, ((Finset.univ.filter (fun ω => ω ∈ S ∧ φ ω = ω')).card : ℝ) *
@@ -226,7 +250,8 @@ theorem card_agree_le (J : Finset ι) (S : Set (ι → Bool)) (φ : (ι → Bool
     · rw [← hφ ω hω.1 j hj, ← hφ ω₂ hω₂.1 j hj, hω.2, hω₂.2]
   have := Finset.card_le_card_of_injOn _ (fun _ _ => Finset.mem_univ _) hinj
   calc _ ≤ (Finset.univ : Finset (↥J → Bool)).card := this
-    _ = 2 ^ J.card := by rw [Finset.card_univ, Fintype.card_fun, Fintype.card_bool, Fintype.card_coe]
+    _ = 2 ^ J.card := by
+      rw [Finset.card_univ, Fintype.card_fun, Fintype.card_bool, Fintype.card_coe]
 
 /-- The weight ratio of two configurations agreeing outside `J`. -/
 theorem fpw_le_of_agree {par : ι → ℝ} (hpar : IsParam par) (J : Finset ι) {ρ : ℝ} (hρ : 1 ≤ ρ)
@@ -245,7 +270,8 @@ theorem fpw_le_of_agree {par : ι → ℝ} (hpar : IsParam par) (J : Finset ι) 
   have hin : ∏ j ∈ J, (if ω j then par j else 1 - par j) ≤
       ρ ^ J.card * ∏ j ∈ J, (if ω' j then par j else 1 - par j) := by
     rw [← Finset.prod_const, ← Finset.prod_mul_distrib]
-    refine Finset.prod_le_prod (fun j _ => by split_ifs; exacts [(hpar j).1, by linarith [(hpar j).2]])
+    refine Finset.prod_le_prod
+      (fun j _ => by split_ifs; exacts [(hpar j).1, by linarith [(hpar j).2]])
       (fun j hj => ?_)
     obtain ⟨h1, h2⟩ := hlow j hj
     have hp0 : 0 < par j := by
@@ -262,7 +288,8 @@ theorem fpw_le_of_agree {par : ι → ℝ} (hpar : IsParam par) (J : Finset ι) 
     calc (if ω j then par j else 1 - par j) ≤ 1 := hle1
       _ = ρ * (1 / ρ) := by field_simp
       _ ≤ ρ * (if ω' j then par j else 1 - par j) := by gcongr
-  have hout0 : 0 ≤ ∏ j ∈ Finset.univ.filter (fun j => ¬ j ∈ J), (if ω' j then par j else 1 - par j) :=
+  have hout0 : 0 ≤
+      ∏ j ∈ Finset.univ.filter (fun j => ¬ j ∈ J), (if ω' j then par j else 1 - par j) :=
     Finset.prod_nonneg (fun j _ => by split_ifs; exacts [(hpar j).1, by linarith [(hpar j).2]])
   calc (∏ j ∈ J, (if ω j then par j else 1 - par j)) *
         ∏ j ∈ Finset.univ.filter (fun j => ¬ j ∈ J), (if ω' j then par j else 1 - par j)
@@ -288,11 +315,13 @@ theorem fpw_le_of_par {par par' : ι → ℝ} (hpar : IsParam par) (hpar' : IsPa
   have hin : ∏ j ∈ J, (if ω j then par j else 1 - par j) ≤
       ρ ^ J.card * ∏ j ∈ J, (if ω j then par' j else 1 - par' j) := by
     rw [← Finset.prod_const, ← Finset.prod_mul_distrib]
-    refine Finset.prod_le_prod (fun j _ => by split_ifs; exacts [(hpar j).1, by linarith [(hpar j).2]])
+    refine Finset.prod_le_prod
+      (fun j _ => by split_ifs; exacts [(hpar j).1, by linarith [(hpar j).2]])
       (fun j hj => ?_)
     obtain ⟨h1, h2⟩ := hrat j hj
     split_ifs; exacts [h1, h2]
-  have hout0 : 0 ≤ ∏ j ∈ Finset.univ.filter (fun j => ¬ j ∈ J), (if ω j then par' j else 1 - par' j) :=
+  have hout0 : 0 ≤
+      ∏ j ∈ Finset.univ.filter (fun j => ¬ j ∈ J), (if ω j then par' j else 1 - par' j) :=
     Finset.prod_nonneg (fun j _ => by split_ifs; exacts [(hpar' j).1, by linarith [(hpar' j).2]])
   calc (∏ j ∈ J, (if ω j then par j else 1 - par j)) *
         ∏ j ∈ Finset.univ.filter (fun j => ¬ j ∈ J), (if ω j then par' j else 1 - par' j)
@@ -301,6 +330,8 @@ theorem fpw_le_of_par {par par' : ι → ℝ} (hpar : IsParam par) (hpar' : IsPa
         gcongr
     _ = _ := by ring
 
+/-- If one weight is pointwise at most `ρ` times another, the same inequality holds for the
+probabilities of any event `A`, by summing the pointwise bound. -/
 theorem fpr_le_of_par {par par' : ι → ℝ} (_hpar' : IsParam par') {ρ : ℝ} (_hρ : 0 ≤ ρ)
     (h : ∀ ω, fpw par ω ≤ ρ * fpw par' ω) (A : Set (ι → Bool)) : fpr par A ≤ ρ * fpr par' A := by
   unfold fpr
@@ -315,13 +346,17 @@ end FiniteProduct
 /-! ### Bernoulli(p) on finitely many bonds -/
 
 set_option linter.deprecated false in
+/-- The cylinder-event probability under `bondLaw p` is the finite Bernoulli(`p`) product
+`∏_{b ∈ F} (if ξ b then p else 1 - p)`, via the product measure identity
+`MeasureTheory.Measure.infinitePi_pi`. -/
 theorem bondLaw_cyl (p : NNReal) (hp : p ≤ 1) (F : Finset (Sym2 Site)) (ξ : Sym2 Site → Bool) :
     bondLaw p hp (cylBonds F ξ) = ∏ b ∈ F, (if ξ b then (p : ℝ≥0∞) else 1 - p) := by
   have hset : cylBonds F ξ = Set.pi (↑F) (fun b => {ξ b}) := by
     ext ω; simp [cylBonds, Set.pi]
   rw [hset]
   unfold bondLaw
-  have key := MeasureTheory.Measure.infinitePi_pi (μ := fun _ : Sym2 Site => External.bernoulli p hp)
+  have key := MeasureTheory.Measure.infinitePi_pi
+    (μ := fun _ : Sym2 Site => External.bernoulli p hp)
     (s := F) (t := fun b => {ξ b}) (fun _ _ => MeasurableSet.of_discrete)
   refine key.trans ?_
   refine Finset.prod_congr rfl (fun b _ => ?_)
@@ -329,6 +364,9 @@ theorem bondLaw_cyl (p : NNReal) (hp : p ≤ 1) (F : Finset (Sym2 Site)) (ξ : S
   rw [PMF.toMeasure_apply_singleton _ _ (MeasurableSet.of_discrete), PMF.bernoulli_apply]
   rcases ξ b with _ | _ <;> simp
 
+/-- For an event `E` determined by the bonds in `F`, its `bondLaw p` probability is the sum,
+over configurations `ξ` on `F`, of the finite Bernoulli(`p`) weight of `ξ` on the disjoint
+cylinder events that partition `E`. -/
 theorem bondLaw_eq_sum (p : NNReal) (hp : p ≤ 1) (F : Finset (Sym2 Site)) {E : Set BondConfig}
     (hE : BondDetermined F E) :
     bondLaw p hp E = ∑ ξ : ↥F → Bool,
@@ -349,7 +387,8 @@ theorem bondLaw_eq_sum (p : NNReal) (hp : p ≤ 1) (F : Finset (Sym2 Site)) {E :
   · exact MeasureTheory.measure_empty
 
 /-- The finite model of `bondLaw p` on the bonds `F`. -/
-theorem bondLaw_toReal_eq_fpr (p : NNReal) (hp : p ≤ 1) (F : Finset (Sym2 Site)) {E : Set BondConfig}
+theorem bondLaw_toReal_eq_fpr (p : NNReal) (hp : p ≤ 1) (F : Finset (Sym2 Site))
+    {E : Set BondConfig}
     (hE : BondDetermined F E) :
     (bondLaw p hp E).toReal = fpr (fun _ : ↥F => (p : ℝ)) {ξ | extF F ξ ∈ E} := by
   rw [bondLaw_eq_sum p hp F hE, ENNReal.toReal_sum (fun ξ _ => by

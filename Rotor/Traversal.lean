@@ -5,6 +5,15 @@ Vocabulary for `lem:one-circuit` (`rotor.tex:691-697`), `lem:boundary-routing`
 -/
 import Rotor.Routing
 
+/-!
+# Traversals, departures, and traversed edges
+
+Defines the directed edge `traversal ρ o t` traversed at step `t` of the walk, the count
+`departures ρ o x a b` of departures from `x` over a time interval, and the list of directed
+edges `traversed S ξ vs` produced by a routing `vs` from state `ξ`, together with its boundary
+variant `boundaryTraversed` prefixed by a fixed enumeration of the boundary edges.
+-/
+
 open Finset
 
 namespace Rotor
@@ -29,7 +38,8 @@ def traversed (S : Finset V) : RState G → List V → List (V × V)
 /-- The edges traversed by a boundary routing of `S`, counting the initial edges
 from `S`: the boundary edges (in any fixed enumeration) followed by the edges of
 the actuations. -/
-noncomputable def boundaryTraversed (S : Finset V) (ρ : Config G) (es : List (V × V)) (vs : List V) :
+noncomputable def boundaryTraversed (S : Finset V) (ρ : Config G) (es : List (V × V))
+    (vs : List V) :
     List (V × V) :=
   es ++ traversed π S (boundaryInit S ρ) vs
 

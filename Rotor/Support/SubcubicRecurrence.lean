@@ -2,6 +2,8 @@ import Rotor.Support.Extinction
 import Rotor.Support.PathReductionI
 
 /-!
+# Proposition 4.1: no infinite live path on a subcubic graph
+
 Proposition 4.1, `prop:subcubic-recurrence` (`rotor.tex:1342-1376`): on an infinite
 connected graph of maximum degree three with independent uniform rotors, almost surely there
 is no infinite live path.  An infinite live path starting with `o → x` forces the exploration

@@ -2,6 +2,8 @@ import Rotor.Support.CurveSides
 import Rotor.Support.ExplChain
 
 /-!
+# The separation lemma behind Lemma 5.5
+
 The separation lemma behind Lemma 5.5: for a simple closed unit-step walk `J₁` in the doubled
 lattice whose points are doubles of visited faces or midpoints of bonds with a visited
 endpoint, a face lattice-connected off `dbl J₁` to a right point of `J₁` and a face connected
@@ -17,6 +19,8 @@ namespace Rotor
 /-- The quadruple of a face: its position in the twice-doubled lattice. -/
 def quad (z : Site) : Site := z + z + (z + z)
 
+/-- If `p + p` lies in `dbl c` for a closed walk `c`, it must come from doubling a vertex
+of `c` itself, since the double of a point can never equal a bond midpoint; hence `p ∈ c`. -/
 theorem mem_of_double_mem_dbl {c : List Site} (hc : IsClosedWalk c) {p : Site}
     (h : p + p ∈ dbl c) : p ∈ c := by
   rcases mem_dbl.1 h with ⟨a, ha, hpa⟩ | ⟨s, hs, hab⟩
@@ -32,6 +36,8 @@ theorem mem_of_double_mem_dbl {c : List Site} (hc : IsClosedWalk c) {p : Site}
     simp only [Prod.mk_add_mk, Prod.mk.injEq] at hab
     omega
 
+/-- The midpoint `z + z + v` of the bond from `z` to `z + v` lies in `dbl c` only if
+`z + v` is a vertex of `c`; so if `z + v ∉ c` then `z + z + v ∉ dbl c`. -/
 theorem mid_notMem_dbl_of_notMem {c : List Site} (hc : IsClosedWalk c) {z v : Site}
     (hv : IsUnit v) (h : z + v ∉ c) : z + z + v ∉ dbl c := by
   intro hm
@@ -39,6 +45,8 @@ theorem mid_notMem_dbl_of_notMem {c : List Site} (hc : IsClosedWalk c) {z v : Si
   · exact h (mem_steps hs).2
   · exact h (mem_steps hs).1
 
+/-- The midpoint `z + z + v` of the bond from `z` to `z + v` lies in `dbl c` only if `z`
+is a vertex of `c`; so if `z ∉ c` then `z + z + v ∉ dbl c`. -/
 theorem mid_notMem_dbl_of_notMem' {c : List Site} (hc : IsClosedWalk c) {z v : Site}
     (hv : IsUnit v) (h : z ∉ c) : z + z + v ∉ dbl c := by
   intro hm

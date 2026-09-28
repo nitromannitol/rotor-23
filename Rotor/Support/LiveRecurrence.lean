@@ -31,7 +31,10 @@ namespace Rotor
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V}
 variable (π : Mechanism G)
 
-/-! ### A non-terminating routing leaves every finite set -/
+/-!
+# Recurrence from the absence of an infinite live path
+
+### A non-terminating routing leaves every finite set -/
 
 open Classical in
 /-- The edges of a duplicate-free list with tail `v` are at most `deg v`. -/
@@ -39,7 +42,8 @@ theorem countP_tail_le [G.LocallyFinite] (L : List (V × V)) (hL : L.Nodup) (v :
     (hadj : ∀ e ∈ L, G.Adj e.1 e.2) :
     L.countP (fun e => decide (e.1 = v)) ≤ G.degree v := by
   rw [List.countP_eq_length_filter]
-  have hsub : ∀ t ∈ (L.filter (fun e => decide (e.1 = v))).map Prod.snd, t ∈ G.neighborFinset v := by
+  have hsub : ∀ t ∈ (L.filter (fun e => decide (e.1 = v))).map Prod.snd,
+      t ∈ G.neighborFinset v := by
     intro t ht
     rw [List.mem_map] at ht
     obtain ⟨e, he, rfl⟩ := ht
@@ -62,7 +66,8 @@ theorem countP_tail_le [G.LocallyFinite] (L : List (V × V)) (hL : L.Nodup) (v :
 /-- A legal boundary routing actuates each vertex at most `deg` times. -/
 theorem count_le_degree [G.LocallyFinite] (S : Finset V) (ρ : Config G) (vs : List V)
     (hleg : IsLegal π S (boundaryInit S ρ) vs) (v : V) : vs.count v ≤ G.degree v := by
-  have h1 : vs.count v = (traversed π S (boundaryInit S ρ) vs).countP (fun e => decide (e.1 = v)) := by
+  have h1 : vs.count v =
+      (traversed π S (boundaryInit S ρ) vs).countP (fun e => decide (e.1 = v)) := by
     conv_lhs => rw [← traversed_map_fst π S (boundaryInit S ρ) vs]
     rw [List.count_eq_countP, List.countP_map]
     rfl
@@ -108,6 +113,8 @@ def ball (G : SimpleGraph V) (S : Finset V) (R : ℕ) : Set V :=
   {v | ∃ s ∈ S, G.dist s v ≤ R}
 
 omit [DecidableEq V] in
+/-- Every ball of finite radius around a finite set `S` in a connected, locally finite graph is
+finite, by induction on the radius using that each vertex has finitely many neighbors. -/
 theorem ball_finite [G.LocallyFinite] (hG : G.Connected) (S : Finset V) (R : ℕ) :
     (ball G S R).Finite := by
   induction R with
@@ -147,6 +154,8 @@ variable (π : Mechanism G)
 /-! ### Paths are at least as long as the distance -/
 
 omit [DecidableEq V] in
+/-- In a connected graph, a chain `l` from `x` to `y` has length at least `G.dist x y`, i.e.
+`dist x y + 1 ≤ l.length`, by induction on `l`. -/
 theorem dist_le_length_of_chain (hG : G.Connected) (l : List V) (hl : l.IsChain G.Adj)
     (x y : V) (hx : l.head? = some x) (hy : l.getLast? = some y) :
     G.dist x y + 1 ≤ l.length := by
@@ -268,7 +277,8 @@ theorem exists_long_livePath [G.LocallyFinite] (hG : G.Connected) (ρ : Config G
     rw [Set.Finite.mem_toFinset]
     exact ⟨v, h, by simp⟩
   have hvis := oneVisits_of_mem_acted π S ρ es v m hv
-  obtain ⟨l, hpath, hlive, h2, hhead, htail, hlast⟩ := decreasing_positions_i π S ρ v hvS es hes hvis
+  obtain ⟨l, hpath, hlive, h2, hhead, htail, hlast⟩ :=
+    decreasing_positions_i π S ρ v hvS es hes hvis
   refine ⟨l, Or.inr ⟨hpath, hlive, hhead, htail⟩, ?_⟩
   -- the path from `s ∈ S` to `v` has length at least `dist s v + 1 > R + 1`
   obtain ⟨s, hs⟩ : ∃ s, l.head? = some s := by

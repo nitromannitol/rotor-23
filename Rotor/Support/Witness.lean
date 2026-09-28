@@ -8,6 +8,18 @@ lists, and its section at almost-live rotors contains the marks covering one wit
 -/
 import Rotor.Support.BlockField
 
+/-!
+# Marking the failures of an almost-live witness
+
+Formalizes the marks lower bound: on the almost-live event `L_η(u → v, R)`, the first witnessing
+path in a fixed list ordering has all its failures marked with conditional probability at least
+`s^{⌈ηR⌉}`. Builds `IsWitness`, `CoversFailures` and the event `coverEvent` that some witness has
+all its failures marked, proves their measurability, and combines the per-witness bound
+`marksLaw_cover_ge` with Fubini in `mLaw_coverEvent_ge` to bound the joint probability. The
+witness is chosen pointwise rather than through a measurable selection, since the relevant event
+is already a countable union over lists.
+-/
+
 open MeasureTheory ProbabilityTheory
 open scoped ENNReal
 
@@ -21,6 +33,8 @@ def IsWitness (η : ℝ) (u v : V) (R : ℕ) (ρ : Config G) (l : List V) : Prop
     ((liveFailures π ρ l).card : ℝ) ≤ η * R
 
 omit [G.LocallyFinite] in
+/-- `ρ` lies in `almostLiveEvent π η u v R` iff some list `l` witnesses `L_η(u → v, R)` at
+`ρ`. -/
 theorem mem_almostLiveEvent_iff (η : ℝ) (u v : V) (R : ℕ) (ρ : Config G) :
     ρ ∈ almostLiveEvent π η u v R ↔ ∃ l, IsWitness π η u v R ρ l := Iff.rfl
 
@@ -44,6 +58,8 @@ theorem liveFailures_congr {ρ ρ' : Config G} {l : List V}
   exact Finset.filter_congr (fun i _ => by rw [liveAtIndex_congr π (fun hh => h i hh)])
 
 omit [G.LocallyFinite] in
+/-- The event that a fixed list `l` witnesses `L_η(u → v, R)` and has all its failures marked is
+determined by the configuration and marks restricted to the vertices of `l`. -/
 theorem coverEvent_witness_determined (η : ℝ) (u v : V) (R : ℕ) (l : List V) :
     DeterminedByPair (↑l.toFinset)
       {p : MPair G | IsWitness π η u v R p.1 l ∧ CoversFailures π p.1 p.2 l} := by
@@ -57,6 +73,9 @@ theorem coverEvent_witness_determined (η : ℝ) (u v : V) (R : ℕ) (l : List V
   rw [← (hp _ (List.mem_toFinset.2 (List.getElem_mem hi'))).2]
   exact hcov i hi hi'
 
+/-- `coverEvent` is measurable, as a countable union over lists `l` of the (measurable, by
+`coverEvent_witness_determined`) event that `l` witnesses `L_η(u → v, R)` and covers its
+failures. -/
 theorem coverEvent_measurableSet [Countable V] (η : ℝ) (u v : V) (R : ℕ) :
     MeasurableSet (coverEvent π η u v R) := by
   have : coverEvent π η u v R = ⋃ l : List V,
@@ -65,6 +84,8 @@ theorem coverEvent_measurableSet [Countable V] (η : ℝ) (u v : V) (R : ℕ) :
   rw [this]
   exact MeasurableSet.iUnion (fun l => (coverEvent_witness_determined π η u v R l).measurableSet _)
 
+/-- `almostLiveEvent` is measurable, as a countable union over lists `l` of the (measurable)
+event that `l` witnesses `L_η(u → v, R)` at `ρ`. -/
 theorem almostLiveEvent_measurableSet [Countable V] (η : ℝ) (u v : V) (R : ℕ) :
     MeasurableSet (almostLiveEvent π η u v R) := by
   have : almostLiveEvent π η u v R = ⋃ l : List V, {ρ : Config G | IsWitness π η u v R ρ l} := by

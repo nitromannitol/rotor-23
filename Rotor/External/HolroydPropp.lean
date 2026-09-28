@@ -16,6 +16,15 @@ proof).
 -/
 import Rotor.Model
 
+/-!
+# Holroyd--Propp Lemma 6 as a proposition
+
+States the external input `Rotor.External.VisitsAllOfVisitsOne`: on a connected, infinite,
+locally finite graph, a rotor walk that visits one vertex infinitely often is recurrent. The
+docstring above records that this input is no longer assumed outright: it is now proved
+unconditionally elsewhere by propagating infinitely-many-visits along the graph.
+-/
+
 open Rotor
 
 variable {V : Type*} [DecidableEq V] (G : SimpleGraph V) [G.LocallyFinite]

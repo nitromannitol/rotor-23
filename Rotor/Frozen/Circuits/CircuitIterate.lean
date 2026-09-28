@@ -23,6 +23,15 @@ import Rotor.External.HolroydPropp
 import Rotor.Bridge.Abelian
 import Rotor.Bridge.OneCircuit
 
+/-!
+# Proposition 2.4: one step of the circuit recursion
+
+States that, once `T (n) < ⊤`, the next completion time `T (n + 1)` is finite exactly when the
+boundary routing of `A n` terminates, and in that case `A (n + 1)` is obtained from `A n` by the
+one-circuit map `Φ`. The statement is frozen as Proposition 2.4 of `rotor.tex`; its proof draws
+on the one-circuit lemma, the boundary-routing lemma, and the least-action lemma.
+-/
+
 open Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
@@ -34,4 +43,5 @@ theorem Rotor.Frozen.circuit_iterate
     (T π ρ o (n + 1) < ⊤ ↔ Terminates π (A π ρ o n) ρ) ∧
     (T π ρ o (n + 1) < ⊤ → A π ρ o (n + 1) = Φ π ρ (A π ρ o n))
 -- FROZEN-STATEMENT-END
-:= circuit_iterate_proof π ρ o (Rotor.Bridge.oneCircuit_holds G) (Rotor.Bridge.abelian_holds G) hG n hn
+:= circuit_iterate_proof π ρ o (Rotor.Bridge.oneCircuit_holds G)
+    (Rotor.Bridge.abelian_holds G) hG n hn

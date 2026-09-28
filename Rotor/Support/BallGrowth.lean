@@ -2,6 +2,8 @@ import Rotor.Support.BlockGeom
 import Rotor.Support.PathReductionIII
 
 /-!
+# Polynomial ball growth in a doubly periodic graph
+
 Balls in a doubly periodic graph have at most `C r²` vertices, `rotor.tex:1408-1409`:
 "By assumption, balls of radius `r` in the graph metric have at most `C r²` vertices."
 -/
@@ -12,6 +14,10 @@ namespace Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
 
+/-- For a connected, locally finite, doubly periodic graph there is a constant `C > 0` such that,
+around every vertex, the ball of radius `r` in the graph metric is contained in some finite set of
+at most `C (r + 1)^2` vertices; the covering set is built from a bounded box of period cells via
+the periodic embedding. -/
 theorem exists_ball_bound (P : DoublyPeriodic G) (hG : G.Connected) :
     ∃ C : ℝ, 0 < C ∧ ∀ (x : V) (r : ℕ), ∃ s : Finset V,
       (∀ y : V, G.dist x y ≤ r → y ∈ s) ∧ (s.card : ℝ) ≤ C * (r + 1) ^ 2 := by

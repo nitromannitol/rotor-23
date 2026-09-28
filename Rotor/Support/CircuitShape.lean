@@ -18,7 +18,11 @@ namespace Rotor
 variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite] (π : Mechanism G)
   (P : DoublyPeriodic G)
 
-/-! ### Two facts about the periodic placement -/
+/-!
+# Support lemmas for the circuit-shape theorem
+
+### Two facts about the periodic placement
+-/
 
 omit [DecidableEq V] [G.LocallyFinite] in
 /-- Graph distance from the base point is at most linear in the Euclidean distance
@@ -90,16 +94,22 @@ variable {f : Plane → ℝ} (hfc : Continuous f) (hf0 : ∀ x, 0 ≤ f x)
   {l : ℝ} (hl : 0 < l) (hmin : ∀ u : Plane, ‖u‖ = 1 → l ≤ f u)
 
 include hfsmul in
+/-- `f` vanishes at the origin, by applying the degree-one homogeneity `hfsmul`
+with `θ = 0`. -/
 theorem pf_zero : f 0 = 0 := by
   have := hfsmul 0 le_rfl 0
   simpa using this
 
 include hfsmul in
+/-- For `x ≠ 0`, homogeneity factors the norm out of `f x`, writing it as `‖x‖`
+times the value of `f` at the unit vector `‖x‖⁻¹ • x`. -/
 theorem pf_eq_norm_mul (x : Plane) (hx : x ≠ 0) : f x = ‖x‖ * f (‖x‖⁻¹ • x) := by
   have hn : 0 < ‖x‖ := norm_pos_iff.2 hx
   rw [← hfsmul _ hn.le, smul_smul, mul_inv_cancel₀ hn.ne', one_smul]
 
 include hfsmul hmin in
+/-- The lower bound `l * ‖x‖ ≤ f x`, obtained from `pf_eq_norm_mul` and the
+hypothesis `hmin` that `f ≥ l` on the unit sphere. -/
 theorem pf_lower (x : Plane) : l * ‖x‖ ≤ f x := by
   rcases eq_or_ne x 0 with rfl | hx
   · simp [pf_zero hfsmul]
@@ -110,6 +120,9 @@ theorem pf_lower (x : Plane) : l * ‖x‖ ≤ f x := by
     exact mul_le_mul_of_nonneg_left (hmin _ hu) hn.le
 
 include hfc hfsmul in
+/-- Continuity of `f` on the compact unit sphere gives a maximum `f u` there,
+and homogeneity turns this into the global upper bound `f x ≤ C * ‖x‖` with
+`C := max (f u) 1`. -/
 theorem pf_exists_upper : ∃ C : ℝ, 0 < C ∧ ∀ x, f x ≤ C * ‖x‖ := by
   obtain ⟨u, -, hu⟩ := (isCompact_sphere (0 : Plane) 1).exists_isMaxOn
     (NormedSpace.sphere_nonempty.2 zero_le_one) hfc.continuousOn
@@ -125,12 +138,16 @@ theorem pf_exists_upper : ∃ C : ℝ, 0 < C ∧ ∀ x, f x ≤ C * ‖x‖ := b
     exact mul_le_mul_of_nonneg_right (h1.trans (le_max_left _ _)) hn.le
 
 include hfadd in
+/-- Subadditivity of `f` together with the linear upper bound `hC` gives the
+Lipschitz-type estimate `f x ≤ f y + C * ‖x - y‖`. -/
 theorem pf_lip {C : ℝ} (hC : ∀ x, f x ≤ C * ‖x‖) (x y : Plane) : f x ≤ f y + C * ‖x - y‖ := by
   have := hfadd y (x - y)
   rw [add_sub_cancel] at this
   linarith [hC (x - y)]
 
 include hfc hfsmul hl hmin in
+/-- The sublevel set `{x | f x ≤ 1}` is compact: closed by continuity of `f`,
+and bounded by the radius `l⁻¹` ball via the lower bound `pf_lower`. -/
 theorem pf_isCompact : IsCompact {x : Plane | f x ≤ 1} := by
   refine Metric.isCompact_of_isClosed_isBounded (isClosed_Iic.preimage hfc) ?_
   rw [Metric.isBounded_iff_subset_closedBall 0]
@@ -142,6 +159,9 @@ theorem pf_isCompact : IsCompact {x : Plane | f x ≤ 1} := by
     _ = l⁻¹ := mul_one _
 
 include hfadd hfsmul in
+/-- The sublevel set `{x | f x ≤ 1}` is convex: subadditivity and homogeneity
+give `f (a • x + b • y) ≤ a * f x + b * f y ≤ 1` for any convex combination
+of points `x, y` with `f x, f y ≤ 1`. -/
 theorem pf_convex : Convex ℝ {x : Plane | f x ≤ 1} := by
   rw [convex_iff_forall_pos]
   intro x hx y hy a b ha hb hab
@@ -151,6 +171,8 @@ theorem pf_convex : Convex ℝ {x : Plane | f x ≤ 1} := by
     _ ≤ a * 1 + b * 1 := by gcongr
     _ = 1 := by linarith
 
+/-- The origin lies in the interior of `{x | f x ≤ 1}`: the ball of radius
+`C⁻¹` is contained in the sublevel set, by the linear upper bound `hC`. -/
 theorem pf_zero_mem_interior {C : ℝ} (hC0 : 0 < C) (hC : ∀ x, f x ≤ C * ‖x‖) :
     (0 : Plane) ∈ interior {x : Plane | f x ≤ 1} := by
   rw [mem_interior_iff_mem_nhds]

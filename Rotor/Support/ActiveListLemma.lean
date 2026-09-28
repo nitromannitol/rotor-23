@@ -1,6 +1,8 @@
 import Rotor.Support.ContourCases
 
 /-!
+# The active-list proof term for Lemma 5.5
+
 Lemma 5.5 (`lem:square-active-list`), part 4: the second assertion (at most one of `W`, `S`
 was tested closed, by relabelling the square at the earlier test of `S`) and the proof term
 `square_active_list_proof` for the frozen statement.
@@ -23,6 +25,8 @@ theorem sideS_sideS (a b : Site) :
   rw [add_assoc]
   rfl
 
+/-- The set of visited vertices only grows as the exploration proceeds: `m ≤ n` implies the
+`visited` set at stage `m` is contained in the `visited` set at stage `n`. -/
 theorem visited_mono (ρ : Config squareGraph) (f d : Site) {m n : ℕ} (h : m ≤ n) :
     (explore ρ f d m).visited ⊆ (explore ρ f d n).visited := by
   induction n with
@@ -40,6 +44,8 @@ theorem visited_mono (ρ : Config squareGraph) (f d : Site) {m n : ℕ} (h : m �
       subst this; exact subset_rfl
 
 open Classical in
+/-- One exploration step only appends to the `tested` list: it either stays the same (when
+`active` is empty) or gains the single new test result for the current edge. -/
 theorem tested_succ (ρ : Config squareGraph) (f d : Site) (n : ℕ) :
     ∃ t, (explore ρ f d (n + 1)).tested = (explore ρ f d n).tested ++ t := by
   rcases hs : (explore ρ f d n).active with _ | ⟨e, rest⟩
@@ -47,6 +53,8 @@ theorem tested_succ (ρ : Config squareGraph) (f d : Site) (n : ℕ) :
   · exact ⟨[(e.1, e.2, decide (DualOpen ρ e.1 e.2))],
       by rw [explore_succ, explStep_cons ρ hs, explStepWith_cons hs]⟩
 
+/-- Every edge recorded in `tested` at stage `m` is still recorded at any later stage `n ≥ m`,
+by repeated application of `tested_succ`. -/
 theorem tested_mono (ρ : Config squareGraph) (f d : Site) {m n : ℕ} (h : m ≤ n) :
     ∀ t ∈ (explore ρ f d m).tested, t ∈ (explore ρ f d n).tested := by
   induction n with
@@ -83,6 +91,11 @@ theorem exists_test_stage (ρ : Config squareGraph) (f d : Site) (n : ℕ) {t : 
       · refine ⟨n, by omega, rest, hs, ?_⟩
         rw [explore_succ, explStep_cons ρ hs]
 
+/-- If the current active edge `e` at stage `n` has had both its `W`-side and its `S`-side tested
+closed, this is contradictory: locating the earlier stages `m' < m` at which each side was tested
+(via `exists_test_stage`), relabelling by `sideS_sideS` turns the `S`-side test at `m` into a
+`W`-side-closed test for the relabelled square, forcing (via `active_list_S`) the active list at
+`m` to become empty one step later, contradicting that `e` is still active at stage `n ≥ m`. -/
 theorem not_both (f : Site) {d : Site} (hd : IsUnit d) (ρ : Config squareGraph) (n : ℕ)
     {e : Site × Site} {rest : List (Site × Site)} (he : (explore ρ f d n).active = e :: rest)
     (hW : TestedAs (explore ρ f d n).tested (sideW e.1 e.2) false)
@@ -122,6 +135,10 @@ theorem not_both (f : Site) {d : Site} (hd : IsUnit d) (ρ : Config squareGraph)
 
 /-! ### Lemma 5.5 -/
 
+/-- The proof term for Lemma 5.5's active-list statement: if the current active edge `e` has had
+its `W`-side or its `S`-side tested closed then it is the sole remaining active edge (via
+`active_list_W` or `active_list_S`), and it cannot have had both sides tested closed
+(`not_both`). -/
 theorem square_active_list_proof (f d : Site) (hd : squareGraph.Adj f (f + d))
     (ρ : Config squareGraph) (n : ℕ) (e : Site × Site) (rest : List (Site × Site))
     (he : (explore ρ f d n).active = e :: rest) :

@@ -14,6 +14,20 @@ import Rotor.Support.CircuitClock
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise ENNReal
 
+/-!
+# Path reduction, part (iii): the shape and range exponent
+
+Proves part (iii) of `prop:path-reduction` of `rotor.tex`. The directional passage-time limit
+`f` is bounded below by a positive multiple of the Euclidean norm (`dir_lower`, extended from
+lattice vectors to the whole plane by `f_lower_of_lattice`), which makes the limiting unit ball
+`{f ≤ 1}` compact with nonempty interior. Counting the lattice points of a scaled copy of that
+ball via `ZLattice.covolume.tendsto_card_div_pow'` gives the quadratic growth of `A_n` and of its
+degree sum, orbit by orbit under the doubly periodic mechanism; combined with the circuit-clock
+asymptotics of `Rotor.Support.CircuitClock`, this yields the Hausdorff limit shape of the rescaled
+range and its cardinality exponent `2/3`. The file ends by assembling `path_reduction_iii_proof`
+and the full `path_reduction_proof`.
+-/
+
 universe u
 
 namespace Rotor
@@ -25,6 +39,7 @@ variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite] (π 
 
 omit [DecidableEq V] in
 omit [G.LocallyFinite] in
+/-- `latVec` is homogeneous under scaling its lattice-vector argument by a natural number. -/
 theorem latVec_nsmul (n : ℕ) (z : ℤ × ℤ) : P.latVec (n • z) = (n : ℝ) • P.latVec z := by
   unfold DoublyPeriodic.latVec
   rw [Prod.smul_fst, Prod.smul_snd, nsmul_eq_mul, nsmul_eq_mul, smul_add, smul_smul, smul_smul]
@@ -42,7 +57,8 @@ theorem exists_edge_bound : ∃ ℓ : ℝ, 0 < ℓ ∧ ∀ u v : V, G.Adj u v �
     simp only [S, Finset.mem_biUnion, Finset.mem_image] at hx
     obtain ⟨r, -, w, -, rfl⟩ := hx
     exact norm_nonneg _
-  refine ⟨1 + ∑ x ∈ S, x, add_pos_of_pos_of_nonneg one_pos (Finset.sum_nonneg hS), fun u v huv => ?_⟩
+  refine ⟨1 + ∑ x ∈ S, x, add_pos_of_pos_of_nonneg one_pos (Finset.sum_nonneg hS),
+    fun u v huv => ?_⟩
   have hu : u = P.shift (P.coord u) (P.rep u) := (P.shift_coord_rep u).symm
   have hadj : G.Adj (P.rep u) (P.shift (-(P.coord u)) v) := by
     have := (P.adj_shift (-(P.coord u)) u v).2 huv
@@ -174,8 +190,9 @@ theorem dir_lower (hAb : External.Abelian G) [Infinite V] (hG : G.Connected)
     have h2 := hdist N
     have : (R : ℝ) * ℓ ≤ ℓ * G.dist o (P.shift (N • z) o) := by linarith
     nlinarith
-  obtain ⟨N, hN1, hN2⟩ := ((htend.eventually (eventually_gt_nhds (by norm_num : (1 / 2 : ℝ≥0∞) < 1))).and
-    hfar).exists
+  obtain ⟨N, hN1, hN2⟩ :=
+    ((htend.eventually (eventually_gt_nhds (by norm_num : (1 / 2 : ℝ≥0∞) < 1))).and
+      hfar).exists
   -- the measure of `E N` is at least the tail measure, above `1/2`
   have hEN : 1 / 2 < μ (E N) :=
     lt_of_lt_of_le hN1 (measure_mono (Set.biInter_subset_of_mem (Set.mem_Ici.2 le_rfl)))
@@ -256,13 +273,17 @@ namespace DoublyPeriodic
 /-- The translation lattice `Λ` as a `ℤ`-submodule of the plane. -/
 noncomputable def lattice : Submodule ℤ Plane := Submodule.span ℤ (Set.range P.basis)
 
+/-- `P.lattice`, the span of the basis `P.basis`, carries the discrete topology. -/
 instance : DiscreteTopology P.lattice := by
   unfold lattice; infer_instance
 
+/-- `P.lattice`, the span of the basis `P.basis`, is a `ℤ`-lattice of the plane. -/
 instance : IsZLattice ℝ P.lattice := by
   unfold lattice; infer_instance
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- A point of the plane lies in `P.lattice` iff it is `P.latVec z` for some integer vector
+`z`. -/
 theorem mem_lattice_iff (x : Plane) : x ∈ P.lattice ↔ ∃ z : ℤ × ℤ, P.latVec z = x := by
   unfold lattice
   rw [Submodule.mem_span_range_iff_exists_fun]
@@ -279,6 +300,7 @@ theorem mem_lattice_iff (x : Plane) : x ∈ P.lattice ↔ ∃ z : ℤ × ℤ, P.
     rw [Int.cast_smul_eq_zsmul, Int.cast_smul_eq_zsmul]
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- `latVec` is injective: it recovers each coordinate of `z` from `P.coords (P.latVec z)`. -/
 theorem latVec_injective : Function.Injective P.latVec := by
   intro z w h
   have := congrArg P.coords h
@@ -333,10 +355,14 @@ variable {f : Plane → ℝ} (hfc : Continuous f) (hfadd : ∀ x y, f (x + y) �
   {l : ℝ} (hl : 0 < l) (hmin : ∀ u : Plane, ‖u‖ = 1 → l ≤ f u)
 
 include hfc hfsmul hl hmin in
+/-- The scaled unit ball `θ • {f ≤ 1}` is bounded, since the unit ball itself is compact
+(`pf_isCompact`). -/
 theorem ball_isBounded (θ : ℝ) : Bornology.IsBounded (θ • {x : Plane | f x ≤ 1}) :=
   (pf_isCompact hfc hfsmul hl hmin).isBounded.smul₀ θ
 
 include hfc hfsmul in
+/-- The scaled unit ball `θ • {f ≤ 1}` is measurable: it is `{0}` when `θ = 0`, and otherwise the
+image of the closed set `{f ≤ 1}` under scaling by `θ`. -/
 theorem ball_measurableSet (θ : ℝ) : MeasurableSet (θ • {x : Plane | f x ≤ 1}) := by
   rcases eq_or_ne θ 0 with rfl | hθ
   · rw [Set.zero_smul_set ⟨0, by simp [pf_zero hfsmul]⟩]
@@ -344,15 +370,21 @@ theorem ball_measurableSet (θ : ℝ) : MeasurableSet (θ • {x : Plane | f x �
   · exact ((isClosed_Iic.preimage hfc).smul₀ θ).measurableSet
 
 include hfadd hfsmul in
+/-- The frontier of the scaled unit ball `θ • {f ≤ 1}` has Lebesgue measure zero, since the unit
+ball is convex (`pf_convex`). -/
 theorem ball_frontier_null (θ : ℝ) : volume (frontier (θ • {x : Plane | f x ≤ 1})) = 0 :=
   ((pf_convex hfadd hfsmul).smul θ).addHaar_frontier volume
 
+/-- Scaling the unit ball by `θ ≥ 0` scales its real-valued volume by `θ²`, the planar
+Haar-measure scaling law. -/
 theorem volume_real_ball_smul {θ : ℝ} (hθ : 0 ≤ θ) :
     volume.real (θ • {x : Plane | f x ≤ 1}) = θ ^ 2 * volume.real {x : Plane | f x ≤ 1} := by
   rw [measureReal_def, measureReal_def, MeasureTheory.Measure.addHaar_smul_of_nonneg _ hθ,
     finrank_euclideanSpace_fin, ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity)]
 
 include hfc hfsmul hl hmin in
+/-- The unit ball `{f ≤ 1}` has positive volume: it is compact (`pf_isCompact`, hence of finite
+measure) with `0` in its interior (`pf_zero_mem_interior`). -/
 theorem volume_real_ball_pos {C : ℝ} (hC0 : 0 < C) (hC : ∀ x, f x ≤ C * ‖x‖) :
     0 < volume.real {x : Plane | f x ≤ 1} := by
   rw [measureReal_def, ENNReal.toReal_pos_iff]
@@ -474,7 +506,8 @@ theorem tendsto_fiber (ρ : Config G) (o r : V) (hr : P.rep r = r) {C : ℝ}
       (∀ x ∈ A π ρ o n, f (P.emb x - P.emb o) ≤ (1 + ε) * n)) :
     Tendsto (fun n : ℕ => (((A π ρ o n).filter (fun x => P.rep x = r)).card : ℝ) / (n : ℝ) ^ 2)
       atTop (𝓝 (volume.real {x : Plane | f x ≤ 1} / ZLattice.covolume P.lattice)) := by
-  obtain ⟨v, hv0, hv⟩ : ∃ v : ℝ, 0 ≤ v ∧ v = volume.real {x : Plane | f x ≤ 1} / ZLattice.covolume P.lattice :=
+  obtain ⟨v, hv0, hv⟩ : ∃ v : ℝ, 0 ≤ v ∧
+      v = volume.real {x : Plane | f x ≤ 1} / ZLattice.covolume P.lattice :=
     ⟨_, div_nonneg measureReal_nonneg (ZLattice.covolume_pos P.lattice volume).le, rfl⟩
   rw [← hv]
   rw [Metric.tendsto_atTop]
@@ -543,6 +576,8 @@ theorem exists_adj_of_connected [Infinite V] (hG : G.Connected) (v : V) : ∃ w,
   | cons h _ => exact ⟨_, h⟩
 
 omit [DecidableEq V] in
+/-- Every vertex of a connected graph on an infinite vertex type has positive degree, since it
+has a neighbor by `exists_adj_of_connected`. -/
 theorem degree_pos_of_connected [Infinite V] (hG : G.Connected) (v : V) : 0 < G.degree v := by
   obtain ⟨w, hw⟩ := exists_adj_of_connected hG v
   rw [← SimpleGraph.card_neighborFinset_eq_degree]
@@ -557,18 +592,23 @@ theorem degree_shift (hπ : P.Periodic π) (z : ℤ × ℤ) (v : V) :
   exact h
 
 omit [DecidableEq V] in
+/-- A vertex has the same degree as its orbit representative `P.rep v`, since the periodic
+mechanism's automorphism preserves degree along shifts (`degree_shift`). -/
 theorem degree_eq_rep (hπ : P.Periodic π) (v : V) : G.degree v = G.degree (P.rep v) := by
   have := degree_shift π P hπ (P.coord v) (P.rep v)
   rw [P.shift_coord_rep] at this
   exact this
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The representative map `P.rep` is idempotent: `P.rep (P.rep v) = P.rep v`. -/
 theorem rep_rep (v : V) : P.rep (P.rep v) = P.rep v := by
   have := P.rep_shift (P.coord v) (P.rep v)
   rw [P.shift_coord_rep] at this
   exact this.symm
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- Every element of a finset equal, as a set, to the range of `P.rep` is already fixed by
+`P.rep`, by idempotence (`rep_rep`). -/
 theorem rep_eq_of_mem {R : Finset V} (hR : (R : Set V) = Set.range P.rep) {r : V} (hr : r ∈ R) :
     P.rep r = r := by
   have : r ∈ Set.range P.rep := by rw [← hR]; exact Finset.mem_coe.2 hr
@@ -576,14 +616,21 @@ theorem rep_eq_of_mem {R : Finset V} (hR : (R : Set V) = Set.range P.rep) {r : V
   exact rep_rep P v
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The representative `P.rep v` always lies in a finset `R` whose underlying set is the range
+of `P.rep`. -/
 theorem rep_mem {R : Finset V} (hR : (R : Set V) = Set.range P.rep) (v : V) : P.rep v ∈ R := by
   rw [← Finset.mem_coe, hR]
   exact ⟨v, rfl⟩
 
+/-- `A_n` splits, orbit by orbit, into a disjoint union over the representatives `r ∈ R`: its
+cardinality is the sum of the fiber cardinalities `(A_n).filter (P.rep · = r)`. -/
 theorem card_A_eq_sum {R : Finset V} (hR : (R : Set V) = Set.range P.rep) (ρ : Config G) (o : V)
     (n : ℕ) : (A π ρ o n).card = ∑ r ∈ R, ((A π ρ o n).filter (fun x => P.rep x = r)).card :=
   Finset.card_eq_sum_card_fiberwise (fun x _ => rep_mem P hR x)
 
+/-- The degree sum over `A_n` splits by orbit: `∑_{x ∈ A_n} deg x = ∑_{r ∈ R} deg r * |fiber over
+r|`, since degree is constant, equal to `deg r`, on the fiber of each representative `r`
+(`degree_eq_rep`). -/
 theorem degsum_A_eq_sum (hπ : P.Periodic π) {R : Finset V} (hR : (R : Set V) = Set.range P.rep)
     (ρ : Config G) (o : V) (n : ℕ) :
     ∑ x ∈ A π ρ o n, G.degree x =
@@ -603,6 +650,8 @@ variable {f : Plane → ℝ} (hfc : Continuous f) (hfadd : ∀ x y, f (x + y) �
   {l : ℝ} (hl : 0 < l) (hmin : ∀ u : Plane, ‖u‖ = 1 → l ≤ f u)
 
 include hfc hfadd hfsmul hl hmin in
+/-- `(A_n).card / n² → R.card * (volume of {f ≤ 1} / covolume of the lattice)`: sum the per-orbit
+limits `tendsto_fiber` over the finitely many representatives `r ∈ R`. -/
 theorem tendsto_card_A {R : Finset V} (hR : (R : Set V) = Set.range P.rep) (ρ : Config G) (o : V)
     {C : ℝ} (hC : ∀ x, f x ≤ C * ‖x‖)
     (hsand : ∀ ε : ℝ, 0 < ε → ε < 1 → ∀ᶠ n : ℕ in atTop,
@@ -620,6 +669,9 @@ theorem tendsto_card_A {R : Finset V} (hR : (R : Set V) = Set.range P.rep) (ρ :
   simpa [Finset.sum_const, nsmul_eq_mul] using this
 
 include hfc hfadd hfsmul hl hmin in
+/-- The degree-weighted analogue of `tendsto_card_A`: `(∑_{x ∈ A_n} deg x) / n² → (∑_{r ∈ R} deg
+r) * (volume of {f ≤ 1} / covolume of the lattice)`, weighting each orbit's limit `tendsto_fiber`
+by its representative's degree. -/
 theorem tendsto_deg_A (hπ : P.Periodic π) {R : Finset V} (hR : (R : Set V) = Set.range P.rep)
     (ρ : Config G) (o : V) {C : ℝ} (hC : ∀ x, f x ≤ C * ‖x‖)
     (hsand : ∀ ε : ℝ, 0 < ε → ε < 1 → ∀ᶠ n : ℕ in atTop,
@@ -687,7 +739,8 @@ theorem isDirLimit_of_uniform [Infinite V] (hG : G.Connected)
     have hn0 : 0 < n := by omega
     have hn' : (0 : ℝ) < n := by exact_mod_cast hn0
     have hnR : R₀ ≤ n * ‖P.latVec z‖ := by
-      have : R₀ / ‖P.latVec z‖ ≤ n := (Nat.le_ceil _).trans (by exact_mod_cast (by omega : ⌈R₀ / ‖P.latVec z‖⌉₊ ≤ n))
+      have : R₀ / ‖P.latVec z‖ ≤ n := (Nat.le_ceil _).trans
+        (by exact_mod_cast (by omega : ⌈R₀ / ‖P.latVec z‖⌉₊ ≤ n))
       rwa [div_le_iff₀ hpos] at this
     have hx := hR₀ (P.shift (n • z) o) (by rw [hemb, norm_smul, Real.norm_natCast]; exact hnR)
     rw [hemb, norm_smul, Real.norm_natCast, hfsmul _ hn'.le] at hx
@@ -717,7 +770,8 @@ theorem path_reduction_iii_proof (hFLP : External.OneCircuit G) (hAb : External.
       ∃ κ c : ℝ, 0 < κ ∧ 0 < c ∧
         ∀ᵐ ρ ∂μ, (∀ n : ℕ, T π ρ o n < ⊤) ∧
           Tendsto (fun n : ℕ =>
-            Metric.hausdorffDist ((n : ℝ)⁻¹ • ((fun x => P.emb x - P.emb o) '' (A π ρ o n : Set V))) B)
+            Metric.hausdorffDist ((n : ℝ)⁻¹ •
+              ((fun x => P.emb x - P.emb o) '' (A π ρ o n : Set V))) B)
             atTop (𝓝 0) ∧
           Tendsto (fun t : ℕ =>
             Metric.hausdorffDist (((t : ℝ) ^ (-(1 / 3 : ℝ))) •
@@ -783,9 +837,11 @@ theorem path_reduction_proof (hFLP : External.OneCircuit G) (hAb : External.Abel
       ∃ κ c : ℝ, 0 < κ ∧ 0 < c ∧
         ∀ᵐ ρ ∂μ, (∀ n : ℕ, T π ρ o n < ⊤) ∧
           Tendsto (fun n : ℕ =>
-            Metric.hausdorffDist ((n : ℝ)⁻¹ • ((fun x => P.emb x - P.emb o) '' (A π ρ o n : Set V))) B) atTop (𝓝 0) ∧
+            Metric.hausdorffDist ((n : ℝ)⁻¹ •
+              ((fun x => P.emb x - P.emb o) '' (A π ρ o n : Set V))) B) atTop (𝓝 0) ∧
           Tendsto (fun t : ℕ =>
-            Metric.hausdorffDist (((t : ℝ) ^ (-(1 / 3 : ℝ))) • ((fun x => P.emb x - P.emb o) '' (R π ρ o t : Set V)))
+            Metric.hausdorffDist (((t : ℝ) ^ (-(1 / 3 : ℝ))) •
+              ((fun x => P.emb x - P.emb o) '' (R π ρ o t : Set V)))
               (κ • B)) atTop (𝓝 0) ∧
           Tendsto (fun t : ℕ => ((R π ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c)) :=
   ⟨path_reduction_i π hFLP hAb hHP hG μ η hη hcrit,

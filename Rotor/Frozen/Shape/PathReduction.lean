@@ -39,6 +39,19 @@ import Rotor.Bridge.OneCircuit
 import Rotor.Bridge.HolroydPropp
 import Rotor.Support.PathReductionIII
 
+/-!
+# Path reduction to recurrence, linear passage time, and the scaling limit
+
+Assembles Proposition 3.1 of `rotor.tex` (`prop:path-reduction`): from a rotor mechanism on a
+graph of bounded degree together with the eventual-vanishing criterion `Criterion π μ η`, it
+derives almost-sure termination of every boundary routing and recurrence from every start, a
+linear lower bound on the passage time uniform over pairs at distance at least `R`, and, in the
+doubly periodic, invariant and ergodic case, the Hausdorff-distance scaling limits of the range
+`A n`, the odometer set `R t`, and its cardinality `|R t| = c_* t^{2/3} + o(t^{2/3})`. The proof
+combines Section 2 and Section 3 of the paper together with the cited external inputs recorded
+as `External.*` hypotheses.
+-/
+
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
 
@@ -67,4 +80,5 @@ theorem Rotor.Frozen.path_reduction
               (κ • B)) atTop (𝓝 0) ∧
           Tendsto (fun t : ℕ => ((R π ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c))
 -- FROZEN-STATEMENT-END
-:= path_reduction_proof π (Rotor.Bridge.oneCircuit_holds G) (Rotor.Bridge.abelian_holds G) (Rotor.Bridge.visitsAllOfVisitsOne_holds G) Rotor.Bridge.kingman_holds hG hdeg μ η hη hcrit
+:= path_reduction_proof π (Rotor.Bridge.oneCircuit_holds G) (Rotor.Bridge.abelian_holds G)
+    (Rotor.Bridge.visitsAllOfVisitsOne_holds G) Rotor.Bridge.kingman_holds hG hdeg μ η hη hcrit

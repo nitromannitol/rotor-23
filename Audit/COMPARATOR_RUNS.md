@@ -39,22 +39,14 @@ Same tool revisions as above.
 
 ## Run of 2026-09-27
 
-The official `leanprover/comparator` was run on every pair in this directory again at commit
-`fce8250`, on a second local machine (Linux 6.17), with the same tool revisions as above. Each
-pair was checked twice, once with the Lean kernel and once more with the independent `nanoda`
-kernel enabled, exactly as in the first run.
+Every pair was run again on 2026-09-27, at commit `f5c29c7`, against the current
+statements and the published Lattice-Probability pin, on a second local machine
+(Linux 6.17), with the same tool revisions as above.
 
 | Pair | Lean kernel | Lean and nanoda kernels |
 |---|---|---|
-| `MainDegreeThree` | passed (122 s) | passed (169 s) |
-| `MainSquare` | passed (155 s) | passed (213 s) |
-| `PendantCounterexample` | passed (82 s) | passed (112 s) |
-| `PerturbationsDegreeThree` | passed (115 s) | passed (156 s) |
-| `PerturbationsSquare` | passed (162 s) | passed (236 s) |
-
-To reproduce one pair, from the repository root:
-
-```
-COMPARATOR_LANDRUN=<landrun> COMPARATOR_LEAN4EXPORT=<lean4export> \
-  lake env <comparator>/.lake/build/bin/comparator Audit/<Pair>/comparator.json
-```
+| `MainDegreeThree` | passed (132 s) | passed (178 s) |
+| `MainSquare` | passed (186 s) | passed (236 s) |
+| `PendantCounterexample` | passed (82 s) | passed (187 s) |
+| `PerturbationsDegreeThree` | passed (191 s) | passed (292 s) |
+| `PerturbationsSquare` | passed (190 s) | passed (270 s) |

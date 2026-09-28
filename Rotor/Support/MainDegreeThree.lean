@@ -6,6 +6,8 @@ import Rotor.Frozen.Shape.PathReduction
 import Rotor.Frozen.DegreeThree.Passage
 
 /-!
+# Theorem 1.1 and Proposition 1.2, degree-three case
+
 Theorem 1.1 and Proposition 1.2 in the degree-three case (`rotor.tex:1490-1508`):
 `prop:degree-three-passage` verifies `eq:block-crossing-hypothesis` for large `L`,
 `lem:block-live-paths` gives `eq:criterion-path-hypothesis`, the uniform product law is

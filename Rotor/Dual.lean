@@ -19,6 +19,16 @@ The dual configuration on the square lattice, `rotor.tex:1517-1556`
 -/
 import Rotor.Percolation
 
+/-!
+# The dual configuration on the square lattice
+
+Builds the dual lattice on the faces of `ℤ²`, identifying the face centered at `z + (1/2, 1/2)`
+with `z ∈ ℤ²`, and defines when a dual edge is open by rotating each directed primal edge `90°`
+counterclockwise about its midpoint and reading off the rank of that primal edge. Also defines the
+five-edge pattern `P_⋆` and the notion of a dual crossing path avoiding translates of it, used to
+control dual percolation without double-counting nearly self-touching paths.
+-/
+
 namespace Rotor
 
 /-- The face on the right of the directed edge `v → v + dirVec a`. -/

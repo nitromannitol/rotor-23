@@ -13,6 +13,16 @@
 -/
 import Rotor.Support.DecreasingPositionsI
 
+/-!
+# Decreasing positions, part (ii)
+
+Proves `lem:decreasing-positions` (ii) (`rotor.tex:929-936`): for every vertex `x`, every `n`,
+and every `y` in the `n`-th image `Φ^[n] {x}`, there is a path from `x` to `y` staying inside
+`Φ^[n] {x}` whose number of live failures is at most `n - 1`. The path is built by induction on
+`n`, splicing the inductive path to a witness `z` together with a live one-particle path from
+`z` to `y` supplied by part (i), and counting the possible new failure only at the junction.
+-/
+
 open Finset
 
 namespace Rotor
@@ -22,6 +32,8 @@ variable (π : Mechanism G)
 
 /-! ### Actuated vertices were visited -/
 
+/-- A vertex that appears in the `acted` list of the one-particle-at-a-time routing after `n`
+steps is visited by some particle of that routing. -/
 theorem oneVisits_of_mem_acted (S : Finset V) (ρ : Config G) (es : List (V × V)) (y : V)
     (n : ℕ) (h : y ∈ (oneRouting π S ρ es n).acted) : OneVisits π S ρ es y := by
   induction n with
@@ -81,6 +93,8 @@ theorem mem_Φ_of_mem_acted (hAb : External.Abelian G) [Infinite V] [G.LocallyFi
 /-! ### A boundary order exists -/
 
 open Classical in
+/-- Every finite vertex set `S` in a locally finite graph admits a boundary order: the list,
+one entry per pair, of edges from a vertex of `S` to a neighbor outside `S`. -/
 theorem exists_boundaryOrder [G.LocallyFinite] (S : Finset V) :
     ∃ es : List (V × V), IsBoundaryOrder G S es := by
   refine ⟨(S.biUnion (fun s => ((G.neighborFinset s).filter (fun x => x ∉ S)).image
@@ -170,6 +184,8 @@ theorem liveFailures_append_subset (ρ : Config G) (P : List V) (z : V) (Q' : Li
       exact ⟨by omega, hi0⟩
     · exact absurd (liveAtIndex_append_right π ρ P z Q' hP i h2 hi1 hQ) hnot
 
+/-- Concatenating `P` (ending at `z`) with a live continuation `z :: Q'` adds at most one live
+failure, at the junction, to those already present in `P`. -/
 theorem card_liveFailures_append (ρ : Config G) (P : List V) (z : V) (Q' : List V)
     (hP : P.getLast? = some z) (hQ : IsLive π ρ (z :: Q')) :
     (liveFailures π ρ (P ++ Q')).card ≤

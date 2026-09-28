@@ -1,6 +1,8 @@
 import Rotor.Support.Exploration4
 
 /-!
+# The queue length at fresh steps of the exploration
+
 The exploration in fresh time, `rotor.tex:1362-1376`: the `j`-th fresh step is the first
 processing of an edge into the `j`-th reached vertex; `Y j` is the queue length at that
 step.  Between fresh steps the queue does not grow (an entry into a reached vertex adds at
@@ -30,14 +32,18 @@ noncomputable def Y (j : ℕ) (ρ : Config G) : ℕ :=
 
 variable {π o x}
 
+/-- The number of vertices reached so far is nondecreasing in time `t`. -/
 theorem hist_length_mono (ρ : Config G) {t t' : ℕ} (h : t ≤ t') :
     (St π o x ρ t).hist.length ≤ (St π o x ρ t').hist.length :=
   ((qProc π o x).hist_run_prefix ρ h).length_le
 
+/-- A single step reaches at most one new vertex, so `hist.length` increases by at most `1`. -/
 theorem hist_length_succ_le (ρ : Config G) (t : ℕ) :
     (St π o x ρ (t + 1)).hist.length ≤ (St π o x ρ t).hist.length + 1 :=
   (qProc π o x).length_hist_run_succ_le ρ t
 
+/-- The defining property of `τf` as a `Nat.find`: at the `j`-th fresh time at least `j`
+vertices have already been reached. -/
 theorem le_hist_length_τf {j : ℕ} {ρ : Config G} (hj : Reach π o x j ρ) :
     j ≤ (St π o x ρ (τf π o x j ρ)).hist.length := by
   classical
@@ -45,6 +51,8 @@ theorem le_hist_length_τf {j : ℕ} {ρ : Config G} (hj : Reach π o x j ρ) :
   rw [dif_pos hj]
   exact Nat.find_spec hj
 
+/-- `τf π o x j ρ` is the least time at which `j` vertices are reached, so it is at most any
+other time `t` at which `j` vertices have already been reached. -/
 theorem τf_le {j : ℕ} {ρ : Config G} (hj : Reach π o x j ρ) {t : ℕ}
     (ht : j ≤ (St π o x ρ t).hist.length) : τf π o x j ρ ≤ t := by
   classical
@@ -52,6 +60,7 @@ theorem τf_le {j : ℕ} {ρ : Config G} (hj : Reach π o x j ρ) {t : ℕ}
   rw [dif_pos hj]
   exact Nat.find_min' hj ht
 
+/-- Exactly `j` vertices, no more, have been reached at the `j`-th fresh time. -/
 theorem hist_length_τf {j : ℕ} {ρ : Config G} (hj : Reach π o x j ρ) :
     (St π o x ρ (τf π o x j ρ)).hist.length = j := by
   classical
@@ -71,29 +80,37 @@ theorem hist_length_τf {j : ℕ} {ρ : Config G} (hj : Reach π o x j ρ) :
     rw [hs, Nat.succ_eq_add_one]
     omega
 
+/-- Unfolds `Y` on the reachable branch: it is the queue length at the `j`-th fresh time. -/
 theorem Y_of_reach {j : ℕ} {ρ : Config G} (hj : Reach π o x j ρ) :
     Y π o x j ρ = (St π o x ρ (τf π o x j ρ)).queue.length := by
   unfold Y
   rw [if_pos hj]
 
+/-- `Y` is `0` on the branch where the `j`-th vertex is never reached. -/
 theorem Y_of_not_reach {j : ℕ} {ρ : Config G} (hj : ¬ Reach π o x j ρ) : Y π o x j ρ = 0 := by
   unfold Y
   rw [if_neg hj]
 
+/-- The `0`-th vertex is always reached, at time `0`. -/
 theorem reach_zero (ρ : Config G) : Reach π o x 0 ρ := ⟨0, Nat.zero_le _⟩
 
+/-- The `0`-th fresh step occurs at time `0`. -/
 theorem τf_zero (ρ : Config G) : τf π o x 0 ρ = 0 :=
   Nat.le_zero.1 (τf_le (reach_zero ρ) (Nat.zero_le _))
 
+/-- The queue holds exactly the initial edge `o → x` at the `0`-th fresh step, so `Y 0 = 1`. -/
 theorem Y_zero (ρ : Config G) : Y π o x 0 ρ = 1 := by
   rw [Y_of_reach (reach_zero ρ), τf_zero]
   rfl
 
+/-- Reaching `j` vertices implies reaching any smaller number `j' ≤ j`. -/
 theorem reach_mono {j j' : ℕ} (h : j' ≤ j) {ρ : Config G} (hj : Reach π o x j ρ) :
     Reach π o x j' ρ := by
   obtain ⟨t, ht⟩ := hj
   exact ⟨t, h.trans ht⟩
 
+/-- The fresh-step times are monotone in `j`: the `j'`-th fresh step occurs no later than the
+`j`-th one, for `j' ≤ j`. -/
 theorem τf_mono {j j' : ℕ} (h : j' ≤ j) {ρ : Config G} (hj : Reach π o x j ρ) :
     τf π o x j' ρ ≤ τf π o x j ρ :=
   τf_le (reach_mono h hj) (h.trans (le_hist_length_τf hj))
@@ -144,6 +161,8 @@ noncomputable abbrev nxtE (h : History G) (v : V) : Set (Config G) := (qProc π 
 theorem hist_run_eq (ρ : Config G) (t : ℕ) :
     (qProc π o x).hist ((qProc π o x).run ρ t) = (St π o x ρ t).hist := rfl
 
+/-- Every configuration in the atom of `h` reaches at least `h.length` vertices, witnessed by
+the run that produced `h`. -/
 theorem reach_of_atomE {h : History G} {ρ : Config G} (hρ : ρ ∈ atomE π o x h) :
     Reach π o x h.length ρ := by
   obtain ⟨⟨t, ht⟩, -⟩ := hρ
@@ -172,6 +191,8 @@ theorem St_eq_of_atomE {h : History G} {ρ ρ' : Config G} (hρ : ρ ∈ atomE �
         (this.eq_of_length_le (by rw [verts, List.length_map]; exact ht)).symm]
   exact (qProc π o x).run_local ρ ρ' t (fun v hv => agree_of_atomE hρ hρ' v (hpre.subset hv))
 
+/-- The time of the `h.length`-th fresh step agrees for every configuration in the atom
+of `h`. -/
 theorem τf_eq_of_atomE {h : History G} {ρ ρ' : Config G} (hρ : ρ ∈ atomE π o x h)
     (hρ' : ρ' ∈ atomE π o x h) : τf π o x h.length ρ = τf π o x h.length ρ' := by
   have key : ∀ ρ ρ' : Config G, ρ ∈ atomE π o x h → ρ' ∈ atomE π o x h →
@@ -183,17 +204,23 @@ theorem τf_eq_of_atomE {h : History G} {ρ ρ' : Config G} (hρ : ρ ∈ atomE 
     exact τf_le (reach_of_atomE hρ') (by rw [hst, hlen])
   exact le_antisymm (key ρ' ρ hρ' hρ) (key ρ ρ' hρ hρ')
 
+/-- The queue length at the `h.length`-th fresh step agrees for every configuration in the
+atom of `h`. -/
 theorem Y_eq_of_atomE {h : History G} {ρ ρ' : Config G} (hρ : ρ ∈ atomE π o x h)
     (hρ' : ρ' ∈ atomE π o x h) : Y π o x h.length ρ = Y π o x h.length ρ' := by
   rw [Y_of_reach (reach_of_atomE hρ), Y_of_reach (reach_of_atomE hρ'), ← τf_eq_of_atomE hρ hρ',
     St_eq_of_atomE hρ hρ' (hist_length_τf (reach_of_atomE hρ)).le]
 
+/-- Extends `Y_eq_of_atomE` to every earlier index `i ≤ h.length`, by passing to the atom of
+the prefix `h.take i`. -/
 theorem Y_eq_of_atomE_le {h : History G} {ρ ρ' : Config G} (hρ : ρ ∈ atomE π o x h)
     (hρ' : ρ' ∈ atomE π o x h) {i : ℕ} (hi : i ≤ h.length) : Y π o x i ρ = Y π o x i ρ' := by
   have hpre : h.take i <+: h := List.take_prefix i h
   have := Y_eq_of_atomE ((qProc π o x).atomF_prefix hpre hρ) ((qProc π o x).atomF_prefix hpre hρ')
   rwa [List.length_take, min_eq_left hi] at this
 
+/-- The vertex read right after history `h` on a given configuration is unique: `ρ` cannot be
+a next-read event for two distinct vertices. -/
 theorem nxt_unique {h : History G} {v v' : V} {ρ : Config G} (hv : ρ ∈ nxtE π o x h v)
     (hv' : ρ ∈ nxtE π o x h v') : v = v' := by
   obtain ⟨t, ht⟩ := hv
@@ -241,6 +268,8 @@ theorem reach_succ_iff {h : History G} {ρ : Config G} (hρ : ρ ∈ atomE π o 
     rw [hist_run_eq] at ht
     exact ⟨t, by rw [ht, List.length_append, verts, List.length_map, List.length_singleton]⟩
 
+/-- The next vertex read after `h` is the same for every configuration in the atom of `h`: if
+`ρ` reads `v` after `h`, any `ρ'` in that atom reading some `v'` must have `v' = v`. -/
 theorem nxt_eq_of_atomE {h : History G} {v v' : V} {ρ ρ' : Config G}
     (hρ : ρ ∈ atomE π o x h ∩ nxtE π o x h v) (hρ' : ρ' ∈ atomE π o x h)
     (hv' : ρ' ∈ nxtE π o x h v') : v = v' := by
@@ -265,6 +294,9 @@ theorem τf_succ_eq_of {h : History G} {v : V} {ρ : Config G} {t₁ : ℕ}
   rw [ht₁, verts, List.length_map] at h2
   omega
 
+/-- For a configuration reading `v` right after `h`, produces the time `t₁` at which the
+history is exactly `h`, so that the fresh step immediately after it (at `t₁ + 1`) is the
+`(h.length + 1)`-th one. -/
 theorem exists_τf_succ_of_nxt {h : History G} {v : V} {ρ : Config G}
     (hρ : ρ ∈ atomE π o x h ∩ nxtE π o x h v) :
     ∃ t₁, τf π o x (h.length + 1) ρ = t₁ + 1 ∧ (St π o x ρ t₁).hist = verts h ∧
@@ -274,6 +306,8 @@ theorem exists_τf_succ_of_nxt {h : History G} {v : V} {ρ : Config G}
   rw [hist_run_eq] at ht₁ ht₁'
   exact ⟨t₁, τf_succ_eq_of ht₁ ht₁', ht₁, ht₁'⟩
 
+/-- A vertex read right after `h` is genuinely new: it cannot already occur in `h`, since the
+history is duplicate-free. -/
 theorem not_mem_verts_of_nxt {h : History G} {v : V} {ρ : Config G}
     (hρ : ρ ∈ atomE π o x h ∩ nxtE π o x h v) : v ∉ verts h := by
   obtain ⟨t₁, -, -, ht₁'⟩ := exists_τf_succ_of_nxt hρ
@@ -331,13 +365,17 @@ theorem Y_succ_bound (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3) {h : H
   have hfresh := queue_length_succ_le_fresh π o x ρ' hq' hM'
   have hτ0 : τf π o x h.length ρ' ≤ t₁ :=
     τf_le hr0 (by rw [ht₁ρ', verts, List.length_map])
-  have hbetween : (St π o x ρ' t₁).queue.length ≤ (St π o x ρ' (τf π o x h.length ρ')).queue.length := by
-    have := queue_length_le_of_hist_length_le hox h3 ρ' (τf π o x h.length ρ') (t₁ - τf π o x h.length ρ')
+  have hbetween : (St π o x ρ' t₁).queue.length ≤
+      (St π o x ρ' (τf π o x h.length ρ')).queue.length := by
+    have := queue_length_le_of_hist_length_le hox h3 ρ'
+      (τf π o x h.length ρ') (t₁ - τf π o x h.length ρ')
       (by rw [Nat.add_sub_cancel' hτ0, ht₁ρ', verts, List.length_map, hist_length_τf hr0])
     rwa [Nat.add_sub_cancel' hτ0] at this
   have hrpos := rankOf_pos π ρ' hadj
   omega
 
+/-- If a fresh step follows `h`, the queue at the `h.length`-th fresh step cannot be empty: an
+empty queue never processes another edge, so it could not reach a new vertex afterward. -/
 theorem Y_pos_of_nxt {h : History G} {v : V} {ρ : Config G}
     (hρ : ρ ∈ atomE π o x h ∩ nxtE π o x h v) : 1 ≤ Y π o x h.length ρ := by
   have hr0 := reach_of_atomE hρ.1
@@ -363,6 +401,8 @@ section Measure
 open QueryProcess
 
 omit [DecidableEq V] in
+/-- Each neighbor of `v` is drawn with the uniform probability `1 / deg(v)` under
+`uniformAt π v`. -/
 theorem uniformAt_singleton (v : V) (a : G.neighborSet v) :
     uniformAt π v {a} = (G.degree v : ENNReal)⁻¹ := by
   haveI := π.nonempty v
@@ -370,9 +410,11 @@ theorem uniformAt_singleton (v : V) (a : G.neighborSet v) :
   rw [PMF.toMeasure_apply_singleton _ _ (measurableSet_singleton a), PMF.uniformOfFintype_apply,
     G.card_neighborSet_eq_degree]
 
+/-- The atom of a history `h` is a measurable set. -/
 theorem measurableSet_atomE (h : History G) : MeasurableSet (atomE π o x h) :=
   (qProc π o x).measurableSet_atomF h
 
+/-- The intersection of the atom of `h` with the next-read event for `v` is measurable. -/
 theorem measurableSet_atomE_nxt (h : History G) (v : V) :
     MeasurableSet (atomE π o x h ∩ nxtE π o x h v) :=
   (qProc π o x).measurableSet_atomF_inter_Nxt h v

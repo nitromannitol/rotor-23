@@ -3,6 +3,8 @@ import Rotor.Support.SquareLattice
 import Rotor.Frozen.Square.Passage
 
 /-!
+# Theorem 1.1 and Proposition 1.2 on the square lattice
+
 Theorem 1.1 and Proposition 1.2 on the square lattice (`rotor.tex:1490-1508`), from
 `prop:square-passage` exactly as the degree-three case follows from
 `prop:degree-three-passage`.
@@ -90,8 +92,8 @@ theorem perturbations_square_proof (hFLP : External.OneCircuit squareGraph)
   obtain ⟨hrec, -, -⟩ := Rotor.Frozen.path_reduction clockwise hG ⟨4, hdeg⟩
     (productLaw ν) η hη hcrit
   refine ⟨fun o => by filter_upwards [hrec] with ρ h; exact h.2 o, fun Λ _ hinv o => ?_⟩
-  exact shape_sandwich_proof clockwise (squareLatticePeriodic Λ) hFLP hAb hHP hK hG ⟨4, hdeg⟩ (productLaw ν)
-    η hη hcrit (squareLatticePeriodic_periodic Λ)
+  exact shape_sandwich_proof clockwise (squareLatticePeriodic Λ) hFLP hAb hHP hK hG ⟨4, hdeg⟩
+    (productLaw ν) η hη hcrit (squareLatticePeriodic_periodic Λ)
     ((squareLatticePeriodic Λ).productLaw_invariant ν
       (squareLatticePeriodic_invariantMarginals Λ ν hinv))
     ((squareLatticePeriodic Λ).productLaw_ergodic

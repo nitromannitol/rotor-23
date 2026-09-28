@@ -2,6 +2,8 @@ import Rotor.Support.SquareExits
 import Rotor.Support.SquareDual
 
 /-!
+# The finite computation behind Lemma 5.4(iii)
+
 The finite computation behind Lemma 5.4 (iii) (`rotor.tex:1530-1540`): around a lattice vertex
 with initial rotor direction `d`, the side `k` of the dual square is open when the rank of the
 primal edge in direction `k` is `2` or `3`.  Opposite sides have opposite states, and the
@@ -17,6 +19,8 @@ namespace Rotor
 def openAt (k d : Dir) : Bool :=
   decide (((k - d).val + 3) % 4 + 1 = 2 ∨ ((k - d).val + 3) % 4 + 1 = 3)
 
+/-- `DualOpen` at the dual edge for side `k` of the square at `v` agrees with `openAt k` applied
+to the vertex's initial rotor direction. -/
 theorem dualOpen_iff_openAt (ρ : Config squareGraph) (v : Site) (k : Dir) :
     DualOpen ρ (dualEdge v k).1 (dualEdge v k).2 ↔ openAt k (dir0 ρ v) = true := by
   rw [dualEdge, dualOpen_iff, rank_clockwise, openAt, decide_eq_true_iff]
@@ -29,6 +33,7 @@ theorem openAt_opp (a d : Dir) : openAt (a + 2) d = !openAt a d := by
 /-- The information about one side: `mt` says it was tested open, `mf` tested closed. -/
 def sideOK (mt mf x : Bool) : Prop := (mt = true → x = true) ∧ (mf = true → x = false)
 
+/-- `sideOK` unfolds to a conjunction of implications between `Bool`s, so it is decidable. -/
 instance (mt mf x : Bool) : Decidable (sideOK mt mf x) := by unfold sideOK; infer_instance
 
 /-- Given any information about the sides `N` and `S`, exactly half of the consistent rotor

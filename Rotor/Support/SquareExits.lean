@@ -3,6 +3,8 @@ import Rotor.Support.WalkBasics
 import Rotor.Support.Exploration4
 
 /-!
+# Exits of the clockwise rotor walk on the square lattice
+
 The exits of the clockwise rotor walk on `ℤ²` (`rotor.tex:2264-2266`): "the edges in `F` with
 tail `v` are the first `k(v)` edges after `ρ(v)`".  The rotor at `v` after `j` departures from
 `v` points `j` positions clockwise of the initial rotor, and the `j`-th departure leaves in
@@ -18,6 +20,8 @@ variable (σ : Config squareGraph) (o : Site)
 /-- The number of departures from `v` before time `t`. -/
 def deps (v : Site) (t : ℕ) : ℕ := ((range t).filter (fun s => X clockwise σ o s = v)).card
 
+/-- `deps σ o v (t + 1) = deps σ o v t`, plus `1` if `X clockwise σ o t = v`: departures
+increment exactly when a departure from `v` occurs at time `t`. -/
 theorem deps_succ (v : Site) (t : ℕ) :
     deps σ o v (t + 1) = deps σ o v t + if X clockwise σ o t = v then 1 else 0 := by
   unfold deps
@@ -52,7 +56,8 @@ theorem rot_eq_deps (v : Site) : ∀ t : ℕ,
 rotor. -/
 theorem X_succ_eq (t : ℕ) :
     X clockwise σ o (t + 1) =
-      X clockwise σ o t + dirVec (dir0 σ (X clockwise σ o t) + (deps σ o (X clockwise σ o t) t : Dir) + 1) := by
+      X clockwise σ o t +
+        dirVec (dir0 σ (X clockwise σ o t) + (deps σ o (X clockwise σ o t) t : Dir) + 1) := by
   rw [X_succ, rot_eq_deps]
   show (turnAt _ _).1 = _
   rw [turnAt_nbr]

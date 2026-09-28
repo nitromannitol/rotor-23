@@ -12,6 +12,17 @@ import Rotor.Periodic
 open Rotor Filter Topology
 open scoped Pointwise
 
+/-!
+# Converting circuit number into time
+
+Proves Proposition 3.4 of `rotor.tex`. Bounds the increase in time `T(n + 1) - T(n)` between
+consecutive circuits above and below by degree sums over `A_n` and `A_{n + 1}` (`clock_lower`,
+`clock_upper`), then, given a quadratic asymptotic `β n²` for those degree sums, transfers this
+squeeze through a Cesàro-type summation lemma for `k²`-normalized sequences to `T(n) ~ β n³ / 3`
+and, further, to the cube-root time-to-circuit correspondence `idx`, the range asymptotics
+`(R_t).card ~ α (3/β)^{2/3} t^{2/3}`, and the Hausdorff limit of the rescaled range.
+-/
+
 universe u
 
 namespace Rotor
@@ -32,7 +43,8 @@ theorem clock_lower (hFLP : External.OneCircuit G) (hG : G.Connected) (n : ℕ)
         Finset.sum_congr rfl (fun x hx => (hdep x hx).symm)
     _ = ((Finset.Ico (T π ρ o n).toNat (T π ρ o (n + 1)).toNat).filter
           (fun t => X π ρ o t ∈ A π ρ o n)).card := by
-        have H : Set.MapsTo (X π ρ o) (↑((Finset.Ico (T π ρ o n).toNat (T π ρ o (n + 1)).toNat).filter
+        have H : Set.MapsTo (X π ρ o)
+            (↑((Finset.Ico (T π ρ o n).toNat (T π ρ o (n + 1)).toNat).filter
             (fun t => X π ρ o t ∈ A π ρ o n))) (↑(A π ρ o n)) :=
           fun t ht => Finset.mem_coe.2 (Finset.mem_filter.1 (Finset.mem_coe.1 ht)).2
         rw [Finset.card_eq_sum_card_fiberwise H]
@@ -59,7 +71,8 @@ theorem clock_upper (hFLP : External.OneCircuit G) (hG : G.Connected) (n : ℕ)
     exact X_mem_R π ρ o s _ hs.2.le
   calc (T π ρ o (n + 1)).toNat - (T π ρ o n).toNat
       = (Finset.Ico (T π ρ o n).toNat (T π ρ o (n + 1)).toNat).card := (Nat.card_Ico _ _).symm
-    _ ≤ ((A π ρ o (n + 1)).biUnion (fun v => (G.neighborFinset v).image (fun w => (v, w)))).card := by
+    _ ≤ ((A π ρ o (n + 1)).biUnion
+          (fun v => (G.neighborFinset v).image (fun w => (v, w)))).card := by
         refine Finset.card_le_card_of_injOn (fun s => traversal π ρ o s) ?_ ?_
         · intro s hs
           have hs' := hmem s hs
@@ -89,6 +102,7 @@ theorem clock_upper (hFLP : External.OneCircuit G) (hG : G.Connected) (n : ℕ)
 
 /-! ### Cesàro for cubic sums -/
 
+/-- The exact identity `6 ∑_{k<n} k² = n(n-1)(2n-1)`, proved by induction. -/
 theorem sum_range_sq (n : ℕ) :
     6 * ∑ k ∈ Finset.range n, (k : ℝ) ^ 2 = n * (n - 1) * (2 * n - 1) := by
   induction n with
@@ -98,6 +112,7 @@ theorem sum_range_sq (n : ℕ) :
     push_cast
     ring
 
+/-- `∑_{k<n} k² ≤ n³ / 3`, derived from the exact identity `sum_range_sq`. -/
 theorem sum_range_sq_le (n : ℕ) : ∑ k ∈ Finset.range n, (k : ℝ) ^ 2 ≤ (n : ℝ) ^ 3 / 3 := by
   have h := sum_range_sq n
   rcases Nat.eq_zero_or_pos n with rfl | hpos
@@ -105,6 +120,8 @@ theorem sum_range_sq_le (n : ℕ) : ∑ k ∈ Finset.range n, (k : ℝ) ^ 2 ≤ 
   · have hn : (1 : ℝ) ≤ n := by exact_mod_cast hpos
     nlinarith
 
+/-- `|∑_{k<n} k² - n³ / 3| ≤ n²`, the quantitative form of `sum_range_sq_le` used to bound the
+error term in `tendsto_sum_div_cube`. -/
 theorem abs_sum_range_sq_sub (n : ℕ) :
     |∑ k ∈ Finset.range n, (k : ℝ) ^ 2 - (n : ℝ) ^ 3 / 3| ≤ (n : ℝ) ^ 2 := by
   have h := sum_range_sq n
@@ -121,7 +138,8 @@ theorem tendsto_sum_div_cube {u : ℕ → ℝ} {L : ℝ}
   rw [Metric.tendsto_atTop]
   intro ε hε
   obtain ⟨K₀, hK₀⟩ := Metric.tendsto_atTop.1 h (ε / 2) (by positivity)
-  obtain ⟨K, hK1, hK⟩ : ∃ K : ℕ, 1 ≤ K ∧ ∀ k, K ≤ k → |u k - L * (k : ℝ) ^ 2| ≤ ε / 2 * (k : ℝ) ^ 2 := by
+  obtain ⟨K, hK1, hK⟩ : ∃ K : ℕ, 1 ≤ K ∧
+      ∀ k, K ≤ k → |u k - L * (k : ℝ) ^ 2| ≤ ε / 2 * (k : ℝ) ^ 2 := by
     refine ⟨max K₀ 1, le_max_right _ _, fun k hk => ?_⟩
     have hk0 : K₀ ≤ k := le_trans (le_max_left _ _) hk
     have hk1 : (1 : ℕ) ≤ k := le_trans (le_max_right _ _) hk
@@ -134,8 +152,10 @@ theorem tendsto_sum_div_cube {u : ℕ → ℝ} {L : ℝ}
     linarith
   -- the contribution of the first `K` terms
   obtain ⟨C₀, hC₀0, hC₀⟩ : ∃ C₀ : ℝ, 0 ≤ C₀ ∧
-      ∀ n, K ≤ n → |∑ k ∈ Finset.range n, (u k - L * (k : ℝ) ^ 2)| ≤ C₀ + ε / 2 * (n : ℝ) ^ 3 / 3 := by
-    refine ⟨∑ k ∈ Finset.range K, |u k - L * (k : ℝ) ^ 2|, Finset.sum_nonneg (fun _ _ => abs_nonneg _),
+      ∀ n, K ≤ n →
+        |∑ k ∈ Finset.range n, (u k - L * (k : ℝ) ^ 2)| ≤ C₀ + ε / 2 * (n : ℝ) ^ 3 / 3 := by
+    refine ⟨∑ k ∈ Finset.range K, |u k - L * (k : ℝ) ^ 2|,
+      Finset.sum_nonneg (fun _ _ => abs_nonneg _),
       fun n hn => ?_⟩
     rw [← Finset.sum_range_add_sum_Ico _ hn]
     refine (abs_add_le _ _).trans (add_le_add (Finset.abs_sum_le_sum_abs _ _) ?_)
@@ -279,9 +299,12 @@ theorem tendsto_T_div_cube (hFLP : External.OneCircuit G) (hG : G.Connected)
 
 /-! ### The circuit index at time `t` -/
 
+/-- `T π ρ o` is monotone in the circuit index. -/
 theorem T_mono_le (m n : ℕ) (h : m ≤ n) : T π ρ o m ≤ T π ρ o n :=
   monotone_nat_of_le_succ (fun k => T_mono π ρ o k) h
 
+/-- The `toNat` values of `T π ρ o` are monotone in the circuit index, given that they are all
+finite. -/
 theorem toNat_T_mono (hT : ∀ n, T π ρ o n < ⊤) {m n : ℕ} (h : m ≤ n) :
     (T π ρ o m).toNat ≤ (T π ρ o n).toNat :=
   ENat.toNat_le_toNat (T_mono_le π ρ o m n h) (hT n).ne
@@ -300,6 +323,8 @@ theorem tendsto_T_atTop {β : ℝ} (hβ : 0 < β)
     (((tendsto_pow_atTop (by norm_num : (3 : ℕ) ≠ 0)).comp
       tendsto_natCast_atTop_atTop).const_mul_atTop (by positivity))
 
+/-- Since `T(n)/n³ → β/3 > 0` forces `T(n) → ∞` (`tendsto_T_atTop`), every time `t` is eventually
+exceeded by some `T(n + 1)`. -/
 theorem exists_idx {β : ℝ} (hβ : 0 < β)
     (hTn : Tendsto (fun n : ℕ => (((T π ρ o n).toNat : ℕ) : ℝ) / (n : ℝ) ^ 3) atTop (𝓝 (β / 3)))
     (t : ℕ) : ∃ n : ℕ, t < (T π ρ o (n + 1)).toNat := by
@@ -314,9 +339,13 @@ theorem exists_idx {β : ℝ} (hβ : 0 < β)
 noncomputable def idx (hex : ∀ t : ℕ, ∃ n : ℕ, t < (T π ρ o (n + 1)).toNat) (t : ℕ) : ℕ :=
   Nat.find (hex t)
 
+/-- `t` is strictly less than `T` at the next circuit `idx π ρ o hex t + 1`, the defining property
+of `idx` as the least such witness. -/
 theorem lt_T_idx_succ (hex : ∀ t : ℕ, ∃ n : ℕ, t < (T π ρ o (n + 1)).toNat) (t : ℕ) :
     t < (T π ρ o (idx π ρ o hex t + 1)).toNat := Nat.find_spec (hex t)
 
+/-- `T(idx t) ≤ t`, since `idx t` is the least `n` with `t < T(n + 1)`, so `T` at `idx t` itself
+has not yet passed `t`. -/
 theorem T_idx_le (hex : ∀ t : ℕ, ∃ n : ℕ, t < (T π ρ o (n + 1)).toNat) (t : ℕ) :
     (T π ρ o (idx π ρ o hex t)).toNat ≤ t := by
   unfold idx
@@ -325,6 +354,8 @@ theorem T_idx_le (hex : ∀ t : ℕ, ∃ n : ℕ, t < (T π ρ o (n + 1)).toNat)
   · have := Nat.find_min (hex t) (show m < Nat.find (hex t) by omega)
     exact not_lt.1 this
 
+/-- `idx π ρ o hex` tends to infinity as `t → ∞`: for every `N`, once `t ≥ T(N).toNat` the least
+witness `idx t` is at least `N`, since `T(idx t + 1) > t ≥ T(N)` and `T` is monotone. -/
 theorem idx_tendsto (hT : ∀ n, T π ρ o n < ⊤)
     (hex : ∀ t : ℕ, ∃ n : ℕ, t < (T π ρ o (n + 1)).toNat) :
     Tendsto (idx π ρ o hex) atTop atTop := by
@@ -338,16 +369,23 @@ theorem idx_tendsto (hT : ∀ n, T π ρ o n < ⊤)
     toNat_T_mono π ρ o hT (by omega)
   omega
 
+/-- `A` at the last completed circuit `idx t` is contained in the range `R_t`, since
+`T(idx t) ≤ t`. -/
 theorem A_idx_subset (hex : ∀ t : ℕ, ∃ n : ℕ, t < (T π ρ o (n + 1)).toNat) (t : ℕ) :
     A π ρ o (idx π ρ o hex t) ⊆ R π ρ o t :=
   R_mono π ρ o (T_idx_le π ρ o hex t)
 
+/-- The range `R_t` is contained in `A` at the next circuit `idx t + 1`, since
+`t < T(idx t + 1)`. -/
 theorem subset_A_idx_succ (hex : ∀ t : ℕ, ∃ n : ℕ, t < (T π ρ o (n + 1)).toNat) (t : ℕ) :
     R π ρ o t ⊆ A π ρ o (idx π ρ o hex t + 1) :=
   R_mono π ρ o (lt_T_idx_succ π ρ o hex t).le
 
 /-! ### The scaling `n(t) t^{-1/3} → (3/β)^{1/3}` -/
 
+/-- `idx t / t^{1/3} → (3/β)^{1/3}`: squeezing `t / idx(t)³` between `T(idx t) / idx(t)³` and a
+rescaled `T(idx t + 1) / (idx t + 1)³`, both tending to `β/3` via `tendsto_T_div_cube` composed
+with `idx_tendsto`, then taking cube roots and inverting. -/
 theorem tendsto_idx_div_cbrt (hT : ∀ n, T π ρ o n < ⊤) {β : ℝ} (hβ : 0 < β)
     (hTn : Tendsto (fun n : ℕ => (((T π ρ o n).toNat : ℕ) : ℝ) / (n : ℝ) ^ 3) atTop (𝓝 (β / 3)))
     (hex : ∀ t : ℕ, ∃ n : ℕ, t < (T π ρ o (n + 1)).toNat) :
@@ -355,7 +393,8 @@ theorem tendsto_idx_div_cbrt (hT : ∀ n, T π ρ o n < ⊤) {β : ℝ} (hβ : 0
       (𝓝 ((3 / β) ^ (1 / 3 : ℝ))) := by
   have hidx := idx_tendsto π ρ o hT hex
   -- `t / n(t)³ → β / 3`
-  have hlow : ∀ᶠ t : ℕ in atTop, (((T π ρ o (idx π ρ o hex t)).toNat : ℕ) : ℝ) / (idx π ρ o hex t : ℝ) ^ 3 ≤
+  have hlow : ∀ᶠ t : ℕ in atTop,
+      (((T π ρ o (idx π ρ o hex t)).toNat : ℕ) : ℝ) / (idx π ρ o hex t : ℝ) ^ 3 ≤
       (t : ℝ) / (idx π ρ o hex t : ℝ) ^ 3 := by
     refine Eventually.of_forall (fun t => ?_)
     apply div_le_div_of_nonneg_right _ (by positivity)
@@ -416,6 +455,8 @@ theorem tendsto_idx_div_cbrt (hT : ∀ n, T π ρ o n < ⊤) {β : ℝ} (hβ : 0
 
 /-! ### The range asymptotics -/
 
+/-- `(R_t).card / t^{2/3} → α (3/β)^{2/3}`: squeezing `(A(idx t)).card` and `(A(idx t + 1)).card`,
+rescaled by `idx(t) / t^{1/3}` via `tendsto_idx_div_cbrt`, against `(R_t).card / t^{2/3}`. -/
 theorem tendsto_card_R_div (hT : ∀ n, T π ρ o n < ⊤) {α β : ℝ} (hβ : 0 < β)
     (hαn : Tendsto (fun n : ℕ => ((A π ρ o n).card : ℝ) / (n : ℝ) ^ 2) atTop (𝓝 α))
     (hTn : Tendsto (fun n : ℕ => (((T π ρ o n).toNat : ℕ) : ℝ) / (n : ℝ) ^ 3) atTop (𝓝 (β / 3)))
@@ -441,7 +482,8 @@ theorem tendsto_card_R_div (hT : ∀ n, T π ρ o n < ⊤) {α β : ℝ} (hβ : 
     norm_num
   rw [hκ2]
   -- the two bounds
-  have hlow : ∀ᶠ t : ℕ in atTop, ((A π ρ o (idx π ρ o hex t)).card : ℝ) / (idx π ρ o hex t : ℝ) ^ 2 *
+  have hlow : ∀ᶠ t : ℕ in atTop,
+      ((A π ρ o (idx π ρ o hex t)).card : ℝ) / (idx π ρ o hex t : ℝ) ^ 2 *
       ((idx π ρ o hex t : ℝ) / (t : ℝ) ^ (1 / 3 : ℝ)) ^ 2 ≤
       ((R π ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ) := by
     filter_upwards [hidx.eventually (eventually_gt_atTop 0), eventually_gt_atTop 0] with t ht ht0
@@ -460,13 +502,17 @@ theorem tendsto_card_R_div (hT : ∀ n, T π ρ o n < ⊤) {α β : ℝ} (hβ : 
       mul_div_mul_right _ _ (by positivity)]
     apply div_le_div_of_nonneg_right _ (by positivity)
     exact_mod_cast Finset.card_le_card (subset_A_idx_succ π ρ o hex t)
-  have hA : Tendsto (fun t : ℕ => ((A π ρ o (idx π ρ o hex t)).card : ℝ) / (idx π ρ o hex t : ℝ) ^ 2 *
-      ((idx π ρ o hex t : ℝ) / (t : ℝ) ^ (1 / 3 : ℝ)) ^ 2) atTop (𝓝 (α * ((3 / β) ^ (1 / 3 : ℝ)) ^ 2)) :=
+  have hA : Tendsto (fun t : ℕ => ((A π ρ o (idx π ρ o hex t)).card : ℝ) /
+      (idx π ρ o hex t : ℝ) ^ 2 *
+      ((idx π ρ o hex t : ℝ) / (t : ℝ) ^ (1 / 3 : ℝ)) ^ 2) atTop
+      (𝓝 (α * ((3 / β) ^ (1 / 3 : ℝ)) ^ 2)) :=
     (hαn.comp hidx).mul (hκ.pow 2)
   have hB : Tendsto (fun t : ℕ => ((A π ρ o (idx π ρ o hex t + 1)).card : ℝ) /
-      ((idx π ρ o hex t : ℝ) + 1) ^ 2 * (((idx π ρ o hex t : ℝ) + 1) / (t : ℝ) ^ (1 / 3 : ℝ)) ^ 2) atTop
+      ((idx π ρ o hex t : ℝ) + 1) ^ 2 *
+        (((idx π ρ o hex t : ℝ) + 1) / (t : ℝ) ^ (1 / 3 : ℝ)) ^ 2) atTop
       (𝓝 (α * ((3 / β) ^ (1 / 3 : ℝ)) ^ 2)) := by
-    have h1 : Tendsto (fun n : ℕ => ((A π ρ o (n + 1)).card : ℝ) / ((n : ℝ) + 1) ^ 2) atTop (𝓝 α) := by
+    have h1 : Tendsto (fun n : ℕ => ((A π ρ o (n + 1)).card : ℝ) / ((n : ℝ) + 1) ^ 2) atTop
+      (𝓝 α) := by
       have := hαn.comp (tendsto_add_atTop_nat 1)
       refine this.congr (fun n => ?_)
       simp only [Function.comp]
@@ -477,6 +523,8 @@ theorem tendsto_card_R_div (hT : ∀ n, T π ρ o n < ⊤) {α β : ℝ} (hβ : 
 
 /-! ### The Hausdorff limit of the scaled range -/
 
+/-- A triangle-type bound for comparing scaled points:
+`dist (a • u) (b • v) ≤ |a| * dist u v + |a - b| * ‖v‖`. -/
 theorem dist_smul_smul_le (a b : ℝ) (u v : Plane) :
     dist (a • u) (b • v) ≤ |a| * dist u v + |a - b| * ‖v‖ := by
   rw [dist_eq_norm, dist_eq_norm]
@@ -486,6 +534,9 @@ theorem dist_smul_smul_le (a b : ℝ) (u v : Plane) :
     _ = |a| * ‖u - v‖ + |a - b| * ‖v‖ := by
         rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs]
 
+/-- The rescaled range `t^{-1/3} • emb(R_t)` converges, in Hausdorff distance, to `κ • B` where
+`κ = (3/β)^{1/3}`, transported from the convergence of `n⁻¹ • emb(A_n)` to `B` through the
+circuit-to-time correspondence `idx` and the scaling `tendsto_idx_div_cbrt`. -/
 theorem tendsto_hausdorff_R (hT : ∀ n, T π ρ o n < ⊤) {β : ℝ} (hβ : 0 < β)
     (hTn : Tendsto (fun n : ℕ => (((T π ρ o n).toNat : ℕ) : ℝ) / (n : ℝ) ^ 3) atTop (𝓝 (β / 3)))
     (hex : ∀ t : ℕ, ∃ n : ℕ, t < (T π ρ o (n + 1)).toNat)
@@ -565,7 +616,8 @@ theorem tendsto_hausdorff_R (hT : ∀ n, T π ρ o n < ⊤) {β : ℝ} (hβ : 0 
     obtain ⟨b, hb, hqb⟩ := Metric.exists_dist_lt_of_hausdorffDist_lt hq h2 (hfin _)
     refine ⟨κ • b, Set.smul_mem_smul_set hb, ?_⟩
     have hy : (t : ℝ) ^ (-(1 / 3 : ℝ)) • emb x =
-        (((idx π ρ o hex t : ℝ) + 1) / (t : ℝ) ^ (1 / 3 : ℝ)) • (((idx π ρ o hex t : ℝ) + 1)⁻¹ • emb x) := by
+        (((idx π ρ o hex t : ℝ) + 1) / (t : ℝ) ^ (1 / 3 : ℝ)) •
+          (((idx π ρ o hex t : ℝ) + 1)⁻¹ • emb x) := by
       rw [smul_smul, hneg]
       congr 1
       field_simp

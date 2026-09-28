@@ -15,6 +15,16 @@ points at that proof).
 -/
 import Rotor.Percolation
 
+/-!
+# Kesten's exponential decay below the critical bond probability
+
+States, as a `Prop`, Kesten's theorem that the critical bond probability of the square lattice
+is `1/2` together with the exponential tail bound of Menshikov and of Aizenman-Barsky for
+`p < 1/2`, as cited in `rotor.tex:1658-1668`. It is no longer assumed as a hypothesis: it is
+proved unconditionally in `Rotor.Bridge.subcriticalDecay_holds` from the percolation library
+`PercolationContinuity`.
+-/
+
 open Rotor
 
 /-- Kesten's theorem with exponential decay below `p_c = 1/2`. -/

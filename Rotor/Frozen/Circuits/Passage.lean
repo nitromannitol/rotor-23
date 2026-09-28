@@ -23,6 +23,16 @@ import Rotor.External.HolroydPropp
 import Rotor.Bridge.Abelian
 import Rotor.Bridge.OneCircuit
 
+/-!
+# Proposition 2.6: the passage-time description of the range
+
+States the triangle inequality and graph-distance bound for the passage time `τ`, and, when the
+boundary routing of every nonempty finite set terminates, identifies the range `A n` with the
+sublevel set `{x : τ (o, x) ≤ n}` for every `n`. The statement is frozen as Proposition 2.6 of
+`rotor.tex`; its proof assembles the monotonicity and circuit-iteration propositions together
+with the cited termination and abelian-property results.
+-/
+
 open Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]

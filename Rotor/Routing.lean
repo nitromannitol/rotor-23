@@ -57,6 +57,19 @@ How the paper's objects are modelled here:
 -/
 import Rotor.Model
 
+/-!
+# Boundary routings and the circuit map
+
+Formalizes the boundary routing and circuit map of Section 2.1: `actuate` advances one particle
+by one rotor step from a `RState`, and `run`/`IsLegal`/`IsComplete` record a legal or complete
+routing as the list of actuated vertices, while `boundaryInit` seeds a routing of a sink set `S`
+with one particle per boundary edge into `S`. `Terminates`, `Φ`, `IteratesDefined` and
+`AllTerminate` package when such a routing terminates, the resulting (total) circuit map, when
+its iterates are defined, and `τ` is the resulting passage time. The `OneState`/`oneStep`
+machine specializes to a one-particle-at-a-time routing along a fixed boundary order `es`,
+tracking a single particle's route until it enters `S` before starting the next.
+-/
+
 open Finset
 
 namespace Rotor
@@ -171,8 +184,10 @@ def oneStep (S : Finset V) (s : OneState G) : OneState G :=
 
 /-- The one-particle-at-a-time boundary routing of `S` from the rotors `ρ`, in
 the order `es`, after `n` moves. -/
-noncomputable def oneRouting (S : Finset V) (ρ : Config G) (es : List (V × V)) (n : ℕ) : OneState G :=
-  (oneStep π S)^[n] { ξ := boundaryInit S ρ, queue := es, tracked := none, acted := [], route := [] }
+noncomputable def oneRouting (S : Finset V) (ρ : Config G) (es : List (V × V)) (n : ℕ) :
+    OneState G :=
+  (oneStep π S)^[n]
+    { ξ := boundaryInit S ρ, queue := es, tracked := none, acted := [], route := [] }
 
 variable (G) in
 /-- `es` is an ordering of the directed edges from `S` to `V ∖ S`: it lists each

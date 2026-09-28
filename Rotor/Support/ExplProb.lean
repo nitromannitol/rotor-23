@@ -3,6 +3,8 @@ import Rotor.Support.SideCount
 import Rotor.Support.ChainWeight
 
 /-!
+# Conditional probability of a test outcome
+
 Lemma 5.4 (iii) (`rotor.tex:1910-1913`): given the outcomes of all earlier tests, the current
 edge `E` is open with probability `1`, `0` or `1/2` according as its opposite side `W` was
 tested closed, tested open, or not tested.  The event that the first `n` outcomes are `h` is
@@ -20,6 +22,7 @@ namespace Rotor
 /-- The current edge of a state (junk when the active list is empty). -/
 def curEdge (s : ExplState) : Site × Site := s.active.headD ((0, 0), (0, 0))
 
+/-- If the active list starts with `e`, the current edge is `e`. -/
 theorem curEdge_eq {s : ExplState} {e : Site × Site} {rest : List (Site × Site)}
     (h : s.active = e :: rest) : curEdge s = e := by
   rw [curEdge, h, List.headD_cons]
@@ -29,6 +32,8 @@ open Classical in
 noncomputable def outcome (ρ : Config squareGraph) (f d : Site) (h : List Bool) : Bool :=
   decide (DualOpen ρ (curEdge (replay f d h)).1 (curEdge (replay f d h)).2)
 
+/-- Contrapositive of the fact that an empty active list stays empty: if the active list is
+still nonempty after appending one more test outcome, it was already nonempty before. -/
 theorem replay_active_ne_nil_of_append (f d : Site) (h : List Bool) (o : Bool)
     (hne : (replay f d (h ++ [o])).active ≠ []) : (replay f d h).active ≠ [] := by
   intro h0
@@ -36,6 +41,8 @@ theorem replay_active_ne_nil_of_append (f d : Site) (h : List Bool) (o : Bool)
   rw [replay_append, explStepWith_nil h0]
   exact h0
 
+/-- If the active list is still nonempty after the full history `h`, it was already nonempty
+after every prefix `h.take i`, since an empty active list stays empty. -/
 theorem replay_active_ne_nil_of_take (f d : Site) (h : List Bool) (hne : (replay f d h).active ≠ [])
     (i : ℕ) : (replay f d (h.take i)).active ≠ [] := by
   intro h0
@@ -44,7 +51,8 @@ theorem replay_active_ne_nil_of_take (f d : Site) (h : List Bool) (hne : (replay
   rw [this]
   unfold replay
   rw [List.foldl_append]
-  have hfix : ∀ (l : List Bool) (s : ExplState), s.active = [] → (l.foldl explStepWith s).active = [] := by
+  have hfix : ∀ (l : List Bool) (s : ExplState),
+      s.active = [] → (l.foldl explStepWith s).active = [] := by
     intro l
     induction l with
     | nil => intro s hs; exact hs
@@ -90,6 +98,7 @@ open Classical in
 def testEvent (C : List (Site × Site × Bool)) : Set (Config squareGraph) :=
   {ρ | ∀ t ∈ C, decide (DualOpen ρ t.1 t.2.1) = t.2.2}
 
+/-- With no recorded tests, the test event is the whole space. -/
 theorem testEvent_nil : testEvent [] = Set.univ := by
   ext ρ; simp [testEvent]
 
@@ -139,6 +148,8 @@ theorem history_event (f d : Site) : ∀ (h : List Bool),
 /-- The primal tail of a test. -/
 def tailOf (t : Site × Site × Bool) : Site := primalTail t.1 t.2.1
 
+/-- Splitting the tests `C` by whether the tail vertex is `v` factors the test event into the
+event determined at `v` intersected with the event determined by the remaining tests. -/
 theorem testEvent_split (C : List (Site × Site × Bool)) (v : Site) :
     testEvent C = testEvent (C.filter (fun t => tailOf t = v)) ∩
       testEvent (C.filter (fun t => tailOf t ≠ v)) := by
@@ -153,6 +164,8 @@ theorem testEvent_split (C : List (Site × Site × Bool)) (v : Site) :
     · exact h1 t ht hv
     · exact h2 t ht hv
 
+/-- Restates `dualOpen_iff_openAt` for a test `t` adjacent along `t.1`, `t.2.1`, in terms of the
+tail vertex `tailOf t`. -/
 theorem dualOpen_iff_openAt' (ρ : Config squareGraph) {t : Site × Site × Bool}
     (hadj : squareGraph.Adj t.1 t.2.1) :
     DualOpen ρ t.1 t.2.1 ↔ openAt (primalDir t.1 t.2.1) (dir0 ρ (tailOf t)) = true := by
@@ -162,6 +175,8 @@ theorem dualOpen_iff_openAt' (ρ : Config squareGraph) {t : Site × Site × Bool
   rfl
 
 open Classical in
+/-- When every test in `C` has tail vertex `v`, the test event is the preimage under `ρ ↦ ρ v`
+of the set of directions matching all the recorded outcomes through `openAt`. -/
 theorem testEvent_at (C : List (Site × Site × Bool)) (v : Site)
     (hC : ∀ t ∈ C, tailOf t = v) (hadj : ∀ t ∈ C, squareGraph.Adj t.1 t.2.1) :
     testEvent C = (fun ρ : Config squareGraph => ρ v) ⁻¹'
@@ -177,6 +192,7 @@ theorem testEvent_at (C : List (Site × Site × Bool)) (v : Site)
   rw [h2, Bool.decide_eq_true]
 
 open Classical in
+/-- `testEvent C` is determined by the rotors at the tail vertices of the tests in `C`. -/
 theorem testEvent_determined (C : List (Site × Site × Bool))
     (hadj : ∀ t ∈ C, squareGraph.Adj t.1 t.2.1) :
     DeterminedBy ↑((C.map tailOf).toFinset) (testEvent C) := by
@@ -361,9 +377,11 @@ theorem testEvent_inter_open (C : List (Site × Site × Bool))
               rw [← hk1, ← hb, ← hteq]; exact ht
             rw [hk1]
             exact h2t (by rw [hm₂t, decide_eq_true_iff]; exact hmem)
-    have hs1 : {x : squareGraph.neighborSet v | Q ((nbr v).symm x) ∧ openAt a ((nbr v).symm x) = true} =
+    have hs1 :
+        {x : squareGraph.neighborSet v | Q ((nbr v).symm x) ∧ openAt a ((nbr v).symm x) = true} =
         {x | (sideOK m₁t m₁f (openAt (a - 1) ((nbr v).symm x)) ∧
-          sideOK m₂t m₂f (openAt (a + 1) ((nbr v).symm x))) ∧ openAt a ((nbr v).symm x) = true} := by
+          sideOK m₂t m₂f (openAt (a + 1) ((nbr v).symm x))) ∧
+            openAt a ((nbr v).symm x) = true} := by
       ext x; simp only [Set.mem_setOf_eq, hQ']
     have hs2 : {x : squareGraph.neighborSet v | Q ((nbr v).symm x)} =
         {x | sideOK m₁t m₁f (openAt (a - 1) ((nbr v).symm x)) ∧

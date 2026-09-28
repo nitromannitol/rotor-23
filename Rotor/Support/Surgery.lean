@@ -1,11 +1,21 @@
 import Rotor.Support.MarkedModel
 
+/-!
+# Local surgery making a block's mark pivotal
+
+Basic closure properties of open paths in a bond percolation configuration (taking a prefix,
+a suffix, gluing three open paths at open junction bonds) feed into the surgery of Lemma 5.3:
+given a pivotal bond `e` of the block `z`, the bonds touching the block are modified so that the
+mark of `z` itself becomes pivotal, while every bond outside the block is left unchanged.
+-/
+
 open Classical
 
 namespace Rotor
 
 /-! ### Prefixes, suffixes, concatenations of open paths -/
 
+/-- A prefix of an open path is itself an open path. -/
 theorem isOpenPath_take {ω : BondConfig} {l : List Site} (h : IsOpenPath ω l) (n : ℕ) :
     IsOpenPath ω (l.take n) := by
   have h1 : (l.take n ++ l.drop n).IsChain squareGraph.Adj := by
@@ -15,6 +25,7 @@ theorem isOpenPath_take {ω : BondConfig} {l : List Site} (h : IsOpenPath ω l) 
   exact ⟨⟨List.Nodup.sublist (List.take_sublist n l) h.1.1, (List.isChain_append.1 h1).1⟩,
     (List.isChain_append.1 h2).1⟩
 
+/-- A suffix of an open path is itself an open path. -/
 theorem isOpenPath_drop {ω : BondConfig} {l : List Site} (h : IsOpenPath ω l) (n : ℕ) :
     IsOpenPath ω (l.drop n) := by
   have h1 : (l.take n ++ l.drop n).IsChain squareGraph.Adj := by
@@ -24,7 +35,9 @@ theorem isOpenPath_drop {ω : BondConfig} {l : List Site} (h : IsOpenPath ω l) 
   exact ⟨⟨List.Nodup.sublist (List.drop_sublist n l) h.1.1, (List.isChain_append.1 h1).2.1⟩,
     (List.isChain_append.1 h2).2.1⟩
 
-theorem traverses_of_take {l w : List Site} {n : ℕ} (h : Traverses (l.take n) w) : Traverses l w := by
+/-- A traversal window found inside a prefix `l.take n` is also a traversal window of `l`. -/
+theorem traverses_of_take {l w : List Site} {n : ℕ} (h : Traverses (l.take n) w) :
+    Traverses l w := by
   obtain ⟨i, h⟩ := h
   have key : ∀ w' : List Site, w'.length = w.length → ((l.take n).drop i).take w.length = w' →
       (l.drop i).take w.length = w' := by
@@ -44,7 +57,9 @@ theorem traverses_of_take {l w : List Site} {n : ℕ} (h : Traverses (l.take n) 
   · exact ⟨i, Or.inl (key w rfl h)⟩
   · exact ⟨i, Or.inr (key w.reverse List.length_reverse h)⟩
 
-theorem traverses_of_drop {l w : List Site} {n : ℕ} (h : Traverses (l.drop n) w) : Traverses l w := by
+/-- A traversal window found inside a suffix `l.drop n` is also a traversal window of `l`. -/
+theorem traverses_of_drop {l w : List Site} {n : ℕ} (h : Traverses (l.drop n) w) :
+    Traverses l w := by
   obtain ⟨i, h⟩ := h
   have key : ∀ w' : List Site, w'.length = w.length → ((l.drop n).drop i).take w.length = w' →
       (l.drop (n + i)).take w.length = w' := by
@@ -59,6 +74,7 @@ theorem traverses_of_drop {l w : List Site} {n : ℕ} (h : Traverses (l.drop n) 
   · exact ⟨n + i, Or.inl (key w rfl h)⟩
   · exact ⟨n + i, Or.inr (key w.reverse List.length_reverse h)⟩
 
+/-- A path `q` all of whose consecutive edges are `QBond`-marked open in `ω` is an open path. -/
 theorem isOpenPath_of_qbonds {ω : BondConfig} {q : List Site} (hq : IsPath squareGraph q)
     (h : ∀ b, QBond q b → ω b = true) : IsOpenPath ω q := by
   refine ⟨hq, List.isChain_iff_getElem.2 (fun i hi => h _ ⟨i, q[i], q[i + 1],
@@ -207,7 +223,8 @@ theorem surgery (x y : Site) (r : ℕ) {z : ℤ × ℤ} (hz : z ∈ Zset r) {e :
       · exact hu (hqB _ (List.mem_of_getElem? hv))
       · rcases hw with hw | hw
         · have : i = 0 := (List.getElem?_inj (by omega) hqP.1).1 (hv.trans hw.symm); omega
-        · have : i = q.length - 1 := (List.getElem?_inj (by omega) hqP.1).1 (hv.trans hw.symm); omega
+        · have : i = q.length - 1 := (List.getElem?_inj (by omega) hqP.1).1 (hv.trans hw.symm);
+          omega
     · intro h; exact hu (he u (by rw [← h]; exact Sym2.mem_mk_left _ _))
   refine ⟨surgeryConfig ω q e, hagreeOut, ?_, ?_⟩
   · -- the new path
@@ -239,7 +256,8 @@ theorem surgery (x y : Site) (r : ℕ) {z : ℤ × ℤ} (hz : z ∈ Zset r) {e :
         rw [List.getElem?_take] at hi
         rw [List.getElem?_drop] at hj
         split_ifs at hi with hik
-        · have := (List.getElem?_inj (List.getElem?_eq_some_iff.1 hi).1 hopen.1.1).1 (hi.trans hj.symm)
+        · have := (List.getElem?_inj (List.getElem?_eq_some_iff.1 hi).1 hopen.1.1).1
+            (hi.trans hj.symm)
           omega
       · exact fun v hv hv' => hdrop v hv' (hqB v hv)
       · intro a ha b hb
@@ -255,7 +273,8 @@ theorem surgery (x y : Site) (r : ℕ) {z : ℤ × ℤ} (hz : z ∈ Zset r) {e :
           have haB : ¬ InBlock c a := fun hB => hk₁min (k₁ - 1) (by omega) ⟨a, ha', hB⟩
           rw [hagreeEnd a s haB (Or.inl hq0)]
           have := isChain_getElem? hopen.2 ha' hs'
-          rwa [Function.update_of_ne (fun h => haB (he a (by rw [← h]; exact Sym2.mem_mk_left _ _)))]
+          rwa [Function.update_of_ne (fun h => haB (he a (by
+            rw [← h]; exact Sym2.mem_mk_left _ _)))]
             at this
         · simp at ha
       · intro a ha b hb

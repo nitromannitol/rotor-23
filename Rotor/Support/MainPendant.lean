@@ -5,6 +5,8 @@ import Rotor.External.OneCircuit
 import Rotor.External.AngelHolroyd
 
 /-!
+# Assembly of Proposition 1.3, the pendant counterexample
+
 Assembly of Proposition 1.3 (`prop:pendant-counterexample`, `rotor.tex:2229-2290`).  If the
 induced walk on `ℤ²` returns to `o`, the excursion argument (`excursion_core`) puts the
 configuration in the bad event, whose probability is at most `1/64` for `M ≥ 50331645`
@@ -35,6 +37,9 @@ theorem mem_badEvent_of_return (hFLP : External.OneCircuit (pendantGraph M))
   obtain ⟨U, hK, hU⟩ := excursion_core (induce M ρ) o (Nat.find h) hfr
   exact ⟨U, hK, hU⟩
 
+/-- Every recurrent configuration lies in the bad event: if `ρ` were outside
+`badEvent M o`, the walk from `o` would never return to `o`
+(`mem_badEvent_of_return`), contradicting `not_recurrent_of_no_return`. -/
 theorem recurrent_subset_badEvent (hFLP : External.OneCircuit (pendantGraph M)) (o : Site) :
     {ρ : Config (pendantGraph M) | Recurrent (pendantMech M) ρ (.inl o)} ⊆ badEvent M o := by
   intro ρ hρ
@@ -42,6 +47,9 @@ theorem recurrent_subset_badEvent (hFLP : External.OneCircuit (pendantGraph M)) 
   refine not_recurrent_of_no_return M ρ o (fun s hs heq => ?_) hρ
   exact hbad (mem_badEvent_of_return M hFLP ρ o ⟨s, hs, heq⟩)
 
+/-- For `M ≥ 50331645`, the probability that the induced walk from `o` is
+recurrent is strictly less than `1`, by monotonicity from
+`recurrent_subset_badEvent` and the bound `measure_badEvent_lt_one`. -/
 theorem measure_recurrent_lt_one (hFLP : External.OneCircuit (pendantGraph M))
     (hM : 50331645 ≤ M) (o : Site) :
     uniformLaw (pendantMech M) {ρ | Recurrent (pendantMech M) ρ (.inl o)} < 1 :=

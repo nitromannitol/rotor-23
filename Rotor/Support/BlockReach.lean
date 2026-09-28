@@ -2,6 +2,8 @@ import Rotor.Support.PathBlocks
 import Rotor.Support.BlockGeom
 
 /-!
+# From the block event to the reach event
+
 From the block event to the reach event, `rotor.tex:1476-1481` (proof of Theorem 1.1, the
 verification of `eq:block-crossing-hypothesis`): a live path that starts in `Q_z` and leaves
 `Q_z⁺` starts with one of at most `C L` directed edges leaving `Q_z` and reaches graph

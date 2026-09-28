@@ -24,6 +24,17 @@ proof).
 -/
 import Rotor.Traversal
 
+/-!
+# External input: FLP's one-circuit property
+
+Packages `Rotor.External.OneCircuit`, the `Prop` form of Florescu-Levine-Peres' Lemmas 2.1 and
+2.4 (`lem:one-circuit`): while `T(n) < ∞`, the walk traverses each directed edge at most once
+during `[T(n), T(n+1))`, and if also `T(n+1) < ∞` it departs from every vertex of `A_n` exactly
+`deg` many times during that interval. It is stated here only as a `Prop`;
+`Rotor.Bridge.oneCircuit_holds` proves it unconditionally, and no certified statement carries it
+as a hypothesis any longer.
+-/
+
 open Rotor
 
 variable {V : Type*} [DecidableEq V] (G : SimpleGraph V) [G.LocallyFinite]

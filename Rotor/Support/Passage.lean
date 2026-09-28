@@ -11,6 +11,15 @@ The passage time, `prop:passage` (`rotor.tex:833-873`).
 -/
 import Rotor.Support.CircuitIterate
 
+/-!
+# The passage time
+
+Establishes `prop:passage`: the passage time `τ` satisfies the triangle inequality and is
+bounded by graph distance, and the passage balls `A_n` coincide with the iterates `Φ^n({o})`
+of the boundary-actuation map once every circuit terminates. The boundary inclusion
+`S ∪ ∂S ⊆ Φ(S)` and monotonicity of `Φ`'s iterates are the two ingredients driving the proof.
+-/
+
 open Finset
 
 namespace Rotor
@@ -45,17 +54,21 @@ theorem mem_Φ_of_adj (ρ : Config G) (S : Finset V) (hT : Terminates π S ρ) (
 
 /-! ### Iterates of `Φ` -/
 
+/-- `S` is reachable in `n` steps of `Φ` from itself: `S ⊆ (Φ π ρ)^[n] S`, by induction
+on `n`. -/
 theorem subset_Φ_iterate (ρ : Config G) (S : Finset V) (n : ℕ) : S ⊆ (Φ π ρ)^[n] S := by
   induction n with
   | zero => exact subset_rfl
   | succ n ih => rw [Function.iterate_succ_apply']; exact ih.trans (subset_Φ π ρ _)
 
+/-- The iterates of `Φ` from a fixed set are monotone in the step count `m ≤ n`. -/
 theorem Φ_iterate_mono_index (ρ : Config G) (S : Finset V) {m n : ℕ} (h : m ≤ n) :
     (Φ π ρ)^[m] S ⊆ (Φ π ρ)^[n] S := by
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le h
   rw [add_comm, Function.iterate_add_apply]
   exact subset_Φ_iterate π ρ _ k
 
+/-- If `S` is nonempty, so is every iterate `(Φ π ρ)^[n] S`. -/
 theorem nonempty_Φ_iterate (ρ : Config G) (S : Finset V) (hS : S.Nonempty) (n : ℕ) :
     ((Φ π ρ)^[n] S).Nonempty := hS.mono (subset_Φ_iterate π ρ S n)
 
@@ -72,10 +85,13 @@ theorem Φ_iterate_mono (hAb : External.Abelian G) [Infinite V] [G.LocallyFinite
 
 /-! ### The passage time -/
 
+/-- If `AllTerminate π ρ` holds, `τ π ρ x y` is the least `n` with `y ∈ (Φ π ρ)^[n] {x}`. -/
 theorem τ_of_allTerminate (ρ : Config G) (h : AllTerminate π ρ) (x y : V) :
     τ π ρ x y = sInf {n : ℕ | y ∈ (Φ π ρ)^[n] {x}} := by
   simp [τ, h]
 
+/-- If circuits need not terminate, `τ π ρ x y` is defined to be the graph distance
+`G.dist x y`. -/
 theorem τ_of_not_allTerminate (ρ : Config G) (h : ¬ AllTerminate π ρ) (x y : V) :
     τ π ρ x y = G.dist x y := by
   simp [τ, h]
@@ -98,18 +114,25 @@ theorem mem_iterate_dist (hG : G.Connected) (ρ : Config G) (hall : AllTerminate
   have := getVert_mem_iterate π ρ hall p p.length le_rfl
   rwa [p.getVert_length, hp] at this
 
+/-- If graph distance realizes `τ`, then `τ π ρ x y` is at most `G.dist x y`, using
+`τ_of_allTerminate` when circuits terminate and equality otherwise. -/
 theorem τ_le_dist (hG : G.Connected) (ρ : Config G) (x y : V) : τ π ρ x y ≤ G.dist x y := by
   by_cases hall : AllTerminate π ρ
   · rw [τ_of_allTerminate π ρ hall]
     exact Nat.sInf_le (mem_iterate_dist π hG ρ hall x y)
   · rw [τ_of_not_allTerminate π ρ hall]
 
+/-- `y` lies in the `τ π ρ x y`-th iterate `(Φ π ρ)^[τ π ρ x y] {x}`, since `τ` is defined
+as the infimum of such `n` and that infimum is attained. -/
 theorem mem_iterate_τ (hG : G.Connected) (ρ : Config G) (hall : AllTerminate π ρ) (x y : V) :
     y ∈ (Φ π ρ)^[τ π ρ x y] {x} := by
   rw [τ_of_allTerminate π ρ hall]
   exact Nat.sInf_mem (s := {n : ℕ | y ∈ (Φ π ρ)^[n] {x}})
     ⟨G.dist x y, mem_iterate_dist π hG ρ hall x y⟩
 
+/-- The passage time satisfies the triangle inequality
+`τ π ρ x z ≤ τ π ρ x y + τ π ρ y z`, by composing the iterate memberships at `y` and `z`
+through the monotonicity of `Φ`'s iterates. -/
 theorem τ_triangle (hAb : External.Abelian G) [Infinite V] [G.LocallyFinite] (hG : G.Connected)
     (ρ : Config G) (x y z : V) : τ π ρ x z ≤ τ π ρ x y + τ π ρ y z := by
   by_cases hall : AllTerminate π ρ
@@ -125,12 +148,14 @@ theorem τ_triangle (hAb : External.Abelian G) [Infinite V] [G.LocallyFinite] (h
 
 /-! ### The passage balls -/
 
+/-- `T π ρ o 0 = 0`: the passage ball of radius `0` closes at time `0`. -/
 theorem T_zero' [G.LocallyFinite] (ρ : Config G) (o : V) : T π ρ o 0 = 0 := by
   refine le_antisymm ?_ (zero_le)
   have h : (0 : ℕ) ∈ circuitSet π ρ o 0 := ⟨rfl, by simp⟩
   have := T_le_of_mem π ρ o 0 h
   simpa using this
 
+/-- `A π ρ o 0 = {o}`: the passage ball of radius `0` contains only the origin. -/
 theorem A_zero' [G.LocallyFinite] (ρ : Config G) (o : V) : A π ρ o 0 = {o} := by
   rw [A, T_zero']
   simp [R]

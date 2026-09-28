@@ -6,6 +6,16 @@ vertices is at least a positive multiple of their graph distance, minus a consta
 import Rotor.Support.PathReductionIII
 import Rotor.Support.LatticeGeom0
 
+/-!
+# Geometric constants for the block estimate
+
+Graph distance is at most linear in Euclidean distance uniformly in the endpoints, and
+conversely Euclidean displacement is at most linear in the sup-norm displacement of lattice
+coordinates. Combined with the fact that floor division by `L` contracts integer differences by
+at most `L - 1`, this yields `exists_blockDist_bound`: the sup-distance between the block indices
+of two vertices is at least a positive multiple of their graph distance, minus a constant.
+-/
+
 namespace Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite] (P : DoublyPeriodic G)
@@ -26,9 +36,11 @@ theorem exists_dist_le_norm_uniform (hG : G.Connected) :
   refine ⟨K₀ * ‖P.coords‖ + 1, K₀ * ‖P.coords‖ * (2 * D₂) + 2 * D, by positivity, by positivity,
     fun u w => ?_⟩
   have h1 : (G.dist u w : ℝ) ≤ G.dist u (P.shift (P.coord u) o) +
-      G.dist (P.shift (P.coord u) o) (P.shift (P.coord w) o) + G.dist (P.shift (P.coord w) o) w := by
+      G.dist (P.shift (P.coord u) o) (P.shift (P.coord w) o) +
+        G.dist (P.shift (P.coord w) o) w := by
     have hN : G.dist u w ≤ G.dist u (P.shift (P.coord u) o) +
-        G.dist (P.shift (P.coord u) o) (P.shift (P.coord w) o) + G.dist (P.shift (P.coord w) o) w := by
+        G.dist (P.shift (P.coord u) o) (P.shift (P.coord w) o) +
+          G.dist (P.shift (P.coord w) o) w := by
       have := hG.dist_triangle (u := u) (v := P.shift (P.coord w) o) (w := w)
       have := hG.dist_triangle (u := u) (v := P.shift (P.coord u) o) (w := P.shift (P.coord w) o)
       omega
@@ -70,7 +82,8 @@ theorem exists_norm_le_linf_coord : ∃ Cb D₂ : ℝ, 0 < Cb ∧ 0 ≤ D₂ ∧
     ∀ u w : V, ‖P.emb u - P.emb w‖ - 2 * D₂ ≤ Cb * (linf (P.coord w - P.coord u) : ℝ) := by
   obtain ⟨D₂, hD₂⟩ := (P.finite_orbits.image (fun r => ‖P.emb r‖)).bddAbove
   have hD₂' : ∀ v, ‖P.emb (P.rep v)‖ ≤ D₂ := fun v => hD₂ (Set.mem_image_of_mem _ ⟨v, rfl⟩)
-  refine ⟨‖P.b 0‖ + ‖P.b 1‖, max D₂ 0, add_pos_of_pos_of_nonneg (norm_pos_iff.2 (P.b_indep.ne_zero 0))
+  refine ⟨‖P.b 0‖ + ‖P.b 1‖, max D₂ 0,
+    add_pos_of_pos_of_nonneg (norm_pos_iff.2 (P.b_indep.ne_zero 0))
     (norm_nonneg _), le_max_right _ _, fun u w => ?_⟩
   have h1 := P.norm_latVec_le (P.coord w - P.coord u)
   rw [supNorm_eq_linf] at h1
@@ -81,7 +94,8 @@ theorem exists_norm_le_linf_coord : ∃ Cb D₂ : ℝ, 0 < Cb ∧ 0 ≤ D₂ ∧
     have : P.emb u - P.emb w = -(P.latVec (P.coord w) - P.latVec (P.coord u)) +
         (P.emb (P.rep u) - P.emb (P.rep w)) := by
       rw [e1, e2]; abel
-    have h3 : ‖P.emb u - P.emb w‖ ≤ ‖P.latVec (P.coord w) - P.latVec (P.coord u)‖ + 2 * max D₂ 0 := by
+    have h3 : ‖P.emb u - P.emb w‖ ≤
+      ‖P.latVec (P.coord w) - P.latVec (P.coord u)‖ + 2 * max D₂ 0 := by
       rw [this]
       calc ‖-(P.latVec (P.coord w) - P.latVec (P.coord u)) + (P.emb (P.rep u) - P.emb (P.rep w))‖
           ≤ ‖-(P.latVec (P.coord w) - P.latVec (P.coord u))‖ +
@@ -110,6 +124,9 @@ theorem abs_sub_le_mul_abs_ediv_sub {L : ℤ} (hL : 0 < L) (a b : ℤ) :
   linarith
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- Applying `abs_sub_le_mul_abs_ediv_sub` to each coordinate of `P.coord`: the sup-norm
+displacement of block indices is at least the sup-norm displacement of coordinates, up to
+`L - 1`. -/
 theorem linf_coord_sub_le_blockIndex {L : ℕ} (hL : 0 < L) (u w : V) :
     linf (P.coord w - P.coord u) - (L - 1) ≤ L * linf (P.blockIndex L w - P.blockIndex L u) := by
   have hL' : (0 : ℤ) < L := by exact_mod_cast hL
@@ -143,7 +160,8 @@ theorem exists_blockDist_bound (hG : G.Connected) {L : ℕ} (hL : 0 < L) :
     exact_mod_cast linf_nonneg _
   rw [div_mul_eq_mul_div, one_mul, div_sub_div_same, div_le_iff₀ (by positivity)]
   -- d ≤ K * (Cb * (L * linfb + (L - 1)) + 2 D₂) + K'
-  have h4 : ‖P.emb u - P.emb w‖ ≤ Cb * (L * (linf (P.blockIndex L w - P.blockIndex L u) : ℝ) + (L - 1)) + 2 * D₂ := by
+  have h4 : ‖P.emb u - P.emb w‖ ≤
+      Cb * (L * (linf (P.blockIndex L w - P.blockIndex L u) : ℝ) + (L - 1)) + 2 * D₂ := by
     nlinarith
   have h5 : K * ‖P.emb u - P.emb w‖ ≤
       K * (Cb * (L * (linf (P.blockIndex L w - P.blockIndex L u) : ℝ) + (L - 1)) + 2 * D₂) :=

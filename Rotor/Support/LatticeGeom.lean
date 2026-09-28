@@ -7,6 +7,18 @@ representatives lie at bounded distance from any base point.  Support for
 -/
 import Rotor.Support.Equivariance
 
+/-!
+# Geometry of a doubly periodic graph
+
+This file develops the geometric estimates used by `prop:passage-limit`. The auxiliary `supNorm`
+on `ℤ × ℤ` satisfies the expected norm inequalities, and the graph distance between a vertex and
+its translate by a lattice vector `z` grows at most linearly in `supNorm z`, first for natural and
+then for integer scalar multiples. In the plane, the lattice generators `P.b 0, P.b 1` give a
+basis whose coordinate map controls `supNorm` by the Euclidean norm of the embedded lattice
+vector, and every vertex lies at bounded graph distance and bounded Euclidean offset from the
+translate of a fixed base point by its own orbit representative's coordinates.
+-/
+
 open Rotor MeasureTheory Filter Topology
 
 universe u
@@ -16,21 +28,28 @@ namespace Rotor
 /-- The sup norm of a lattice vector, as a real number. -/
 def supNorm (z : ℤ × ℤ) : ℝ := max |(z.1 : ℝ)| |(z.2 : ℝ)|
 
+/-- `supNorm z` is nonnegative. -/
 theorem supNorm_nonneg (z : ℤ × ℤ) : 0 ≤ supNorm z := le_max_of_le_left (abs_nonneg _)
 
+/-- The first coordinate of `z` has absolute value at most `supNorm z`. -/
 theorem abs_fst_le_supNorm (z : ℤ × ℤ) : |(z.1 : ℝ)| ≤ supNorm z := le_max_left _ _
 
+/-- The second coordinate of `z` has absolute value at most `supNorm z`. -/
 theorem abs_snd_le_supNorm (z : ℤ × ℤ) : |(z.2 : ℝ)| ≤ supNorm z := le_max_right _ _
 
+/-- `supNorm z ≤ r` iff both coordinates of `z` have absolute value at most `r`. -/
 theorem supNorm_le_iff {z : ℤ × ℤ} {r : ℝ} : supNorm z ≤ r ↔ |(z.1 : ℝ)| ≤ r ∧ |(z.2 : ℝ)| ≤ r :=
   max_le_iff
 
+/-- `supNorm` is invariant under negation. -/
 theorem supNorm_neg (z : ℤ × ℤ) : supNorm (-z) = supNorm z := by
   simp [supNorm]
 
+/-- `supNorm (z - w) = supNorm (w - z)`, from `supNorm_neg`. -/
 theorem supNorm_sub_comm (z w : ℤ × ℤ) : supNorm (z - w) = supNorm (w - z) := by
   rw [← supNorm_neg, neg_sub]
 
+/-- The triangle inequality for `supNorm`. -/
 theorem supNorm_add_le (z w : ℤ × ℤ) : supNorm (z + w) ≤ supNorm z + supNorm w := by
   simpa only [supNorm, Prod.fst_add, Prod.snd_add, Int.cast_add] using
     max_le
@@ -38,6 +57,8 @@ theorem supNorm_add_le (z w : ℤ × ℤ) : supNorm (z + w) ≤ supNorm z + supN
         (add_le_add (abs_fst_le_supNorm z) (abs_fst_le_supNorm w)))
       ((abs_add_le _ _).trans
         (add_le_add (abs_snd_le_supNorm z) (abs_snd_le_supNorm w)))
+
+/-- `supNorm` scales linearly under `ℕ`-scalar multiplication. -/
 theorem supNorm_nsmul (n : ℕ) (z : ℤ × ℤ) : supNorm (n • z) = n * supNorm z := by
   unfold supNorm
   rw [Prod.smul_fst, Prod.smul_snd, nsmul_eq_mul, nsmul_eq_mul]
@@ -55,6 +76,8 @@ theorem dist_shift_shift (hπ : P.Periodic π) (hG : G.Connected) (z : ℤ × �
   simpa [P.mechAut_σ] using this
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The distance from `o` to its translate by `n • z` is at most `n` times the distance from `o`
+to its translate by `z`, by induction on `n` using the triangle inequality. -/
 theorem dist_shift_nsmul_le' (hπ : P.Periodic π) (hG : G.Connected) (o : V) (z : ℤ × ℤ) (n : ℕ) :
     G.dist o (P.shift (n • z) o) ≤ n * G.dist o (P.shift z o) := by
   induction n with
@@ -75,6 +98,9 @@ theorem dist_shift_neg (hπ : P.Periodic π) (hG : G.Connected) (o : V) (z : ℤ
   rw [← this, G.dist_comm]
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- `dist_shift_nsmul_le'` extended from `ℕ` to `ℤ`: the distance from `o` to its translate by
+`k • z` is at most `|k|` times the distance from `o` to its translate by `z`, splitting on the
+sign of `k` and using `dist_shift_neg` in the negative case. -/
 theorem dist_shift_zsmul_le (hπ : P.Periodic π) (hG : G.Connected) (o : V) (z : ℤ × ℤ) (k : ℤ) :
     (G.dist o (P.shift (k • z) o) : ℝ) ≤ |(k : ℝ)| * G.dist o (P.shift z o) := by
   rcases Int.eq_nat_or_neg k with ⟨n, rfl | rfl⟩
@@ -96,7 +122,8 @@ theorem dist_shift_le_supNorm (hπ : P.Periodic π) (hG : G.Connected) (o : V) (
     ext <;> simp
   have htri := hG.dist_triangle (u := o) (v := P.shift (z.1 • ((1, 0) : ℤ × ℤ)) o)
     (w := P.shift z o)
-  have hz' : P.shift z o = P.shift (z.1 • ((1, 0) : ℤ × ℤ)) (P.shift (z.2 • ((0, 1) : ℤ × ℤ)) o) := by
+  have hz' :
+      P.shift z o = P.shift (z.1 • ((1, 0) : ℤ × ℤ)) (P.shift (z.2 • ((0, 1) : ℤ × ℤ)) o) := by
     rw [← P.shift_add, ← hz]
   have h2 : G.dist (P.shift (z.1 • ((1, 0) : ℤ × ℤ)) o) (P.shift z o) =
       G.dist o (P.shift (z.2 • ((0, 1) : ℤ × ℤ)) o) := by
@@ -110,7 +137,8 @@ theorem dist_shift_le_supNorm (hπ : P.Periodic π) (hG : G.Connected) (o : V) (
   have d1 : (0 : ℝ) ≤ G.dist o (P.shift (1, 0) o) := Nat.cast_nonneg _
   have d2 : (0 : ℝ) ≤ G.dist o (P.shift (0, 1) o) := Nat.cast_nonneg _
   have htri' : (G.dist o (P.shift z o) : ℝ) ≤
-      G.dist o (P.shift (z.1 • ((1, 0) : ℤ × ℤ)) o) + G.dist o (P.shift (z.2 • ((0, 1) : ℤ × ℤ)) o) := by
+      G.dist o (P.shift (z.1 • ((1, 0) : ℤ × ℤ)) o) +
+        G.dist o (P.shift (z.2 • ((0, 1) : ℤ × ℤ)) o) := by
     exact_mod_cast htri
   nlinarith [mul_le_mul_of_nonneg_left b1 d1, mul_le_mul_of_nonneg_left b2 d2]
 
@@ -122,10 +150,14 @@ namespace DoublyPeriodic
 noncomputable def latVec (z : ℤ × ℤ) : Plane := (z.1 : ℝ) • P.b 0 + (z.2 : ℝ) • P.b 1
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The embedding of a vertex's translate by `z`, minus the embedding of the vertex itself, is the
+lattice vector `latVec z`. -/
 theorem emb_shift_sub (z : ℤ × ℤ) (v : V) : P.emb (P.shift z v) - P.emb v = P.latVec z := by
   rw [P.emb_shift, latVec]; abel
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The Euclidean norm of the lattice vector `latVec z` is at most `(‖b 0‖ + ‖b 1‖) * supNorm z`,
+by the triangle inequality applied to its two basis components. -/
 theorem norm_latVec_le (z : ℤ × ℤ) : ‖P.latVec z‖ ≤ (‖P.b 0‖ + ‖P.b 1‖) * supNorm z := by
   have b1 := abs_fst_le_supNorm z
   have b2 := abs_snd_le_supNorm z
@@ -142,6 +174,7 @@ noncomputable def basis : Module.Basis (Fin 2) ℝ Plane :=
   basisOfLinearIndependentOfCardEqFinrank P.b_indep (by simp)
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The abstract basis `P.basis` agrees with the lattice generators `P.b`. -/
 @[simp] theorem basis_apply (i : Fin 2) : P.basis i = P.b i := by
   simp [basis]
 
@@ -150,14 +183,18 @@ noncomputable def coords : Plane →L[ℝ] (Fin 2 → ℝ) :=
   (P.basis.equivFun.toContinuousLinearEquiv : Plane ≃L[ℝ] (Fin 2 → ℝ))
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- `coords` unfolds to the coordinate functional `basis.equivFun`. -/
 theorem coords_apply (x : Plane) : P.coords x = P.basis.equivFun x := rfl
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The coordinates of the lattice vector `latVec z` in the lattice basis are exactly
+`(z.1, z.2)`. -/
 theorem coords_latVec (z : ℤ × ℤ) : P.coords (P.latVec z) = ![(z.1 : ℝ), (z.2 : ℝ)] := by
   apply P.basis.equivFun.symm.injective
   rw [coords_apply, LinearEquiv.symm_apply_apply,
     Module.Basis.equivFun_symm_apply, Fin.sum_univ_two]
   simp only [basis_apply, Matrix.cons_val_zero, Matrix.cons_val_one, latVec]
+
 omit [DecidableEq V] [G.LocallyFinite] in
 /-- The sup norm of a lattice vector is controlled by the Euclidean norm of its image. -/
 theorem supNorm_le_norm_latVec (z : ℤ × ℤ) : supNorm z ≤ ‖P.coords‖ * ‖P.latVec z‖ := by

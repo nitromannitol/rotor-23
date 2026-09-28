@@ -17,12 +17,16 @@ namespace Rotor
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V}
 variable (π : Mechanism G)
 
-/-! ### Functions of finitely many coordinates are measurable -/
+/-!
+# Measurability of the routing-derived events and the passage time
+
+### Functions of finitely many coordinates are measurable -/
 
 /-- The restriction of a configuration to a finite set of vertices. -/
 def restr (F : Finset V) (ρ : Config G) : ∀ v : F, G.neighborSet v := fun v => ρ v
 
 omit [DecidableEq V] in
+/-- The restriction map `restr F` is measurable. -/
 theorem measurable_restr (F : Finset V) : Measurable (restr (G := G) F) :=
   measurable_pi_lambda _ (fun v => measurable_pi_apply v.1)
 
@@ -74,6 +78,8 @@ theorem run_σ_congr (S : Finset V) (ξ ξ' : RState G) (vs : List V) (hσ : ξ.
     rw [run_cons, run_cons]
     exact ih _ _ h1 h2
 
+/-- Legality of a routing depends only on the initial particle counts and on the rotors at the
+vertices it actuates. -/
 theorem isLegal_congr (S : Finset V) (ξ ξ' : RState G) (vs : List V) (hσ : ξ.σ = ξ'.σ)
     (hρ : ∀ v ∈ vs, ξ.ρ v = ξ'.ρ v) : IsLegal π S ξ vs ↔ IsLegal π S ξ' vs := by
   induction vs generalizing ξ ξ' with
@@ -102,11 +108,15 @@ theorem isComplete_congr (S : Finset V) (ρ ρ' : Config G) (vs : List V)
   unfold Stable
   rw [this]
 
+/-- The set of rotor configurations for which the boundary routing `vs` from `S` is complete is
+measurable. -/
 theorem measurableSet_isComplete [G.LocallyFinite] (S : Finset V) (vs : List V) :
     MeasurableSet {ρ : Config G | IsComplete π S (boundaryInit S ρ) vs} :=
   measurableSet_of_depends vs.toFinset _ (fun ρ ρ' h =>
     isComplete_congr π S ρ ρ' vs (fun v hv => h v (List.mem_toFinset.2 hv)))
 
+/-- The set of rotor configurations for which `S`'s boundary routing terminates is measurable,
+as a countable union over the possible terminating routings `vs`. -/
 theorem measurableSet_terminates [G.LocallyFinite] [Countable V] (S : Finset V) :
     MeasurableSet {ρ : Config G | Terminates π S ρ} := by
   have : {ρ : Config G | Terminates π S ρ} =
@@ -115,6 +125,8 @@ theorem measurableSet_terminates [G.LocallyFinite] [Countable V] (S : Finset V) 
   rw [this]
   exact MeasurableSet.iUnion (fun vs => measurableSet_isComplete π S vs)
 
+/-- The set of rotor configurations for which every nonempty finite set's boundary routing
+terminates is measurable, as a countable intersection over `S`. -/
 theorem measurableSet_allTerminate [G.LocallyFinite] [Countable V] :
     MeasurableSet {ρ : Config G | AllTerminate π ρ} := by
   have : {ρ : Config G | AllTerminate π ρ} =
@@ -128,6 +140,8 @@ theorem measurableSet_allTerminate [G.LocallyFinite] [Countable V] :
 section
 variable [G.LocallyFinite] [Countable V]
 
+/-- The set of rotor configurations for which `y` lies in `Φ π ρ S` is measurable: `y ∈ Φ π ρ S`
+iff `y ∈ S` or some complete boundary routing of `S` visits `y`. -/
 theorem measurableSet_mem_Φ (hAb : External.Abelian G) [Infinite V] (hG : G.Connected)
     (S : Finset V) (hS : S.Nonempty) (y : V) : MeasurableSet {ρ : Config G | y ∈ Φ π ρ S} := by
   have : {ρ : Config G | y ∈ Φ π ρ S} =
@@ -198,6 +212,8 @@ theorem measurableSet_iterate_eq (hAb : External.Abelian G) [Infinite V] (hG : G
             simp [boundaryInit] at this
       by_cases hyS : y ∈ S <;> simp [this, hyS]
 
+/-- The set of rotor configurations for which `y` lies in the `n`-th iterate `(Φ π ρ)^[n] {x}` is
+measurable, as a countable union over which finite set that iterate equals. -/
 theorem measurableSet_mem_iterate (hAb : External.Abelian G) [Infinite V] (hG : G.Connected)
     (x y : V) (n : ℕ) : MeasurableSet {ρ : Config G | y ∈ (Φ π ρ)^[n] {x}} := by
   have : {ρ : Config G | y ∈ (Φ π ρ)^[n] {x}} =

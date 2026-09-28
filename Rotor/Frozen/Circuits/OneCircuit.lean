@@ -20,6 +20,17 @@ import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
 import Rotor.Bridge.OneCircuit
 
+/-!
+# The one-circuit theorem
+
+States the frozen certificate for Lemma 2.1 of `rotor.tex`: during the interval
+`T(n) ≤ t < T(n+1)` the walk traverses each directed edge at most once, and if
+`T(n+1) < ∞` then every vertex of `A_n` departs exactly `deg(x)` times during that
+interval. The paper cites FLP Lemmas 2.1 and 2.4 without proof, so the statement is
+discharged from the external hypothesis `External.OneCircuit` together with the
+abelian property and the Holroyd-Propp results, via `Rotor.Bridge.oneCircuit_holds`.
+-/
+
 open Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]

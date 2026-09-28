@@ -49,8 +49,8 @@ theorem finite_neighborSet_of_mechanism (π : Mechanism G) (v : V) :
     simpa using (hmod n).symm.trans hn
   exact Finite.of_surjective _ hsurj
 
-/-- A mechanism `π` on `G` makes every neighbor set finite, hence supplies a `G.LocallyFinite`
-instance. -/
+/-- A mechanism `π` on `G` makes every neighbor set finite, hence supplies a
+`G.LocallyFinite` instance. -/
 @[reducible] noncomputable def locallyFinite_of_mechanism (π : Mechanism G) : G.LocallyFinite := by
   intro v
   letI : Finite (G.neighborSet v) := finite_neighborSet_of_mechanism π v

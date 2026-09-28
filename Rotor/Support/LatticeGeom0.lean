@@ -5,6 +5,17 @@ Used by `lem:block-live-paths`, whose statement has an arbitrary mechanism.
 -/
 import Rotor.Support.BlockGeom
 
+/-!
+# Distance lemmas for a doubly periodic graph, without periodicity of the mechanism
+
+Records the graph-distance facts about lattice translations that follow just from `shiftIso`,
+the fact that each translation `P.shift z` is a graph automorphism: shifting both endpoints of a
+distance by the same `z` preserves it, the distance from `o` to its `z`-shifted images grows at
+most linearly in `n` or `|k|` for `n • z` or `k • z`, and it is comparable to the sup-norm of
+`z`. These do not assume the mechanism is periodic, unlike the rest of `LatticeGeom`, since
+`lem:block-live-paths` needs them for an arbitrary mechanism.
+-/
+
 namespace Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite] (P : DoublyPeriodic G)
@@ -17,6 +28,8 @@ def shiftIso (z : ℤ × ℤ) : G ≃g G where
   map_rel_iff' := fun {u v} => P.adj_shift z u v
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- Shifting both endpoints of a graph distance by the same lattice vector `z` does not change
+the distance, since `shiftIso z` is a graph automorphism. -/
 theorem dist_shift_shift₀ (hG : G.Connected) (z : ℤ × ℤ) (x y : V) :
     G.dist (P.shift z x) (P.shift z y) = G.dist x y := by
   apply le_antisymm
@@ -31,6 +44,8 @@ theorem dist_shift_shift₀ (hG : G.Connected) (z : ℤ × ℤ) (x y : V) :
     simpa [e1, e2] using this
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The distance from `o` to its `n`-fold shift `P.shift (n • z) o` is at most `n` times the
+distance from `o` to its single shift `P.shift z o`, by induction and the triangle inequality. -/
 theorem dist_shift_nsmul_le₀ (hG : G.Connected) (o : V) (z : ℤ × ℤ) (n : ℕ) :
     G.dist o (P.shift (n • z) o) ≤ n * G.dist o (P.shift z o) := by
   induction n with
@@ -43,6 +58,8 @@ theorem dist_shift_nsmul_le₀ (hG : G.Connected) (o : V) (z : ℤ × ℤ) (n : 
     nlinarith
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The distance from `o` to its shift by `-z` equals the distance from `o` to its shift by
+`z`. -/
 theorem dist_shift_neg₀ (hG : G.Connected) (o : V) (z : ℤ × ℤ) :
     G.dist o (P.shift (-z) o) = G.dist o (P.shift z o) := by
   have := P.dist_shift_shift₀ hG z o (P.shift (-z) o)
@@ -50,6 +67,8 @@ theorem dist_shift_neg₀ (hG : G.Connected) (o : V) (z : ℤ × ℤ) :
   rw [← this, G.dist_comm]
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The integer version of `dist_shift_nsmul_le₀`: the distance from `o` to `P.shift (k • z) o`
+is at most `|k|` times the distance from `o` to `P.shift z o`, for `k : ℤ`. -/
 theorem dist_shift_zsmul_le₀ (hG : G.Connected) (o : V) (z : ℤ × ℤ) (k : ℤ) :
     (G.dist o (P.shift (k • z) o) : ℝ) ≤ |(k : ℝ)| * G.dist o (P.shift z o) := by
   rcases Int.eq_nat_or_neg k with ⟨n, rfl | rfl⟩
@@ -62,6 +81,9 @@ theorem dist_shift_zsmul_le₀ (hG : G.Connected) (o : V) (z : ℤ × ℤ) (k : 
     exact_mod_cast this
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The distance from `o` to `P.shift z o` is at most a constant (depending only on the two unit
+shifts) times the sup-norm of `z`, obtained by decomposing `z` into its two coordinates and
+applying `dist_shift_zsmul_le₀` to each. -/
 theorem dist_shift_le_supNorm₀ (hG : G.Connected) (o : V) (z : ℤ × ℤ) :
     (G.dist o (P.shift z o) : ℝ) ≤
       (G.dist o (P.shift (1, 0) o) + G.dist o (P.shift (0, 1) o)) * supNorm z := by
@@ -69,7 +91,8 @@ theorem dist_shift_le_supNorm₀ (hG : G.Connected) (o : V) (z : ℤ × ℤ) :
     ext <;> simp
   have htri := hG.dist_triangle (u := o) (v := P.shift (z.1 • ((1, 0) : ℤ × ℤ)) o)
     (w := P.shift z o)
-  have hz' : P.shift z o = P.shift (z.1 • ((1, 0) : ℤ × ℤ)) (P.shift (z.2 • ((0, 1) : ℤ × ℤ)) o) := by
+  have hz' : P.shift z o =
+      P.shift (z.1 • ((1, 0) : ℤ × ℤ)) (P.shift (z.2 • ((0, 1) : ℤ × ℤ)) o) := by
     rw [← P.shift_add, ← hz]
   have h2 : G.dist (P.shift (z.1 • ((1, 0) : ℤ × ℤ)) o) (P.shift z o) =
       G.dist o (P.shift (z.2 • ((0, 1) : ℤ × ℤ)) o) := by
@@ -83,11 +106,16 @@ theorem dist_shift_le_supNorm₀ (hG : G.Connected) (o : V) (z : ℤ × ℤ) :
   have d1 : (0 : ℝ) ≤ G.dist o (P.shift (1, 0) o) := Nat.cast_nonneg _
   have d2 : (0 : ℝ) ≤ G.dist o (P.shift (0, 1) o) := Nat.cast_nonneg _
   have htri' : (G.dist o (P.shift z o) : ℝ) ≤
-      G.dist o (P.shift (z.1 • ((1, 0) : ℤ × ℤ)) o) + G.dist o (P.shift (z.2 • ((0, 1) : ℤ × ℤ)) o) := by
+      G.dist o (P.shift (z.1 • ((1, 0) : ℤ × ℤ)) o) +
+        G.dist o (P.shift (z.2 • ((0, 1) : ℤ × ℤ)) o) := by
     exact_mod_cast htri
   nlinarith [mul_le_mul_of_nonneg_left b1 d1, mul_le_mul_of_nonneg_left b2 d2]
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- There is a uniform bound `D` such that every vertex `v` is within graph distance `D`, and
+within embedded displacement `D`, of the lattice translate `P.shift (P.coord v) o` of the
+basepoint `o`, using that the finitely many orbit representatives give bounded images under
+`G.dist · o` and `P.emb`. -/
 theorem exists_rep_bound₀ (hG : G.Connected) (o : V) :
     ∃ D : ℝ, 0 ≤ D ∧ ∀ v : V, (G.dist v (P.shift (P.coord v) o) : ℝ) ≤ D ∧
       ‖P.emb v - P.emb (P.shift (P.coord v) o)‖ ≤ D := by

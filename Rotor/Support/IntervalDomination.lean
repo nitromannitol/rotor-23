@@ -3,6 +3,8 @@ import Rotor.Support.HistoryProb
 import Rotor.Support.DualGuards
 
 /-!
+# Domination of nonforced tests by Bernoulli percolation
+
 Proposition 5.1 (`prop:square-passage`), part 3: the sequential domination of an interval of
 nonforced tests by Bernoulli(1/2) percolation (`rotor.tex:2180-2195`, Step 1).  The potential
 `intPot` is the conditional probability of the constrained crossing given the outcomes of the
@@ -17,15 +19,21 @@ namespace Rotor
 
 /-! ### The tests of an interval -/
 
+/-- If `replay f d h` has no active bond, appending an outcome bit `o` to `h` does not change
+the tested list. -/
 theorem tested_replay_append_nil (f d : Site) (h : List Bool) (hs : (replay f d h).active = [])
     (o : Bool) : (replay f d (h ++ [o])).tested = (replay f d h).tested := by
   rw [replay_append, explStepWith_nil hs]
 
+/-- If `replay f d h` has active bond `e :: rest`, appending an outcome bit `o` to `h` extends
+the tested list by the single test `(e.1, e.2, o)`. -/
 theorem tested_replay_append_cons (f d : Site) (h : List Bool) {e : Site × Site}
     {rest : List (Site × Site)} (he : (replay f d h).active = e :: rest) (o : Bool) :
     (replay f d (h ++ [o])).tested = (replay f d h).tested ++ [(e.1, e.2, o)] := by
   rw [replay_append, explStepWith_cons he]
 
+/-- If `h₀` is a prefix of `h'`, the tested list of `replay f d h₀` is a prefix of that of
+`replay f d h'`. -/
 theorem tested_prefix_replay (f d : Site) {h₀ h' : List Bool} (hp : h₀ <+: h') :
     (replay f d h₀).tested <+: (replay f d h').tested := by
   obtain ⟨t, rfl⟩ := hp
@@ -43,9 +51,12 @@ theorem tested_prefix_replay (f d : Site) {h₀ h' : List Bool} (hp : h₀ <+: h
 noncomputable def intervalTests (f d : Site) (h₀ h' : List Bool) : List (Site × Site × Bool) :=
   (replay f d h').tested.drop (replay f d h₀).tested.length
 
+/-- `intervalTests f d h₀ h₀` is empty: no tests are recorded over a trivial interval. -/
 theorem intervalTests_self (f d : Site) (h₀ : List Bool) : intervalTests f d h₀ h₀ = [] := by
   simp [intervalTests]
 
+/-- The tested list of `replay f d h'` splits as that of `replay f d h₀` followed by
+`intervalTests f d h₀ h'`, when `h₀ <+: h'`. -/
 theorem tested_eq_append_intervalTests (f d : Site) {h₀ h' : List Bool} (hp : h₀ <+: h') :
     (replay f d h').tested = (replay f d h₀).tested ++ intervalTests f d h₀ h' := by
   have := tested_prefix_replay f d hp
@@ -54,6 +65,8 @@ theorem tested_eq_append_intervalTests (f d : Site) {h₀ h' : List Bool} (hp : 
   conv_lhs => rw [← List.take_append_drop (replay f d h₀).tested.length (replay f d h').tested]
   rw [← this]
 
+/-- Extending `h'` by the outcome `o` of its active bond `e` extends `intervalTests f d h₀ h'`
+by the single test `(e.1, e.2, o)`. -/
 theorem intervalTests_append_cons (f d : Site) {h₀ h' : List Bool} (hp : h₀ <+: h')
     {e : Site × Site} {rest : List (Site × Site)} (he : (replay f d h').active = e :: rest)
     (o : Bool) : intervalTests f d h₀ (h' ++ [o]) = intervalTests f d h₀ h' ++ [(e.1, e.2, o)] := by
@@ -61,12 +74,15 @@ theorem intervalTests_append_cons (f d : Site) {h₀ h' : List Bool} (hp : h₀ 
   rw [tested_replay_append_cons f d h' he o,
     List.drop_append_of_le_length (tested_prefix_replay f d hp).length_le]
 
+/-- If `h'` has no active bond, appending an outcome bit `o` leaves `intervalTests f d h₀ h'`
+unchanged. -/
 theorem intervalTests_append_nil (f d : Site) (h₀ h' : List Bool)
     (hs : (replay f d h').active = []) (o : Bool) :
     intervalTests f d h₀ (h' ++ [o]) = intervalTests f d h₀ h' := by
   unfold intervalTests
   rw [tested_replay_append_nil f d h' hs]
 
+/-- `intervalTests f d h₀ h'` is a sublist of the full tested list of `replay f d h'`. -/
 theorem intervalTests_sublist (f d : Site) (h₀ h' : List Bool) :
     List.Sublist (intervalTests f d h₀ h') (replay f d h').tested :=
   List.drop_sublist _ _
@@ -80,9 +96,12 @@ theorem intervalTests_nodup (f : Site) {d : Site} (hd : IsUnit d) (h₀ h' : Lis
 def intervalCyl (f d : Site) (h₀ h' : List Bool) : Set BondConfig :=
   {ω | ∀ t ∈ intervalTests f d h₀ h', ω (bond (t.1, t.2.1)) = t.2.2}
 
+/-- `intervalCyl f d h₀ h₀` is the whole space: no constraint over a trivial interval. -/
 theorem intervalCyl_self (f d : Site) (h₀ : List Bool) : intervalCyl f d h₀ h₀ = Set.univ := by
   ext ω; simp [intervalCyl, intervalTests_self]
 
+/-- Extending `h'` by the outcome `o` of its active bond `e` cuts `intervalCyl f d h₀ h'` down
+to the configurations that also set the bond `e` to `o`. -/
 theorem intervalCyl_append_cons (f d : Site) {h₀ h' : List Bool} (hp : h₀ <+: h')
     {e : Site × Site} {rest : List (Site × Site)} (he : (replay f d h').active = e :: rest)
     (o : Bool) : intervalCyl f d h₀ (h' ++ [o]) =
@@ -96,6 +115,8 @@ theorem intervalCyl_append_cons (f d : Site) {h₀ h' : List Bool} (hp : h₀ <+
     · exact h1 t ht
     · exact h2
 
+/-- `intervalCyl f d h₀ h'` is measurable, as a finite intersection of coordinate events over
+the bonds tested in the interval. -/
 theorem measurableSet_intervalCyl (f d : Site) (h₀ h' : List Bool) :
     MeasurableSet (intervalCyl f d h₀ h') := by
   have : intervalCyl f d h₀ h' = ⋂ t ∈ {t | t ∈ intervalTests f d h₀ h'},
@@ -105,6 +126,8 @@ theorem measurableSet_intervalCyl (f d : Site) (h₀ h' : List Bool) :
   exact MeasurableSet.biInter (List.finite_toSet _).countable
     (fun t _ => measurable_pi_apply _ MeasurableSet.of_discrete)
 
+/-- If `l.map g` has no repeated keys and `t ∈ l`, then `List.find?` for the key `g t` returns
+`t`; indexing into a list with distinct keys is unambiguous. -/
 theorem find?_of_nodup_map {α β : Type*} [DecidableEq β] {g : α → β} :
     ∀ {l : List α}, (l.map g).Nodup → ∀ {t : α}, t ∈ l →
       l.find? (fun t' => decide (g t' = g t)) = some t
@@ -129,12 +152,16 @@ def outcomeOf (L : List (Site × Site × Bool)) (b : Sym2 Site) : Bool :=
   | some t => t.2.2
   | none => false
 
+/-- If the bonds of the tests in `L` are pairwise distinct and `t ∈ L`, then `outcomeOf L`
+returns the recorded outcome `t.2.2` at the bond of `t`. -/
 theorem outcomeOf_mem {L : List (Site × Site × Bool)}
     (hnd : (L.map (fun t => bond (t.1, t.2.1))).Nodup) {t : Site × Site × Bool} (ht : t ∈ L) :
     outcomeOf L (bond (t.1, t.2.1)) = t.2.2 := by
   unfold outcomeOf
   rw [find?_of_nodup_map hnd ht]
 
+/-- `intervalCyl f d h₀ h'` coincides with the cylinder event `cylBonds` on the bonds tested
+in the interval, with values given by `outcomeOf`. -/
 theorem intervalCyl_eq_cylBonds (f : Site) {d : Site} (hd : IsUnit d) (h₀ h' : List Bool) :
     intervalCyl f d h₀ h' =
       cylBonds ((intervalTests f d h₀ h').map (fun t => bond (t.1, t.2.1))).toFinset
@@ -148,6 +175,8 @@ theorem intervalCyl_eq_cylBonds (f : Site) {d : Site} (hd : IsUnit d) (h₀ h' :
   · intro h t ht
     rw [h _ ⟨t, ht, rfl⟩, outcomeOf_mem hnd ht]
 
+/-- Under Bernoulli(1/2) percolation, `intervalCyl f d h₀ h'` has probability
+`(1/2) ^ (intervalTests f d h₀ h').length`. -/
 theorem bondLaw_half_intervalCyl (f : Site) {d : Site} (hd : IsUnit d) (h₀ h' : List Bool) :
     bondLaw (1 / 2) half_le_one (intervalCyl f d h₀ h') =
       (1 / 2 : ℝ≥0∞) ^ (intervalTests f d h₀ h').length := by
@@ -157,13 +186,18 @@ theorem bondLaw_half_intervalCyl (f : Site) {d : Site} (hd : IsUnit d) (h₀ h' 
 /-! ### The potential -/
 
 /-- The conditional probability of `A` given the interval's outcomes. -/
-noncomputable def intPot (f d : Site) (h₀ : List Bool) (A : Set BondConfig) (h' : List Bool) : ℝ≥0∞ :=
+noncomputable def intPot (f d : Site) (h₀ : List Bool) (A : Set BondConfig)
+    (h' : List Bool) : ℝ≥0∞ :=
   bondLaw (1 / 2) half_le_one (A ∩ intervalCyl f d h₀ h') * 2 ^ (intervalTests f d h₀ h').length
 
+/-- `intPot f d h₀ A h₀` reduces to the unconditional probability of `A`, since the interval
+is trivial. -/
 theorem intPot_self (f d : Site) (h₀ : List Bool) (A : Set BondConfig) :
     intPot f d h₀ A h₀ = bondLaw (1 / 2) half_le_one A := by
   simp [intPot, intervalCyl_self, intervalTests_self]
 
+/-- If `intervalCyl f d h₀ h'` is already contained in `A`, the conditional potential
+`intPot f d h₀ A h'` equals `1`. -/
 theorem intPot_of_subset (f : Site) {d : Site} (hd : IsUnit d) (h₀ : List Bool) {A : Set BondConfig}
     {h' : List Bool} (hsub : intervalCyl f d h₀ h' ⊆ A) : intPot f d h₀ A h' = 1 := by
   unfold intPot
@@ -174,6 +208,8 @@ theorem intPot_of_subset (f : Site) {d : Site} (hd : IsUnit d) (h₀ : List Bool
 def IncreasingEvent (A : Set BondConfig) : Prop :=
   ∀ ω ω' : BondConfig, (∀ b, ω b = true → ω' b = true) → ω ∈ A → ω' ∈ A
 
+/-- If the active bond at `h'` is `e :: rest`, its bond differs from the bond of every test
+already recorded in `replay f d h'`. -/
 theorem bond_new_of_active (f : Site) {d : Site} (hd : IsUnit d) (h' : List Bool) {e : Site × Site}
     {rest : List (Site × Site)} (he : (replay f d h').active = e :: rest) :
     ∀ t ∈ (replay f d h').tested, bond (t.1, t.2.1) ≠ bond (e.1, e.2) := fun t ht h =>
@@ -233,7 +269,8 @@ theorem intPot_step (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) (F₀
     have hbF : bond (e₁, e₂) ∈ F := Finset.mem_union.2 (Or.inr (Finset.mem_singleton.2 rfl))
     have hdet : ∀ o, BondDetermined F (A ∩ intervalCyl f d h₀ (h' ++ [o])) := by
       intro o ω ω' hωω'
-      have hA' := hA ω ω' (fun c hc => hωω' c (Finset.mem_union.2 (Or.inl (Finset.mem_union.2 (Or.inl hc)))))
+      have hA' := hA ω ω'
+        (fun c hc => hωω' c (Finset.mem_union.2 (Or.inl (Finset.mem_union.2 (Or.inl hc)))))
       have hC : ω ∈ intervalCyl f d h₀ (h' ++ [o]) ↔ ω' ∈ intervalCyl f d h₀ (h' ++ [o]) := by
         simp only [intervalCyl, intervalTests_append_cons f d hp he o, List.mem_append,
           List.mem_singleton, Set.mem_setOf_eq]
@@ -300,9 +337,12 @@ def IntervalHist (f d : Site) (h₀ h' : List Bool) : Prop :=
     ∀ (e : Site × Site) (rest : List (Site × Site)), (replay f d (h'.take i)).active = e :: rest →
       ¬ TestedAs (replay f d (h'.take i)).tested (sideW e.1 e.2) false
 
+/-- `IntervalHist f d h₀ h₀` holds trivially: the empty extension has no steps to check. -/
 theorem intervalHist_self (f d : Site) (h₀ : List Bool) : IntervalHist f d h₀ h₀ :=
   ⟨List.prefix_refl _, fun _ h1 h2 => by omega⟩
 
+/-- If `h'` is an interval history over `h₀` and `h''` lies between `h₀` and `h'`, then `h''`
+is itself an interval history over `h₀`. -/
 theorem intervalHist_of_prefix {f d : Site} {h₀ h' h'' : List Bool} (h : IntervalHist f d h₀ h')
     (hp : h₀ <+: h'') (hp' : h'' <+: h') : IntervalHist f d h₀ h'' := by
   refine ⟨hp, fun i h1 h2 e rest he => ?_⟩
@@ -312,6 +352,8 @@ theorem intervalHist_of_prefix {f d : Site} {h₀ h' h'' : List Bool} (h : Inter
   rw [← htake] at he ⊢
   exact h.2 i h1 (by have := hp'.length_le; omega) e rest he
 
+/-- Dropping the last bit of an interval history `h'` over `h₀` gives an interval history
+`h'.dropLast`, together with the nonforced-test condition for the dropped step. -/
 theorem intervalHist_dropLast {f d : Site} {h₀ h' : List Bool} (h : IntervalHist f d h₀ h')
     (hlt : h₀.length < h'.length) :
     IntervalHist f d h₀ h'.dropLast ∧
@@ -443,6 +485,8 @@ theorem intPot_sum_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d))
       _ = ∑ h' ∈ Srest ∪ P, Pm f d h' * intPot f d h₀ A h' := (Finset.sum_union hdisj').symm
       _ ≤ _ := ih
 
+/-- If every finite partial sum of `g` is at most `c`, then the series `∑' i, g i` is at
+most `c`. -/
 theorem tsum_le_of_forall_finset {ι : Type*} (g : ι → ℝ≥0∞) (c : ℝ≥0∞)
     (h : ∀ s : Finset ι, ∑ i ∈ s, g i ≤ c) : ∑' i, g i ≤ c := by
   rw [ENNReal.tsum_eq_iSup_sum]; exact iSup_le h
@@ -461,11 +505,15 @@ def MinWit (f d : Site) (h₀ : List Bool) (r : Site) (s : ℕ) (h' : List Bool)
   IntervalWit f d h₀ r s h' ∧
     ∀ h'', h₀ <+: h'' → h'' <+: h' → h'' ≠ h' → ¬ IntervalWit f d h₀ r s h''
 
+/-- Two minimal witnesses in a prefix relation coincide: if `h'` is a prefix of `h''` and both
+are minimal witnesses, then `h' = h''`. -/
 theorem minWit_prefix_free {f d : Site} {h₀ : List Bool} {r : Site} {s : ℕ} {h' h'' : List Bool}
     (h1 : MinWit f d h₀ r s h') (h2 : MinWit f d h₀ r s h'') (hp : h' <+: h'') : h' = h'' := by
   by_contra hne
   exact h2.2 h' h1.1.1.1 hp hne h1.1
 
+/-- If `h'` is a witness of a crossing in the interval, its cylinder `intervalCyl f d h₀ h'`
+is contained in `constrainedCrossing r s`. -/
 theorem intervalCyl_subset_of_wit {f d : Site} {h₀ : List Bool} {r : Site} {s : ℕ}
     {h' : List Bool} (hw : IntervalWit f d h₀ r s h') :
     intervalCyl f d h₀ h' ⊆ constrainedCrossing r s := by
@@ -481,6 +529,7 @@ theorem intervalCyl_subset_of_wit {f d : Site} {h₀ : List Bool} {r : Site} {s 
 noncomputable def boxSites (r : Site) (s : ℕ) : Finset Site :=
   (Finset.Icc (r.1 - s) (r.1 + s)) ×ˢ (Finset.Icc (r.2 - s) (r.2 + s))
 
+/-- `y ∈ boxSites r s` iff `y` lies within `ℓ^∞` distance `s` of `r`. -/
 theorem mem_boxSites {r : Site} {s : ℕ} {y : Site} : y ∈ boxSites r s ↔ linfDist y r ≤ s := by
   simp only [boxSites, Finset.mem_product, Finset.mem_Icc, linfDist, max_le_iff, abs_le]
   omega
@@ -489,10 +538,14 @@ theorem mem_boxSites {r : Site} {s : ℕ} {y : Site} : y ∈ boxSites r s ↔ li
 noncomputable def boxBonds (r : Site) (s : ℕ) : Finset (Sym2 Site) :=
   (boxSites r s ×ˢ boxSites r s).image (fun p => s(p.1, p.2))
 
+/-- If `a` and `b` both lie within `ℓ^∞` distance `s` of `r`, the bond `s(a, b)` lies in
+`boxBonds r s`. -/
 theorem mem_boxBonds_of {r : Site} {s : ℕ} {a b : Site} (ha : linfDist a r ≤ s)
     (hb : linfDist b r ≤ s) : s(a, b) ∈ boxBonds r s :=
   Finset.mem_image.2 ⟨(a, b), Finset.mem_product.2 ⟨mem_boxSites.2 ha, mem_boxSites.2 hb⟩, rfl⟩
 
+/-- `constrainedCrossing r s` is determined by the bonds in `boxBonds r s`, since any
+witnessing path stays inside the box. -/
 theorem constrainedCrossing_determined (r : Site) (s : ℕ) :
     BondDetermined (boxBonds r s) (constrainedCrossing r s) := by
   have key : ∀ ω ω' : BondConfig, (∀ b ∈ boxBonds r s, ω b = ω' b) →
@@ -507,6 +560,8 @@ theorem constrainedCrossing_determined (r : Site) (s : ℕ) :
   intro ω ω' h
   exact ⟨key ω ω' h, key ω' ω (fun b hb => (h b hb).symm)⟩
 
+/-- `constrainedCrossing r s` is an increasing event: opening more bonds preserves the
+existence of a witnessing path. -/
 theorem constrainedCrossing_increasing (r : Site) (s : ℕ) :
     IncreasingEvent (constrainedCrossing r s) := by
   rintro ω ω' hle ⟨l, ⟨hl, hch⟩, hhead, hin, hlast, hpat⟩

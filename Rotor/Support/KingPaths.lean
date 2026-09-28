@@ -6,6 +6,15 @@ non-backtracking king sequences.
 -/
 import Rotor.Support.BlockGeom
 
+/-!
+# King paths and non-backtracking king sequences
+
+Bounds the number of duplicate-free king paths of `m` steps on `ℤ²`: `lem:block-live-paths`.
+Loop erasure extracts a duplicate-free chain from any chain with the same endpoints, and a
+duplicate-free king path read backwards is a non-backtracking king sequence, of which there
+are at most `8 · 7^m`, since a backtracking step is excluded at each of the last `m` steps.
+-/
+
 open Finset
 
 namespace Rotor
@@ -65,8 +74,11 @@ theorem exists_nodup_chain {α : Type*} (R : α → α → Prop) :
 /-- A king step: a move to a different point with each coordinate changing by at most one. -/
 def KingStep (a b : ℤ × ℤ) : Prop := a ≠ b ∧ linf (b - a) ≤ 1
 
+/-- `KingStep` is decidable, by unfolding to a decidable inequality and a decidable
+bound on `linf`. -/
 instance : DecidableRel KingStep := fun a b => by unfold KingStep; infer_instance
 
+/-- `KingStep` is symmetric: if `a` king-steps to `b`, then `b` king-steps to `a`. -/
 theorem KingStep.symm {a b : ℤ × ℤ} (h : KingStep a b) : KingStep b a :=
   ⟨h.1.symm, by rw [linf_sub_comm]; exact h.2⟩
 
@@ -74,6 +86,7 @@ theorem KingStep.symm {a b : ℤ × ℤ} (h : KingStep a b) : KingStep b a :=
 noncomputable def kingNbrs (a : ℤ × ℤ) : Finset (ℤ × ℤ) :=
   ((Finset.Icc (-1 : ℤ) 1) ×ˢ (Finset.Icc (-1 : ℤ) 1)).image (fun d => a + d) \ {a}
 
+/-- `b ∈ kingNbrs a` iff `a` and `b` are related by a king step. -/
 theorem mem_kingNbrs {a b : ℤ × ℤ} : b ∈ kingNbrs a ↔ KingStep a b := by
   obtain ⟨a1, a2⟩ := a
   obtain ⟨b1, b2⟩ := b
@@ -86,9 +99,11 @@ theorem mem_kingNbrs {a b : ℤ × ℤ} : b ∈ kingNbrs a ↔ KingStep a b := b
   · rintro ⟨hne, ⟨h1, h2⟩, ⟨h3, h4⟩⟩
     refine ⟨⟨b1 - a1, b2 - a2, ⟨⟨?_, ?_⟩, ⟨?_, ?_⟩⟩, ?_, ?_⟩, fun h1' h2' => hne ?_ ?_⟩ <;> omega
 
+/-- Every point has exactly `8` king neighbors. -/
 theorem card_kingNbrs (a : ℤ × ℤ) : (kingNbrs a).card = 8 := by
   unfold kingNbrs
-  have hmem : {a} ∩ ((Finset.Icc (-1 : ℤ) 1) ×ˢ (Finset.Icc (-1 : ℤ) 1)).image (fun d => a + d) = {a} := by
+  have hmem : {a} ∩
+      ((Finset.Icc (-1 : ℤ) 1) ×ˢ (Finset.Icc (-1 : ℤ) 1)).image (fun d => a + d) = {a} := by
     refine Finset.inter_eq_left.2 (Finset.singleton_subset_iff.2 ?_)
     exact Finset.mem_image.2 ⟨0, by simp, by simp⟩
   rw [Finset.card_sdiff, hmem, Finset.card_image_of_injective _ (add_right_injective a)]
@@ -103,6 +118,7 @@ noncomputable def kingSeqs (a : ℤ × ℤ) : ℕ → Finset (List (ℤ × ℤ))
       ((kingNbrs (p.headD a)).filter (fun b => ∀ c ∈ p.tail.head?, b ≠ c)).image
         (fun b => b :: p))
 
+/-- Every `p ∈ kingSeqs a m` has length `m + 1` and is a chain of king steps. -/
 theorem mem_kingSeqs (a : ℤ × ℤ) (m : ℕ) {p : List (ℤ × ℤ)} (hp : p ∈ kingSeqs a m) :
     p.length = m + 1 ∧ p.IsChain KingStep := by
   induction m generalizing p with
@@ -120,6 +136,8 @@ theorem mem_kingSeqs (a : ℤ × ℤ) (m : ℕ) {p : List (ℤ × ℤ)} (hp : p 
     · rw [List.headD_cons] at hb
       exact List.isChain_cons_cons.2 ⟨(mem_kingNbrs.1 hb).symm, hchain⟩
 
+/-- `kingSeqs a m` has at most `8 * 7 ^ m` elements: `8` choices for the first step
+and at most `7` at each later step, since the immediate backtrack is excluded. -/
 theorem card_kingSeqs (a : ℤ × ℤ) (m : ℕ) : (kingSeqs a m).card ≤ 8 * 7 ^ m := by
   induction m with
   | zero => simp [kingSeqs]
@@ -195,8 +213,8 @@ theorem reverse_mem_kingSeqs (a : ℤ × ℤ) :
     have hchain_step : ∀ x ∈ l'.getLast?, KingStep x b := by
       intro x hx
       exact hchain.2.2 x hx b rfl
-    simp only [kingSeqs, Finset.mem_biUnion, Finset.mem_image, Finset.mem_filter, List.reverse_append,
-      List.reverse_singleton, List.singleton_append]
+    simp only [kingSeqs, Finset.mem_biUnion, Finset.mem_image, Finset.mem_filter,
+      List.reverse_append, List.reverse_singleton, List.singleton_append]
     refine ⟨l'.reverse, hmem, b, ⟨?_, ?_⟩, rfl⟩
     · have hrev : l'.reverse.headD a = l'.getLast hne := by
         rw [List.headD_eq_head?, List.head?_reverse, List.getLast?_eq_some_getLast hne]

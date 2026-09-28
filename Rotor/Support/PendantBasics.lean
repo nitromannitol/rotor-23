@@ -2,6 +2,8 @@ import Rotor.Pendant
 import Rotor.Support.SquareBasics
 
 /-!
+# Basic facts on the pendant graph `G_M`
+
 Basic facts on `G_M` (`rotor.tex:291-299` and Section 6): connectivity, degrees, the
 doubly periodic structure under lattice translations, and the periodicity of the clockwise
 mechanism.
@@ -18,9 +20,12 @@ def pendantInl : squareGraph →g pendantGraph M where
   toFun := Sum.inl
   map_rel' h := h
 
+/-- Each lattice site `v` is adjacent, in `G_M`, to each of its `M` pendant leaves `(v, i)`. -/
 theorem pendantGraph_adj_inl_inr (v : Site) (i : Fin M) :
     (pendantGraph M).Adj (.inl v) (.inr (v, i)) := rfl
 
+/-- `G_M` is connected: every vertex reaches some lattice vertex `.inl v` in at most one step,
+and lattice vertices are joined through the connectivity of the square lattice `squareGraph`. -/
 theorem pendantGraph_reachable (x y : PVertex M) : (pendantGraph M).Reachable x y := by
   have key : ∀ x : PVertex M, ∃ v : Site, (pendantGraph M).Reachable x (.inl v) := by
     rintro (v | ⟨v, i⟩)
@@ -31,31 +36,44 @@ theorem pendantGraph_reachable (x y : PVertex M) : (pendantGraph M).Reachable x 
   refine hu.trans (SimpleGraph.Reachable.trans ?_ hv.symm)
   exact (squareGraph_reachable u v).map (pendantInl M)
 
+/-- `G_M` is connected, from `pendantGraph_reachable`. -/
 theorem pendantGraph_connected : (pendantGraph M).Connected :=
   ⟨fun x y => pendantGraph_reachable M x y⟩
 
+/-- A lattice vertex `.inl v` has degree `M + 4` in `G_M`: its four lattice neighbors plus its
+`M` pendant leaves, via the neighbor-set equivalence `pendantNbrLattice`. -/
 theorem pendantGraph_degree_inl (v : Site) : (pendantGraph M).degree (.inl v) = M + 4 := by
   rw [← SimpleGraph.card_neighborSet_eq_degree, Fintype.card_congr (pendantNbrLattice M v).symm]
   simp
 
+/-- A pendant leaf `.inr w` has degree `1` in `G_M`, via the neighbor-set equivalence
+`pendantNbrLeaf`. -/
 theorem pendantGraph_degree_inr (w : Site × Fin M) : (pendantGraph M).degree (.inr w) = 1 := by
   rw [← SimpleGraph.card_neighborSet_eq_degree, Fintype.card_congr (pendantNbrLeaf M w).symm]
   simp
 
+/-- Every vertex of `G_M` has degree at most `M + 4`: lattice vertices by
+`pendantGraph_degree_inl`, leaves by `pendantGraph_degree_inr`. -/
 theorem pendantGraph_degree_le (x : PVertex M) : (pendantGraph M).degree x ≤ M + 4 := by
   rcases x with v | w
   · exact (pendantGraph_degree_inl M v).le
   · rw [pendantGraph_degree_inr]; omega
 
+/-- `PVertex M` is infinite, inherited from its infinite lattice summand `Site`. -/
 instance : Infinite (PVertex M) := inferInstance
 
+/-- Shifting by the zero vector fixes every vertex of `G_M`. -/
 theorem pendantShift_zero (x : PVertex M) : pendantShift M 0 x = x := by
   rcases x with v | ⟨v, i⟩ <;> simp [pendantShift]
 
+/-- Shifting by `z + w` factors as shifting by `w` and then by `z`, so `pendantShift M` gives an
+additive action of `Site` on `G_M`. -/
 theorem pendantShift_add (z w : Site) (x : PVertex M) :
     pendantShift M (z + w) x = pendantShift M z (pendantShift M w x) := by
   rcases x with v | ⟨v, i⟩ <;> simp [pendantShift, add_comm, add_left_comm]
 
+/-- Translating both endpoints of an edge by the same `z` preserves adjacency in `G_M`, so
+`pendantShift M` acts by graph automorphisms. -/
 theorem pendantGraph_adj_shift (z : Site) (x y : PVertex M) :
     (pendantGraph M).Adj (pendantShift M z x) (pendantShift M z y) ↔ (pendantGraph M).Adj x y := by
   rcases x with u | ⟨u, i⟩ <;> rcases y with v | ⟨v, j⟩ <;>
@@ -109,6 +127,8 @@ noncomputable def pendantPeriodic : DoublyPeriodic (pendantGraph M) where
       · exact Or.inr ⟨i, rfl⟩
     exact Set.Finite.subset ((Set.finite_singleton _).union (Set.finite_range _)) hsub
 
+/-- Translating a lattice vertex's `k`-th neighbor (via `pendantNbrLattice`) by `z` agrees with
+taking the `k`-th neighbor of the translated site `v + z`. -/
 theorem pendantNbrLattice_shift (z : Site) (v : Site) (k : Fin (M + 4)) :
     (pendantPeriodic M).shiftNbr z (pendantNbrLattice M v k) = pendantNbrLattice M (v + z) k := by
   apply Subtype.ext

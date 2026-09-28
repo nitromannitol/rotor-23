@@ -20,6 +20,17 @@ ledger node `ext-abelian`, which now points at that proof).
 -/
 import Rotor.Routing
 
+/-!
+# The abelian property for legal routings
+
+States Holroyd–Levine–Mészáros–Peres–Propp–Wilson's abelian property (Lemma 3.9): if two legal
+routings of the same initial state agree at the start, then a routing that reaches a stable
+state is actuation-minimal among legal routings from that start, and any two legal routings
+that both reach stable states agree on their length, their final state, and how often each
+vertex is actuated. The property is stated here as a `Prop`; `Rotor.Bridge.Abelian` proves it
+unconditionally by induction on legal routings.
+-/
+
 open Rotor
 
 variable {V : Type*} [DecidableEq V] (G : SimpleGraph V) [G.LocallyFinite]

@@ -3,6 +3,8 @@ import Rotor.Support.SquareDual
 import Rotor.Support.DualGeom
 
 /-!
+# Directions for the contour argument
+
 Finite facts about directions for the contour argument: the geometry of the square of the
 current edge (`rotor.tex:1530-1540`), and the sector relations between the frame order and
 the arcs of the ring.
@@ -27,15 +29,26 @@ theorem corner_NW_sub_SW (v : Site) (a : Dir) :
   obtain ⟨x, y⟩ := v
   fin_cases a <;> simp [leftFace, rightFace, dirVec]
 
-theorem sideS_fst (a b : Site) : (sideS a b).1 = rightFace (primalTail a b) (primalDir a b + 1) := rfl
+/-- The first endpoint of the `S` side of the dual square at `(a, b)` is the right face at
+direction `primalDir a b + 1`. -/
+theorem sideS_fst (a b : Site) :
+    (sideS a b).1 = rightFace (primalTail a b) (primalDir a b + 1) := rfl
 
+/-- The second endpoint of the `S` side of the dual square at `(a, b)` is the right face at
+direction `primalDir a b`. -/
 theorem sideS_snd (a b : Site) : (sideS a b).2 = rightFace (primalTail a b) (primalDir a b) := by
   show leftFace _ _ = _
   rw [leftFace_eq, add_sub_cancel_right]
 
-theorem sideW_fst (a b : Site) : (sideW a b).1 = rightFace (primalTail a b) (primalDir a b + 2) := rfl
+/-- The first endpoint of the `W` side of the dual square at `(a, b)` is the right face at
+direction `primalDir a b + 2`. -/
+theorem sideW_fst (a b : Site) :
+    (sideW a b).1 = rightFace (primalTail a b) (primalDir a b + 2) := rfl
 
-theorem sideW_snd (a b : Site) : (sideW a b).2 = rightFace (primalTail a b) (primalDir a b + 1) := by
+/-- The second endpoint of the `W` side of the dual square at `(a, b)` is the right face at
+direction `primalDir a b + 1`. -/
+theorem sideW_snd (a b : Site) :
+    (sideW a b).2 = rightFace (primalTail a b) (primalDir a b + 1) := by
   show leftFace _ _ = _
   rw [leftFace_eq]
   have h : primalDir a b + 2 - 1 = primalDir a b + 1 := by
@@ -45,7 +58,8 @@ theorem sideW_snd (a b : Site) : (sideW a b).2 = rightFace (primalTail a b) (pri
 
 /-! ### Sector facts -/
 
-/-- The direction `rotR w` lies in the right arc from `-u` to `w`, unless `u = -w` or `u = rotL w`. -/
+/-- The direction `rotR w` lies in the right arc from `-u` to `w`, unless `u = -w` or
+`u = rotL w`. -/
 theorem between_rotR {u w : Site} (hu : IsUnit u) (hw : IsUnit w) (h1 : u ≠ -w) (h2 : u ≠ rotL w) :
     Between (dirIdx (-u)) (dirIdx w) (dirIdx (rotR w)) := by
   rcases hu with rfl | rfl | rfl | rfl <;> rcases hw with rfl | rfl | rfl | rfl <;>
@@ -57,7 +71,8 @@ theorem between_of_between_rotR {u w v : Site} (hu : IsUnit u) (hw : IsUnit w) (
     (h : Between (dirIdx (rotR w)) (dirIdx (-u)) (dirIdx v)) (hvw : v ≠ w) :
     Between (dirIdx w) (dirIdx (-u)) (dirIdx v) := by
   rcases hu with rfl | rfl | rfl | rfl <;> rcases hw with rfl | rfl | rfl | rfl <;>
-    rcases hv with rfl | rfl | rfl | rfl <;> first | decide | exact absurd h (by decide) | exact absurd rfl hvw
+    rcases hv with rfl | rfl | rfl | rfl <;>
+      first | decide | exact absurd h (by decide) | exact absurd rfl hvw
 
 /-- In a non-root frame with an earlier edge `c₀` before the child `c`, the parent direction
 lies strictly between the child direction and `c₀`'s direction. -/

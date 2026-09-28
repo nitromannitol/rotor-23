@@ -15,6 +15,17 @@ in-edge of `u` or sat there initially, one per in-edge from `S`.
 -/
 import Rotor.Support.ParticleCount
 
+/-!
+# No repeated directed edges in a legal boundary routing
+
+Proves the first assertion of `lem:boundary-routing`: a legal routing never traverses the same
+directed edge twice. First for a routing started from any legal state (`traversed_nodup`, built
+from `count_le_of_legal`, the cyclic-permutation bound `Mechanism.card_le_of_pow_eq`, and the
+in-edge counts `countP_head_le` and `degree_eq_card_add`), and then including the initial edges
+from `S` (`boundaryTraversed_nodup`). The underlying argument is that a repeated out-edge at `u`
+would force more than `deg(u)` incoming traversals at `u`, more than the in-edges available.
+-/
+
 open Finset
 
 namespace Rotor
@@ -199,7 +210,8 @@ theorem traversed_nodup [G.LocallyFinite] (S : Finset V) (ρ : Config G) (vs : L
       rw [hsplit, List.count_append, List.count_cons_self]; omega
     have h1 : (π.next v ((run π S ξ₀ l).ρ v)).1 = (((π.next v) ^ (l.count v + 1)) (ξ₀.ρ v)).1 := by
       rw [run_ρ, ← Equiv.Perm.mul_apply, ← pow_succ']
-    have hpow : ((π.next v) ^ (l₁.count v + 1)) (ξ₀.ρ v) = ((π.next v) ^ (l.count v + 1)) (ξ₀.ρ v) :=
+    have hpow : ((π.next v) ^ (l₁.count v + 1)) (ξ₀.ρ v) =
+        ((π.next v) ^ (l.count v + 1)) (ξ₀.ρ v) :=
       Subtype.ext (he2.symm.trans h1)
     have hdeg : G.degree v ≤ (l.count v + 1) - (l₁.count v + 1) :=
       Mechanism.card_le_of_pow_eq π v (ξ₀.ρ v) _ _ (by omega) hpow
@@ -207,7 +219,8 @@ theorem traversed_nodup [G.LocallyFinite] (S : Finset V) (ρ : Config G) (vs : L
     have hlast : (traversed π S (run π S ξ₀ l) [v]).countP (fun e => decide (e.2 = v)) = 0 := by
       simp only [traversed_cons, traversed_nil, List.countP_cons, List.countP_nil, zero_add]
       simp [next_head_ne π (run π S ξ₀ l) v]
-    have harr : arrivals π S ξ₀ (l ++ [v]) v ≤ ((G.neighborFinset v).filter (fun t => t ∉ S)).card := by
+    have harr : arrivals π S ξ₀ (l ++ [v]) v ≤
+        ((G.neighborFinset v).filter (fun t => t ∉ S)).card := by
       unfold arrivals
       rw [traversed_append, List.countP_append, hlast, add_zero]
       exact countP_head_le S _ ihl v (adj_of_mem_traversed π S ξ₀ l)

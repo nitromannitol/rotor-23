@@ -2,6 +2,8 @@ import Rotor.Support.ExplCover
 import Rotor.Support.ExplProb
 
 /-!
+# Duplicate-free tests, full coverage, and the history split
+
 Lemma 5.4 (`lem:square-exploration`, `rotor.tex:1902-1913`), assembled from
 `tested_bonds_nodup` (i), `square_exploration_ii` (ii) and `testEvent_inter_open` with the
 history event identity `history_event` (iii).
@@ -11,6 +13,10 @@ open MeasureTheory
 
 namespace Rotor
 
+/-- Lemma 5.4: `explore`'s tested bonds are duplicate-free, an inactive exploration reaches every
+dually-reachable site (in the finished component or an infinite one), and for the active bond at
+the head of `replay`'s frontier the probability of the corresponding history splits according to
+whether that bond has already been tested, and how. -/
 theorem square_exploration_proof (f d : Site) (hd : squareGraph.Adj f (f + d)) :
     (∀ (ρ : Config squareGraph) (n : ℕ),
         ((explore ρ f d n).tested.map (fun t => s(t.1, t.2.1))).Nodup) ∧

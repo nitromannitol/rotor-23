@@ -2,6 +2,8 @@ import Rotor.Support.StepProb
 import Rotor.Support.BlockField
 
 /-!
+# Path weights and the live-path probability identity
+
 Weights of paths and the identity `P{γ is live} = P_e{X_i = x_i for all i}`,
 `rotor.tex:1440-1446`: for a path listed most recent first, the probability that it is live
 under independent uniform rotors is the product of the step probabilities at its internal
@@ -56,19 +58,26 @@ def internals : List V → List V
   | _ :: b :: a :: rest => b :: internals (b :: a :: rest)
   | _ => []
 
+/-- Unfolds `wt` one step: the weight of `c :: b :: a :: rest` is the step probability
+`pStep π a b c` times the weight of the tail `b :: a :: rest`. -/
 @[simp] theorem wt_cons₃ (a b c : V) (rest : List V) :
     wt π (c :: b :: a :: rest) = pStep π a b c * wt π (b :: a :: rest) := rfl
 
+/-- The weight of the empty path is `1`. -/
 @[simp] theorem wt_nil : wt π ([] : List V) = 1 := rfl
+/-- The weight of a one-vertex path is `1`. -/
 @[simp] theorem wt_single (a : V) : wt π [a] = 1 := rfl
+/-- The weight of a two-vertex path (no internal vertices) is `1`. -/
 @[simp] theorem wt_pair (a b : V) : wt π [b, a] = 1 := rfl
 
+/-- `wt π l` is nonnegative, by induction on `l` using that each step probability is. -/
 theorem wt_nonneg : ∀ l : List V, 0 ≤ wt π l
   | c :: b :: a :: rest => mul_nonneg (pStep_nonneg π a b c) (wt_nonneg (b :: a :: rest))
   | [] => zero_le_one
   | [_] => zero_le_one
   | [_, _] => zero_le_one
 
+/-- `wt π l` is at most `1`, by induction on `l` using that each step probability is. -/
 theorem wt_le_one : ∀ l : List V, wt π l ≤ 1
   | c :: b :: a :: rest => by
     rw [wt_cons₃]
@@ -78,11 +87,14 @@ theorem wt_le_one : ∀ l : List V, wt π l ≤ 1
   | [_, _] => le_rfl
 
 omit [G.LocallyFinite] in
+/-- Unfolds `LiveRev` one step: `c :: b :: a :: rest` is live iff the walk is live at `b`,
+entering from `a` and leaving to `c`, and the tail `b :: a :: rest` is live. -/
 @[simp] theorem liveRev_cons₃ (ρ : Config G) (a b c : V) (rest : List V) :
     LiveRev π ρ (c :: b :: a :: rest) ↔ LiveAt π ρ a b c ∧ LiveRev π ρ (b :: a :: rest) :=
   Iff.rfl
 
 omit [G.LocallyFinite] in
+/-- A path of length at most `2` has no internal vertex, so it is vacuously live. -/
 theorem liveRev_of_length_le_two (ρ : Config G) {l : List V} (hl : l.length ≤ 2) :
     LiveRev π ρ l := by
   match l with
@@ -92,7 +104,10 @@ theorem liveRev_of_length_le_two (ρ : Config G) {l : List V} (hl : l.length ≤
   | _ :: _ :: _ :: _ => simp at hl
 
 omit [DecidableEq V] in
-theorem mem_of_mem_internals : ∀ {l : List V} {v : V}, v ∈ internals (l) → ∃ y ys, l = y :: ys ∧ v ∈ ys
+/-- Any internal vertex of `l` is a non-first entry: `l` decomposes as `y :: ys` with the
+internal vertex `v` a member of `ys`. -/
+theorem mem_of_mem_internals :
+    ∀ {l : List V} {v : V}, v ∈ internals (l) → ∃ y ys, l = y :: ys ∧ v ∈ ys
   | _ :: b :: a :: rest, v, hv => by
     simp only [internals, List.mem_cons] at hv
     refine ⟨_, _, rfl, ?_⟩
@@ -107,6 +122,8 @@ theorem mem_of_mem_internals : ∀ {l : List V} {v : V}, v ∈ internals (l) →
   | [_, _], v, hv => by simp [internals] at hv
 
 omit [G.LocallyFinite] in
+/-- If `ρ` and `ρ'` agree on the internal vertices of `l`, then `l` being live under `ρ` implies
+it is live under `ρ'`. -/
 theorem liveRev_determined (ρ ρ' : Config G) :
     ∀ l : List V, (∀ v ∈ internals l, ρ v = ρ' v) → LiveRev π ρ l → LiveRev π ρ' l
   | c :: b :: a :: rest, h, hl => by
@@ -122,6 +139,8 @@ theorem liveRev_determined (ρ ρ' : Config G) :
 def liveRevSet (l : List V) : Set (Config G) := {ρ | LiveRev π ρ l}
 
 omit [G.LocallyFinite] in
+/-- The event `liveRevSet π l` is determined by the coordinates at the internal vertices of
+`l`. -/
 theorem liveRevSet_determined (l : List V) :
     DeterminedBy (↑(internals l).toFinset) (liveRevSet π l) :=
   fun ρ ρ' h hl => liveRev_determined π ρ ρ' l (fun v hv => h v (by simpa using hv)) hl
@@ -131,9 +150,12 @@ live at `b`. -/
 def liveSet (a b c : V) : Set (G.neighborSet b) :=
   {x | ∃ h : G.Adj b a ∧ G.Adj b c, x ∈ stepSet π b ⟨a, h.1⟩ ⟨c, h.2⟩}
 
+/-- `LiveAt π ρ a b c` holds iff the initial rotor `ρ b` lies in `liveSet π a b c`. -/
 theorem liveAt_iff_mem_liveSet (ρ : Config G) (a b c : V) :
     LiveAt π ρ a b c ↔ ρ b ∈ liveSet π a b c := liveAt_iff π ρ a b c
 
+/-- Under the uniform measure of initial rotors at `b`, the probability of `liveSet π a b c`
+equals the step probability `pStep π a b c`. -/
 theorem uniformAt_liveSet (a b c : V) :
     uniformAt π b (liveSet π a b c) = ENNReal.ofReal (pStep π a b c) := by
   by_cases h : G.Adj b a ∧ G.Adj b c

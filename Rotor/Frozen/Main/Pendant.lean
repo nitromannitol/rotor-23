@@ -25,6 +25,16 @@ import Rotor.Bridge.OneCircuit
 import Rotor.Bridge.AngelHolroyd
 import Rotor.Support.MainPendant
 
+/-!
+# The pendant counterexample: transience
+
+States Proposition 1.3 of the paper (frozen below): for every `M` above an explicit threshold,
+the clockwise rotor walk on the pendant graph `G_M` with independent uniform initial rotors is
+almost surely transient from every vertex. The two external ingredients this draws on,
+`External.OneCircuit` and `External.RecurrentOfRecurrent`, are proved elsewhere rather than
+assumed, so neither appears as a hypothesis of the frozen statement.
+-/
+
 open Rotor MeasureTheory
 
 -- FROZEN-STATEMENT-BEGIN

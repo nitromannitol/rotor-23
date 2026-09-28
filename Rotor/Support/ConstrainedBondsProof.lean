@@ -2,6 +2,18 @@ import Rotor.Support.GridModel
 import Rotor.Support.Assembly53
 import Rotor.External.SubcriticalDecay
 
+/-!
+# Constrained-bonds decay for the pattern-free crossing event
+
+Proves Lemma 5.3 (`lem:square-constrained-bonds`) of `rotor.tex`: assuming the external
+subcritical bond-percolation decay `External.SubcriticalDecay`, the probability of a
+pattern-free crossing event at the critical parameter `p = 1/2` decays exponentially in
+the box radius `r`. The argument compares the pattern-free event to the ordinary
+connection event through a grid-parameter monotonicity bound, transfers a decay estimate
+from `p = 1/2 - ε` to `p = 1/2`, then sums over the sphere of radius `r` and absorbs the
+resulting polynomial prefactor into the exponential rate.
+-/
+
 open Finset Classical MeasureTheory ENNReal
 
 namespace Rotor
@@ -47,6 +59,9 @@ theorem pf_le_conn {ε : ℝ} (hε : 0 < ε) (hε' : ε ≤ 1 / 4)
   rw [gridPar_empty, gridPar_full] at h3
   exact h1.trans (h3.trans h2)
 
+/-- Combines `pf_le_conn` with an assumed bound `B` on the probability of `boxCrossing x r`
+at parameter `p = 1/2 - ε` to bound the probability of the pattern-free event `PFEvent x y r`
+at the critical parameter `p = 1/2` by the same `B`, given `y` at ℓ∞-distance `r` from `x`. -/
 theorem bondLaw_pf_le {ε : ℝ} (hε : 0 < ε) (hε' : ε ≤ 1 / 4)
     (hεK : ε * 2 ^ 100 * 100 * (4 ^ 100 * 2 ^ 100) * 2 ^ 100 ≤ 1)
     (p : NNReal) (hp : p ≤ 1) (hpε : (p : ℝ) = 1 / 2 - ε) {B : ℝ} (hB : 0 ≤ B)

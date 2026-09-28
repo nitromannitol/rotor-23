@@ -158,3 +158,15 @@ import Rotor.Bridge.OneCircuit
 import Rotor.Bridge.HolroydPropp
 import Rotor.Bridge.AngelHolroyd
 import Rotor.MainTheorems
+
+/-!
+# Directed rotor walk on `ℤ²`: the range exponent `2/3`
+
+This file imports every module of the formalization, in dependency order, so that a single
+`import Rotor` brings the whole development into scope: the model of a directed rotor walk on a
+locally finite graph (`Rotor.Model`), the combinatorial and probabilistic lemmas built up in
+`Rotor.Support`, the pinned paper statements in `Rotor.Frozen`, the external results cited from
+the literature and bridged in `Rotor.Bridge`, and the main theorems assembled from these pieces
+in `Rotor.MainTheorems`, which establish that the range of the rotor walk on `ℤ²` after `n` steps
+has order `n^{2/3}`.
+-/

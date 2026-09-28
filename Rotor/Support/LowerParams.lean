@@ -1,5 +1,17 @@
 import Rotor.Support.FiniteProduct
 
+/-!
+# Lowering coordinate parameters in a finite product measure
+
+This file bounds how much the probability of an increasing event can drop when finitely many
+coordinate parameters of a finite product measure are lowered by a common amount, in terms of the
+pivotal probabilities of the affected coordinates (`fpr_lower_set`). It combines such a lowering
+with raising one coordinate to `1` into a single block step that, under a comparability hypothesis
+on pivotal probabilities, does not decrease the probability of the event (`fpr_block_step`). It
+also records how the probability of an event depending only on one factor of a sum-indexed product
+measure reduces to a probability on that factor alone (`fpr_inl`).
+-/
+
 open Finset Classical
 
 namespace Rotor
@@ -116,6 +128,8 @@ end Lower
 
 /-! ### Projecting a product model on the first factor -/
 
+/-- The probability of an event that depends only on the first factor of a product measure indexed
+by `ι₁ ⊕ ι₂` equals its probability under the product measure restricted to `ι₁`. -/
 theorem fpr_inl {ι₁ ι₂ : Type*} [Fintype ι₁] [Fintype ι₂] [DecidableEq ι₁] [DecidableEq ι₂]
     (par : ι₁ ⊕ ι₂ → ℝ) (E : Set (ι₁ → Bool)) :
     fpr par {ω | (fun i => ω (Sum.inl i)) ∈ E} = fpr (fun i => par (Sum.inl i)) E := by

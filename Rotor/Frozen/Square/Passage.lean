@@ -24,6 +24,18 @@ import Rotor.External.SubcriticalDecay
 import Rotor.Bridge.SubcriticalDecay
 import Rotor.Support.PassageAssembly
 
+/-!
+# Exponential decay of long live paths on the square lattice
+
+Proves the frozen statement `Rotor.Frozen.square_passage`, the paper's Proposition 5.1:
+under the clockwise rotor mechanism with independent uniform initial rotors on the square
+lattice, the probability that a live path out of a directed edge `u → v` reaches graph
+distance `R` from `u` decays as `C * exp(-c * R)` for some constants `c, C > 0`. The
+constants are existential, obtained from the subcritical percolation bound
+`Rotor.External.SubcriticalDecay` via `Rotor.Bridge.SubcriticalDecay` and assembled in
+`Rotor.Support.PassageAssembly`.
+-/
+
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
 

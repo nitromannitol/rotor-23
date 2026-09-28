@@ -4,6 +4,8 @@ import Percolation.Literature.SharpnessDCTProofs
 import Percolation.Literature.BondPercolationSymmetry
 
 /-!
+# Kesten's exponential decay from the percolation library
+
 `External.SubcriticalDecay` proved from the percolation library
 (`anthropics/formal-math`, subdirectory `percolation`, commit 795efb86): Kesten's
 `p_c(ℤ²) = 1/2` (`kesten_criticalProb_Z2_holds`) and the sharpness of the phase transition
@@ -24,20 +26,27 @@ namespace Rotor.Bridge
 /-- `ℤ × ℤ ≃ (Fin 2 → ℤ)`. -/
 def siteEquiv : Site ≃ LatticeModels.Site 2 := (finTwoArrowEquiv ℤ).symm
 
+/-- `siteEquiv u` is the pair `u.1, u.2` read as a function `Fin 2 → ℤ`. -/
 theorem siteEquiv_apply (u : Site) : siteEquiv u = ![u.1, u.2] := rfl
 
+/-- `siteEquiv` commutes with the decomposition `a = (a - x) + x`:
+`siteEquiv (a - x) + siteEquiv x = siteEquiv a`. -/
 theorem siteEquiv_sub_add (a x : Site) : siteEquiv (a - x) + siteEquiv x = siteEquiv a := by
   funext i
   fin_cases i <;> simp [siteEquiv_apply]
 
+/-- `siteEquiv (x - x) = 0`. -/
 theorem siteEquiv_self_sub (x : Site) : siteEquiv (x - x) = 0 := by
   funext i
   fin_cases i <;> simp [siteEquiv_apply]
 
+/-- `siteEquiv` sends the origin to `0`. -/
 theorem siteEquiv_zero : siteEquiv 0 = 0 := by
   funext i
   fin_cases i <;> simp [siteEquiv_apply]
 
+/-- Case split for an edge of `squareGraph`: `w` differs from `v` by exactly one of the four
+unit steps in a single coordinate. -/
 theorem square_adj_cases {v w : Site} (h : squareGraph.Adj v w) :
     (w.1 = v.1 + 1 ∧ w.2 = v.2) ∨ (w.1 = v.1 - 1 ∧ w.2 = v.2) ∨
     (w.1 = v.1 ∧ w.2 = v.2 + 1) ∨ (w.1 = v.1 ∧ w.2 = v.2 - 1) := by
@@ -45,6 +54,8 @@ theorem square_adj_cases {v w : Site} (h : squareGraph.Adj v w) :
   rcases abs_cases (v.1 - w.1) with ⟨h1, _⟩ | ⟨h1, _⟩ <;>
     rcases abs_cases (v.2 - w.2) with ⟨h2, _⟩ | ⟨h2, _⟩ <;> omega
 
+/-- `siteEquiv` is a graph isomorphism from `squareGraph` to the library's integer lattice graph
+`zdGraph 2`. -/
 theorem zd_adj_iff (u v : Site) :
     (zdGraph 2).Adj (siteEquiv u) (siteEquiv v) ↔ squareGraph.Adj u v := by
   rw [zdGraph_adj_iff]
@@ -78,13 +89,18 @@ def toProp (ω : Rotor.BondConfig) : Sym2 (LatticeModels.Site 2) → Prop :=
 def toConfig (ω : Rotor.BondConfig) : Percolation.Literature.BondConfig (LatticeModels.Site 2) :=
   {e | toProp ω e}
 
+/-- `toConfig` unfolds as the set-builder map composed with `toProp`. -/
 theorem toConfig_eq :
     toConfig = (fun q : Sym2 (LatticeModels.Site 2) → Prop => {e | q e}) ∘ toProp := rfl
 
+/-- `pairEquiv` carries the unordered pair `s(u, v)` to `s(siteEquiv u, siteEquiv v)` and
+back. -/
 theorem pairEquiv_symm_pair (u v : Site) :
     pairEquiv.symm s(siteEquiv u, siteEquiv v) = s(u, v) := by
   simp [pairEquiv, sym2Equiv_symm, sym2Equiv_apply, Sym2.map_mk]
 
+/-- An edge `s(siteEquiv u, siteEquiv v)` lies in `toConfig ω` iff `u` and `v` are adjacent in
+`squareGraph` and the bond `s(u, v)` is open in `ω`. -/
 theorem mem_toConfig (ω : Rotor.BondConfig) (u v : Site) :
     s(siteEquiv u, siteEquiv v) ∈ toConfig ω ↔ squareGraph.Adj u v ∧ ω s(u, v) = true := by
   simp only [toConfig, toProp, Set.mem_setOf_eq, SimpleGraph.mem_edgeSet, zd_adj_iff,
@@ -102,9 +118,12 @@ theorem measurable_andEq {α : Type*} [MeasurableSpace α] (P : Prop) (f : α �
       ext a; simp [hP, eq_iff_iff]
     rw [h]; exact MeasurableSet.empty
 
+/-- `toProp` is measurable, since each coordinate `e ↦ e ∈ (zdGraph 2).edgeSet ∧
+ω (pairEquiv.symm e) = true` is. -/
 theorem measurable_toProp : Measurable toProp := by
   exact measurable_pi_lambda _ (fun e => measurable_andEq _ _ (measurable_pi_apply _))
 
+/-- `toConfig` is measurable, as the set-builder map composed with the measurable `toProp`. -/
 theorem measurable_toConfig : Measurable toConfig := by
   rw [toConfig_eq]; exact measurable_setOf.comp measurable_toProp
 
@@ -113,6 +132,8 @@ theorem measurable_toConfig : Measurable toConfig := by
 -- `PMF.bernoulli_apply` is deprecated, but `External.bernoulli` is defined through
 -- `PMF.bernoulli` (see `Rotor/External/LSS.lean`), so its evaluation lemma is the one to use.
 set_option linter.deprecated false in
+/-- The Bernoulli measure `External.bernoulli p hp` decomposes as `p` times the point mass at
+`true` plus `1 - p` times the point mass at `false`. -/
 theorem bern_eq_smul (p : NNReal) (hp : p ≤ 1) :
     External.bernoulli p hp = p • Measure.dirac true + (1 - p) • Measure.dirac false := by
   rw [Measure.ext_iff_singleton]
@@ -123,6 +144,8 @@ theorem bern_eq_smul (p : NNReal) (hp : p ≤ 1) :
   rw [h1, ENNReal.smul_def, ENNReal.smul_def]
   cases b <;> simp
 
+/-- Pushing the Bernoulli measure forward along `b ↦ P ∧ b = true` gives `p` times the point
+mass at `P` plus `1 - p` times the point mass at `False`. -/
 theorem map_bern (p : NNReal) (hp : p ≤ 1) (P : Prop) :
     (External.bernoulli p hp).map (fun b : Bool => P ∧ b = true) =
       p • Measure.dirac P + (1 - p) • Measure.dirac False := by
@@ -134,8 +157,10 @@ theorem map_bern (p : NNReal) (hp : p ≤ 1) (P : Prop) :
 /-- The parameter as a point of the unit interval. -/
 def toI (p : NNReal) (hp : p ≤ 1) : unitInterval := ⟨p, p.2, by exact_mod_cast hp⟩
 
+/-- `toI p hp`, read back as a nonnegative real via `unitInterval.toNNReal`, is `p`. -/
 theorem toNNReal_toI (p : NNReal) (hp : p ≤ 1) : unitInterval.toNNReal (toI p hp) = p := rfl
 
+/-- The unit-interval reflection of `toI p hp` corresponds to `1 - p`. -/
 theorem toNNReal_symm_toI (p : NNReal) (hp : p ≤ 1) :
     unitInterval.toNNReal (unitInterval.symm (toI p hp)) = 1 - p := by
   apply NNReal.coe_injective
@@ -146,6 +171,8 @@ theorem toNNReal_symm_toI (p : NNReal) (hp : p ≤ 1) :
 
 /-! ### The measure bridge -/
 
+/-- Pushing our bond law `bondLaw p hp` forward along `toConfig` gives exactly the library's bond
+percolation measure `bondPercolation (zdGraph 2) (toI p hp)`. -/
 theorem map_toConfig (p : NNReal) (hp : p ≤ 1) :
     (bondLaw p hp).map toConfig = bondPercolation (zdGraph 2) (toI p hp) := by
   unfold bondPercolation
@@ -183,6 +210,8 @@ theorem map_toConfig (p : NNReal) (hp : p ≤ 1) :
 def transl (w : LatticeModels.Site 2) : LatticeModels.Site 2 ≃ LatticeModels.Site 2 :=
   Equiv.addRight (-w)
 
+/-- Translating an edge by `transl w` preserves membership in `(zdGraph 2).edgeSet`, since
+translation is a graph automorphism. -/
 theorem transl_edge (w : LatticeModels.Site 2) (z : Sym2 (LatticeModels.Site 2)) :
     sym2Equiv (transl w) z ∈ (zdGraph 2).edgeSet ↔ z ∈ (zdGraph 2).edgeSet := by
   induction z using Sym2.ind with
@@ -198,10 +227,14 @@ def shifted (x : Site) (ω : Rotor.BondConfig) :
     Percolation.Literature.BondConfig (LatticeModels.Site 2) :=
   BondConfig.relabel (sym2Equiv (transl (siteEquiv x))) (toConfig ω)
 
+/-- Undoing the translation by `siteEquiv x` sends `siteEquiv (a - x)` back to `siteEquiv a`. -/
 theorem transl_symm_apply (x a : Site) :
     (transl (siteEquiv x)).symm (siteEquiv (a - x)) = siteEquiv a := by
   simp [transl, siteEquiv_sub_add]
 
+/-- An edge of the `x`-translated configuration `shifted x ω` between `siteEquiv (a - x)` and
+`siteEquiv (b - x)` corresponds exactly to `a` and `b` being adjacent with the bond `s(a, b)`
+open in `ω`. -/
 theorem mem_shifted (x : Site) (ω : Rotor.BondConfig) (a b : Site) :
     s(siteEquiv (a - x), siteEquiv (b - x)) ∈ shifted x ω ↔
       squareGraph.Adj a b ∧ ω s(a, b) = true := by
@@ -209,6 +242,9 @@ theorem mem_shifted (x : Site) (ω : Rotor.BondConfig) (a b : Site) :
   rw [BondConfig.mem_relabel_iff, sym2Equiv_symm, sym2Equiv_apply, Sym2.map_mk,
     transl_symm_apply, transl_symm_apply, mem_toConfig]
 
+/-- An open edge `s(a, b)` of `ω` between `squareGraph`-adjacent `a` and `b` gives an edge of
+the open graph of the translated configuration `shifted x ω` between `siteEquiv (a - x)` and
+`siteEquiv (b - x)`. -/
 theorem openGraph_shifted_adj (x : Site) (ω : Rotor.BondConfig) {a b : Site}
     (h : squareGraph.Adj a b) (ho : ω s(a, b) = true) :
     (openGraph (shifted x ω)).Adj (siteEquiv (a - x)) (siteEquiv (b - x)) := by
@@ -240,6 +276,8 @@ theorem reachable_of_chain {W : Type*} {G : SimpleGraph W} {S : Set W} {f : Site
   rw [this]
   exact key i hi
 
+/-- A vertex `v` within sup-distance `r` of `x` translates to a point of the library's box
+`box 2 r` centered at the origin. -/
 theorem mem_box_of_linf {x v : Site} {r : ℕ} (h : linfDist v x ≤ r) :
     siteEquiv (v - x) ∈ box 2 r := by
   rw [mem_box]
@@ -249,6 +287,9 @@ theorem mem_box_of_linf {x v : Site} {r : ℕ} (h : linfDist v x ≤ r) :
   intro i
   fin_cases i <;> simp [siteEquiv_apply] <;> omega
 
+/-- A vertex `y` at sup-distance exactly `r` from `x` translates to a point of the inner boundary
+of `box 2 r`, since one of its coordinates attains the extremal value `r` in absolute value and
+stepping outward by one in that coordinate leaves the box. -/
 theorem mem_innerBoundary_of_linf {x y : Site} {r : ℕ} (h : linfDist y x = r) :
     siteEquiv (y - x) ∈ innerBoundary (zdGraph 2) (box 2 r) := by
   rw [mem_innerBoundary_iff]
@@ -308,9 +349,13 @@ theorem boxCrossing_subset (x : Site) (r : ℕ) :
 
 /-! ### The assembly -/
 
+/-- Below the critical point `p_c = 1/2`, identified by Kesten's theorem, the library's
+sharpness-of-the-phase-transition theorem gives an exponential decay rate `c` for the one-arm
+event `siteToBoundary 2 n`. -/
 theorem sharpness_bound (p : NNReal) (hp : p ≤ 1) (hlt : p < 1 / 2) :
     ∃ c : ℝ, 0 < c ∧ ∀ n : ℕ,
-      bondPercolation (zdGraph 2) (toI p hp) (siteToBoundary 2 n) ≤ ENNReal.ofReal (Real.exp (-c * n)) := by
+      bondPercolation (zdGraph 2) (toI p hp) (siteToBoundary 2 n) ≤
+        ENNReal.ofReal (Real.exp (-c * n)) := by
   have hk : criticalProb (zdGraph 2) 0 = 1 / 2 := kesten_criticalProb_Z2_holds
   have hpc : ((toI p hp : unitInterval) : ℝ) < criticalProb (zdGraph 2) 0 := by
     rw [hk]

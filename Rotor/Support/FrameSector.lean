@@ -2,6 +2,8 @@ import Rotor.Support.ExplTree
 import Rotor.Support.Ring
 
 /-!
+# The frame's counterclockwise order
+
 The frame order is the counterclockwise order: in the frame `continuations p z` (right turn,
 straight, left turn) the directions are at counterclockwise offsets `2, 4, 6` (eighths of a
 turn) from the reverse of the parent direction, and in the root frame `edgesFrom f d` at
@@ -13,11 +15,16 @@ open Finset List Fin.NatCast
 
 namespace Rotor
 
+/-- `continuations p z` unfolds to the explicit list of the right-turn, straight, and
+left-turn edges from `z`. -/
 theorem continuations_eq (p z : Site) :
     continuations p z = [(z, z + rotR (z - p)), (z, z + (z - p)), (z, z + rotL (z - p))] := rfl
 
+/-- `edgesFrom f d` unfolds to the explicit list of the four root edges, `d` rotated left
+`0, 1, 2, 3` times. -/
 theorem edgesFrom_eq (f d : Site) :
-    edgesFrom f d = [(f, f + d), (f, f + rotL d), (f, f + rotL (rotL d)), (f, f + rotL (rotL (rotL d)))] :=
+    edgesFrom f d = [(f, f + d), (f, f + rotL d), (f, f + rotL (rotL d)),
+      (f, f + rotL (rotL (rotL d)))] :=
   rfl
 
 /-- The finite check behind the sector lemmas: the offsets of `rotR d, d, rotL d` from `-d`. -/

@@ -1,6 +1,8 @@
 import Rotor.Support.ChainWeight
 
 /-!
+# Independence and uniformity of adaptive rotor queries
+
 Adaptive reading of independent rotors, `rotor.tex:1370-1376` ("For each reached `v`, its
 rotor is unexamined when the first edge entering `v` is processed.  Conditional on the past,
 `r_v(u)` is uniform") and `rotor.tex:1919-1924` (Section 5, conditional probabilities given
@@ -44,16 +46,21 @@ variable {S : Type*} (Q : QueryProcess G S)
 /-- The state after `t` steps. -/
 def run (ρ : Config G) (t : ℕ) : S := (Q.step ρ)^[t] Q.init
 
+/-- The run at time `0` is the initial state. -/
 @[simp] theorem run_zero (ρ : Config G) : Q.run ρ 0 = Q.init := rfl
 
+/-- The run at time `t + 1` is one more step applied to the run at time `t`. -/
 theorem run_succ (ρ : Config G) (t : ℕ) : Q.run ρ (t + 1) = Q.step ρ (Q.run ρ t) :=
   Function.iterate_succ_apply' _ _ _
 
+/-- A single step's history extends the previous history, by `hist_step`. -/
 theorem hist_prefix_step (ρ : Config G) (s : S) : Q.hist s <+: Q.hist (Q.step ρ s) := by
   rcases Q.hist_step ρ s with h | ⟨v, -, h⟩
   · rw [h]
   · rw [h]; exact List.prefix_append _ _
 
+/-- The history is monotone in time: `t ≤ t'` gives `Q.hist (Q.run ρ t) <+: Q.hist (Q.run ρ t')`,
+by induction on `t'` using `hist_prefix_step`. -/
 theorem hist_run_prefix (ρ : Config G) {t t' : ℕ} (h : t ≤ t') :
     Q.hist (Q.run ρ t) <+: Q.hist (Q.run ρ t') := by
   induction t' with
@@ -63,6 +70,8 @@ theorem hist_run_prefix (ρ : Config G) {t t' : ℕ} (h : t ≤ t') :
     · exact (ih (by omega)).trans (by rw [run_succ]; exact Q.hist_prefix_step ρ _)
     · rw [Nat.le_antisymm h h']
 
+/-- The history has no repeated vertices, since each step's history either stays the same or
+appends one vertex not already read (`hist_step`). -/
 theorem hist_run_nodup (ρ : Config G) : ∀ t : ℕ, (Q.hist (Q.run ρ t)).Nodup
   | 0 => by simp [Q.hist_init]
   | t + 1 => by
@@ -121,12 +130,16 @@ def atomF (h : History G) : Set (Config G) :=
 def Nxt (h : History G) (v : V) : Set (Config G) :=
   {ρ | ∃ t, Q.hist (Q.run ρ t) = verts h ++ [v]}
 
+/-- The atom of the empty history is the whole configuration space, since every run has history
+`[]` at time `0`. -/
 theorem atomF_nil : Q.atomF ([] : History G) = Set.univ := by
   ext ρ
   simp only [atomF, verts, List.map_nil, List.not_mem_nil, false_implies, implies_true,
     and_true, Set.mem_setOf_eq, Set.mem_univ, iff_true]
   exact ⟨0, by simp [Q.hist_init]⟩
 
+/-- Membership in `Q.atomF h` is determined by the coordinates in `verts h`, using
+`run_local`. -/
 theorem atomF_determined [DecidableEq V] (h : History G) :
     DeterminedBy (↑(verts h).toFinset) (Q.atomF h) := by
   intro ρ ρ' hagree ⟨⟨t, ht⟩, hval⟩
@@ -135,6 +148,7 @@ theorem atomF_determined [DecidableEq V] (h : History G) :
   refine ⟨⟨t, by rw [Q.run_local ρ ρ' t hagree', ht]⟩, fun x hx => ?_⟩
   rw [← hagree' x.1 (by rw [ht]; exact List.mem_map_of_mem hx), hval x hx]
 
+/-- One step increases the length of the history by at most `1`. -/
 theorem length_hist_run_succ_le (ρ : Config G) (t : ℕ) :
     (Q.hist (Q.run ρ (t + 1))).length ≤ (Q.hist (Q.run ρ t)).length + 1 := by
   rw [run_succ]
@@ -171,6 +185,8 @@ theorem exists_hist_eq_and_succ (ρ : Config G) {t : ℕ} {l : List V} {v : V}
       List.prefix_of_prefix_length_le hpre (List.prefix_append l [v]) (by omega)
     exact hpre'.eq_of_length (by omega)
 
+/-- Membership in `Q.atomF h ∩ Q.Nxt h v` is determined by the coordinates in `verts h`, using
+`atomF_determined` and `hist_run_succ_congr`. -/
 theorem atomF_inter_Nxt_determined [DecidableEq V] (h : History G) (v : V) :
     DeterminedBy (↑(verts h).toFinset) (Q.atomF h ∩ Q.Nxt h v) := by
   intro ρ ρ' hagree ⟨hmem, ⟨t, ht⟩⟩
@@ -180,6 +196,8 @@ theorem atomF_inter_Nxt_determined [DecidableEq V] (h : History G) (v : V) :
   rw [Q.hist_run_succ_congr ρ ρ' t₁ (fun w hw => hagree w (by
     rw [List.coe_toFinset]; rwa [ht₁] at hw)), ht₁']
 
+/-- The atom of the history `h` extended by reading `v` with value `a` is the intersection of
+`Q.atomF h ∩ Q.Nxt h v` with the event that the rotor at `v` equals `a`. -/
 theorem atomF_append (h : History G) (v : V) (a : G.neighborSet v) :
     Q.atomF (h ++ [⟨v, a⟩]) = (Q.atomF h ∩ Q.Nxt h v) ∩ (fun ρ : Config G => ρ v) ⁻¹' {a} := by
   ext ρ
@@ -197,6 +215,8 @@ theorem atomF_append (h : History G) (v : V) (a : G.neighborSet v) :
     · exact hval x hx
     · exact hva
 
+/-- A configuration in the atom of a longer history `h'` also lies in the atom of any prefix
+`h` of `h'`. -/
 theorem atomF_prefix {h h' : History G} (hh : h <+: h') {ρ : Config G} (hρ : ρ ∈ Q.atomF h') :
     ρ ∈ Q.atomF h := by
   obtain ⟨⟨t, ht⟩, hval⟩ := hρ
@@ -212,9 +232,13 @@ variable [DecidableEq V] [G.LocallyFinite] {S : Type*} (Q : QueryProcess G S)
 
 namespace QueryProcess
 
+/-- `atomF h` is measurable, since it is determined by finitely many coordinates
+(`atomF_determined`). -/
 theorem measurableSet_atomF (h : History G) : MeasurableSet (Q.atomF h) :=
   (Q.atomF_determined h).measurableSet _
 
+/-- `atomF h ∩ Nxt h v` is measurable, since it is determined by finitely many coordinates
+(`atomF_inter_Nxt_determined`). -/
 theorem measurableSet_atomF_inter_Nxt (h : History G) (v : V) :
     MeasurableSet (Q.atomF h ∩ Q.Nxt h v) :=
   (Q.atomF_inter_Nxt_determined h v).measurableSet _

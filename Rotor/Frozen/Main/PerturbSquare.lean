@@ -35,6 +35,17 @@ import Rotor.Support.MainSquare
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
 
+/-!
+# Small perturbations of the uniform initial law on the square lattice
+
+States the square-lattice case of Proposition 1.2 of `rotor.tex`: a small enough
+total-variation perturbation of the uniform initial rotor law still gives recurrence, and,
+when the perturbed law is invariant under a finite-index translation lattice, still gives the
+range and shape results of Theorem 1.1. The statement is assembled from the certified bridge
+lemmas for one-circuit visits, the abelian property, Kingman's subadditive ergodic theorem, and
+the cited subcritical-decay input `External.LSS`; it does not reprove those external results.
+-/
+
 universe u
 
 variable {V : Type u} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]
@@ -62,5 +73,6 @@ theorem Rotor.Frozen.perturbations_square
           (κ • B)) atTop (𝓝 0) ∧
         Tendsto (fun t : ℕ => ((R clockwise ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c))
 -- FROZEN-STATEMENT-END
-:= perturbations_square_proof (Rotor.Bridge.oneCircuit_holds squareGraph) (Rotor.Bridge.abelian_holds squareGraph)
+:= perturbations_square_proof (Rotor.Bridge.oneCircuit_holds squareGraph)
+    (Rotor.Bridge.abelian_holds squareGraph)
     (Rotor.Bridge.visitsAllOfVisitsOne_holds squareGraph) Rotor.Bridge.kingman_holds hLSS

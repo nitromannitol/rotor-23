@@ -1,6 +1,8 @@
 import Rotor.Support.ContourPath
 
 /-!
+# Lemma 5.5: the shared contour context
+
 Lemma 5.5 (`lem:square-active-list`), part 2: the contour context `Ctx`, common to the `S` and
 `W` cases.  `J₁` is a simple closed unit walk in the doubled lattice containing the doubled
 path; the head of `E` is connected off `dbl J₁` to a right point and every other active head to
@@ -13,6 +15,7 @@ namespace Rotor
 
 /-! ### From arcs to left and right points -/
 
+/-- For a nonempty list `w`, the doubled walk `dbl w` has length `2 * w.length - 1`. -/
 theorem dbl_length : ∀ (w : List Site), w ≠ [] → (dbl w).length = 2 * w.length - 1
   | [], h => absurd rfl h
   | [_], _ => rfl
@@ -21,6 +24,7 @@ theorem dbl_length : ∀ (w : List Site), w ≠ [] → (dbl w).length = 2 * w.le
     simp only [List.length_cons]
     omega
 
+/-- If `J` is a simple closed walk then its doubled walk `dbl J` is also simple and closed. -/
 theorem isSimpleClosed_dbl {J : List Site} (hJ : IsSimpleClosed J) : IsSimpleClosed (dbl J) where
   closed := isClosedWalk_dbl hJ.closed
   nodup := dbl_tail_nodup hJ.closed hJ.nodup hJ.three
@@ -64,7 +68,8 @@ theorem left_of_arc {J₁ : List Site} (hJ₁ : IsSimpleClosed J₁) {z p q : Si
 /-- The quadruple of an adjacent face off `J₁` reaches the ring point in its direction. -/
 theorem quad_reach_ringPt {J₁ : List Site} (hc : IsClosedWalk J₁) {z v : Site} (hv : IsUnit v)
     (h1 : z + z + v ∉ J₁) (h2 : z + v + (z + v) ∉ J₁) :
-    Relation.ReflTransGen (OffAdj (dbl J₁)) (quad (z + v)) (ringPt (z + z + (z + z)) (dirIdx v)) := by
+    Relation.ReflTransGen (OffAdj (dbl J₁)) (quad (z + v))
+        (ringPt (z + z + (z + z)) (dirIdx v)) := by
   have r1 := reach_double_of_notMem hc hv (z₁ := z + z + v) (v := v) h1
     (by rw [show z + z + v + v = z + v + (z + v) by abel]; exact h2)
   have r2 := reach_mid_of_notMem hc hv (z₁ := z + z) (v := v) h1
@@ -118,38 +123,55 @@ variable {f d : Site} {s : ExplState} {x : Site} {xs' : List Site} {e : Site × 
 
 include c
 
+/-- The active edge `e` singled out by `Ctx` lies in `s.active`. -/
 theorem he_active : e ∈ s.active := by rw [c.hact]; exact List.mem_cons_self
 
+/-- `x` and `e.2` are adjacent in `squareGraph`, since `e.1 = x` and `e` is active. -/
 theorem hadjE : squareGraph.Adj x e.2 := by
   have := c.hinv.active_adj e c.he_active
   rwa [c.hex] at this
 
+/-- The head `e.2` of the active edge `e` has not been visited. -/
 theorem hNEV : e.2 ∉ s.visited := c.hinv.active_head e c.he_active
 
+/-- The head `e.2` of `e` does not lie in a finite component of the complement of
+`s.visited`. -/
 theorem hNEout : ¬ InFiniteComponent s.visited e.2 := c.hout e c.he_active
 
+/-- The vertex `τ` has been visited, since the tested edge `(τ, p₀)` has `τ` as its tail. -/
 theorem hτvis : τ ∈ s.visited := c.hinv.tested_tail _ c.hclosed
 
+/-- Since `(τ, p₀)` was tested closed, neither `(τ, p₀, true)` nor its reverse
+`(p₀, τ, true)` was also tested. -/
 theorem hnt : (τ, p₀, true) ∉ s.tested ∧ (p₀, τ, true) ∉ s.tested :=
   not_open_of_closed c.hinv c.hclosed
 
+/-- Every vertex of the constructed path `pathP l (x :: xs') k` has been visited: those from the
+chain `l` by `hl.visited`, those from the DFS branch by `hdfs.branch_visited`. -/
 theorem hPV : ∀ y ∈ pathP l (x :: xs') k, y ∈ s.visited := by
   intro y hy
   rcases mem_pathP.1 hy with hy | hy
   · exact c.hl.visited y hy
   · exact c.hdfs.branch_visited y (List.mem_of_mem_take hy)
 
+/-- Contrapositive of `hPV`: an unvisited vertex `q` does not lie on the path
+`pathP l (x :: xs') k`. -/
 theorem notMem_P_of_notMem_visited {q : Site} (hq : q ∉ s.visited) :
     q ∉ pathP l (x :: xs') k :=
   fun h => hq (c.hPV q h)
 
+/-- The current face `x` lies on the path `pathP l (x :: xs') k`, as the last vertex of the
+chain `l`. -/
 theorem x_mem_P : x ∈ pathP l (x :: xs') k :=
   List.mem_of_mem_getLast? (pathP_getLast? c.hk c.hlast)
 
+/-- The junction vertex `(x :: xs')[k]` lies on the path `pathP l (x :: xs') k`. -/
 theorem junction_mem_P : (x :: xs')[k]'c.hk ∈ pathP l (x :: xs') k := by
   unfold pathP
   exact List.mem_append_left _ (List.mem_of_mem_getLast? c.hlast)
 
+/-- If `τ` lies on the branch `x :: xs'` then it must be the junction vertex `(x :: xs')[k]`,
+since the chain `l` from `τ` to `x` meets the branch only at the junction. -/
 theorem τ_eq_of_mem_branch (h : τ ∈ x :: xs') : τ = (x :: xs')[k]'c.hk :=
   chain_mem_branch c.hl c.hk c.hlast τ (List.mem_of_mem_head? c.hl.head) h
 
@@ -188,6 +210,9 @@ theorem deep_frame_tail {i : ℕ} {G : List (Site × Site)} (hG : Fs'[i]? = some
     simpa using hroot.symm
   · rw [hp] at this; exact this
 
+/-- Every edge `g` in the remaining active frames `F₁ ++ Fs'.flatten` has an unvisited head that
+avoids finite components, is a `squareGraph` edge, and is distinct from both `e` and the tested
+edge `(τ, p₀)`. -/
 theorem g_facts {g : Site × Site} (hg : g ∈ F₁ ++ Fs'.flatten) :
     g.2 ∉ s.visited ∧ ¬ InFiniteComponent s.visited g.2 ∧ squareGraph.Adj g.1 g.2 ∧ g ≠ e ∧
       g ≠ (τ, p₀) := by
@@ -224,6 +249,9 @@ theorem left_of_head {z p q y : Site} (hin : (p + z, z + z) ∈ steps J₁)
   c.left_of_arc_reach hin hout hz (c.notMem_P_of_notMem_visited hyV) hadj hye hyτ hb
     Relation.ReflTransGen.refl
 
+/-- In either case bounding the predecessor `p` of `x` — the branch's second vertex, or a child
+reached from `x` by a tested open edge — the step `x - p` is a unit vector, since `x` and `p`
+are adjacent in `squareGraph`. -/
 theorem pred_unit {p : Site}
     (hp : (1 ≤ k ∧ (x :: xs')[1]? = some p) ∨ (k = 0 ∧ (x, p, true) ∈ s.tested)) :
     IsUnit (x - p) := by

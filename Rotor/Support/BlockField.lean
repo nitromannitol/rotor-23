@@ -16,7 +16,11 @@ open scoped ENNReal
 
 namespace Rotor
 
-/-! ### Events determined by finitely many coordinates -/
+/-!
+# The marked configurations of the block-live-paths lemma
+
+### Events determined by finitely many coordinates
+-/
 
 section Determined
 
@@ -27,11 +31,14 @@ def DeterminedBy (S : Set ι) (E : Set (∀ i, X i)) : Prop :=
   ∀ ω ω' : ∀ i, X i, (∀ i ∈ S, ω i = ω' i) → ω ∈ E → ω' ∈ E
 
 omit [∀ i, MeasurableSpace (X i)] in
+/-- If `E` depends only on the coordinates in `S`, it depends only on any larger set `T ⊇ S`. -/
 theorem DeterminedBy.mono {S T : Set ι} (hST : S ⊆ T) {E : Set (∀ i, X i)}
     (h : DeterminedBy S E) : DeterminedBy T E :=
   fun ω ω' hω => h ω ω' (fun i hi => hω i (hST hi))
 
 omit [∀ i, MeasurableSpace (X i)] in
+/-- For `E` determined by the finite set `S`, `E` equals the preimage under `S.restrict` of its
+image, so `E` is recovered from its restriction to `S`. -/
 theorem DeterminedBy.preimage_image (S : Finset ι) {E : Set (∀ i, X i)}
     (h : DeterminedBy (↑S) E) : S.restrict ⁻¹' (S.restrict '' E) = E := by
   ext ω
@@ -41,12 +48,16 @@ theorem DeterminedBy.preimage_image (S : Finset ι) {E : Set (∀ i, X i)}
   · intro hω
     exact ⟨ω, hω, rfl⟩
 
+/-- An event determined by a finite set of coordinates is measurable, since every subset of a
+finite discrete space is measurable and `E` is the preimage of its restriction. -/
 theorem DeterminedBy.measurableSet [∀ i, MeasurableSingletonClass (X i)] [∀ i, Finite (X i)]
     (S : Finset ι) {E : Set (∀ i, X i)} (h : DeterminedBy (↑S) E) : MeasurableSet E := by
   rw [← h.preimage_image S]
   exact (Finset.measurable_restrict S) (Set.toFinite _).measurableSet
 
 omit [∀ i, MeasurableSpace (X i)] in
+/-- Membership in `E` (determined by the finite set `S`) is equivalent to the restriction to `S`
+lying in the image of `E` under that restriction. -/
 theorem DeterminedBy.mem_iff (S : Finset ι) {E : Set (∀ i, X i)} (h : DeterminedBy (↑S) E)
     (ω : ∀ i, X i) : ω ∈ E ↔ S.restrict ω ∈ S.restrict '' E := by
   conv_lhs => rw [← h.preimage_image S]
@@ -56,6 +67,8 @@ end Determined
 
 /-! ### Independence under a pushforward -/
 
+/-- If `f ∘ ψ` and `g ∘ ψ` are independent under `μ`, then `f` and `g` are independent under the
+pushforward measure `μ.map ψ`. -/
 theorem indepFun_map_of {Ω Ω' β γ : Type*} [MeasurableSpace Ω] [MeasurableSpace Ω']
     [MeasurableSpace β] [MeasurableSpace γ] (μ : Measure Ω) {ψ : Ω → Ω'} (hψ : Measurable ψ)
     {f : Ω' → β} {g : Ω' → γ} (hf : Measurable f) (hg : Measurable g)
@@ -78,6 +91,8 @@ def restrPair (S : Finset ι) (p : (∀ i, X i) × (∀ i, Y i)) :
     (∀ i : S, X i) × (∀ i : S, Y i) :=
   (S.restrict p.1, S.restrict p.2)
 
+/-- The restriction map `restrPair S`, pairing the restrictions of both coordinates to `S`, is
+measurable. -/
 theorem measurable_restrPair (S : Finset ι) : Measurable (restrPair (X := X) (Y := Y) S) :=
   ((Finset.measurable_restrict S).comp measurable_fst).prodMk
     ((Finset.measurable_restrict S).comp measurable_snd)
@@ -111,10 +126,13 @@ theorem indepFun_restrPair (S T : Finset ι) (hST : Disjoint S T) :
     rw [this]
     exact measurable_measure_prodMk_right hB
   -- independence of the two restrictions under each product law
-  have hindX := (iIndepFun_eval_infinitePi μ).indepFun_finset S T hST (fun i => measurable_pi_apply i)
-  have hindY := (iIndepFun_eval_infinitePi κ).indepFun_finset S T hST (fun i => measurable_pi_apply i)
+  have hindX := (iIndepFun_eval_infinitePi μ).indepFun_finset S T hST
+    (fun i => measurable_pi_apply i)
+  have hindY := (iIndepFun_eval_infinitePi κ).indepFun_finset S T hST
+    (fun i => measurable_pi_apply i)
   have hXA : ∀ m : ∀ i, Y i, Measure.infinitePi μ
-      ((fun ρ => (S.restrict ρ, S.restrict m)) ⁻¹' A ∩ (fun ρ => (T.restrict ρ, T.restrict m)) ⁻¹' B) =
+      ((fun ρ => (S.restrict ρ, S.restrict m)) ⁻¹' A ∩
+        (fun ρ => (T.restrict ρ, T.restrict m)) ⁻¹' B) =
       f (S.restrict m) * g (T.restrict m) := by
     intro m
     have := (indepFun_iff_measure_inter_preimage_eq_mul.1 hindX) (secA (S.restrict m))
@@ -125,7 +143,8 @@ theorem indepFun_restrPair (S T : Finset ι) (hST : Disjoint S T) :
   have hmeasT : MeasurableSet (restrPair T ⁻¹' B) := measurable_restrPair T hB
   rw [Measure.prod_apply_symm (hmeasS.inter hmeasT), Measure.prod_apply_symm hmeasS,
     Measure.prod_apply_symm hmeasT]
-  have e1 : (fun m => Measure.infinitePi μ ((fun ρ => (ρ, m)) ⁻¹' (restrPair S ⁻¹' A ∩ restrPair T ⁻¹' B))) =
+  have e1 : (fun m => Measure.infinitePi μ
+      ((fun ρ => (ρ, m)) ⁻¹' (restrPair S ⁻¹' A ∩ restrPair T ⁻¹' B))) =
       fun m => f (S.restrict m) * g (T.restrict m) := by
     funext m
     rw [← hXA m]
@@ -139,8 +158,9 @@ theorem indepFun_restrPair (S T : Finset ι) (hST : Disjoint S T) :
     funext m
     rfl
   rw [e1, e2, e3]
-  exact lintegral_mul_eq_lintegral_mul_lintegral_of_indepFun (hf.comp (Finset.measurable_restrict S))
-    (hg.comp (Finset.measurable_restrict T)) (hindY.comp hf hg)
+  exact lintegral_mul_eq_lintegral_mul_lintegral_of_indepFun
+    (hf.comp (Finset.measurable_restrict S)) (hg.comp (Finset.measurable_restrict T))
+    (hindY.comp hf hg)
 
 end Pair
 
@@ -156,11 +176,15 @@ def DeterminedByPair (S : Set ι) (E : Set ((∀ i, X i) × (∀ i, Y i))) : Pro
   ∀ p p' : (∀ i, X i) × (∀ i, Y i), (∀ i ∈ S, p.1 i = p'.1 i ∧ p.2 i = p'.2 i) → p ∈ E → p' ∈ E
 
 omit [∀ i, MeasurableSpace (X i)] [∀ i, MeasurableSpace (Y i)] in
+/-- If `E` depends only on the coordinates in `S` of both components, it depends only on any
+larger set `T ⊇ S`. -/
 theorem DeterminedByPair.mono {S T : Set ι} (hST : S ⊆ T) {E : Set ((∀ i, X i) × (∀ i, Y i))}
     (h : DeterminedByPair S E) : DeterminedByPair T E :=
   fun p p' hp => h p p' (fun i hi => hp i (hST hi))
 
 omit [∀ i, MeasurableSpace (X i)] [∀ i, MeasurableSpace (Y i)] in
+/-- For `E` determined by the finite set `S`, `E` equals the preimage under `restrPair S` of its
+image. -/
 theorem DeterminedByPair.preimage_image (S : Finset ι) {E : Set ((∀ i, X i) × (∀ i, Y i))}
     (h : DeterminedByPair (↑S) E) : restrPair S ⁻¹' (restrPair S '' E) = E := by
   ext p
@@ -172,6 +196,7 @@ theorem DeterminedByPair.preimage_image (S : Finset ι) {E : Set ((∀ i, X i) �
   · intro hp
     exact ⟨p, hp, rfl⟩
 
+/-- An event on the pair space determined by a finite set of coordinates is measurable. -/
 theorem DeterminedByPair.measurableSet [∀ i, MeasurableSingletonClass (X i)] [∀ i, Finite (X i)]
     [∀ i, MeasurableSingletonClass (Y i)] [∀ i, Finite (Y i)] (S : Finset ι)
     {E : Set ((∀ i, X i) × (∀ i, Y i))} (h : DeterminedByPair (↑S) E) : MeasurableSet E := by
@@ -179,6 +204,8 @@ theorem DeterminedByPair.measurableSet [∀ i, MeasurableSingletonClass (X i)] [
   exact measurable_restrPair S (Set.toFinite _).measurableSet
 
 omit [∀ i, MeasurableSpace (X i)] [∀ i, MeasurableSpace (Y i)] in
+/-- Membership in `E` (determined by the finite set `S`) is equivalent to `restrPair S p` lying
+in the image of `E` under that restriction. -/
 theorem DeterminedByPair.mem_iff (S : Finset ι) {E : Set ((∀ i, X i) × (∀ i, Y i))}
     (h : DeterminedByPair (↑S) E) (p : (∀ i, X i) × (∀ i, Y i)) :
     p ∈ E ↔ restrPair S p ∈ restrPair S '' E := by
@@ -194,6 +221,8 @@ section Congr
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite] (π : Mechanism G)
 
 omit [G.LocallyFinite] in
+/-- The rank of a neighbor `w` from `v` depends only on the rotor state at `v`: it is unchanged
+when `ρ` and `ρ'` agree there. -/
 theorem rank_congr {ρ ρ' : Config G} (v : V) (h : ρ v = ρ' v) (w : G.neighborSet v) :
     rank π ρ v w = rank π ρ' v w := by
   unfold rank
@@ -204,6 +233,8 @@ theorem rank_congr {ρ ρ' : Config G} (v : V) (h : ρ v = ρ' v) (w : G.neighbo
       rw [← h]; exact (Nat.find_spec (rank_exists π ρ v w)).2⟩
 
 omit [G.LocallyFinite] in
+/-- `LiveAt π ρ u v w` depends only on the rotor state `ρ v`: it holds under `ρ` iff it holds
+under any `ρ'` agreeing with `ρ` at `v`. -/
 theorem liveAt_congr {ρ ρ' : Config G} {u v w : V} (h : ρ v = ρ' v) :
     LiveAt π ρ u v w ↔ LiveAt π ρ' u v w := by
   unfold LiveAt rank'
@@ -214,6 +245,8 @@ theorem liveAt_congr {ρ ρ' : Config G} {u v w : V} (h : ρ v = ρ' v) :
     exact ⟨hw, hu, by rw [rank_congr π v h, rank_congr π v h]; exact hlt⟩
 
 omit [G.LocallyFinite] in
+/-- `LiveAtIndex π ρ l i` depends only on the rotor state at the vertex `l.get i`: it is
+preserved by any `ρ'` agreeing with `ρ` there. -/
 theorem liveAtIndex_congr {ρ ρ' : Config G} {l : List V} {i : ℕ}
     (h : ∀ hi : i < l.length, ρ (l.get ⟨i, hi⟩) = ρ' (l.get ⟨i, hi⟩)) :
     LiveAtIndex π ρ l i ↔ LiveAtIndex π ρ' l i := by
@@ -225,6 +258,8 @@ theorem liveAtIndex_congr {ρ ρ' : Config G} {l : List V} {i : ℕ}
     exact ⟨hh, (liveAt_congr π (h (by omega))).2 hl⟩
 
 omit [G.LocallyFinite] in
+/-- `IsLive π ρ l` depends only on the rotor state at the internal vertices of `l`: it is
+preserved by any `ρ'` agreeing with `ρ` at each of them. -/
 theorem isLive_congr {ρ ρ' : Config G} {l : List V}
     (h : ∀ (i : ℕ) (hi : i < l.length), 0 < i → i + 1 < l.length →
       ρ (l.get ⟨i, hi⟩) = ρ' (l.get ⟨i, hi⟩)) :
@@ -269,6 +304,8 @@ def markedBlockEvent (P : DoublyPeriodic G) (L : ℕ) (z : ℤ × ℤ) : Set (MP
     (∀ y ∈ l.getLast?, y ∉ P.blockPlus L z)}
 
 omit [G.LocallyFinite] in
+/-- The marked block event `E_z` is determined by the pair of coordinates in `Q_z⁺`: it depends
+only on the rotors and marks there. -/
 theorem markedBlockEvent_determined (P : DoublyPeriodic G) (L : ℕ) (z : ℤ × ℤ) :
     DeterminedByPair (P.blockPlus L z) (markedBlockEvent π P L z) := by
   rintro p p' hp ⟨l, hpath, hlive, hstart, hstay, hlast⟩
@@ -306,6 +343,7 @@ variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite] (π :
 noncomputable def marksLaw (s : NNReal) (hs : s ≤ 1) : Measure (V → Bool) :=
   Measure.infinitePi (fun _ : V => External.bernoulli s hs)
 
+/-- `marksLaw s hs`, an infinite product of Bernoulli measures, is a probability measure. -/
 instance (s : NNReal) (hs : s ≤ 1) : IsProbabilityMeasure (marksLaw (V := V) s hs) := by
   unfold marksLaw; infer_instance
 
@@ -314,11 +352,14 @@ noncomputable def mLaw (ν : ∀ v : V, Measure (G.neighborSet v)) [∀ v, IsPro
     (s : NNReal) (hs : s ≤ 1) : Measure (MPair G) :=
   (productLaw ν).prod (marksLaw s hs)
 
+/-- `mLaw ν s hs`, a product of the rotor law and the marks law, is a probability measure. -/
 instance (ν : ∀ v : V, Measure (G.neighborSet v)) [∀ v, IsProbabilityMeasure (ν v)] (s : NNReal)
     (hs : s ≤ 1) : IsProbabilityMeasure (mLaw ν s hs) := by
   unfold mLaw; infer_instance
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The pushforward of `mLaw ν s hs` under the first projection is the rotor law
+`productLaw ν`. -/
 theorem mLaw_fst (ν : ∀ v : V, Measure (G.neighborSet v)) [∀ v, IsProbabilityMeasure (ν v)]
     (s : NNReal) (hs : s ≤ 1) {C : Set (Config G)} (hC : MeasurableSet C) :
     mLaw ν s hs (Prod.fst ⁻¹' C) = productLaw ν C := by
@@ -327,6 +368,7 @@ theorem mLaw_fst (ν : ∀ v : V, Measure (G.neighborSet v)) [∀ v, IsProbabili
 
 omit [DecidableEq V] [G.LocallyFinite] in
 set_option linter.deprecated false in
+/-- Under `marksLaw s hs`, each vertex is marked with probability exactly `s`. -/
 theorem marksLaw_mark (s : NNReal) (hs : s ≤ 1) (v : V) :
     marksLaw s hs {m : V → Bool | m v = true} = s := by
   unfold marksLaw
@@ -337,6 +379,8 @@ theorem marksLaw_mark (s : NNReal) (hs : s ≤ 1) (v : V) :
   rfl
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- Under `mLaw ν s hs`, each vertex is marked with probability exactly `s`, matching
+`marksLaw_mark`. -/
 theorem mLaw_mark (ν : ∀ v : V, Measure (G.neighborSet v)) [∀ v, IsProbabilityMeasure (ν v)]
     (s : NNReal) (hs : s ≤ 1) (v : V) :
     mLaw ν s hs {p : MPair G | p.2 v = true} = s := by
@@ -370,14 +414,19 @@ variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite] (π :
 noncomputable def blockPlusFin (z : ℤ × ℤ) : Finset V := (P.blockPlus_finite L z).toFinset
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- The finset `blockPlusFin P L z` has the same underlying set as `P.blockPlus L z`. -/
 theorem coe_blockPlusFin (z : ℤ × ℤ) : (↑(blockPlusFin P L z) : Set V) = P.blockPlus L z :=
   Set.Finite.coe_toFinset _
 
+/-- The block event `blockEvent π P L z` is measurable, since it is determined by the finitely
+many coordinates in `Q_z⁺`. -/
 theorem blockEvent_measurableSet (z : ℤ × ℤ) : MeasurableSet (blockEvent π P L z) := by
   have h := blockEvent_determined π P L z
   rw [← coe_blockPlusFin P L z] at h
   exact h.measurableSet _
 
+/-- The marked block event `markedBlockEvent π P L z` is measurable, since it is determined by
+the finitely many coordinates in `Q_z⁺`. -/
 theorem markedBlockEvent_measurableSet (z : ℤ × ℤ) :
     MeasurableSet (markedBlockEvent π P L z) := by
   have h := markedBlockEvent_determined π P L z
@@ -390,6 +439,8 @@ noncomputable def blockField (p : MPair G) : ℤ × ℤ → Bool :=
   fun z => decide (p ∈ markedBlockEvent π P L z)
 
 open Classical in
+/-- The block field `blockField π P L`, viewed as a function into `ℤ × ℤ → Bool`, is
+measurable. -/
 theorem measurable_blockField : Measurable (blockField π P L) := by
   refine measurable_pi_lambda _ (fun z => ?_)
   refine measurable_to_countable' (fun b => ?_)
@@ -450,6 +501,8 @@ theorem kDependent_blockField (hL : 0 < L) :
     (fun _ => External.bernoulli s hs) _ _ hdisj
   exact this.comp (measurable_of_countable _) (measurable_of_countable _)
 
+/-- The pushforward of `mLaw ν s hs` under `blockField π P L` assigns to `{ω z = true}` the same
+probability as `mLaw ν s hs (markedBlockEvent π P L z)`. -/
 theorem map_blockField_site (z : ℤ × ℤ) :
     (mLaw ν s hs).map (blockField π P L) {ω | ω z = true} =
       mLaw ν s hs (markedBlockEvent π P L z) := by
@@ -516,7 +569,8 @@ theorem mLaw_iInter_markedBlockEvent_le (hL : 0 < L) {ε : ℝ}
         ⋂ z ∈ Z, (fun ω : ℤ × ℤ → Bool => ω z) ⁻¹' {true} := by
       ext ω; simp
     rw [e]
-    exact MeasurableSet.biInter Z.countable_toSet (fun z _ => measurable_pi_apply z (measurableSet_singleton _))
+    exact MeasurableSet.biInter Z.countable_toSet
+      (fun z _ => measurable_pi_apply z (measurableSet_singleton _))
   have hinc : External.IsIncreasing {ω : ℤ × ℤ → Bool | ∀ z ∈ Z, ω z = true} :=
     fun ω ω' hω hle z hz => hle z (hω z hz)
   have h := hLSS ((mLaw ν s hs).map (blockField π P L))

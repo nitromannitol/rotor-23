@@ -13,6 +13,15 @@ import Rotor.Support.ForcedCascade
 
 open Rotor MeasureTheory
 
+/-!
+# Exponential tail for the number of forced tests
+
+States Lemma 5.6 of `rotor.tex`: the number `K` of forced tests along a step of the exploration
+process has an exponentially decaying tail, `P{K ≥ m} ≤ C e^{-cm}`, with the explicit constants
+`C = 4/3` and `e^{-c} = (3/4)^{1/3}` coming from the geometric bound `P{K ≥ 3k+1} ≤ (3/4)^k`
+proved along the way.
+-/
+
 -- FROZEN-STATEMENT-BEGIN
 theorem Rotor.Frozen.square_forced_tests (f d : Site) (hd : squareGraph.Adj f (f + d)) :
     ∀ m : ℕ, 1 ≤ m →

@@ -15,6 +15,17 @@ out-degree, then some path `x₀, …, x_m = y` with `x₀ ∈ S`, `x_i ∉ S` f
 -/
 import Mathlib
 
+/-!
+# A path to a vertex of excess in-degree
+
+Proves the combinatorial core of `lem:decreasing-positions` (i): in a finite set `E` of directed
+edges on `V`, if every vertex outside `S ∪ {y}` is balanced (in-degree equals out-degree) and `y`
+has strictly more incoming than outgoing edges, then `E` contains a path from `S` to `y` that
+never revisits `S` after leaving it.  `IsEPath` packages such a path, and `exists_epath` proves
+its existence by induction on `|E|`, removing an in-edge of `y` and moving the excess to its
+source at each step.
+-/
+
 open Finset
 
 namespace Rotor
@@ -23,6 +34,7 @@ variable {V : Type*} [DecidableEq V]
 
 /-- In-degree and out-degree of `v` in the edge set `E`. -/
 def indeg (E : Finset (V × V)) (v : V) : ℕ := (E.filter (fun e => e.2 = v)).card
+/-- Out-degree of `v` in the edge set `E`: the number of edges of `E` leaving `v`. -/
 def outdeg (E : Finset (V × V)) (v : V) : ℕ := (E.filter (fun e => e.1 = v)).card
 
 /-- A path of `E` from `S` to `y`: distinct vertices, first in `S`, the rest
@@ -35,6 +47,8 @@ structure IsEPath (E : Finset (V × V)) (S : Finset V) (l : List V) (y : V) : Pr
   last : l.getLast? = some y
   chain : l.IsChain (fun u v => (u, v) ∈ E)
 
+/-- Removing an edge `e ∈ E` decreases `indeg E v` by one exactly when `e` points into `v`, and
+leaves it unchanged otherwise. -/
 theorem indeg_erase (E : Finset (V × V)) (e : V × V) (he : e ∈ E) (v : V) :
     indeg (E.erase e) v = indeg E v - (if e.2 = v then 1 else 0) := by
   unfold indeg
@@ -45,6 +59,8 @@ theorem indeg_erase (E : Finset (V × V)) (e : V × V) (he : e ∈ E) (v : V) :
     rw [Finset.erase_eq_of_notMem this]
     simp
 
+/-- Removing an edge `e ∈ E` decreases `outdeg E v` by one exactly when `e` leaves `v`, and
+leaves it unchanged otherwise. -/
 theorem outdeg_erase (E : Finset (V × V)) (e : V × V) (he : e ∈ E) (v : V) :
     outdeg (E.erase e) v = outdeg E v - (if e.1 = v then 1 else 0) := by
   unfold outdeg

@@ -1,6 +1,8 @@
 import Rotor.Support.FreshTime
 
 /-!
+# Almost-sure extinction of the exploration
+
 Extinction of the exploration, `rotor.tex:1362-1376`: the retained tree is dominated by a
 critical Galton–Watson tree, so it is finite almost surely.  Formally: the queue length at
 the fresh steps is a supermartingale with respect to the atoms of the read histories, hence
@@ -26,17 +28,23 @@ noncomputable def histOf (j : ℕ) (ρ : Config G) : History G :=
 
 variable {π o x}
 
+/-- The vertex list underlying `histOf π o x j ρ` is exactly the state's
+visited history `(St π o x ρ (τf π o x j ρ)).hist` at the `j`-th fresh time. -/
 theorem verts_histOf (j : ℕ) (ρ : Config G) :
     verts (histOf π o x j ρ) = (St π o x ρ (τf π o x j ρ)).hist := by
   simp only [histOf, verts, List.map_map]
   exact List.map_id' _
 
+/-- If the walk reaches its `j`-th fresh step, `histOf π o x j ρ` has length
+`j`, by `hist_length_τf`. -/
 theorem length_histOf {j : ℕ} {ρ : Config G} (hj : Reach π o x j ρ) :
     (histOf π o x j ρ).length = j := by
   unfold histOf
   rw [List.length_map]
   exact hist_length_τf hj
 
+/-- Every configuration `ρ` belongs to the atom `atomE π o x (histOf π o x j ρ)`
+determined by its own history at the `j`-th fresh step. -/
 theorem mem_atomE_histOf (j : ℕ) (ρ : Config G) :
     ρ ∈ atomE π o x (histOf π o x j ρ) := by
   refine ⟨⟨τf π o x j ρ, ?_⟩, fun y hy => ?_⟩
@@ -44,6 +52,9 @@ theorem mem_atomE_histOf (j : ℕ) (ρ : Config G) :
   · obtain ⟨v, -, rfl⟩ := List.mem_map.1 hy
     rfl
 
+/-- If `ρ` lies in the atom `atomE π o x h`, then `histOf π o x h.length ρ`
+recovers `h` exactly: the atom's defining history is the one read from any of
+its members. -/
 theorem histOf_eq_of_mem_atomE {h : History G} {ρ : Config G} (hρ : ρ ∈ atomE π o x h) :
     histOf π o x h.length ρ = h := by
   have hr := reach_of_atomE hρ
@@ -62,6 +73,9 @@ theorem histOf_eq_of_mem_atomE {h : History G} {ρ : Config G} (hρ : ρ ∈ ato
   have := hρ.2 y hy
   exact Sigma.ext rfl (heq_of_eq this)
 
+/-- Two atoms `atomE π o x h` and `atomE π o x h'` of equal-length histories
+`h ≠ h'` are disjoint, since `histOf_eq_of_mem_atomE` would otherwise force
+`h = h'`. -/
 theorem atomE_disjoint {h h' : History G} (hlen : h.length = h'.length) (hne : h ≠ h') :
     Disjoint (atomE π o x h) (atomE π o x h') := by
   rw [Set.disjoint_left]
@@ -69,6 +83,8 @@ theorem atomE_disjoint {h h' : History G} (hlen : h.length = h'.length) (hne : h
   apply hne
   rw [← histOf_eq_of_mem_atomE hρ, ← histOf_eq_of_mem_atomE hρ', hlen]
 
+/-- For every `j` there is a largest `i ≤ j` with `Reach π o x i ρ`: either
+`i = j`, or the walk fails to reach step `i + 1`, found by induction on `j`. -/
 theorem exists_max_reach (ρ : Config G) : ∀ j : ℕ, ∃ i ≤ j, Reach π o x i ρ ∧
     (i = j ∨ ¬ Reach π o x (i + 1) ρ)
   | 0 => ⟨0, le_rfl, reach_zero ρ, Or.inl rfl⟩
@@ -87,20 +103,28 @@ lower level at which the exploration stops reaching new vertices. -/
 noncomputable def piece (j : ℕ) (h : History G) : Set (Config G) :=
   if h.length = j then atomE π o x h else atomE π o x h ∩ {ρ | ¬ Reach π o x (h.length + 1) ρ}
 
+/-- Every piece `piece π o x j h` is contained in the atom `atomE π o x h` it
+is built from, in both branches of the definition. -/
 theorem piece_subset_atomE (j : ℕ) (h : History G) : piece π o x j h ⊆ atomE π o x h := by
   unfold piece
   split_ifs
   · exact le_rfl
   · exact Set.inter_subset_left
 
+/-- When `h.length = j`, `piece π o x j h` reduces to the atom `atomE π o x h`. -/
 theorem piece_of_length_eq {j : ℕ} {h : History G} (hh : h.length = j) :
     piece π o x j h = atomE π o x h := by
   unfold piece; rw [if_pos hh]
 
+/-- When `h.length < j`, `piece π o x j h` is the atom `atomE π o x h`
+intersected with the event that the walk fails to reach step `h.length + 1`. -/
 theorem piece_of_length_lt {j : ℕ} {h : History G} (hh : h.length < j) :
     piece π o x j h = atomE π o x h ∩ {ρ | ¬ Reach π o x (h.length + 1) ρ} := by
   unfold piece; rw [if_neg hh.ne]
 
+/-- The pieces `piece π o x j h` over histories `h` of length at most `j` cover
+the whole configuration space: `exists_max_reach` supplies, for each `ρ`, the
+history at its last reached step at or before `j`. -/
 theorem iUnion_piece (j : ℕ) :
     ⋃ h : {h : History G // h.length ≤ j}, piece π o x j h.1 = Set.univ := by
   ext ρ
@@ -117,6 +141,9 @@ theorem iUnion_piece (j : ℕ) :
     · rw [piece_of_length_eq (length_histOf hr)]
       exact mem_atomE_histOf _ _
 
+/-- Pieces `piece π o x j h` and `piece π o x j h'` of level `j` built from
+distinct histories `h ≠ h'` (each of length at most `j`) are disjoint, by
+comparing history lengths and using `atomE_disjoint` in the equal-length case. -/
 theorem piece_disjoint {j : ℕ} {h h' : History G} (hh : h.length ≤ j) (hh' : h'.length ≤ j)
     (hne : h ≠ h') : Disjoint (piece π o x j h) (piece π o x j h') := by
   rcases lt_trichotomy h.length h'.length with hlt | heq | hgt
@@ -130,6 +157,9 @@ theorem piece_disjoint {j : ℕ} {h h' : History G} (hh : h.length ≤ j) (hh' :
     rintro ρ hρ ⟨-, hnr⟩
     exact hnr (reach_mono (by omega) (reach_of_atomE (piece_subset_atomE j h hρ)))
 
+/-- The queue length `Y π o x k` at any step `k ≤ j` is constant across
+configurations in the same piece `piece π o x j h`, using `Y_eq_of_atomE_le`
+when `k ≤ h.length` and `Y_of_not_reach` otherwise. -/
 theorem Y_const_on_piece {j : ℕ} {h : History G} (hh : h.length ≤ j) {k : ℕ} (hk : k ≤ j)
     {ρ ρ' : Config G} (hρ : ρ ∈ piece π o x j h) (hρ' : ρ' ∈ piece π o x j h) :
     Y π o x k ρ = Y π o x k ρ' := by
@@ -140,6 +170,9 @@ theorem Y_const_on_piece {j : ℕ} {h : History G} (hh : h.length ≤ j) {k : �
     rw [Y_of_not_reach (fun hr => hρ.2 (reach_mono (by omega) hr)),
       Y_of_not_reach (fun hr => hρ'.2 (reach_mono (by omega) hr))]
 
+/-- Reachability `Reach π o x k` at any step `k ≤ j` agrees across
+configurations in the same piece `piece π o x j h`, by the same case split
+as `Y_const_on_piece`. -/
 theorem reach_const_on_piece {j : ℕ} {h : History G} (hh : h.length ≤ j) {k : ℕ} (hk : k ≤ j)
     {ρ ρ' : Config G} (hρ : ρ ∈ piece π o x j h) (hρ' : ρ' ∈ piece π o x j h) :
     Reach π o x k ρ ↔ Reach π o x k ρ' := by
@@ -153,8 +186,11 @@ theorem reach_const_on_piece {j : ℕ} {h : History G} (hh : h.length ≤ j) {k 
 
 variable [Countable V]
 
+/-- The reach event `{ρ | Reach π o x j ρ}` is measurable, being the countable
+union of the atoms `atomE π o x h` over histories `h` of length `j`. -/
 theorem measurableSet_reach (j : ℕ) : MeasurableSet {ρ : Config G | Reach π o x j ρ} := by
-  have : {ρ : Config G | Reach π o x j ρ} = ⋃ h : {h : History G // h.length = j}, atomE π o x h.1 := by
+  have : {ρ : Config G | Reach π o x j ρ} = ⋃ h : {h : History G // h.length = j},
+      atomE π o x h.1 := by
     ext ρ
     simp only [Set.mem_setOf_eq, Set.mem_iUnion]
     constructor
@@ -166,6 +202,8 @@ theorem measurableSet_reach (j : ℕ) : MeasurableSet {ρ : Config G | Reach π 
   rw [this]
   exact MeasurableSet.iUnion (fun h => measurableSet_atomE h.1)
 
+/-- Every piece `piece π o x j h` is measurable, in each branch of its
+definition, from `measurableSet_atomE` and `measurableSet_reach`. -/
 theorem measurableSet_piece (j : ℕ) (h : History G) : MeasurableSet (piece π o x j h) := by
   unfold piece
   split_ifs
@@ -202,6 +240,8 @@ theorem measurable_of_const_on_pieces (j : ℕ) (F : Config G → ℕ)
   · exact measurableSet_piece j h.1
   · exact MeasurableSet.empty
 
+/-- The queue length `Y π o x j` is measurable, since it is constant on the
+(measurable) pieces of level `j`, by `measurable_of_const_on_pieces`. -/
 theorem measurable_Y (j : ℕ) : Measurable (fun ρ : Config G => Y π o x j ρ) :=
   measurable_of_const_on_pieces j _ (fun _ hh _ hρ _ hρ' => Y_const_on_piece hh le_rfl hρ hρ')
 
@@ -219,6 +259,8 @@ noncomputable def Z (N j : ℕ) (ρ : Config G) : ℕ :=
 
 variable {N : ℕ}
 
+/-- The stopped queue length at time `0` is `1`, since `Y π o x 0 ρ = 1`
+regardless of whether the stopping time has already occurred. -/
 theorem Z_zero (ρ : Config G) : Z π o x N 0 ρ = 1 := by
   unfold Z
   split_ifs with h
@@ -226,6 +268,9 @@ theorem Z_zero (ρ : Config G) : Z π o x N 0 ρ = 1 := by
     rw [Nat.le_zero.1 this, Y_zero]
   · exact Y_zero ρ
 
+/-- Once the queue has already reached level `N` at or before step `j`, the
+stopping index `Nat.find` for `j + 1` agrees with that for `j`, so `Z π o x N`
+does not change from step `j` to `j + 1`. -/
 theorem Z_succ_of_stopped {j : ℕ} {ρ : Config G} (hs : ∃ i ≤ j, N ≤ Y π o x i ρ) :
     Z π o x N (j + 1) ρ = Z π o x N j ρ := by
   classical
@@ -238,6 +283,9 @@ theorem Z_succ_of_stopped {j : ℕ} {ρ : Config G} (hs : ∃ i ≤ j, N ≤ Y �
   unfold Z
   rw [dif_pos hs, dif_pos hs', hfind]
 
+/-- If the queue has not yet reached level `N` by step `j`, then
+`Z π o x N j ρ = Y π o x j ρ` and `Z π o x N (j + 1) ρ = Y π o x (j + 1) ρ`,
+whether or not level `N` is reached exactly at step `j + 1`. -/
 theorem Z_succ_of_not_stopped {j : ℕ} {ρ : Config G} (hs : ¬ ∃ i ≤ j, N ≤ Y π o x i ρ) :
     Z π o x N (j + 1) ρ = Y π o x (j + 1) ρ ∧ Z π o x N j ρ = Y π o x j ρ := by
   classical
@@ -253,6 +301,9 @@ theorem Z_succ_of_not_stopped {j : ℕ} {ρ : Config G} (hs : ¬ ∃ i ≤ j, N 
     · rwa [show i = j + 1 by omega] at hY
   · rfl
 
+/-- If the walk fails to reach step `j + 1`, the stopped queue length does not
+increase: `Z π o x N (j + 1) ρ ≤ Z π o x N j ρ`, since an unreached step forces
+`Y` (hence `Z`, when unstopped) to `0`. -/
 theorem Z_le_of_not_reach {j : ℕ} {ρ : Config G}
     (hj : ¬ Reach π o x (j + 1) ρ) : Z π o x N (j + 1) ρ ≤ Z π o x N j ρ := by
   by_cases hs : ∃ i ≤ j, N ≤ Y π o x i ρ
@@ -261,6 +312,9 @@ theorem Z_le_of_not_reach {j : ℕ} {ρ : Config G}
     rw [h1, Y_of_not_reach hj]
     exact Nat.zero_le _
 
+/-- The queue reaches level `N` at some step at most `j` iff the stopped
+process has already crossed `N`:
+`(∃ i ≤ j, N ≤ Y π o x i ρ) ↔ N ≤ Z π o x N j ρ`. -/
 theorem stopped_iff {j : ℕ} {ρ : Config G} : (∃ i ≤ j, N ≤ Y π o x i ρ) ↔ N ≤ Z π o x N j ρ := by
   classical
   constructor
@@ -274,6 +328,10 @@ theorem stopped_iff {j : ℕ} {ρ : Config G} : (∃ i ≤ j, N ≤ Y π o x i �
     rw [h2] at hZ
     exact hs ⟨j, le_rfl, hZ⟩
 
+/-- The stopped queue length `Z π o x N j` is constant across configurations
+in the same piece `piece π o x j h`, since the underlying values
+`Y π o x i` for `i ≤ j` (and hence the stopping index) agree by
+`Y_const_on_piece`. -/
 theorem Z_const_on_piece {j : ℕ} {h : History G} (hh : h.length ≤ j) {ρ ρ' : Config G}
     (hρ : ρ ∈ piece π o x j h) (hρ' : ρ' ∈ piece π o x j h) :
     Z π o x N j ρ = Z π o x N j ρ' := by
@@ -289,13 +347,16 @@ theorem Z_const_on_piece {j : ℕ} {h : History G} (hh : h.length ≤ j) {ρ ρ'
     rw [dif_pos hs, dif_pos hs']
     have hfind : Nat.find hs = Nat.find hs' := by
       rw [Nat.find_eq_iff]
-      refine ⟨⟨(Nat.find_spec hs').1, by rw [hY _ (Nat.find_spec hs').1]; exact (Nat.find_spec hs').2⟩,
+      refine ⟨⟨(Nat.find_spec hs').1,
+          by rw [hY _ (Nat.find_spec hs').1]; exact (Nat.find_spec hs').2⟩,
         fun n hn hn' => Nat.find_min hs' hn ⟨hn'.1, by rw [← hY n hn'.1]; exact hn'.2⟩⟩
     rw [hfind, hY _ (Nat.find_spec hs').1]
   · rw [dif_neg hs, dif_neg (fun h' => hs (hiff.2 h')), hY j le_rfl]
 
 variable [Countable V]
 
+/-- The stopped queue length `Z π o x N j` is measurable, since it is constant
+on the pieces of level `j`, by `measurable_of_const_on_pieces`. -/
 theorem measurable_Z (j : ℕ) : Measurable (fun ρ : Config G => Z π o x N j ρ) :=
   measurable_of_const_on_pieces j _ (fun _ hh _ hρ _ hρ' => Z_const_on_piece hh hρ hρ')
 
@@ -332,6 +393,10 @@ theorem lintegral_Y_succ_le_atom (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v �
     rw [Y_of_not_reach hρ.2, Nat.cast_zero]
     exact zero_le
 
+/-- The stopped queue length is a supermartingale:
+`∫⁻ Z π o x N (j + 1) ≤ ∫⁻ Z π o x N j`, obtained by summing the atom-level
+bound `lintegral_Y_succ_le_atom` over the pieces of level `j`, using that `Z`
+agrees with `Y` there once the process is unstopped. -/
 theorem lintegral_Z_succ_le (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3) (j : ℕ) :
     ∫⁻ ρ, (Z π o x N (j + 1) ρ : ENNReal) ∂(uniformLaw π)
       ≤ ∫⁻ ρ, (Z π o x N j ρ : ENNReal) ∂(uniformLaw π) := by
@@ -368,13 +433,17 @@ theorem lintegral_Z_succ_le (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3)
         _ = ∫⁻ ρ in atomE π o x h.1, (Z π o x N j ρ : ENNReal) ∂(uniformLaw π) :=
             (setLIntegral_congr_fun (measurableSet_atomE _) (fun ρ hρ => by rw [(hZ ρ hρ).2])).symm
 
+/-- By induction on `j`, chaining `Z_zero` and the supermartingale step
+`lintegral_Z_succ_le`, the stopped queue length satisfies `∫⁻ Z π o x N j ≤ 1`
+for every `j`. -/
 theorem lintegral_Z_le_one (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3) :
     ∀ j : ℕ, ∫⁻ ρ, (Z π o x N j ρ : ENNReal) ∂(uniformLaw π) ≤ 1
   | 0 => by simp [Z_zero]
   | j + 1 => (lintegral_Z_succ_le hox h3 j).trans (lintegral_Z_le_one hox h3 j)
 
 /-- Markov: the queue length at a fresh step reaches `N` with probability at most `1/N`. -/
-theorem measure_stopped_le (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3) (j : ℕ) : uniformLaw π {ρ | ∃ i ≤ j, N ≤ Y π o x i ρ} ≤ (N : ENNReal)⁻¹ := by
+theorem measure_stopped_le (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3) (j : ℕ) :
+    uniformLaw π {ρ | ∃ i ≤ j, N ≤ Y π o x i ρ} ≤ (N : ENNReal)⁻¹ := by
   have hE : {ρ : Config G | ∃ i ≤ j, N ≤ Y π o x i ρ} = {ρ | N ≤ Z π o x N j ρ} := by
     ext ρ; exact stopped_iff
   have hm : MeasurableSet {ρ : Config G | N ≤ Z π o x N j ρ} :=
@@ -388,6 +457,9 @@ theorem measure_stopped_le (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3) 
     _ ≤ ∫⁻ ρ, (Z π o x N j ρ : ENNReal) ∂(uniformLaw π) := setLIntegral_le_lintegral _ _
     _ ≤ 1 := lintegral_Z_le_one hox h3 j
 
+/-- The probability that the queue ever reaches level `N` is at most `N⁻¹`,
+obtained from `measure_stopped_le` by writing the event as an increasing
+union over `j` and taking the supremum. -/
 theorem measure_exists_stop_le (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3) :
     uniformLaw π {ρ | ∃ i, N ≤ Y π o x i ρ} ≤ (N : ENNReal)⁻¹ := by
   have : {ρ : Config G | ∃ i, N ≤ Y π o x i ρ} = ⋃ i, {ρ | N ≤ Y π o x i ρ} := by
@@ -416,6 +488,9 @@ variable (π o x) in
 def LevelMeas (j : ℕ) (E : Set (Config G)) : Prop :=
   ∀ h : History G, h.length ≤ j → ∀ ρ ∈ piece π o x j h, ∀ ρ' ∈ piece π o x j h, ρ ∈ E → ρ' ∈ E
 
+/-- A union of pieces of level `j` is also a union of pieces of level `j + 1`,
+since each level-`(j + 1)` piece is either contained in a level-`j` piece or
+is itself a full atom refining one. -/
 theorem levelMeas_succ {j : ℕ} {E : Set (Config G)} (hE : LevelMeas π o x j E) :
     LevelMeas π o x (j + 1) E := by
   intro h hh ρ hρ ρ' hρ' hE'
@@ -434,6 +509,8 @@ theorem levelMeas_succ {j : ℕ} {E : Set (Config G)} (hE : LevelMeas π o x j E
       exact fun ρ hρ => (qProc π o x).atomF_prefix (List.take_prefix j h) hρ
     exact hE (h.take j) hlen.le ρ (hsub hρ) ρ' (hsub hρ') hE'
 
+/-- `LevelMeas π o x j E` implies `LevelMeas π o x k E` for every `k ≥ j`, by
+induction on `k` using `levelMeas_succ`. -/
 theorem levelMeas_of_le {j k : ℕ} (hjk : j ≤ k) {E : Set (Config G)}
     (hE : LevelMeas π o x j E) : LevelMeas π o x k E := by
   induction k with
@@ -443,14 +520,21 @@ theorem levelMeas_of_le {j k : ℕ} (hjk : j ≤ k) {E : Set (Config G)}
     · exact levelMeas_succ (ih (by omega))
     · rw [Nat.le_antisymm hjk h] at hE; exact hE
 
+/-- `LevelMeas` is closed under intersection: if `E` and `E'` are each unions
+of pieces of level `j`, so is `E ∩ E'`. -/
 theorem levelMeas_inter {j : ℕ} {E E' : Set (Config G)} (hE : LevelMeas π o x j E)
     (hE' : LevelMeas π o x j E') : LevelMeas π o x j (E ∩ E') :=
   fun h hh ρ hρ ρ' hρ' ⟨h1, h2⟩ => ⟨hE h hh ρ hρ ρ' hρ' h1, hE' h hh ρ hρ ρ' hρ' h2⟩
 
+/-- `LevelMeas` is closed under complement: if `E` is a union of pieces of
+level `j`, so is `Eᶜ`. -/
 theorem levelMeas_compl {j : ℕ} {E : Set (Config G)} (hE : LevelMeas π o x j E) :
     LevelMeas π o x j Eᶜ :=
   fun h hh ρ hρ ρ' hρ' hnE hE' => hnE (hE h hh ρ' hρ' ρ hρ hE')
 
+/-- The event `Drop π o x j` is a union of pieces of level `j + 1`: whether it
+holds depends only on `Reach` and `Y` at steps `j` and `j + 1`, which are
+constant on such a piece. -/
 theorem levelMeas_drop (j : ℕ) : LevelMeas π o x (j + 1) (Drop π o x j) := by
   intro h hh ρ hρ ρ' hρ' hD
   simp only [Drop, Set.mem_setOf_eq] at hD ⊢
@@ -458,11 +542,16 @@ theorem levelMeas_drop (j : ℕ) : LevelMeas π o x (j + 1) (Drop π o x j) := b
     ← Y_const_on_piece hh (Nat.le_succ j) hρ hρ']
   exact hD
 
+/-- The reach event `{ρ | Reach π o x j ρ}` is itself a union of pieces of
+level `j`, since reachability at step `j` is constant on each such piece. -/
 theorem levelMeas_reach (j : ℕ) : LevelMeas π o x j {ρ | Reach π o x j ρ} :=
   fun _ hh _ hρ _ hρ' hr => (reach_const_on_piece hh le_rfl hρ hρ').1 hr
 
 variable [Countable V]
 
+/-- Every `LevelMeas`-measurable set `E` is genuinely measurable: it is the
+union, over histories `h` of length at most `j`, of the pieces `piece π o x j h`
+on which `E` holds. -/
 theorem measurableSet_of_levelMeas {j : ℕ} {E : Set (Config G)} (hE : LevelMeas π o x j E) :
     MeasurableSet E := by
   classical
@@ -487,6 +576,8 @@ theorem measurableSet_of_levelMeas {j : ℕ} {E : Set (Config G)} (hE : LevelMea
   · exact measurableSet_piece j h.1
   · exact MeasurableSet.empty
 
+/-- The event `Drop π o x j` is measurable, via `measurableSet_of_levelMeas`
+and `levelMeas_drop`. -/
 theorem measurableSet_drop (j : ℕ) : MeasurableSet (Drop π o x j) :=
   measurableSet_of_levelMeas (levelMeas_drop j)
 
@@ -549,7 +640,8 @@ theorem measure_le_three_mul_drop (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v 
   conv_rhs => rw [hE2]
   conv_lhs => rw [hE1]
   rw [measure_iUnion hd (fun h => hEm.inter (measurableSet_piece j h.1)),
-    measure_iUnion hd' (fun h => (hEm.inter (measurableSet_drop j)).inter (measurableSet_piece j h.1)),
+    measure_iUnion hd'
+      (fun h => (hEm.inter (measurableSet_drop j)).inter (measurableSet_piece j h.1)),
     ← ENNReal.tsum_mul_left]
   refine ENNReal.tsum_le_tsum (fun h => ?_)
   rcases lt_or_eq_of_le h.2 with hlt | heq
@@ -583,6 +675,8 @@ def Drops (j : ℕ) : ℕ → Set (Config G)
   | n + 1 => Drops j n ∩ Drop π o x (j + n)
 
 omit [Countable V] in
+/-- `ρ` lies in `Drops π o x j n`, the block of the first `n` fresh steps
+after `j` that all drop, iff `ρ ∈ Drop π o x (j + i)` for every `i < n`. -/
 theorem mem_drops {j : ℕ} {ρ : Config G} : ∀ {n : ℕ},
     ρ ∈ Drops π o x j n ↔ ∀ i < n, ρ ∈ Drop π o x (j + i)
   | 0 => by simp [Drops]
@@ -597,12 +691,17 @@ theorem mem_drops {j : ℕ} {ρ : Config G} : ∀ {n : ℕ},
       exact ⟨fun i hi => h i (by omega), h n (by omega)⟩
 
 omit [Countable V] in
+/-- `Drops π o x j n` is a union of pieces of level `j + n`, by induction on
+`n` using `levelMeas_drop` and `levelMeas_inter`. -/
 theorem levelMeas_drops (j : ℕ) : ∀ n : ℕ, LevelMeas π o x (j + n) (Drops π o x j n)
   | 0 => fun _ _ _ _ _ _ _ => Set.mem_univ _
   | n + 1 => by
     show LevelMeas π o x (j + n + 1) (Drops π o x j n ∩ Drop π o x (j + n))
     exact levelMeas_inter (levelMeas_succ (levelMeas_drops j n)) (levelMeas_drop (j + n))
 
+/-- Iterating the one-step drop bound `measure_le_three_mul_drop` over `n`
+fresh steps gives `uniformLaw π E ≤ 3 ^ n * uniformLaw π (E ∩ Drops π o x j n)`,
+by induction on `n`. -/
 theorem measure_le_pow_three_mul_drops (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3)
     {j : ℕ} {E : Set (Config G)} (hE : LevelMeas π o x j E) : ∀ n : ℕ,
     uniformLaw π E ≤ 3 ^ n * uniformLaw π (E ∩ Drops π o x j n)
@@ -624,6 +723,9 @@ def Bad (N k : ℕ) : Set (Config G) :=
   {ρ | Reach π o x (k * N) ρ ∧ ∀ b < k, ρ ∉ Drops π o x (b * N) N}
 
 omit [Countable V] in
+/-- The event `Bad π o x N k` is a union of pieces of level `k * N`: both the
+reach condition and each `Drops`-avoidance clause are constant on such a
+piece. -/
 theorem levelMeas_bad (N k : ℕ) : LevelMeas π o x (k * N) (Bad π o x N k) := by
   intro h hh ρ hρ ρ' hρ' ⟨hr, hb⟩
   refine ⟨levelMeas_reach (k * N) h hh ρ hρ ρ' hρ' hr, fun b hbk hρ'D => hb b hbk ?_⟩
@@ -632,16 +734,25 @@ theorem levelMeas_bad (N k : ℕ) : LevelMeas π o x (k * N) (Bad π o x N k) :=
   exact hlev h hh ρ' hρ' ρ hρ hρ'D
 
 omit [Countable V] in
+/-- `Bad π o x N (k + 1)` is contained in `Bad π o x N k \ Drops π o x (k * N) N`:
+the first `k + 1` non-dropping blocks include the first `k`, and the `k`-th
+block itself does not consist purely of drops. -/
 theorem bad_succ_subset (N k : ℕ) :
     Bad π o x N (k + 1) ⊆ Bad π o x N k \ Drops π o x (k * N) N := by
   rintro ρ ⟨hr, hb⟩
   refine ⟨⟨reach_mono (by nlinarith) hr, fun b hbk => hb b (by omega)⟩, hb k (lt_add_one k)⟩
 
 omit [Countable V] in
+/-- The probability of `Bad π o x N 0` is at most `1`, since it is a subset
+of the whole configuration space. -/
 theorem measure_bad_zero_le (N : ℕ) : uniformLaw π (Bad π o x N 0) ≤ 1 := by
   calc uniformLaw π (Bad π o x N 0) ≤ uniformLaw π Set.univ := measure_mono (Set.subset_univ _)
     _ = 1 := measure_univ
 
+/-- The probability of `Bad π o x N (k + 1)` is at most `(1 - 3⁻¹ ^ N)` times
+that of `Bad π o x N k`: the `k`-th block of `N` fresh steps has probability
+at least `3⁻¹ ^ N` of consisting of drops only, by
+`measure_le_pow_three_mul_drops`, which removes it from `Bad`. -/
 theorem measure_bad_succ_le (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3) (N k : ℕ) :
     uniformLaw π (Bad π o x N (k + 1)) ≤
       (1 - (3 : ENNReal)⁻¹ ^ N) * uniformLaw π (Bad π o x N k) := by
@@ -666,6 +777,8 @@ theorem measure_bad_succ_le (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3)
     _ = (1 - (3 : ENNReal)⁻¹ ^ N) * uniformLaw π (Bad π o x N k) := by
         rw [ENNReal.sub_mul (fun _ _ => measure_ne_top _ _), one_mul]
 
+/-- By induction on `k` using `measure_bad_succ_le`, the probability of
+`Bad π o x N k` is at most `(1 - 3⁻¹ ^ N) ^ k`. -/
 theorem measure_bad_le (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3) (N : ℕ) :
     ∀ k : ℕ, uniformLaw π (Bad π o x N k) ≤ (1 - (3 : ENNReal)⁻¹ ^ N) ^ k
   | 0 => by simpa using measure_bad_zero_le (π := π) (o := o) (x := x) N
@@ -677,6 +790,9 @@ theorem measure_bad_le (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3) (N :
           exact measure_bad_le hox h3 N k
       _ = (1 - (3 : ENNReal)⁻¹ ^ N) ^ (k + 1) := by rw [pow_succ, mul_comm]
 
+/-- The probability that every block of `N` fresh steps fails to consist
+purely of drops, for all `k`, is `0`: the geometric bound `measure_bad_le`
+tends to `0` as `k → ∞`. -/
 theorem measure_iInter_bad (hox : G.Adj o x) (h3 : ∀ v : V, G.degree v ≤ 3) (N : ℕ) :
     uniformLaw π (⋂ k, Bad π o x N k) = 0 := by
   have hθ : (1 - (3 : ENNReal)⁻¹ ^ N) < 1 := by

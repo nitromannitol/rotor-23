@@ -19,6 +19,17 @@ import Rotor.External.Abelian
 import Rotor.External.HolroydPropp
 import Rotor.Bridge.Abelian
 
+/-!
+# Monotonicity of the traversal set
+
+Proves the frozen statement `Rotor.Frozen.monotonicity`, the paper's Proposition 2.5:
+if `S ⊆ U` are nonempty finite vertex sets whose boundary routings under a mechanism `π`
+both terminate, then the traversal set `Φ π ρ S` is contained in `Φ π ρ U`. The proof
+routes through `Φ_mono` from `Rotor.Support.Monotone`, using the cited external results
+(`Rotor.External.OneCircuit`, `Rotor.External.Abelian`, `Rotor.External.HolroydPropp`)
+via the abelian bridge `Rotor.Bridge.abelian_holds`.
+-/
+
 open Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite]

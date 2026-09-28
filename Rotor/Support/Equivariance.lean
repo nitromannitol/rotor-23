@@ -9,6 +9,17 @@ import Rotor.Periodic
 import Rotor.Support.WalkBasics
 import Rotor.Support.Passage
 
+/-!
+# Equivariance under mechanism-compatible automorphisms
+
+Sets up `MechAut π`, an automorphism of `G` compatible with the mechanism `π`, and shows that
+the whole walk, the boundary routing, the one-circuit map `Φ`, graph distance and the passage
+time `τ` are all equivariant under such an automorphism. The lattice translations of a doubly
+periodic graph with a doubly periodic mechanism are shown to be instances of `MechAut`; this
+equivariance is what gives the stationarity of the passage-time array used in the proof of
+`prop:passage-limit`.
+-/
+
 open Finset
 
 namespace Rotor
@@ -39,21 +50,29 @@ def act (ρ : Config G) : Config G := fun v =>
     rwa [φ.σ.apply_symm_apply] at this⟩
 
 omit [DecidableEq V] in
+/-- The transported configuration `φ.act ρ` sends `σ v` to the transported neighbor
+`φ.nbr (ρ v)`. -/
 theorem act_apply (ρ : Config G) (v : V) : φ.act ρ (φ.σ v) = φ.nbr (ρ v) := by
   apply Subtype.ext
   show φ.σ (ρ (φ.σ.symm (φ.σ v))).1 = φ.σ (ρ v).1
   rw [Equiv.symm_apply_apply]
 
 omit [DecidableEq V] in
+/-- The underlying-vertex form of `act_apply`: at `σ v`, `φ.act ρ` points to `σ` applied to
+where `ρ` points at `v`. -/
 @[simp] theorem act_apply_val (ρ : Config G) (v : V) : (φ.act ρ (φ.σ v)).1 = φ.σ (ρ v).1 := by
   rw [act_apply]; rfl
 
 omit [DecidableEq V] in
+/-- Restates the mechanism-compatibility field `φ.next` in terms of the transported neighbor
+`φ.nbr a`. -/
 theorem next_val (v : V) (a : G.neighborSet v) :
     (π.next (φ.σ v) (φ.nbr a)).1 = φ.σ (π.next v a).1 := φ.next v a
 
 /-! ### The walk -/
 
+/-- Updating `ρ` at `v` and then transporting agrees with transporting `ρ` and then updating
+at `σ v` (with the transported neighbor `φ.nbr a`). -/
 theorem act_update (ρ : Config G) (v : V) (a : G.neighborSet v) :
     φ.act (Function.update ρ v a) = Function.update (φ.act ρ) (φ.σ v) (φ.nbr a) := by
   funext w
@@ -66,6 +85,8 @@ theorem act_update (ρ : Config G) (v : V) (a : G.neighborSet v) :
     rw [Function.update_of_ne hw]
     simp only [act, Function.update_of_ne hw']
 
+/-- A single step of the walk commutes with the automorphism: stepping from the transported
+state gives the transported step. -/
 theorem step_act (s : State G) :
     step π ⟨φ.σ s.pos, φ.act s.rotor⟩ = ⟨φ.σ (step π s).pos, φ.act (step π s).rotor⟩ := by
   simp only [step, act_apply]
@@ -75,6 +96,8 @@ theorem step_act (s : State G) :
     congr 1
     exact Subtype.ext (φ.next_val _ _)
 
+/-- By induction on `t` via `step_act`, the whole walk commutes with the automorphism: running
+from the transported initial data reproduces the transported state at every time. -/
 theorem walk_act (ρ : Config G) (o : V) (t : ℕ) :
     walk π (φ.act ρ) (φ.σ o) t = ⟨φ.σ (X π ρ o t), φ.act (rot π ρ o t)⟩ := by
   induction t with
@@ -83,13 +106,19 @@ theorem walk_act (ρ : Config G) (o : V) (t : ℕ) :
     rw [walk_succ, ih, X, X, rot, rot, walk_succ]
     exact φ.step_act (walk π ρ o t)
 
+/-- The walk's position is equivariant: `X` computed from the transported data is `σ` applied
+to `X` computed from the original data. -/
 theorem X_act (ρ : Config G) (o : V) (t : ℕ) : X π (φ.act ρ) (φ.σ o) t = φ.σ (X π ρ o t) := by
   rw [X, walk_act]
 
+/-- The walk's rotor configuration is equivariant: `rot` computed from the transported data is
+the transported `rot` computed from the original data. -/
 theorem rot_act (ρ : Config G) (o : V) (t : ℕ) :
     rot π (φ.act ρ) (φ.σ o) t = φ.act (rot π ρ o t) := by
   rw [rot, walk_act]
 
+/-- The range up to time `t` is equivariant: from the transported data it is the image under
+`σ` of the original range. -/
 theorem R_act (ρ : Config G) (o : V) (t : ℕ) :
     R π (φ.act ρ) (φ.σ o) t = (R π ρ o t).map φ.σ.toEmbedding := by
   ext x
@@ -98,6 +127,8 @@ theorem R_act (ρ : Config G) (o : V) (t : ℕ) :
   · rintro ⟨s, hs, rfl⟩; exact ⟨X π ρ o s, ⟨s, hs, rfl⟩, rfl⟩
   · rintro ⟨y, ⟨s, hs, rfl⟩, rfl⟩; exact ⟨s, hs, rfl⟩
 
+/-- The count of visits to the basepoint up to time `t` is the same whether computed from
+`(ρ, o)` or from the jointly transported `(φ.act ρ, φ.σ o)`, using injectivity of `σ`. -/
 theorem visits_act (ρ : Config G) (o : V) (t : ℕ) :
     visits π (φ.act ρ) (φ.σ o) t = visits π ρ o t := by
   unfold visits
@@ -109,6 +140,8 @@ section
 variable [G.LocallyFinite]
 
 omit [DecidableEq V] in
+/-- The automorphism preserves vertex degree, via the bijection `φ.nbr` between neighbor
+sets. -/
 theorem degree_act (v : V) : G.degree (φ.σ v) = G.degree v := by
   rw [← SimpleGraph.card_neighborSet_eq_degree, ← SimpleGraph.card_neighborSet_eq_degree]
   refine Fintype.card_congr ⟨fun a => ⟨φ.σ.symm a.1, ?_⟩, φ.nbr, ?_, ?_⟩
@@ -118,18 +151,24 @@ theorem degree_act (v : V) : G.degree (φ.σ v) = G.degree v := by
   · intro a; apply Subtype.ext; simp [nbr]
   · intro a; apply Subtype.ext; simp [nbr]
 
+/-- The stopping time `T` is invariant under the automorphism, following from equivariance of
+position (`X_act`), visit counts (`visits_act`) and degree (`degree_act`). -/
 theorem T_act (ρ : Config G) (o : V) (n : ℕ) : T π (φ.act ρ) (φ.σ o) n = T π ρ o n := by
   unfold T
   congr 1
   ext t
   simp [X_act, visits_act, degree_act, φ.σ.injective.eq_iff]
 
+/-- The set `A` is equivariant: from the transported data it is the image under `σ` of the
+original set, following from `T_act` and `R_act`. -/
 theorem A_act (ρ : Config G) (o : V) (n : ℕ) :
     A π (φ.act ρ) (φ.σ o) n = (A π ρ o n).map φ.σ.toEmbedding := by
   rw [A, A, T_act, R_act]
 
 end
 
+/-- Recurrence is invariant under the automorphism: `o` is recurrent for `ρ` iff `σ o` is
+recurrent for the transported configuration `φ.act ρ`. -/
 theorem recurrent_act (ρ : Config G) (o : V) :
     Recurrent π (φ.act ρ) (φ.σ o) ↔ Recurrent π ρ o := by
   unfold Recurrent
@@ -147,20 +186,30 @@ theorem recurrent_act (ρ : Config G) (o : V) :
 def actState (ξ : RState G) : RState G := ⟨fun v => ξ.σ (φ.σ.symm v), φ.act ξ.ρ⟩
 
 omit [DecidableEq V] in
+/-- The particle-position component of `actState` at `σ v` is exactly the original component
+`ξ.σ v`. -/
 @[simp] theorem actState_σ (ξ : RState G) (v : V) : (φ.actState ξ).σ (φ.σ v) = ξ.σ v := by
   simp [actState]
 
 omit [DecidableEq V] in
+/-- The rotor component of `actState` is exactly `φ.act` applied to the original rotor
+configuration. -/
 @[simp] theorem actState_ρ (ξ : RState G) : (φ.actState ξ).ρ = φ.act ξ.ρ := rfl
 
 omit [DecidableEq V] in
+/-- Membership after transporting a finite set by `σ` matches membership before transporting,
+using injectivity of `σ`. -/
 theorem mem_map_iff (S : Finset V) (v : V) : φ.σ v ∈ S.map φ.σ.toEmbedding ↔ v ∈ S := by
   simp
 
 omit [DecidableEq V] in
+/-- Two particle-and-rotor states are equal once their particle-position and rotor components
+agree. -/
 theorem RState_ext {ξ ξ' : RState G} (h1 : ξ.σ = ξ'.σ) (h2 : ξ.ρ = ξ'.ρ) : ξ = ξ' := by
   cases ξ; cases ξ'; simp only at h1 h2; subst h1; subst h2; rfl
 
+/-- A single actuation step commutes with the automorphism: actuating the transported state at
+`σ v` gives the transported actuation of the original state at `v`. -/
 theorem actuate_act (S : Finset V) (ξ : RState G) (v : V) :
     actuate π (S.map φ.σ.toEmbedding) (φ.actState ξ) (φ.σ v) = φ.actState (actuate π S ξ v) := by
   refine RState_ext ?_ ?_
@@ -172,12 +221,16 @@ theorem actuate_act (S : Finset V) (ξ : RState G) (v : V) :
     congr 1
     exact Subtype.ext (φ.next_val _ _)
 
+/-- By induction on `vs` via `actuate_act`, running the transported routing list commutes with
+the automorphism. -/
 theorem run_act (S : Finset V) (ξ : RState G) (vs : List V) :
     run π (S.map φ.σ.toEmbedding) (φ.actState ξ) (vs.map φ.σ) = φ.actState (run π S ξ vs) := by
   induction vs generalizing ξ with
   | nil => rfl
   | cons v vs ih => rw [List.map_cons, run_cons, run_cons, actuate_act, ih]
 
+/-- Legality of a routing list is invariant under transporting both the finite set and the list
+by the automorphism. -/
 theorem isLegal_act (S : Finset V) (ξ : RState G) (vs : List V) :
     IsLegal π (S.map φ.σ.toEmbedding) (φ.actState ξ) (vs.map φ.σ) ↔ IsLegal π S ξ vs := by
   induction vs generalizing ξ with
@@ -186,6 +239,8 @@ theorem isLegal_act (S : Finset V) (ξ : RState G) (vs : List V) :
     rw [List.map_cons, isLegal_cons, isLegal_cons, mem_map_iff, actState_σ, actuate_act, ih]
 
 omit [DecidableEq V] in
+/-- Stability of a state on a finite set is invariant under transporting both the state and the
+set by the automorphism. -/
 theorem stable_act (S : Finset V) (ξ : RState G) :
     Stable (S.map φ.σ.toEmbedding) (φ.actState ξ) ↔ Stable S ξ := by
   unfold Stable
@@ -198,6 +253,8 @@ theorem stable_act (S : Finset V) (ξ : RState G) :
     rw [actState_σ]
     exact h v (by rwa [mem_map_iff] at hw)
 
+/-- The boundary-routing initial state is equivariant: computed from the transported set and
+configuration it is the transported initial state. -/
 theorem boundaryInit_act (S : Finset V) (ρ : Config G) :
     boundaryInit (S.map φ.σ.toEmbedding) (φ.act ρ) = φ.actState (boundaryInit S ρ) := by
   classical
@@ -219,8 +276,11 @@ theorem boundaryInit_act (S : Finset V) (ρ : Config G) :
       exact φ.σ.symm.injective h
     · intro t ht
       rw [Finset.mem_filter] at ht
-      refine ⟨φ.σ t, Finset.mem_filter.2 ⟨Finset.mem_map_of_mem _ ht.1, (φ.adj t v).2 ht.2⟩, by simp⟩
+      refine ⟨φ.σ t,
+        Finset.mem_filter.2 ⟨Finset.mem_map_of_mem _ ht.1, (φ.adj t v).2 ht.2⟩, by simp⟩
 
+/-- Termination of the boundary routing is invariant under the automorphism, built from
+`boundaryInit_act`, `isLegal_act` and `stable_act`. -/
 theorem terminates_act (S : Finset V) (ρ : Config G) :
     Terminates π (S.map φ.σ.toEmbedding) (φ.act ρ) ↔ Terminates π S ρ := by
   constructor
@@ -235,6 +295,8 @@ theorem terminates_act (S : Finset V) (ρ : Config G) :
     rw [boundaryInit_act]
     exact ⟨(φ.isLegal_act _ _ _).2 hvs.1, by rw [run_act, stable_act]; exact hvs.2⟩
 
+/-- All finite sets' boundary routings terminate for `φ.act ρ` iff they do for `ρ`, since
+transporting a finite set by `σ` (and back by `σ.symm`) is a bijection on finite sets. -/
 theorem allTerminate_act (ρ : Config G) : AllTerminate π (φ.act ρ) ↔ AllTerminate π ρ := by
   constructor
   · intro h S hS
@@ -248,6 +310,8 @@ theorem allTerminate_act (ρ : Config G) : AllTerminate π (φ.act ρ) ↔ AllTe
 
 /-! ### The circuit map, distances and the passage time -/
 
+/-- The one-circuit map `Φ` is equivariant: applied to the transported configuration and set it
+gives the image under `σ` of the original circuit set. -/
 theorem Φ_act (hAb : External.Abelian G) [Infinite V] [G.LocallyFinite] (hG : G.Connected)
     (ρ : Config G) (S : Finset V) (hS : S.Nonempty) :
     Φ π (φ.act ρ) (S.map φ.σ.toEmbedding) = (Φ π ρ S).map φ.σ.toEmbedding := by
@@ -283,6 +347,7 @@ theorem Φ_act (hAb : External.Abelian G) [Infinite V] [G.LocallyFinite] (hG : G
     unfold Φ
     rw [dif_neg hT, dif_neg hT']
 
+/-- By induction on `n` via `Φ_act`, the `n`-fold iterate of `Φ` is equivariant. -/
 theorem Φ_iterate_act (hAb : External.Abelian G) [Infinite V] [G.LocallyFinite] (hG : G.Connected)
     (ρ : Config G) (S : Finset V) (hS : S.Nonempty) (n : ℕ) :
     (Φ π (φ.act ρ))^[n] (S.map φ.σ.toEmbedding) = ((Φ π ρ)^[n] S).map φ.σ.toEmbedding := by
@@ -296,6 +361,8 @@ theorem Φ_iterate_act (hAb : External.Abelian G) [Infinite V] [G.LocallyFinite]
 def iso : G ≃g G := ⟨φ.σ, fun {u v} => φ.adj u v⟩
 
 omit [DecidableEq V] in
+/-- Graph distance is invariant under the automorphism, via the isomorphism `φ.iso` and its
+inverse. -/
 theorem dist_act (hG : G.Connected) (x y : V) : G.dist (φ.σ x) (φ.σ y) = G.dist x y := by
   apply le_antisymm
   · obtain ⟨p, hp⟩ := (hG.preconnected x y).exists_walk_length_eq_dist
@@ -308,6 +375,9 @@ theorem dist_act (hG : G.Connected) (x y : V) : G.dist (φ.σ x) (φ.σ y) = G.d
     have e2 : φ.iso.symm (φ.σ y) = y := φ.σ.symm_apply_apply y
     simpa [e1, e2] using this
 
+/-- The passage time `τ` is equivariant: computed from the transported configuration and
+endpoints it agrees with `τ` on the original data, via `Φ_iterate_act` when boundary routing
+always terminates and via `dist_act` otherwise. -/
 theorem τ_act (hAb : External.Abelian G) [Infinite V] [G.LocallyFinite] (hG : G.Connected)
     (ρ : Config G) (x y : V) : τ π (φ.act ρ) (φ.σ x) (φ.σ y) = τ π ρ x y := by
   by_cases hall : AllTerminate π ρ
@@ -337,10 +407,12 @@ def mechAut (π : Mechanism G) (hπ : P.Periodic π) (z : ℤ × ℤ) : MechAut 
   next v a := congrArg Subtype.val (hπ z v a)
 
 omit [DecidableEq V] in
+/-- The bijection underlying `mechAut` is exactly the shift by `z`. -/
 @[simp] theorem mechAut_σ (π : Mechanism G) (hπ : P.Periodic π) (z : ℤ × ℤ) (v : V) :
     (P.mechAut π hπ z).σ v = P.shift z v := rfl
 
 omit [DecidableEq V] in
+/-- The action of `mechAut` on configurations is exactly `shiftConfig` by `z`. -/
 theorem mechAut_act (π : Mechanism G) (hπ : P.Periodic π) (z : ℤ × ℤ) (ρ : Config G) :
     (P.mechAut π hπ z).act ρ = P.shiftConfig z ρ := rfl
 

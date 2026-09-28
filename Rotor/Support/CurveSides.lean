@@ -1,6 +1,8 @@
 import Rotor.Support.Ring
 
 /-!
+# Left and right sides of a simple closed curve
+
 Sides of a simple closed unit-step walk `c`, on its doubled walk `dbl c`: at each vertex `z` of
 `c` with incoming direction `u` and outgoing direction `w`, the ring around `2z` splits into
 the left arc (counterclockwise from `w` to `-u`) and the right arc; the arc points are off
@@ -21,6 +23,7 @@ structure IsSimpleClosed (c : List Site) : Prop where
 
 /-! ### The two steps at a vertex -/
 
+/-- The second components of the consecutive-step pairs of `c` recover `c.tail`. -/
 theorem steps_map_snd : ∀ (c : List Site), (steps c).map Prod.snd = c.tail
   | [] => rfl
   | [_] => rfl
@@ -28,6 +31,7 @@ theorem steps_map_snd : ∀ (c : List Site), (steps c).map Prod.snd = c.tail
     rw [steps_cons_cons, List.map_cons, steps_map_snd (b :: l)]
     rfl
 
+/-- The first components of the consecutive-step pairs of `c` recover `c.dropLast`. -/
 theorem steps_map_fst : ∀ (c : List Site), (steps c).map Prod.fst = c.dropLast
   | [] => rfl
   | [_] => rfl
@@ -35,9 +39,11 @@ theorem steps_map_fst : ∀ (c : List Site), (steps c).map Prod.fst = c.dropLast
     rw [steps_cons_cons, List.map_cons, steps_map_fst (b :: l),
       List.dropLast_cons_of_ne_nil (List.cons_ne_nil _ _)]
 
+/-- If `c.tail` has no repeats then neither does the list of second components of `steps c`. -/
 theorem steps_snd_nodup {c : List Site} (hc : c.tail.Nodup) : ((steps c).map Prod.snd).Nodup := by
   rw [steps_map_snd]; exact hc
 
+/-- In a simple closed walk (nodup tail), `c.dropLast` also has no repeats. -/
 theorem dropLast_nodup_of_closed {c : List Site} (hc : IsClosedWalk c) (hnd : c.tail.Nodup) :
     c.dropLast.Nodup := by
   rcases c with _ | ⟨a, l⟩
@@ -56,16 +62,21 @@ theorem dropLast_nodup_of_closed {c : List Site} (hc : IsClosedWalk c) (hnd : c.
   rw [← hsplit] at hnd
   exact (List.nodup_append.1 hnd).2.2 a h a (List.mem_singleton_self _) rfl
 
+/-- In a simple closed walk, the list of first components of `steps c` has no repeats. -/
 theorem steps_fst_nodup {c : List Site} (hc : IsClosedWalk c) (hnd : c.tail.Nodup) :
     ((steps c).map Prod.fst).Nodup := by
   rw [steps_map_fst]; exact dropLast_nodup_of_closed hc hnd
 
+/-- Each vertex of a simple closed walk has a unique incoming step: if `(p, z)` and `(p', z)`
+are both steps of `c` then `p = p'`. -/
 theorem step_tail_unique {c : List Site} (hnd : c.tail.Nodup) {z p p' : Site}
     (h1 : (p, z) ∈ steps c) (h2 : (p', z) ∈ steps c) : p = p' := by
   have := List.inj_on_of_nodup_map (steps_snd_nodup hnd) h1 h2 rfl
   rw [Prod.mk.injEq] at this
   exact this.1
 
+/-- Each vertex of a simple closed walk has a unique outgoing step: if `(z, q)` and `(z, q')`
+are both steps of `c` then `q = q'`. -/
 theorem step_head_unique {c : List Site} (hc : IsClosedWalk c) (hnd : c.tail.Nodup) {z q q' : Site}
     (h1 : (z, q) ∈ steps c) (h2 : (z, q') ∈ steps c) : q = q' := by
   have := List.inj_on_of_nodup_map (steps_fst_nodup hc hnd) h1 h2 rfl
@@ -74,6 +85,8 @@ theorem step_head_unique {c : List Site} (hc : IsClosedWalk c) (hnd : c.tail.Nod
 
 /-! ### Midpoints on the doubled walk -/
 
+/-- The midpoint `z + z + v` of a unit bond from `z` lies on the doubled walk `dbl c` iff `v` is
+the direction of a step of `c` into or out of `z`. -/
 theorem mid_mem_dbl_iff {c : List Site} (hc : IsClosedWalk c) {z v : Site} (hv : IsUnit v) :
     z + z + v ∈ dbl c ↔ (z, z + v) ∈ steps c ∨ (z + v, z) ∈ steps c := by
   constructor
@@ -100,6 +113,7 @@ theorem mid_mem_dbl_iff {c : List Site} (hc : IsClosedWalk c) {z v : Site} (hv :
 theorem ringOff_isUnit_of_even (l : Fin 8) (hl : Even l.val) : IsUnit (ringOff l) := by
   fin_cases l <;> simp [Nat.even_iff] at hl <;> decide
 
+/-- At an even ring index `l`, `ringOff l` has direction index `l` itself. -/
 theorem dirIdx_ringOff_of_even (l : Fin 8) (hl : Even l.val) : dirIdx (ringOff l) = l := by
   fin_cases l <;> simp [Nat.even_iff] at hl <;> rfl
 
@@ -133,6 +147,7 @@ theorem arc_offDbl {c : List Site} (hc : IsClosedWalk c) (hnd : c.tail.Nodup) {p
 
 /-! ### Connectivity of the left points and of the right points -/
 
+/-- A simple closed walk never has both a step `(p, z)` and its reverse `(z, p)`. -/
 theorem rev_notMem_steps' {c : List Site} (h : IsSimpleClosed c) {p z : Site}
     (hs : (p, z) ∈ steps c) : (z, p) ∉ steps c :=
   rev_notMem_steps h.closed h.nodup h.three hs
@@ -239,10 +254,12 @@ theorem leftPt_reach {c : List Site} (h : IsSimpleClosed c) :
   · exact key i j hij hj
   · exact reflTransGen_offAdj_symm (key j i hij.le hi)
 
+/-- Any two right points of `c` are connected off `dbl c`. -/
 theorem rightPt_reach {c : List Site} (h : IsSimpleClosed c) :
     ∀ (i j : ℕ) (hi : i < (steps c).length) (hj : j < (steps c).length),
       Relation.ReflTransGen (OffAdj (dbl c))
-        (rightPt ((steps c)[i]).1 ((steps c)[i]).2) (rightPt ((steps c)[j]).1 ((steps c)[j]).2) := by
+        (rightPt ((steps c)[i]).1 ((steps c)[i]).2)
+        (rightPt ((steps c)[j]).1 ((steps c)[j]).2) := by
   have key : ∀ (i m : ℕ) (him : i ≤ m) (hm : m < (steps c).length),
       Relation.ReflTransGen (OffAdj (dbl c))
         (rightPt ((steps c)[i]).1 ((steps c)[i]).2)

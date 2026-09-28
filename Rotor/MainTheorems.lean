@@ -78,14 +78,17 @@ theorem Rotor.main_square
     ∃ κ c : ℝ, 0 < κ ∧ 0 < c ∧
       ∀ᵐ ρ ∂(uniformLaw clockwise), Recurrent clockwise ρ o ∧ (∀ n : ℕ, T clockwise ρ o n < ⊤) ∧
         Tendsto (fun n : ℕ => Metric.hausdorffDist
-          ((n : ℝ)⁻¹ • ((fun x => squareEmb x - squareEmb o) '' (A clockwise ρ o n : Set Site))) B) atTop (𝓝 0) ∧
+          ((n : ℝ)⁻¹ • ((fun x => squareEmb x - squareEmb o) ''
+            (A clockwise ρ o n : Set Site))) B) atTop (𝓝 0) ∧
         (∀ ε : ℝ, 0 < ε → ε < 1 → ∀ᶠ n : ℕ in atTop,
           (∀ x : Site, squareEmb x - squareEmb o ∈ ((1 - ε) * n) • B → x ∈ A clockwise ρ o n) ∧
           (∀ x ∈ A clockwise ρ o n, squareEmb x - squareEmb o ∈ ((1 + ε) * n) • B)) ∧
         Tendsto (fun t : ℕ => Metric.hausdorffDist
-          (((t : ℝ) ^ (-(1 / 3 : ℝ))) • ((fun x => squareEmb x - squareEmb o) '' (R clockwise ρ o t : Set Site)))
+          (((t : ℝ) ^ (-(1 / 3 : ℝ))) • ((fun x => squareEmb x - squareEmb o) ''
+            (R clockwise ρ o t : Set Site)))
           (κ • B)) atTop (𝓝 0) ∧
-        Tendsto (fun t : ℕ => ((R clockwise ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c) := by
+        Tendsto (fun t : ℕ => ((R clockwise ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ))
+          atTop (𝓝 c) := by
   exact Rotor.Frozen.main_square hLSS o
 
 /-- **Theorem 1.1, doubly periodic graphs of maximum degree three** (`thm:main`).
@@ -124,14 +127,17 @@ theorem Rotor.perturbations_square
     ∃ κ c : ℝ, 0 < κ ∧ 0 < c ∧
       ∀ᵐ ρ ∂(productLaw ν), (∀ n : ℕ, T clockwise ρ o n < ⊤) ∧
         Tendsto (fun n : ℕ => Metric.hausdorffDist
-          ((n : ℝ)⁻¹ • ((fun x => squareEmb x - squareEmb o) '' (A clockwise ρ o n : Set Site))) B) atTop (𝓝 0) ∧
+          ((n : ℝ)⁻¹ • ((fun x => squareEmb x - squareEmb o) ''
+            (A clockwise ρ o n : Set Site))) B) atTop (𝓝 0) ∧
         (∀ ε : ℝ, 0 < ε → ε < 1 → ∀ᶠ n : ℕ in atTop,
           (∀ x : Site, squareEmb x - squareEmb o ∈ ((1 - ε) * n) • B → x ∈ A clockwise ρ o n) ∧
           (∀ x ∈ A clockwise ρ o n, squareEmb x - squareEmb o ∈ ((1 + ε) * n) • B)) ∧
         Tendsto (fun t : ℕ => Metric.hausdorffDist
-          (((t : ℝ) ^ (-(1 / 3 : ℝ))) • ((fun x => squareEmb x - squareEmb o) '' (R clockwise ρ o t : Set Site)))
+          (((t : ℝ) ^ (-(1 / 3 : ℝ))) • ((fun x => squareEmb x - squareEmb o) ''
+            (R clockwise ρ o t : Set Site)))
           (κ • B)) atTop (𝓝 0) ∧
-        Tendsto (fun t : ℕ => ((R clockwise ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c)) := by
+        Tendsto (fun t : ℕ => ((R clockwise ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ))
+          atTop (𝓝 c)) := by
   exact Rotor.Frozen.perturbations_square hLSS
 
 /-- **Proposition 1.2, doubly periodic graphs of maximum degree three**

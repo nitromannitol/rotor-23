@@ -2,6 +2,8 @@ import Rotor.Support.StuckWalk
 import Rotor.Support.BallGrowth
 
 /-!
+# Exponential decay of live paths on a degree-three graph
+
 Proposition 4.2, `prop:degree-three-passage` (`rotor.tex:1385-1460`): exponential decay of
 live paths on a doubly periodic graph of maximum degree three with independent uniform rotors.
 The union bound over `Γ_R` is realised as the union over the self-avoiding extensions of
@@ -16,6 +18,8 @@ namespace Rotor
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite] (π : Mechanism G)
 
 omit [G.LocallyFinite] in
+/-- If every consecutive triple of a list satisfies `LiveAt`, the whole list is `LiveRev`, by
+induction on the list using `liveRev_cons₃`. -/
 theorem liveRev_of_forall (ρ : Config G) : ∀ (m : List V),
     (∀ i (h : i + 2 < m.length), LiveAt π ρ (m[i + 2]) (m[i + 1]) (m[i])) → LiveRev π ρ m
   | c :: b :: a :: rest, h => by
@@ -28,6 +32,7 @@ theorem liveRev_of_forall (ρ : Config G) : ∀ (m : List V),
   | [_, _], _ => trivial
 
 omit [G.LocallyFinite] in
+/-- `IsLive` at index `j` unpacks to the `LiveAt` condition on the triple `l[j-1], l[j], l[j+1]`. -/
 theorem liveAt_of_isLive {ρ : Config G} {l : List V} (hl : IsLive π ρ l) {j : ℕ} (hj0 : 0 < j)
     (hj : j + 1 < l.length) :
     LiveAt π ρ (l[j - 1]'(by omega)) (l[j]'(by omega)) (l[j + 1]'hj) := by
@@ -47,6 +52,8 @@ theorem liveRev_reverse_take {ρ : Config G} {l : List V} (hl : IsLive π ρ l) 
   convert key using 2 <;> omega
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- Along a chain `l` (a path with consecutive vertices adjacent), the graph distance from the
+first vertex `l[0]` to `l[i]` is at most `i`, by induction on `l` using the triangle inequality. -/
 theorem dist_getElem_le (hG : G.Connected) : ∀ (l : List V), l.IsChain G.Adj →
     ∀ (i : ℕ) (hi : i < l.length) (h0 : 0 < l.length), G.dist (l[0]'h0) (l[i]'hi) ≤ i
   | [], _, i, hi, _ => by simp at hi
@@ -69,6 +76,7 @@ theorem dist_getElem_le (hG : G.Connected) : ∀ (l : List V), l.IsChain G.Adj �
         _ = k + 1 := by ring
 
 omit [DecidableEq V] [G.LocallyFinite] in
+/-- Any edge `(u, v)` of `G` gives an admissible two-vertex list `[v, u]`. -/
 theorem adm_pair {u v : V} (huv : G.Adj u v) : Adm G [v, u] := by
   refine ⟨?_, ?_, by simp⟩
   · simp [huv.ne.symm]

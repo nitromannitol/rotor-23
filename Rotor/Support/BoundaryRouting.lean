@@ -9,6 +9,17 @@ from the state-machine invariants and the abelian property:
 import Rotor.Support.OneParticle
 import Rotor.External.Abelian
 
+/-!
+# Boundary routings and one-particle-at-a-time routings
+
+Proves the second and third assertions of `lem:boundary-routing` (`rotor.tex:747-763`):
+a one-particle-at-a-time boundary routing of `S` is finite if and only if the boundary
+routing of `S` terminates, and in that case every one-particle-at-a-time routing is
+complete and has the same actuation counts as every complete boundary routing. The
+argument compares list lengths and actuation counts of routings via the state-machine
+invariants of `Rotor.Support.OneParticle` and the external abelian property.
+-/
+
 namespace Rotor
 
 variable {V : Type*} [DecidableEq V] {G : SimpleGraph V}

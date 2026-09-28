@@ -1,6 +1,8 @@
 import Rotor.Support.DualGeom
 
 /-!
+# Invariants of the depth-first exploration
+
 Invariants of the depth-first exploration (`rotor.tex:1885-1913`): tails of tested and active
 edges are visited, heads of active edges are unvisited, the active list has no repeated edge,
 no active bond has been tested, and no bond is tested twice (Lemma 5.4 (i)).  Also the
@@ -22,6 +24,7 @@ structure ExplInv (s : ExplState) : Prop where
   active_tested : ∀ e ∈ s.active, ∀ t ∈ s.tested, bond e ≠ bond (t.1, t.2.1)
   tested_nodup : (s.tested.map (fun t => bond (t.1, t.2.1))).Nodup
 
+/-- The initial exploration state `explInit f d` satisfies the invariant `ExplInv`. -/
 theorem explInv_init (f : Site) {d : Site} (hd : IsUnit d) : ExplInv (explInit f d) where
   tested_tail := by simp [explInit]
   tested_adj := by simp [explInit]
@@ -39,11 +42,17 @@ theorem explInv_init (f : Site) {d : Site} (hd : IsUnit d) : ExplInv (explInit f
   active_tested := by simp [explInit]
   tested_nodup := by simp [explInit]
 
+/-- If the active list is empty, `explStepWith s o` leaves the state `s` unchanged. -/
 theorem explStepWith_nil {s : ExplState} (h : s.active = []) (o : Bool) : explStepWith s o = s := by
   unfold explStepWith
   rw [h]
 
 open Classical in
+/-- Unfolds `explStepWith s o` when the active list is `e :: rest`: `visited` gains `e.2` exactly
+when `o` is true, `active` becomes the continuations of `e` (if `o` is true, else none) together
+with `rest`, filtered to drop endpoints that are already visited or lie in a finite component,
+`tested` gains the record `(e.1, e.2, o)`, and `forced` increases by one exactly when the
+opposite side `sideW e.1 e.2` was already tested closed. -/
 theorem explStepWith_cons {s : ExplState} {e : Site × Site} {rest : List (Site × Site)}
     (h : s.active = e :: rest) (o : Bool) :
     explStepWith s o =
@@ -56,7 +65,9 @@ theorem explStepWith_cons {s : ExplState} {e : Site × Site} {rest : List (Site 
   unfold explStepWith
   rw [h]
 
-theorem visited_subset_step (s : ExplState) (o : Bool) : s.visited ⊆ (explStepWith s o).visited := by
+/-- The visited set never shrinks: `s.visited ⊆ (explStepWith s o).visited`. -/
+theorem visited_subset_step (s : ExplState) (o : Bool) :
+    s.visited ⊆ (explStepWith s o).visited := by
   rcases h : s.active with _ | ⟨e, rest⟩
   · rw [explStepWith_nil h]
   · rw [explStepWith_cons h]
@@ -65,6 +76,7 @@ theorem visited_subset_step (s : ExplState) (o : Bool) : s.visited ⊆ (explStep
     · exact subset_insert _ _
     · exact subset_rfl
 
+/-- The invariant `ExplInv` is preserved by one exploration step `explStepWith s o`. -/
 theorem explInv_step {s : ExplState} (hs : ExplInv s) (o : Bool) : ExplInv (explStepWith s o) := by
   rcases h : s.active with _ | ⟨e, rest⟩
   · rw [explStepWith_nil h]; exact hs
@@ -180,6 +192,8 @@ theorem explInv_step {s : ExplState} (hs : ExplInv s) (o : Bool) : ExplInv (expl
     obtain ⟨t, ht, rfl⟩ := List.mem_map.1 hb
     exact hs.active_tested e he t ht hbb'.symm
 
+/-- The invariant `ExplInv` holds for the state `replay f d h` reached by replaying any finite
+history `h` of test outcomes, by induction on `h` using `explInv_init` and `explInv_step`. -/
 theorem explInv_replay (f : Site) {d : Site} (hd : IsUnit d) (h : List Bool) :
     ExplInv (replay f d h) := by
   unfold replay
@@ -190,28 +204,37 @@ theorem explInv_replay (f : Site) {d : Site} (hd : IsUnit d) (h : List Bool) :
     exact explInv_step ih o
 
 open Classical in
+/-- `explStep ρ s` leaves `s` unchanged when its active list is empty, and otherwise applies
+`explStepWith` with the tested outcome `DualOpen ρ e.1 e.2` of the head edge `e`. -/
 theorem explStep_eq (ρ : Config squareGraph) (s : ExplState) :
     explStep ρ s = match s.active with
       | [] => s
       | e :: _ => explStepWith s (decide (DualOpen ρ e.1 e.2)) := rfl
 
+/-- If `s.active = []` then `explStep ρ s = s`. -/
 theorem explStep_nil (ρ : Config squareGraph) {s : ExplState} (h : s.active = []) :
     explStep ρ s = s := by
   rw [explStep_eq, h]
 
 open Classical in
+/-- If `s.active = e :: rest`, `explStep ρ s` tests the head edge `e` against `ρ` and applies
+`explStepWith` with that outcome: `explStep ρ s = explStepWith s (decide (DualOpen ρ e.1 e.2))`. -/
 theorem explStep_cons (ρ : Config squareGraph) {s : ExplState} {e : Site × Site}
     {rest : List (Site × Site)} (h : s.active = e :: rest) :
     explStep ρ s = explStepWith s (decide (DualOpen ρ e.1 e.2)) := by
   rw [explStep_eq, h]
 
+/-- `explore ρ f d (n + 1)` is `explStep ρ` applied once more to `explore ρ f d n`. -/
 theorem explore_succ (ρ : Config squareGraph) (f d : Site) (n : ℕ) :
     explore ρ f d (n + 1) = explStep ρ (explore ρ f d n) := by
   unfold explore
   rw [Function.iterate_succ_apply']
 
+/-- `explore ρ f d 0` is the initial state `explInit f d`. -/
 theorem explore_zero (ρ : Config squareGraph) (f d : Site) : explore ρ f d 0 = explInit f d := rfl
 
+/-- The invariant `ExplInv` holds for `explore ρ f d n` at every step `n`, by induction using
+`explInv_init` and `explInv_step`. -/
 theorem explInv_explore (ρ : Config squareGraph) (f : Site) {d : Site} (hd : IsUnit d) (n : ℕ) :
     ExplInv (explore ρ f d n) := by
   induction n with
@@ -229,12 +252,15 @@ theorem tested_bonds_nodup (ρ : Config squareGraph) (f : Site) {d : Site} (hd :
 
 /-! ### The history -/
 
+/-- If the active list is empty at step `n`, the history does not grow at step `n + 1`. -/
 theorem history_succ_nil (ρ : Config squareGraph) (f d : Site) (n : ℕ)
     (h : (explore ρ f d n).active = []) : history ρ f d (n + 1) = history ρ f d n := by
   unfold history
   rw [explore_succ, explStep_nil ρ h]
 
 open Classical in
+/-- If the active list at step `n` is `e :: rest`, the history at step `n + 1` extends the
+history at step `n` by the outcome `decide (DualOpen ρ e.1 e.2)` of testing `e`. -/
 theorem history_succ_cons (ρ : Config squareGraph) (f d : Site) (n : ℕ) {e : Site × Site}
     {rest : List (Site × Site)} (h : (explore ρ f d n).active = e :: rest) :
     history ρ f d (n + 1) = history ρ f d n ++ [decide (DualOpen ρ e.1 e.2)] := by
@@ -242,6 +268,8 @@ theorem history_succ_cons (ρ : Config squareGraph) (f d : Site) (n : ℕ) {e : 
   rw [explore_succ, explStep_cons ρ h, explStepWith_cons h]
   simp
 
+/-- Replaying a history extended by one outcome `o` is one more `explStepWith` step applied to
+replaying the shorter history. -/
 theorem replay_append (f d : Site) (h : List Bool) (o : Bool) :
     replay f d (h ++ [o]) = explStepWith (replay f d h) o := by
   unfold replay
@@ -257,10 +285,13 @@ theorem explore_eq_replay (ρ : Config squareGraph) (f d : Site) : ∀ n : ℕ,
     · rw [history_succ_cons ρ f d n h, replay_append, explore_succ, explStep_cons ρ h,
         explore_eq_replay ρ f d n]
 
+/-- If the active list is empty at step `n`, it remains empty at step `n + 1`. -/
 theorem active_nil_succ (ρ : Config squareGraph) (f d : Site) (n : ℕ)
     (h : (explore ρ f d n).active = []) : (explore ρ f d (n + 1)).active = [] := by
   rw [explore_succ, explStep_nil ρ h, h]
 
+/-- If the active list is empty at some step `m`, it is empty at every later step `n ≥ m`, by
+induction using `active_nil_succ`. -/
 theorem active_nil_of_le (ρ : Config squareGraph) (f d : Site) {m n : ℕ} (hmn : m ≤ n)
     (h : (explore ρ f d m).active = []) : (explore ρ f d n).active = [] := by
   induction n with
@@ -273,12 +304,16 @@ theorem active_nil_of_le (ρ : Config squareGraph) (f d : Site) {m n : ℕ} (hmn
     · have : m = n + 1 := by omega
       subst this; exact h
 
+/-- If the active list at step `n` is `e :: rest`, the tested list grows by exactly one edge
+from step `n` to step `n + 1`. -/
 theorem tested_length_succ_cons (ρ : Config squareGraph) (f d : Site) (n : ℕ) {e : Site × Site}
     {rest : List (Site × Site)} (h : (explore ρ f d n).active = e :: rest) :
     (explore ρ f d (n + 1)).tested.length = (explore ρ f d n).tested.length + 1 := by
   rw [explore_succ, explStep_cons ρ h, explStepWith_cons h]
   simp
 
+/-- The history recorded after `n` steps has length at most `n`, since each step appends at most
+one outcome. -/
 theorem history_length_le (ρ : Config squareGraph) (f d : Site) : ∀ n : ℕ,
     (history ρ f d n).length ≤ n
   | 0 => by simp [history, explore_zero, explInit]
@@ -289,6 +324,8 @@ theorem history_length_le (ρ : Config squareGraph) (f d : Site) : ∀ n : ℕ,
     · rw [history_succ_cons ρ f d n h, List.length_append, List.length_singleton]
       exact Nat.add_le_add_right (history_length_le ρ f d n) 1
 
+/-- If the exploration has not yet terminated by step `n`, i.e. its active list is nonempty, the
+history recorded after `n` steps has length exactly `n`. -/
 theorem history_length_eq (ρ : Config squareGraph) (f d : Site) : ∀ n : ℕ,
     (explore ρ f d n).active ≠ [] → (history ρ f d n).length = n
   | 0, _ => by simp [history, explore_zero, explInit]

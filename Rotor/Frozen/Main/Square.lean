@@ -41,6 +41,18 @@ import Rotor.Bridge.OneCircuit
 import Rotor.Bridge.HolroydPropp
 import Rotor.Support.MainSquare
 
+/-!
+# Theorem 1.1, square-lattice case
+
+States `thm:main` for `G` the square lattice with its clockwise mechanism: from a fixed vertex
+`o` with independent uniform initial rotors, almost surely the walk is recurrent, the rescaled
+range `n⁻¹ A_n` and the rescaled trace `t^{-1/3} R_t` converge in Hausdorff distance to a
+deterministic compact convex set `B` and to `κ B`, and `|R_t| t^{-2/3}` converges to a
+deterministic positive finite constant. The statement is frozen; its proof assembles the bridge
+lemmas for the abelian property, one-circuit finiteness, Kingman's subadditive ergodic theorem
+and subcritical percolation decay.
+-/
+
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise
 
@@ -65,5 +77,6 @@ theorem Rotor.Frozen.main_square
           (κ • B)) atTop (𝓝 0) ∧
         Tendsto (fun t : ℕ => ((R clockwise ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c)
 -- FROZEN-STATEMENT-END
-:= main_square_proof (Rotor.Bridge.oneCircuit_holds squareGraph) (Rotor.Bridge.abelian_holds squareGraph)
+:= main_square_proof (Rotor.Bridge.oneCircuit_holds squareGraph)
+    (Rotor.Bridge.abelian_holds squareGraph)
     (Rotor.Bridge.visitsAllOfVisitsOne_holds squareGraph) Rotor.Bridge.kingman_holds hLSS o

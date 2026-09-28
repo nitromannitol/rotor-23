@@ -21,6 +21,18 @@ import Rotor.Support.Monotone
 import Rotor.Support.WalkBasics
 import Rotor.External.OneCircuit
 
+/-!
+# The circuit-iterate bridge
+
+Proves `circuit_iterate_proof`, the paper's `prop:circuit-iterate`: for the actuation
+circuit `A π ρ o n` with `T(n) < ∞`, the boundary routing of `A_n` obtained by deleting its
+actuations and treating traversals leaving it as initial boundary edges terminates iff
+`T(n + 1) < ∞`, and in that case `A_{n+1} = Φ(A_n)` by the abelian property. The proof
+maintains the invariant `WalkInv`: after the walk's outside actuations up to time `t`, the
+routing state has the walk's rotors outside `A_n`, and its particles outside `A_n` are the
+uncrossed boundary edges plus the walker itself.
+-/
+
 open Finset
 
 namespace Rotor
@@ -42,18 +54,24 @@ open Classical in
 /-- The in-edges of `x` from `S`. -/
 noncomputable def inEdges (S : Finset V) (x : V) : ℕ := (S.filter (fun s => G.Adj s x)).card
 
+/-- With an empty time window, there are no outside actuations. -/
 theorem outs_self (S : Finset V) (t₀ : ℕ) : outs π ρ o S t₀ t₀ = [] := by
   simp [outs]
 
+/-- Extending the window by one step appends the walker's position at time `t` to the
+outside actuations, exactly when that position lies outside `S`. -/
 theorem outs_succ (S : Finset V) (t₀ t : ℕ) (h : t₀ ≤ t) :
     outs π ρ o S t₀ (t + 1) =
       outs π ρ o S t₀ t ++ (if X π ρ o t ∈ S then [] else [X π ρ o t]) := by
   unfold outs
-  rw [show t + 1 - t₀ = (t - t₀) + 1 by omega, List.range'_concat, List.filter_append, List.map_append]
+  rw [show t + 1 - t₀ = (t - t₀) + 1 by omega, List.range'_concat, List.filter_append,
+    List.map_append]
   congr 1
   rw [show t₀ + 1 * (t - t₀) = t by omega]
   split_ifs with hS <;> simp [hS]
 
+/-- Extending the window by one step adds one crossing into `x` exactly when the walk
+crosses from `S` to `x` at time `t`. -/
 theorem crossings_succ (S : Finset V) (t₀ t : ℕ) (h : t₀ ≤ t) (x : V) :
     crossings π ρ o S t₀ (t + 1) x =
       crossings π ρ o S t₀ t x + (if X π ρ o t ∈ S ∧ X π ρ o (t + 1) = x then 1 else 0) := by
@@ -244,10 +262,13 @@ theorem inEdges_le_crossings (hFLP : External.OneCircuit G) (hG : G.Connected) (
   simp only [Finset.coe_filter, Set.mem_setOf_eq]
   exact ⟨hs.1, hs.2 ▸ hs₀S, hsx.symm⟩
 
+/-- Since `T` is monotone and `T(n + 1)` is finite, `T(n).toNat ≤ T(n + 1).toNat`. -/
 theorem toNat_T_le (n : ℕ) (hn1 : T π ρ o (n + 1) < ⊤) :
     (T π ρ o n).toNat ≤ (T π ρ o (n + 1)).toNat :=
   ENat.toNat_le_toNat (T_mono π ρ o n) hn1.ne
 
+/-- The origin `o` belongs to every circuit set `A_n`, since it is in the range at time
+`0`. -/
 theorem o_mem_A (n : ℕ) : o ∈ A π ρ o n := X_mem_R π ρ o 0 _ (Nat.zero_le _)
 
 /-- When `T(n+1) < ∞`, the outside actuations of the circuit form a complete
@@ -269,6 +290,8 @@ theorem complete_of_T_lt (hFLP : External.OneCircuit G) (hG : G.Connected) (n : 
   simp only [hne, if_false, add_zero] at hc
   omega
 
+/-- When `T(n + 1) < ∞`, the outside actuations of the circuit witness that the boundary
+routing of `A_n` terminates. -/
 theorem terminates_of_T_lt (hFLP : External.OneCircuit G) (hG : G.Connected) (n : ℕ)
     (hn : T π ρ o n < ⊤) (hn1 : T π ρ o (n + 1) < ⊤) : Terminates π (A π ρ o n) ρ :=
   ⟨_, complete_of_T_lt π ρ o hFLP hG n hn hn1⟩
@@ -276,6 +299,8 @@ theorem terminates_of_T_lt (hFLP : External.OneCircuit G) (hG : G.Connected) (n 
 /-! ### The range after the circuit -/
 
 omit [G.LocallyFinite] in
+/-- The range at time `t` is the range at `t₀`, together with the outside actuations
+during `[t₀, t)` and the walker's current position. -/
 theorem R_eq_union_outs (t₀ t : ℕ) (ht : t₀ ≤ t) :
     R π ρ o t = R π ρ o t₀ ∪ (outs π ρ o (R π ρ o t₀) t₀ t).toFinset ∪ {X π ρ o t} := by
   induction t, ht using Nat.le_induction with

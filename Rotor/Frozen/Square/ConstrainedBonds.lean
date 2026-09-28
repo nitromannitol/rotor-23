@@ -18,6 +18,18 @@ import Rotor.External.SubcriticalDecay
 import Rotor.Bridge.SubcriticalDecay
 import Rotor.Support.ConstrainedBondsProof
 
+/-!
+# The constrained-bonds bound (Lemma 5.3)
+
+The certified statement `Rotor.Frozen.square_constrained_bonds` of Lemma 5.3
+(`lem:square-constrained-bonds`): for critical bond percolation on `Z^2`, the probability that
+an open path from `x` to the boundary of an `L^∞` ball of radius `r` avoids every translate of
+the forbidden pattern `P_⋆`, in either direction, decays exponentially in `r`, with universal
+constants `c, C > 0`. The constants come from `External.SubcriticalDecay`, the subcritical
+exponential decay bound at parameter `1/2 - ε`, discharged here by
+`Rotor.Bridge.subcriticalDecay_holds`.
+-/
+
 open Rotor
 
 -- FROZEN-STATEMENT-BEGIN

@@ -11,6 +11,15 @@ exists; `sideW` and `sideS` are the sides `W` and `S` of the square of `E`.
 import Rotor.Exploration
 import Rotor.Support.ActiveListLemma
 
+/-!
+# Active list at a current edge's square
+
+Records Lemma 5.5 of the paper as a frozen statement: if either side `W` or side `S` of the
+square attached to a current edge `E` was tested closed before `E` is selected for testing,
+then the active list at that stage is exactly `(E)`, and at most one of `W`, `S` can have been
+tested closed earlier. The proof is supplied by `square_active_list_proof`.
+-/
+
 open Rotor
 
 -- FROZEN-STATEMENT-BEGIN

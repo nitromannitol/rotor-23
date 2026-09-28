@@ -15,6 +15,18 @@
 import Rotor.Support.LiveRecurrence
 import Rotor.Events
 
+/-!
+# Path reduction, parts (i) and (ii)
+
+Proves parts (i) and (ii) of `prop:path-reduction` of `rotor.tex`. Part (i)
+(`path_reduction_i`) shows that, under the exponential-tail criterion, almost every rotor
+configuration has all iterates terminating and every vertex recurrent, by ruling out infinite
+live paths: such a path would witness membership in `almostLiveEvent` for every radius, which
+the criterion forces to have vanishing probability. Part (ii) (`path_reduction_ii`) upgrades this
+to a uniform bound on the probability that some far-apart pair `x, y` has an unusually fast
+passage time, using the bounded degree of `G` and a union over neighbors of `x`.
+-/
+
 open Finset MeasureTheory Filter Topology
 open scoped ENNReal
 
@@ -26,6 +38,8 @@ variable (π : Mechanism G)
 /-! ### A connected locally finite graph has countably many vertices -/
 
 omit [DecidableEq V] in
+/-- A connected, locally finite graph has countably many vertices, since `V` is covered by the
+countably many finite balls around a fixed basepoint. -/
 theorem countable_of_connected [G.LocallyFinite] (hG : G.Connected) : Countable V := by
   obtain ⟨o⟩ := hG.nonempty
   have : (Set.univ : Set V) ⊆ ⋃ R : ℕ, ball G {o} R := by
@@ -71,6 +85,9 @@ theorem exists_dist_eq_of_infPath [G.LocallyFinite] (hG : G.Connected) (x : ℕ 
 def InfLiveFrom (ρ : Config G) (u v : V) : Prop :=
   ∃ x : ℕ → V, IsInfPath G x ∧ IsInfLive π ρ x ∧ x 0 = u ∧ x 1 = v
 
+/-- If there is an infinite live path starting with the edge `u → v`, then for every radius `R`
+its prefix out to the first vertex at distance `R` from `u` has no live failures at all, so it
+witnesses `ρ ∈ almostLiveEvent π η u v R`. -/
 theorem infLiveFrom_subset [G.LocallyFinite] (hG : G.Connected) (η : ℝ) (hη : 0 ≤ η) (u v : V)
     (R : ℕ) (hR : 1 ≤ R) : {ρ | InfLiveFrom π ρ u v} ⊆ almostLiveEvent π η u v R := by
   intro ρ ⟨x, hx, hlive, hu, hv⟩
@@ -106,6 +123,9 @@ theorem infLiveFrom_subset [G.LocallyFinite] (hG : G.Connected) (η : ℝ) (hη 
 
 /-! ### Almost surely there is no infinite live path -/
 
+/-- `InfLiveFrom π ρ e.fst e.snd` has probability zero for every dart `e`: by
+`infLiveFrom_subset` its probability is bounded, for every radius `R`, by the criterion's
+supremum over darts of the `almostLiveEvent` probabilities, which tends to `0`. -/
 theorem measure_infLiveFrom_eq_zero [G.LocallyFinite] (hG : G.Connected)
     (μ : Measure (Config G)) (η : ℝ) (hη : 0 < η) (hcrit : Criterion π μ η) (e : G.Dart) :
     μ {ρ | InfLiveFrom π ρ e.fst e.snd} = 0 := by
@@ -117,6 +137,9 @@ theorem measure_infLiveFrom_eq_zero [G.LocallyFinite] (hG : G.Connected)
       (le_iSup (fun e' : G.Dart => μ (almostLiveEvent π η e'.fst e'.snd R)) e)
   exact le_antisymm (ge_of_tendsto hcrit hle) zero_le
 
+/-- Almost surely there is no infinite live path: `HasInfLivePath` is contained in the countable
+union, over the darts `e`, of the events `InfLiveFrom π ρ e.fst e.snd`, each of measure zero by
+`measure_infLiveFrom_eq_zero`. -/
 theorem ae_no_infLivePath [G.LocallyFinite] (hG : G.Connected) (μ : Measure (Config G))
     (η : ℝ) (hη : 0 < η) (hcrit : Criterion π μ η) : ∀ᵐ ρ ∂μ, ¬ HasInfLivePath π ρ := by
   haveI := countable_of_connected hG
@@ -142,6 +165,9 @@ theorem path_reduction_i [G.LocallyFinite] (hFLP : External.OneCircuit G)
 
 /-! ### Fast passage forces an almost-live path -/
 
+/-- If all iterates terminate and `τ(x, y) ≤ a · dist(x, y)` with `a ≤ η`, then the path from `x`
+to `y` supplied by `decreasing_positions_ii`, with at most `τ(x, y)` live failures, witnesses
+`ρ ∈ almostLiveEvent π η x z (dist x y)` for its second vertex `z`. -/
 theorem fast_passage_subset [G.LocallyFinite] (hAb : External.Abelian G) [Infinite V]
     (hG : G.Connected) (ρ : Config G) (hall : AllTerminate π ρ) (η a : ℝ) (ha : a ≤ η)
     (x y : V) (hxy : x ≠ y) (hτ : (τ π ρ x y : ℝ) ≤ a * G.dist x y) :
@@ -225,7 +251,8 @@ theorem path_reduction_ii [G.LocallyFinite] (hFLP : External.OneCircuit G)
         rw [zero_add]
         refine Finset.sum_le_sum (fun z hz => ?_)
         have hadj : G.Adj x z := (G.mem_neighborFinset x z).1 hz
-        refine le_trans (le_iSup (fun e : G.Dart => μ (almostLiveEvent π η e.fst e.snd (G.dist x y)))
+        refine le_trans (le_iSup
+          (fun e : G.Dart => μ (almostLiveEvent π η e.fst e.snd (G.dist x y)))
           ⟨(x, z), hadj⟩) (hN _ hdR)
     _ = (G.degree x : ℝ≥0∞) * (ε / ((D : ℝ≥0∞) + 1)) := by
         rw [Finset.sum_const, nsmul_eq_mul, SimpleGraph.card_neighborFinset_eq_degree]

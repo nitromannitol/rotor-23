@@ -2,6 +2,8 @@ import Rotor.Square
 import Rotor.Support.ProductErgodic
 
 /-!
+# The square lattice with the clockwise mechanism
+
 Basic facts on the square lattice with the clockwise mechanism (`rotor.tex:1486-1496`):
 connectivity, degree four, and periodicity of the mechanism under translations.
 -/
@@ -10,15 +12,21 @@ open Finset
 
 namespace Rotor
 
+/-- `x` is adjacent to its eastward neighbor `x + (1, 0)` in `squareGraph`. -/
 theorem squareGraph_adj_add_east (x : Site) : squareGraph.Adj x (x + (1, 0)) := by
   rw [squareGraph_adj]; simp
+/-- `x` is adjacent to its westward neighbor `x + (-1, 0)` in `squareGraph`. -/
 theorem squareGraph_adj_add_west (x : Site) : squareGraph.Adj x (x + (-1, 0)) := by
   rw [squareGraph_adj]; simp
+/-- `x` is adjacent to its northward neighbor `x + (0, 1)` in `squareGraph`. -/
 theorem squareGraph_adj_add_north (x : Site) : squareGraph.Adj x (x + (0, 1)) := by
   rw [squareGraph_adj]; simp
+/-- `x` is adjacent to its southward neighbor `x + (0, -1)` in `squareGraph`. -/
 theorem squareGraph_adj_add_south (x : Site) : squareGraph.Adj x (x + (0, -1)) := by
   rw [squareGraph_adj]; simp
 
+/-- Any two vertices of `squareGraph` are reachable from one another, by induction on the `L¹`
+distance between them, moving one step east, west, north or south at each stage. -/
 theorem squareGraph_reachable (x y : Site) : squareGraph.Reachable x y := by
   have key : ∀ n : ℕ, ∀ x y : Site, (x.1 - y.1).natAbs + (x.2 - y.2).natAbs = n →
       squareGraph.Reachable x y := by
@@ -44,9 +52,11 @@ theorem squareGraph_reachable (x y : Site) : squareGraph.Reachable x y := by
           simp only [Prod.fst_add, Prod.snd_add]; omega))
   exact key _ x y rfl
 
+/-- `squareGraph` is connected. -/
 theorem squareGraph_connected : squareGraph.Connected :=
   ⟨fun x y => squareGraph_reachable x y⟩
 
+/-- Every vertex of `squareGraph` has degree `4`. -/
 theorem squareGraph_degree (v : Site) : squareGraph.degree v = 4 := by
   rw [← SimpleGraph.card_neighborSet_eq_degree, Fintype.card_congr (nbr v).symm]
   rfl
@@ -69,6 +79,7 @@ theorem squarePeriodic_periodic : squarePeriodic.Periodic clockwise := by
   show _ = squarePeriodic.shiftNbr z (turnAt v (nbr v a₀))
   rw [turnAt_nbr, h2]
 
+/-- `Site`, the vertex type of the square lattice, is infinite. -/
 instance : Infinite Site := inferInstance
 
 end Rotor
