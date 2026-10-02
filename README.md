@@ -323,7 +323,7 @@ CITATION.cff          citation metadata
 
 ## How this was built
 
-The Lean code was written by Claude (Fable 5.1, Opus 5, Sonnet 5 and Opus 5.5), with contributions by GPT (gpt-6-astra, gpt-6-luna and gpt-5.6-luna), GLM-5.3, GLM-5.3-flash and DeepSeek-v4.1-flash, under the close supervision of the author; models, tooling and cost are disclosed in [`formalization.yaml`](formalization.yaml), following the [mathlib-initiative](https://github.com/mathlib-initiative/formalization.yaml) standard.
+The Lean code was written mostly by Claude (Fable 5.1, Opus 5, Sonnet 5 and Opus 5.5), with contributions by OpenAI (gpt-6-astra, gpt-6-luna and gpt-5.6-luna), GLM-5.3-flash and DeepSeek-v4.1-flash, under the close supervision of the author; models, tooling, cost and review status are disclosed in [`formalization.yaml`](formalization.yaml), following the [mathlib-initiative](https://github.com/mathlib-initiative/formalization.yaml) standard.
 
 ## Authors, citation, acknowledgements
 
