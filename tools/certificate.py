@@ -177,7 +177,7 @@ def build() -> str:
     sealed = sum(n["state"] == "SEALED" for n in nodes)
     frozen = sum(n["state"] == "FROZEN" for n in nodes)
     A(f"axioms.  In `ledger/manifest.yaml`, {sealed} nodes are `SEALED` (proved) and")
-    A(f"{frozen} are `FROZEN` (cited hypotheses, no proof obligation here).")
+    A(f"{frozen} {'is' if frozen == 1 else 'are'} `FROZEN` (cited hypotheses, no proof obligation here).")
     A("")
     A("## Frozen statements")
     A("")

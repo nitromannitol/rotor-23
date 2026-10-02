@@ -103,7 +103,7 @@ nowhere below.
 
 33 of 33 nodes depend on nothing beyond the three classical
 axioms.  In `ledger/manifest.yaml`, 32 nodes are `SEALED` (proved) and
-1 are `FROZEN` (cited hypotheses, no proof obligation here).
+1 is `FROZEN` (cited hypotheses, no proof obligation here).
 
 ## Frozen statements
 
