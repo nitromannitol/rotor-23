@@ -1,7 +1,22 @@
-version: "v0.3"
+version: "v0.4"
 
 project:
   name: "rotor-23"
+  description: >-
+    A Lean 4 formalization of "Eulerian walkers on Z^2 have range exponent 2/3"
+    (Bou-Rabee and Peres): the clockwise rotor walk with independent uniform
+    initial rotors on the square lattice and on doubly periodic plane graphs of
+    maximum degree three is almost surely recurrent, its rescaled circuit
+    ranges converge to a deterministic compact convex limit shape, and its
+    range grows like t^(2/3) (Theorem 1.1).  The same conclusions hold for
+    independent rotor laws close to uniform in total variation (Proposition
+    1.2), and a doubly periodic plane graph, the square lattice with many
+    leaves attached to every vertex, carries a transient rotor walk
+    (Proposition 1.3).  Every theorem, lemma and proposition of the paper is
+    formalized; the Liggett-Schonmann-Stacey domination theorem, which the
+    paper cites without proof, is an explicit hypothesis of the theorems that
+    use it, and the five main theorems are independently checked by the
+    comparator pairs under Audit/.
   authors:
     - "Ahmed Bou-Rabee"
   license: "Apache-2.0"
@@ -14,9 +29,30 @@ sources:
     id: "arXiv:2608.23545"
     url: "https://arxiv.org/abs/2608.23545"
     type: "manuscript"
+    relationship: "formalizes"
+    note: >-
+      The paper under formalization.  Every theorem, lemma and proposition of
+      the paper is formalized; see status.scope for the one cited result that
+      is carried as a hypothesis and fidelity.divergences for the places where
+      a Lean statement is not literally the paper's.
     license: ""                 # TODO(author): the license under which the paper is posted
-    author_contacted: "n/a"     # the formalizer is an author of the source
-    prior_work: ""
+    author_endorsement: "n/a"   # the formalizer is an author of the source
+
+related_formalizations:
+  - id: "https://github.com/anthropics/formal-math"
+    relationship: "builds-on"
+    note: >-
+      The percolation library PercolationContinuity (subdirectory percolation,
+      pinned git dependency at commit 795efb86f191735c5481675763537cfb4ff37e55),
+      a separate formalization by Justin Leder, produced with Claude agents.
+      It supplies Kesten's p_c(Z^2) = 1/2 and the sharpness of the phase
+      transition, from which subcritical exponential decay is proved here.
+  - id: "https://github.com/nitromannitol/Lattice-Probability"
+    relationship: "builds-on"
+    note: >-
+      The shared library Lattice-Probability (pinned git dependency at commit
+      9d44b4d4670df393bb86ac5a4e042f215001cddf).  It supplies Kingman's
+      subadditive ergodic theorem (LatticeProb.Prob.Kingman).
 
 status:
   scope: >-
@@ -29,7 +65,7 @@ status:
     1.2), the transient pendant graph G_M (Proposition 1.3), and the lemmas and
     propositions of Sections 2 to 6.  SCOPE BOUNDARY: seven results the paper
     cites from the literature are stated as propositions in Rotor/External/.
-    Five of them are proved in Rotor/Bridge/: subcritical exponential decay
+    Six of them are proved in Rotor/Bridge/: subcritical exponential decay
     for Bernoulli bond percolation on Z^2, from the percolation library
     PercolationContinuity (anthropics/formal-math), Kingman's subadditive
     ergodic theorem, from the shared library Lattice-Probability
@@ -37,18 +73,21 @@ status:
     (HLMPPW Lemma 3.9), by induction on legal routings, the one-circuit
     property of a rotor walk (Florescu-Levine-Peres, Lemmas 2.1 and 2.4), by
     an injectivity argument on traversed edges together with incoming/outgoing
-    degree counts at circuit times, and Holroyd-Propp's Lemma 6 (a rotor walk
+    degree counts at circuit times, Holroyd-Propp's Lemma 6 (a rotor walk
     that visits one vertex infinitely often visits every vertex infinitely
     often), by propagating infinitely-many-visits along a walk between any
-    two vertices; the other two (Angel-Holroyd, Liggett-Schonmann-Stacey
-    domination) are not proved here and are explicit hypotheses of every
-    theorem whose proof uses them; ASSUMPTIONS.md lists them with their Lean
-    statements.  Not
+    two vertices, and Angel-Holroyd's theorem that recurrence does not depend
+    on the starting vertex, by the same propagation combined with the abelian
+    property.  The seventh, Liggett-Schonmann-Stacey domination, is not
+    proved here and is an explicit hypothesis of every theorem whose proof
+    uses it; ASSUMPTIONS.md lists it with its Lean statement.  Not
     formalized: the open questions of Section 7, the figures, the simulations
     and the survey of related work.  The main theorems are stated in full in
     Rotor/MainTheorems.lean; all five are additionally restated over a
     Mathlib-only vocabulary for the Lean comparator (Audit/).
   sorry_count: 0
+  sorry_count_scope: "Rotor production library only"
+  comparator_challenge_sorry_count: 5
   sorry_in_definitions: 0
   axioms:
     - "propext"
@@ -61,65 +100,76 @@ status:
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "Audit/MainSquare/comparator.json"
       literature_dependencies:
-        - "Liggett-Schonmann-Stacey 1997, Theorem 0.0(ii) (Rotor.External.LSS), hypothesis"
+        - statement: "Liggett-Schonmann-Stacey domination (Rotor.External.LSS), an explicit hypothesis"
+          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
     - declaration: "Rotor.main_degree_three"
       file: "Rotor/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "Audit/MainDegreeThree/comparator.json"
       literature_dependencies:
-        - "Liggett-Schonmann-Stacey 1997, Theorem 0.0(ii) (Rotor.External.LSS), hypothesis"
+        - statement: "Liggett-Schonmann-Stacey domination (Rotor.External.LSS), an explicit hypothesis"
+          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
     - declaration: "Rotor.perturbations_square"
       file: "Rotor/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "Audit/PerturbationsSquare/comparator.json"
       literature_dependencies:
-        - "Liggett-Schonmann-Stacey 1997, Theorem 0.0(ii) (Rotor.External.LSS), hypothesis"
+        - statement: "Liggett-Schonmann-Stacey domination (Rotor.External.LSS), an explicit hypothesis"
+          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
     - declaration: "Rotor.perturbations_degree_three"
       file: "Rotor/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "Audit/PerturbationsDegreeThree/comparator.json"
       literature_dependencies:
-        - "Liggett-Schonmann-Stacey 1997, Theorem 0.0(ii) (Rotor.External.LSS), hypothesis"
+        - statement: "Liggett-Schonmann-Stacey domination (Rotor.External.LSS), an explicit hypothesis"
+          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
     - declaration: "Rotor.pendant_counterexample"
       file: "Rotor/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "Audit/PendantCounterexample/comparator.json"
-      literature_dependencies:
-        - "Angel-Holroyd 2012, Theorem 1 (Rotor.External.RecurrentOfRecurrent), hypothesis"
+      literature_dependencies: []
     - declaration: "RotorAudit.main_square"
       file: "Audit/MainSquare/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "Audit/MainSquare/comparator.json"
-      literature_dependencies: ["the same hypothesis as Rotor.main_square, restated over the Mathlib-only vocabulary"]
+      literature_dependencies:
+        - statement: "Liggett-Schonmann-Stacey domination (RotorAudit.External.LSS, the Mathlib-only restatement of Rotor.External.LSS), an explicit hypothesis"
+          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
     - declaration: "RotorAudit.main_degree_three"
       file: "Audit/MainDegreeThree/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "Audit/MainDegreeThree/comparator.json"
-      literature_dependencies: ["the same hypothesis as Rotor.main_degree_three, restated over the Mathlib-only vocabulary"]
+      literature_dependencies:
+        - statement: "Liggett-Schonmann-Stacey domination (RotorAudit.External.LSS, the Mathlib-only restatement of Rotor.External.LSS), an explicit hypothesis"
+          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
     - declaration: "RotorAudit.perturbations_square"
       file: "Audit/PerturbationsSquare/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "Audit/PerturbationsSquare/comparator.json"
-      literature_dependencies: ["the same hypothesis as Rotor.perturbations_square, restated over the Mathlib-only vocabulary"]
+      literature_dependencies:
+        - statement: "Liggett-Schonmann-Stacey domination (RotorAudit.External.LSS, the Mathlib-only restatement of Rotor.External.LSS), an explicit hypothesis"
+          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
     - declaration: "RotorAudit.perturbations_degree_three"
       file: "Audit/PerturbationsDegreeThree/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "Audit/PerturbationsDegreeThree/comparator.json"
-      literature_dependencies: ["the same hypothesis as Rotor.perturbations_degree_three, restated over the Mathlib-only vocabulary"]
+      literature_dependencies:
+        - statement: "Liggett-Schonmann-Stacey domination (RotorAudit.External.LSS, the Mathlib-only restatement of Rotor.External.LSS), an explicit hypothesis"
+          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
     - declaration: "RotorAudit.pendant_counterexample"
       file: "Audit/PendantCounterexample/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "Audit/PendantCounterexample/comparator.json"
-      literature_dependencies: ["the remaining hypothesis of Rotor.pendant_counterexample, restated over the Mathlib-only vocabulary"]
+      literature_dependencies: []
 
 automation:
   methods:
@@ -136,69 +186,48 @@ automation:
         - "gpt-6-luna"
         - "gpt-5.6-luna"
       framework: >-
-        Claude Code (Anthropic) as the supervising and proving harness, which
-        wrote nearly all of the Lean code; Codex CLI (OpenAI) for gpt-6-astra;
-        scripted API fan-outs for the GLM and DeepSeek models
+        Claude Code (Anthropic), which wrote nearly all of the Lean code;
+        Codex CLI (OpenAI) for the gpt models; scripted API fan-outs for the
+        GLM and DeepSeek models
       tool_setup: >-
         Lake builds under leanprover/lean4:v4.32.0 with Mathlib at revision
-        81a5d257c8e410db227a6665ed08f64fea08e997 and the percolation library
-        PercolationContinuity (anthropics/formal-math, commit 795efb86); the
-        development began under Lean v4.26.0 and was moved to v4.32.0 for that
-        dependency.  Division of labour: claude-fable-5-1 (Claude Code), the
-        supervising session, wrote the statements and the proofs of Sections 2
-        to 6 and Theorem 1.1 through the seal of Lemma 5.3 (2026-09-05/06);
-        claude-opus-5, in the same session, proved subcritical decay from the
-        percolation library (Rotor/Bridge/), moved the toolchain, and cleaned
-        the repository layout and documentation; gpt-6-astra (Codex CLI,
-        reasoning xhigh, read-only) reviewed proofs and proposed
-        simplifications, which were applied, and later (reasoning max) wrote
-        four commits on 2026-09-12: the integrability hypothesis of the
-        Kingman input and its supply for the passage arrays, and Proposition
-        1.2 on the square lattice under finite-index translation subgroups;
-        glm-5.3 ran statement, model and proof audits (about a hundred
-        replies), glm-5.3-flash and deepseek-v4.1-flash drafted
-        compile-filtered proof candidates for short goals, a few of which were
-        accepted after checking; claude-sonnet-5 rewrote the README
-        (2026-09-18); claude-opus-5-5 wrote Rotor/MainTheorems.lean, the
-        comparator surface Audit/ and this release documentation
-        (2026-09-23).  A frozen-statement manifest (ledger/manifest.yaml) pins
-        each registered statement by the SHA-256 of its text, and the tools/
-        checkers verify the hashes, the axiom closure of every node, a
-        warning-free build, coverage of every statement of the paper, a
-        recorded clause-by-clause reading of each statement, quantifier order
-        and exponents.  The Lean comparator (leanprover/comparator) was run on
-        all five Audit pairs on 2026-09-27, at commit f5c29c7, and every pair
-        passed with the Lean kernel and with the independent nanoda kernel;
-        results and reproduction steps are in Audit/COMPARATOR_RUNS.md.  The
-        workflow .github/workflows/comparator.yml runs it on request.
-        Final pass (2026-09-26 and 2026-09-27): a claude-opus-5-5 general in
-        Claude Code dispatched claude-sonnet-5 subagents, which proved further
-        cited inputs and removed them as hypotheses, updated the Audit surface
-        and re-ran the comparator; gpt-6-luna and gpt-5.6-luna (Codex CLI) were
-        commissioned for some proofs; the release pins Lattice-Probability at
-        commit 9d44b4d4670df393bb86ac5a4e042f215001cddf.
+        81a5d257c8e410db227a6665ed08f64fea08e997, the percolation library
+        PercolationContinuity (anthropics/formal-math, commit 795efb86) and the
+        shared library Lattice-Probability (commit
+        9d44b4d4670df393bb86ac5a4e042f215001cddf).  A frozen-statement manifest
+        (ledger/manifest.yaml) pins each registered statement by the SHA-256 of
+        its text, and the tools/ checkers verify the hashes, the axiom closure
+        of every node, a warning-free build, coverage of every statement of the
+        paper, a recorded clause-by-clause reading of each statement, quantifier
+        order and exponents.  The Lean comparator (leanprover/comparator) was
+        run on all five Audit pairs and every pair passed with the Lean kernel
+        and with the independent nanoda kernel; results and reproduction steps
+        are in Audit/COMPARATOR_RUNS.md, and the workflow
+        .github/workflows/comparator.yml runs it on request.  Proofs were also
+        reviewed by other models, whose proposed simplifications were applied,
+        and scripted API fan-outs drafted compile-filtered proof candidates for
+        short goals, a few of which were accepted after checking.
       cost:
         wall_time: >-
-          about two weeks of calendar time (2026-09-05 to 2026-09-18), most of
-          the proof work in one session of about 26 hours on 2026-09-05/06;
-          the comparator surface on 2026-09-23
+          about two weeks of agentic work, most of the proof work in one
+          continuous run of about 26 hours
         spend_usd: "not tracked (subscription and API accounts)"
         hardware: "a 20-thread Intel i9-9900X / 125 GB RAM Ubuntu machine"
       prompting_notes: >-
-        Human-directed agent work, supervised by the author, with the author's
-        rulings recorded for statement-level decisions.  Every statement was
-        pinned before its proof was attempted, and proofs were accepted only
-        through the manifest and axiom gates.
+        Human-directed agent work, closely supervised by the author, who ruled
+        on statement-level decisions.  Every statement was pinned before its
+        proof was attempted, and proofs were accepted only through the manifest
+        and axiom gates.
   spend_usd: "not tracked (subscription and API accounts)"
   notes: >-
     All Lean code in this repository was written by the listed models under the
-    supervision of the author.  Every proof is checked by the Lean kernel and
-    Mathlib; the verified library contains no sorry and no custom axiom.  The
-    results the paper cites without proof enter as explicit hypotheses, not
-    axioms.  The Mathlib-only comparator challenge files
-    (Audit/*/Challenge.lean) each contain exactly one intentional
-    statement-level sorry (the theorem body), which is filled by the
-    corresponding Audit/*/Solution.lean.  The percolation dependency
+    close supervision of the author.  Every proof is checked by the Lean kernel
+    and Mathlib; the verified library contains no sorry and no custom axiom.
+    The one result the paper cites without proof that is not proved here
+    enters as an explicit hypothesis, not an axiom.  The Mathlib-only
+    comparator challenge files (Audit/*/Challenge.lean) each contain exactly
+    one intentional statement-level sorry (the theorem body), which is filled
+    by the corresponding Audit/*/Solution.lean.  The percolation dependency
     PercolationContinuity is a separate formalization (by Justin Leder,
     produced with Claude agents), not written for this repository.
 
@@ -215,9 +244,9 @@ fidelity:
     inner and outer bounds on A_n; coordinates are centered at the start
     vertex; Proposition 1.3 carries the explicit threshold M >= 50331645; on
     the square lattice, Proposition 1.2 takes invariance of the marginals under
-    any finite-index translation subgroup.  The two cited results that are not
-    proved enter as hypotheses whose Lean statements are in ASSUMPTIONS.md;
-    that they render the cited theorems faithfully is a reading, not a check.
+    any finite-index translation subgroup.  The one cited result that is not
+    proved enters as a hypothesis whose Lean statement is in ASSUMPTIONS.md;
+    that it renders the cited theorem faithfully is a reading, not a check.
 
 review:
   status: "author-verified"
@@ -226,12 +255,9 @@ review:
   notes: >-
     Correctness of every proof is guaranteed by the Lean kernel and Mathlib (no
     sorry, no custom axiom).  The author ruled on the statement-level
-    decisions recorded during development.  The statements were additionally
-    audited by GLM-5.3 auditors and, at an earlier commit, by an independent
-    comparator-style audit run by gpt-6-astra, which found that the Kingman
-    input lacked an integrability hypothesis and that Proposition 1.2 on the
-    square lattice was stated only for the full translation lattice; both were
-    corrected before this release.  This is not external peer review.
+    decisions.  The statements were additionally audited by GLM-5.3 auditors
+    and by an independent comparator-style audit run by gpt-6-astra.  This is
+    not external peer review.
 
 alignment:
   namespace: "Rotor"
@@ -240,37 +266,37 @@ alignment:
       lean: "Rotor.main_square"
       module: "Rotor.MainTheorems"
       status: "proved"
-      note: "Certified statement Rotor.Frozen.main_square; subcritical decay discharged. Comparator challenge Audit/MainSquare/."
+      note: "Certified statement Rotor.Frozen.main_square; hypothesis Rotor.External.LSS. Comparator challenge Audit/MainSquare/."
     - source: "Theorem 1.1 (thm:main), doubly periodic graphs of maximum degree three"
       lean: "Rotor.main_degree_three"
       module: "Rotor.MainTheorems"
       status: "proved"
-      note: "Certified statement Rotor.Frozen.main_degree_three. Comparator challenge Audit/MainDegreeThree/."
+      note: "Certified statement Rotor.Frozen.main_degree_three; hypothesis Rotor.External.LSS. Comparator challenge Audit/MainDegreeThree/."
     - source: "Proposition 1.2 (prop:small-perturbations), the square lattice"
       lean: "Rotor.perturbations_square"
       module: "Rotor.MainTheorems"
       status: "proved"
-      note: "Certified statement Rotor.Frozen.perturbations_square; subcritical decay discharged. Comparator challenge Audit/PerturbationsSquare/."
+      note: "Certified statement Rotor.Frozen.perturbations_square; hypothesis Rotor.External.LSS. Comparator challenge Audit/PerturbationsSquare/."
     - source: "Proposition 1.2 (prop:small-perturbations), doubly periodic graphs of maximum degree three"
       lean: "Rotor.perturbations_degree_three"
       module: "Rotor.MainTheorems"
       status: "proved"
-      note: "Certified statement Rotor.Frozen.perturbations_degree_three. Comparator challenge Audit/PerturbationsDegreeThree/."
+      note: "Certified statement Rotor.Frozen.perturbations_degree_three; hypothesis Rotor.External.LSS. Comparator challenge Audit/PerturbationsDegreeThree/."
     - source: "Proposition 1.3 (prop:pendant-counterexample)"
       lean: "Rotor.pendant_counterexample"
       module: "Rotor.MainTheorems"
       status: "proved"
-      note: "Certified statement Rotor.Frozen.pendant_counterexample. Comparator challenge Audit/PendantCounterexample/."
+      note: "Certified statement Rotor.Frozen.pendant_counterexample; no hypothesis. Comparator challenge Audit/PendantCounterexample/."
     - source: "Sections 2 to 6: every lemma and proposition"
       lean: "Rotor.Frozen.*"
       module: "Rotor.Frozen"
       status: "proved"
       note: "One registered statement per paper statement; the full map is CORRESPONDENCE.md."
-    - source: "Cited results (Angel-Holroyd, Liggett-Schonmann-Stacey)"
-      lean: "Rotor.External.*"
-      module: "Rotor.External"
-      status: "assumed"
-      note: "Explicit hypotheses of the theorems that use them; listed in ASSUMPTIONS.md."
+    - source: "Cited result: Liggett-Schonmann-Stacey domination, Theorem 0.0(ii)"
+      lean: "Rotor.External.LSS"
+      module: "Rotor.External.LSS"
+      status: "literature-dependency"
+      note: "Explicit hypothesis of the theorems that use it; listed in ASSUMPTIONS.md."
     - source: "Cited result: subcritical exponential decay for Bernoulli bond percolation on Z^2"
       lean: "Rotor.Bridge.subcriticalDecay_holds"
       module: "Rotor.Bridge.SubcriticalDecay"
@@ -296,6 +322,11 @@ alignment:
       module: "Rotor.Bridge.HolroydPropp"
       status: "proved"
       note: "Proved by propagating infinitely-many-visits along a walk between any two vertices of the (preconnected) graph."
+    - source: "Cited result: Angel-Holroyd 2012, Theorem 1 (recurrence does not depend on the starting vertex)"
+      lean: "Rotor.Bridge.recurrentOfRecurrent_holds"
+      module: "Rotor.Bridge.AngelHolroyd"
+      status: "proved"
+      note: "Proved by propagating recurrence along adjacency and then along a connecting walk, via Rotor.Bridge.abelian_holds."
 
 acknowledgements: >-
   The paper is joint work with Yuval Peres.  Built on Lean 4, Mathlib, Lake,

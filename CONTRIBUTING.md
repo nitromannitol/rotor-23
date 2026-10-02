@@ -37,3 +37,24 @@ A few practical notes for working with this development:
 - **The main results** are in `Rotor/MainTheorems.lean`; the axiom audit is
   `lake build Rotor.Meta.AxiomsAudit`, and the comparator surface is
   `lake build Audit`.
+
+## Elaboration policy for new files
+
+These rules keep the elaboration of new files cheap.
+
+- Close arithmetic goals with named monotonicity lemmas and `calc`, not with
+  `nlinarith`. When a nonlinear fact is needed, hoist it into a small `private`
+  lemma over abstract real variables so that `Real.rpow` and `Real.exp` terms
+  never enter a numeric tactic; in particular, no `nlinarith` on goals that
+  contain `rpow` or `exp`.
+- Before `ring` or `field_simp` on an expression built with `set`, run
+  `clear_value` on the bound names; otherwise the let-bodies are unfolded inside
+  the tactic.
+- Do not split a file, narrow its imports, or add an instance cache "for
+  performance" without a warm profile before and after
+  (`lake env lean --profile <file>`).
+- Never raise `maxHeartbeats`. A default-budget failure is a design signal
+  (usually a wrong lemma orientation or a `set`-bound term), not a budget
+  problem.
+- Keep Lean files under 1500 lines.
+- Never run `lake clean`; see the building notes above.

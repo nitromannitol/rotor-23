@@ -72,8 +72,7 @@ def paper_cell(source: str) -> str:
 
 
 STATUS_WORD = {"SEALED": "proved", "FROZEN": "assumed", "DRAFT_SORRY": "open"}
-# Cited results that the frozen statements assume but that are proved elsewhere
-# in the repository.
+# Cited results that are proved in the repository, with the file that proves them.
 DISCHARGED = {
     "ext-subcritical-decay": "Rotor/Bridge/SubcriticalDecay.lean",
     "ext-abelian": "Rotor/Bridge/Abelian.lean",
@@ -85,7 +84,7 @@ DISCHARGED = {
 
 def status_cell(n: dict) -> str:
     if n["id"] in DISCHARGED:
-        return f"assumed by the frozen statements; proved in `{DISCHARGED[n['id']]}`"
+        return f"proved in `{DISCHARGED[n['id']]}`"
     return STATUS_WORD.get(n["state"], n["state"])
 
 

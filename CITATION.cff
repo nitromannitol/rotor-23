@@ -8,9 +8,11 @@ abstract: >-
   independent uniform initial rotors on the square lattice and on doubly
   periodic plane graphs of maximum degree three (Theorem 1.1), their
   extension to rotor laws close to uniform (Proposition 1.2), and a doubly
-  periodic graph on which the walk is transient (Proposition 1.3).  Six
-  results the paper cites without proof are taken as explicit hypotheses.
-  The development contains no sorry and no custom axiom.
+  periodic graph on which the walk is transient (Proposition 1.3).  One
+  result the paper cites without proof, the Liggett-Schonmann-Stacey
+  domination theorem, is an explicit hypothesis of the theorems that use it;
+  the other six cited results are proved in the repository.  The development
+  contains no sorry and no custom axiom.
 type: software
 authors:
   - family-names: Bou-Rabee
@@ -23,7 +25,6 @@ keywords:
   - rotor-router
   - probability
 license: Apache-2.0
-# Add a Zenodo DOI here once an archived release is minted.
 repository-code: "https://github.com/nitromannitol/rotor-23"
 references:
   - type: article

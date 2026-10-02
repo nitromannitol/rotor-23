@@ -34,11 +34,11 @@ proved, and which results are assumed rather than proved.
 | Proposition 1.2, `prop:small-perturbations`, degree three | `Rotor.perturbations_degree_three` | `Rotor.Frozen.perturbations_degree_three` | `Audit/PerturbationsDegreeThree/` |
 | Proposition 1.3, `prop:pendant-counterexample` | `Rotor.pendant_counterexample` | `Rotor.Frozen.pendant_counterexample` | `Audit/PendantCounterexample/` |
 
-The two square-lattice main theorems differ from their certified statements in
-one respect: the certified statements take subcritical exponential decay for
-Bernoulli bond percolation (`Rotor.External.SubcriticalDecay`) as a
-hypothesis, and `Rotor/MainTheorems.lean` discharges it with
-`Rotor.Bridge.subcriticalDecay_holds`.
+Each main theorem of `Rotor/MainTheorems.lean` has exactly the statement of its
+certified counterpart.  The four theorems about Theorem 1.1 and Proposition 1.2
+carry one hypothesis, `Rotor.External.LSS`; `Rotor.pendant_counterexample`
+carries none.  The other six cited results are proved in `Rotor/Bridge/` and
+supplied in the proofs of the certified statements.
 
 ## Small perturbations on the square lattice
 
@@ -62,10 +62,10 @@ See [`Rotor.Frozen.perturbations_square`](Rotor/Frozen/Main/PerturbSquare.lean);
 ## Cited results
 
 Every cited result the paper uses without proof is a `Prop` in
-`Rotor/External/`, frozen and pinned like a statement, and enters only as an
-explicit hypothesis of the nodes whose proofs use it.  Subcritical exponential
-decay for percolation is proved in the repository: see `Rotor/Bridge/`.
-[`ASSUMPTIONS.md`](ASSUMPTIONS.md) gives each one's Lean statement.
+`Rotor/External/`, registered and pinned like a statement.  Six of the seven
+are proved in `Rotor/Bridge/`; the seventh, `ext-lss`, is an explicit
+hypothesis of the nodes whose proofs use it.  [`ASSUMPTIONS.md`](ASSUMPTIONS.md)
+gives its Lean statement.
 
 | Node | Cited result | Lean | Where the paper uses it | Status |
 |---|---|---|---|---|
@@ -92,7 +92,7 @@ decay for percolation is proved in the repository: see `Rotor/Bridge/`.
 | Node | Source | Lean declaration | File | Status |
 |---|---|---|---|---|
 | `ext-lss` | external input, Liggett-Schonmann-Stacey Theorem 0.0(ii), used in the proof of lem:block-live-paths | `Rotor.External.LSS` | `Rotor/External/LSS.lean` | assumed |
-| `ext-subcritical-decay` | external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail; cited result, now proved here from the percolation library PercolationContinuity (Kesten's p_c(Z^2)=1/2 and DCT-16 phase-transition sharpness) | `Rotor.Bridge.subcriticalDecay_holds` | `Rotor/Bridge/SubcriticalDecay.lean` | assumed by the frozen statements; proved in `Rotor/Bridge/SubcriticalDecay.lean` |
+| `ext-subcritical-decay` | external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail; proved from the percolation library PercolationContinuity (Kesten's p_c(Z^2)=1/2 and DCT-16 phase-transition sharpness) | `Rotor.Bridge.subcriticalDecay_holds` | `Rotor/Bridge/SubcriticalDecay.lean` | proved in `Rotor/Bridge/SubcriticalDecay.lean` |
 | `lem-block-live-paths` | `rotor.tex:1246-1257`, `lem:block-live-paths` | `Rotor.Frozen.block_live_paths` | `Rotor/Frozen/Shape/BlockLivePaths.lean` | proved |
 | `prop-subcubic-recurrence` | `rotor.tex:1363-1369`, `prop:subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `Rotor/Frozen/DegreeThree/SubcubicRecurrence.lean` | proved |
 | `prop-degree-three-passage` | `rotor.tex:1404-1419`, `prop:degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `Rotor/Frozen/DegreeThree/Passage.lean` | proved |
@@ -102,18 +102,18 @@ decay for percolation is proved in the repository: see `Rotor/Bridge/`.
 | `lem-square-exploration` | `rotor.tex:1921-1932`, `lem:square-exploration` | `Rotor.Frozen.square_exploration` | `Rotor/Frozen/Square/Exploration.lean` | proved |
 | `lem-square-active-list` | `rotor.tex:1945-1949`, `lem:square-active-list` | `Rotor.Frozen.square_active_list` | `Rotor/Frozen/Square/ActiveList.lean` | proved |
 | `lem-square-forced-tests` | `rotor.tex:2077-2084`, `lem:square-forced-tests` | `Rotor.Frozen.square_forced_tests` | `Rotor/Frozen/Square/ForcedTests.lean` | proved |
-| `ext-kingman` | external input, Kingman 1968 Theorems 3 and 5 (nonnegative integrable arrays, measurable invariant limit), used in the proof of prop:passage-limit; cited result, now proved here from the shared library Lattice-Probability (LatticeProb.Prob.Kingman) | `Rotor.Bridge.kingman_holds` | `Rotor/Bridge/Kingman.lean` | proved |
-| `ext-abelian` | external input, HLMPPW Lemma 3.9, the statement of lem:least-action; cited result, now proved here from Rotor.Bridge.abelian_holds by induction on legal routings | `Rotor.Bridge.abelian_holds` | `Rotor/Bridge/Abelian.lean` | assumed by the frozen statements; proved in `Rotor/Bridge/Abelian.lean` |
+| `ext-kingman` | external input, Kingman 1968 Theorems 3 and 5 (nonnegative integrable arrays, measurable invariant limit), used in the proof of prop:passage-limit; proved from the shared library Lattice-Probability (LatticeProb.Prob.Kingman) | `Rotor.Bridge.kingman_holds` | `Rotor/Bridge/Kingman.lean` | proved |
+| `ext-abelian` | external input, HLMPPW Lemma 3.9, the statement of lem:least-action; proved by induction on legal routings | `Rotor.Bridge.abelian_holds` | `Rotor/Bridge/Abelian.lean` | proved in `Rotor/Bridge/Abelian.lean` |
 | `lem-least-action` | `rotor.tex:746-757`, `lem:least-action` | `Rotor.Frozen.least_action` | `Rotor/Frozen/Circuits/LeastAction.lean` | proved |
 | `lem-boundary-routing` | `rotor.tex:766-771`, `lem:boundary-routing` | `Rotor.Frozen.boundary_routing` | `Rotor/Frozen/Circuits/BoundaryRouting.lean` | proved |
 | `prop-monotonicity` | `rotor.tex:820-826`, `prop:monotonicity` | `Rotor.Frozen.monotonicity` | `Rotor/Frozen/Circuits/Monotonicity.lean` | proved |
 | `lem-decreasing-positions` | `rotor.tex:902-915`, `lem:decreasing-positions` | `Rotor.Frozen.decreasing_positions` | `Rotor/Frozen/Circuits/DecreasingPositions.lean` | proved |
-| `ext-one-circuit` | external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit; cited result, now proved here from Rotor.Bridge.oneCircuit_holds by an injectivity argument on traversed edges and incoming/outgoing degree counts | `Rotor.Bridge.oneCircuit_holds` | `Rotor/Bridge/OneCircuit.lean` | assumed by the frozen statements; proved in `Rotor/Bridge/OneCircuit.lean` |
+| `ext-one-circuit` | external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit; proved by an injectivity argument on traversed edges and incoming/outgoing degree counts | `Rotor.Bridge.oneCircuit_holds` | `Rotor/Bridge/OneCircuit.lean` | proved in `Rotor/Bridge/OneCircuit.lean` |
 | `lem-one-circuit` | `rotor.tex:710-716`, `lem:one-circuit` | `Rotor.Frozen.one_circuit` | `Rotor/Frozen/Circuits/OneCircuit.lean` | proved |
 | `prop-circuit-iterate` | `rotor.tex:793-801`, `prop:circuit-iterate` | `Rotor.Frozen.circuit_iterate` | `Rotor/Frozen/Circuits/CircuitIterate.lean` | proved |
 | `prop-passage` | `rotor.tex:852-866`, `prop:passage` | `Rotor.Frozen.passage` | `Rotor/Frozen/Circuits/Passage.lean` | proved |
 | `prop-circuit-clock` | `rotor.tex:1167-1195`, `prop:circuit-clock` | `Rotor.Frozen.circuit_clock` | `Rotor/Frozen/Shape/CircuitClock.lean` | proved |
-| `ext-holroyd-propp` | external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence; cited result, now proved here from Rotor.Bridge.visitsAllOfVisitsOne_holds by propagating infinitely-many-visits along a walk between any two vertices | `Rotor.Bridge.visitsAllOfVisitsOne_holds` | `Rotor/Bridge/HolroydPropp.lean` | assumed by the frozen statements; proved in `Rotor/Bridge/HolroydPropp.lean` |
+| `ext-holroyd-propp` | external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence; proved by propagating infinitely-many-visits along a walk between any two vertices | `Rotor.Bridge.visitsAllOfVisitsOne_holds` | `Rotor/Bridge/HolroydPropp.lean` | proved in `Rotor/Bridge/HolroydPropp.lean` |
 | `prop-live-recurrence` | `rotor.tex:957-961`, `prop:live-recurrence` | `Rotor.Frozen.live_recurrence` | `Rotor/Frozen/Circuits/LiveRecurrence.lean` | proved |
 | `prop-path-reduction` | `rotor.tex:1023-1056`, `prop:path-reduction` | `Rotor.Frozen.path_reduction` | `Rotor/Frozen/Shape/PathReduction.lean` | proved |
 | `prop-passage-limit` | `rotor.tex:1103-1113`, `prop:passage-limit` | `Rotor.Frozen.passage_limit` | `Rotor/Frozen/Shape/PassageLimit.lean` | proved |
@@ -122,7 +122,7 @@ decay for percolation is proved in the repository: see `Rotor/Bridge/`.
 | `thm-main-degree-three` | `rotor.tex:237-259`, `thm:main` | `Rotor.Frozen.main_degree_three` | `Rotor/Frozen/Main/DegreeThree.lean` | proved |
 | `prop-perturbations-square` | `rotor.tex:272-280`, `prop:small-perturbations` | `Rotor.Frozen.perturbations_square` | `Rotor/Frozen/Main/PerturbSquare.lean` | proved |
 | `prop-perturbations-degree-three` | `rotor.tex:272-280`, `prop:small-perturbations` | `Rotor.Frozen.perturbations_degree_three` | `Rotor/Frozen/Main/PerturbDegreeThree.lean` | proved |
-| `ext-angel-holroyd` | external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence; cited result, now proved here from Rotor.Bridge.recurrentOfRecurrent_holds by propagating recurrence along adjacency and then along a connecting walk, via Rotor.Bridge.abelian_holds | `Rotor.Bridge.recurrentOfRecurrent_holds` | `Rotor/Bridge/AngelHolroyd.lean` | assumed by the frozen statements; proved in `Rotor/Bridge/AngelHolroyd.lean` |
+| `ext-angel-holroyd` | external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence; proved by propagating recurrence along adjacency and then along a connecting walk, via Rotor.Bridge.abelian_holds | `Rotor.Bridge.recurrentOfRecurrent_holds` | `Rotor/Bridge/AngelHolroyd.lean` | proved in `Rotor/Bridge/AngelHolroyd.lean` |
 | `prop-pendant-counterexample` | `rotor.tex:309-314`, `prop:pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `Rotor/Frozen/Main/Pendant.lean` | proved |
 
 <!-- FROZEN-SURFACE-END -->

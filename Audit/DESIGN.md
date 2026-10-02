@@ -38,7 +38,7 @@ to their repository counterparts, and the bridges state it with `rfl`:
 | `squarePeriodic` (after `toDP`) | `Rotor.squarePeriodic` | `toDP_squarePeriodic` |
 | `pendantGraph M`, `pendantMech M` | `Rotor.pendantGraph M`, `Rotor.pendantMech M` | `pendantGraph_eq`, `toMech_pendantMech` |
 | `uniformAt`, `uniformLaw`, `productLaw` | the repository's, at `toMech π` | `uniformAt_eq`, `uniformLaw_eq`, `productLaw_eq` |
-| `External.Kingman`, `External.LSS` | `Rotor.External.Kingman`, `Rotor.External.LSS` | `kingman`, `lss` |
+| `External.LSS` | `Rotor.External.LSS` | `lss` |
 | `DoublyPeriodic.Periodic`, `InvariantMarginals` | the repository's, at `toDP P` | `periodic_iff`, `invariantMarginals_iff` |
 | `tvDist`, `squareEmb`, `Plane`, the `σ`-algebra instance on neighbor sets | the repository's | used definitionally |
 
@@ -80,19 +80,13 @@ transported hypotheses, rewrites the goal with `T_eq`, `A_eq`, `R_eq`,
 ## 4. Presentation deltas
 
 None at the level of the displayed statements: each challenge theorem is the
-statement of the corresponding theorem of `Rotor/MainTheorems.lean` with every
-repository name replaced by its vocabulary copy.  Relative to the frozen
-statements in `Rotor/Frozen/Main/`, all five theorems
-(`main_square`, `main_degree_three`, `perturbations_square`,
-`perturbations_degree_three`, `pendant_counterexample`) omit the hypothesis
-`External.OneCircuit`, which `Rotor/MainTheorems.lean` discharges with
-`Rotor.Bridge.oneCircuit_holds`; the first four also omit `External.Abelian`
-and `External.VisitsAllOfVisitsOne`, discharged with
-`Rotor.Bridge.abelian_holds` and `Rotor.Bridge.visitsAllOfVisitsOne_holds`;
-the square-lattice theorems (`main_square`, `perturbations_square`) also omit
-`External.Kingman` and `External.SubcriticalDecay`, discharged with
-`Rotor.Bridge.kingman_holds` and `Rotor.Bridge.subcriticalDecay_holds`.  Each
-omission is a strengthening, not a weakening.
+statement of the corresponding theorem of `Rotor/MainTheorems.lean`, which is
+the certified statement in `Rotor/Frozen/Main/`, with every repository name
+replaced by its vocabulary copy.  The theorems carry exactly the hypotheses of
+their library counterparts: `External.LSS` for `main_square`,
+`main_degree_three`, `perturbations_square` and `perturbations_degree_three`,
+and none for `pendant_counterexample`.  The other six cited results are proved
+in `Rotor/Bridge/` and are not hypotheses of any audited theorem.
 
 How each statement reads the paper, clause by clause, is recorded in the
 repository ledger (`tools/check_clauses.py`) and summarized in
@@ -118,9 +112,8 @@ statement, over definitions that can be read without the library.
   `G.neighborSet v`.  `Audit/StatementRegression.lean` checks that no solution
   statement picked up a repository constant, in particular not the
   repository's instance.
-- **U2 (resolved).**  `leanprover/comparator` was run on these pairs on
-  2026-09-24, at commit `b9303b6`, and every pair passed with the Lean kernel
-  and with the independent nanoda kernel (see `Audit/COMPARATOR_RUNS.md`).
-  The local regression compares the solution types with the
-  challenge-environment types up to the auxiliary proof lemmas that a `def`
-  abstracts; the comparator's own closure check is stricter.
+- **U2 (local regression and comparator).**  The local regression compares the
+  solution types with the challenge-environment types up to the auxiliary
+  proof lemmas that a `def` abstracts; the comparator's own closure check is
+  stricter, and it passes on all five pairs with the Lean kernel and with the
+  independent nanoda kernel (see `Audit/COMPARATOR_RUNS.md`).

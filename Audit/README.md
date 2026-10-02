@@ -35,26 +35,25 @@ its library theorem uses, restated in the vocabulary.
 | --- | --- |
 | `MainSquare/`, `PerturbationsSquare/` | `LSS` |
 | `MainDegreeThree/`, `PerturbationsDegreeThree/` | `LSS` |
+| `PendantCounterexample/` | none |
 
-Kingman's subadditive ergodic theorem, subcritical exponential decay for
-Bernoulli bond percolation, the abelian property of rotor-routing, the
-one-circuit property of a rotor walk, Holroyd–Propp's Lemma 6, and
-Angel–Holroyd's theorem that recurrence does not depend on the starting
-vertex, which the frozen statements also take as hypotheses, are not
-hypotheses here: `Rotor/Bridge/Kingman.lean`,
-`Rotor/Bridge/SubcriticalDecay.lean`, `Rotor/Bridge/Abelian.lean`,
-`Rotor/Bridge/OneCircuit.lean`, `Rotor/Bridge/HolroydPropp.lean` and
-`Rotor/Bridge/AngelHolroyd.lean` prove them (from the shared library
-`Lattice-Probability`, the percolation library `PercolationContinuity`, by
-induction on legal routings, by an injectivity argument on traversed edges
-together with incoming/outgoing degree counts at circuit times, by
-propagating infinitely-many-visits along a walk between any two vertices, and
-by that same propagation combined with the abelian property, respectively),
-and `Rotor/MainTheorems.lean` discharges them.  The vocabulary still defines
-`Abelian`, `OneCircuit`, `VisitsAllOfVisitsOne` and `RecurrentOfRecurrent`
-(for byte-identity across the five challenges and for definitional
-record-keeping) but no audited theorem's signature uses any of the four
-any longer.
+The other six results the paper cites without proof are not hypotheses of any
+audited theorem: Kingman's subadditive ergodic theorem, subcritical exponential
+decay for Bernoulli bond percolation, the abelian property of rotor-routing,
+the one-circuit property of a rotor walk, Holroyd–Propp's Lemma 6, and
+Angel–Holroyd's theorem that recurrence does not depend on the starting vertex
+are proved in `Rotor/Bridge/Kingman.lean`, `Rotor/Bridge/SubcriticalDecay.lean`,
+`Rotor/Bridge/Abelian.lean`, `Rotor/Bridge/OneCircuit.lean`,
+`Rotor/Bridge/HolroydPropp.lean` and `Rotor/Bridge/AngelHolroyd.lean` (from the
+shared library `Lattice-Probability`, the percolation library
+`PercolationContinuity`, by induction on legal routings, by an injectivity
+argument on traversed edges together with incoming/outgoing degree counts at
+circuit times, by propagating infinitely-many-visits along a walk between any
+two vertices, and by that same propagation combined with the abelian property,
+respectively).  The vocabulary also defines `Abelian`, `OneCircuit`,
+`VisitsAllOfVisitsOne` and `RecurrentOfRecurrent`, which the bridges in
+`Audit/Support/Bridge.lean` relate to the repository's; no audited theorem's
+signature uses any of the four.
 
 - **`MainSquare`** (Theorem 1.1): on `ℤ²` with the clockwise mechanism and
   independent uniform initial rotors, there are a compact convex `B` with the
@@ -92,7 +91,6 @@ definitions needed to state the theorems, in the namespace `RotorAudit`.
 | `squareGraph`, `dirOf`, `nbr`, `turnAt`, `clockwise`, `squareEmb`, `squarePeriodic` | `Rotor/Square.lean` |
 | `PVertex`, `pendantAdj`, `pendantGraph`, `pendantNbrLattice`, `pendantNbrLeaf`, `pendantTurn`, `pendantMech` | `Rotor/Pendant.lean` |
 | `External.OneCircuit`, `External.Abelian`, `External.VisitsAllOfVisitsOne`, `External.RecurrentOfRecurrent` | `Rotor/External/{OneCircuit,Abelian,HolroydPropp,AngelHolroyd}.lean` |
-| `External.Kingman` | `Rotor/External/Kingman.lean` |
 | `External.LSS`, `bernoulli`, `bernoulliField`, `IsIncreasing`, `KDependent` | `Rotor/External/LSS.lean` |
 
 ## Solutions
@@ -141,8 +139,8 @@ challenge statement and depends only on `propext`, `Classical.choice` and
 
 **Status.**  All five solutions build, and the statement regression and the
 axiom prints pass locally.  `leanprover/comparator` was run on all five pairs
-most recently on 2026-09-27, at commit `f5c29c7`, and every pair passed with
-the Lean kernel and with the independent nanoda kernel.  Results and
-reproduction steps are in [`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md).  The
-workflow [`.github/workflows/comparator.yml`](../.github/workflows/comparator.yml)
+against the statements in this repository, and every pair passed with the Lean
+kernel and with the independent nanoda kernel.  Results and reproduction steps
+are in [`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md).  The workflow
+[`.github/workflows/comparator.yml`](../.github/workflows/comparator.yml)
 runs it on request.

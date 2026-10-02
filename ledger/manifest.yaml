@@ -30,7 +30,7 @@ nodes:
   - id: ext-subcritical-decay
     version: 2
     kind: theorem
-    source: external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail; cited result, now proved here from the percolation library PercolationContinuity (Kesten's p_c(Z^2)=1/2 and DCT-16 phase-transition sharpness)
+    source: external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail; proved from the percolation library PercolationContinuity (Kesten's p_c(Z^2)=1/2 and DCT-16 phase-transition sharpness)
     file: Rotor/Bridge/SubcriticalDecay.lean
     export: Rotor.Bridge.subcriticalDecay_holds
     state: SEALED
@@ -140,7 +140,7 @@ nodes:
   - id: ext-kingman
     version: 4
     kind: theorem
-    source: external input, Kingman 1968 Theorems 3 and 5 (nonnegative integrable arrays, measurable invariant limit), used in the proof of prop:passage-limit; cited result, now proved here from the shared library Lattice-Probability (LatticeProb.Prob.Kingman)
+    source: external input, Kingman 1968 Theorems 3 and 5 (nonnegative integrable arrays, measurable invariant limit), used in the proof of prop:passage-limit; proved from the shared library Lattice-Probability (LatticeProb.Prob.Kingman)
     file: Rotor/Bridge/Kingman.lean
     export: Rotor.Bridge.kingman_holds
     state: SEALED
@@ -151,7 +151,7 @@ nodes:
   - id: ext-abelian
     version: 4
     kind: theorem
-    source: external input, HLMPPW Lemma 3.9, the statement of lem:least-action; cited result, now proved here from Rotor.Bridge.abelian_holds by induction on legal routings
+    source: external input, HLMPPW Lemma 3.9, the statement of lem:least-action; proved by induction on legal routings
     file: Rotor/Bridge/Abelian.lean
     export: Rotor.Bridge.abelian_holds
     state: SEALED
@@ -206,7 +206,7 @@ nodes:
   - id: ext-one-circuit
     version: 5
     kind: theorem
-    source: external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit; cited result, now proved here from Rotor.Bridge.oneCircuit_holds by an injectivity argument on traversed edges and incoming/outgoing degree counts
+    source: external input, FLP Lemmas 2.1 and 2.4, the statement of lem:one-circuit; proved by an injectivity argument on traversed edges and incoming/outgoing degree counts
     file: Rotor/Bridge/OneCircuit.lean
     export: Rotor.Bridge.oneCircuit_holds
     state: SEALED
@@ -261,7 +261,7 @@ nodes:
   - id: ext-holroyd-propp
     version: 4
     kind: theorem
-    source: external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence; cited result, now proved here from Rotor.Bridge.visitsAllOfVisitsOne_holds by propagating infinitely-many-visits along a walk between any two vertices
+    source: external input, Holroyd-Propp Lemma 6, used in the proof of prop:live-recurrence; proved by propagating infinitely-many-visits along a walk between any two vertices
     file: Rotor/Bridge/HolroydPropp.lean
     export: Rotor.Bridge.visitsAllOfVisitsOne_holds
     state: SEALED
@@ -360,7 +360,7 @@ nodes:
   - id: ext-angel-holroyd
     version: 2
     kind: theorem
-    source: external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence; cited result, now proved here from Rotor.Bridge.recurrentOfRecurrent_holds by propagating recurrence along adjacency and then along a connecting walk, via Rotor.Bridge.abelian_holds
+    source: external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence; proved by propagating recurrence along adjacency and then along a connecting walk, via Rotor.Bridge.abelian_holds
     file: Rotor/Bridge/AngelHolroyd.lean
     export: Rotor.Bridge.recurrentOfRecurrent_holds
     state: SEALED
