@@ -1,0 +1,14 @@
+{
+  "challenge_module": "RotorAudit.PerturbationsSquare.Challenge",
+  "solution_module": "RotorAudit.PerturbationsSquare.Solution",
+  "theorem_names": [
+    "RotorAudit.perturbations_square"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

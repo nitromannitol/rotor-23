@@ -12,7 +12,7 @@ lake build           # afterwards
 
 The production build is required to emit no Lean or linter warnings
 (`python3 tools/check_warnings.py`).  The five Mathlib-only files
-`Audit/*/Challenge.lean` are the sole exception: each contains one documented
+`RotorAudit/*/Challenge.lean` are the sole exception: each contains one documented
 statement-level `sorry`, checked against its completed solution by
 `leanprover/comparator`.
 
@@ -36,7 +36,7 @@ A few practical notes for working with this development:
 
 - **The main results** are in `Rotor/MainTheorems.lean`; the axiom audit is
   `lake build Rotor.Meta.AxiomsAudit`, and the comparator surface is
-  `lake build Audit`.
+  `lake build RotorAudit`.
 
 ## Elaboration policy for new files
 

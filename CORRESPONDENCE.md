@@ -22,17 +22,17 @@ proved, and which results are assumed rather than proved.
 - The main results are additionally exposed, stated in full, in
   [`Rotor/MainTheorems.lean`](Rotor/MainTheorems.lean), and all five are
   restated over a Mathlib-only vocabulary for the comparator (see
-  [`Audit/`](Audit/)).
+  [`RotorAudit/`](RotorAudit/)).
 
 ## Main results
 
 | Source | Main theorem | Certified statement | Comparator |
 |---|---|---|---|
-| Theorem 1.1, `thm:main`, square lattice | `Rotor.main_square` | `Rotor.Frozen.main_square` | `Audit/MainSquare/` |
-| Theorem 1.1, `thm:main`, degree three | `Rotor.main_degree_three` | `Rotor.Frozen.main_degree_three` | `Audit/MainDegreeThree/` |
-| Proposition 1.2, `prop:small-perturbations`, square lattice | `Rotor.perturbations_square` | `Rotor.Frozen.perturbations_square` | `Audit/PerturbationsSquare/` |
-| Proposition 1.2, `prop:small-perturbations`, degree three | `Rotor.perturbations_degree_three` | `Rotor.Frozen.perturbations_degree_three` | `Audit/PerturbationsDegreeThree/` |
-| Proposition 1.3, `prop:pendant-counterexample` | `Rotor.pendant_counterexample` | `Rotor.Frozen.pendant_counterexample` | `Audit/PendantCounterexample/` |
+| Theorem 1.1, `thm:main`, square lattice | `Rotor.main_square` | `Rotor.Frozen.main_square` | `RotorAudit/MainSquare/` |
+| Theorem 1.1, `thm:main`, degree three | `Rotor.main_degree_three` | `Rotor.Frozen.main_degree_three` | `RotorAudit/MainDegreeThree/` |
+| Proposition 1.2, `prop:small-perturbations`, square lattice | `Rotor.perturbations_square` | `Rotor.Frozen.perturbations_square` | `RotorAudit/PerturbationsSquare/` |
+| Proposition 1.2, `prop:small-perturbations`, degree three | `Rotor.perturbations_degree_three` | `Rotor.Frozen.perturbations_degree_three` | `RotorAudit/PerturbationsDegreeThree/` |
+| Proposition 1.3, `prop:pendant-counterexample` | `Rotor.pendant_counterexample` | `Rotor.Frozen.pendant_counterexample` | `RotorAudit/PendantCounterexample/` |
 
 Each main theorem of `Rotor/MainTheorems.lean` has exactly the statement of its
 certified counterpart.  The four theorems about Theorem 1.1 and Proposition 1.2

@@ -161,7 +161,7 @@ exponents are matched against the paper's (`tools/check_exponents.py`).
 ## Guarantees
 
 - **No `sorry`** in the library.  The five Mathlib-only comparator challenges
-  under `Audit/` each contain one intentional statement-level `sorry`, which
+  under `RotorAudit/` each contain one intentional statement-level `sorry`, which
   the corresponding solution file proves.
 - **No custom axiom.**  The five main theorems depend only on mathlib's three
   standard axioms `propext`, `Classical.choice` and `Quot.sound`.
@@ -178,25 +178,26 @@ exponents are matched against the paper's (`tools/check_exponents.py`).
   recurrence, particle routings, the product law of the initial rotors, total
   variation, doubly periodic graphs, the square lattice with its clockwise
   mechanism, the graph `G_M`, and the cited results), in
-  [`Audit/MainSquare/Challenge.lean`](Audit/MainSquare/Challenge.lean),
-  [`Audit/MainDegreeThree/Challenge.lean`](Audit/MainDegreeThree/Challenge.lean),
-  [`Audit/PerturbationsSquare/Challenge.lean`](Audit/PerturbationsSquare/Challenge.lean),
-  [`Audit/PerturbationsDegreeThree/Challenge.lean`](Audit/PerturbationsDegreeThree/Challenge.lean)
+  [`RotorAudit/MainSquare/Challenge.lean`](RotorAudit/MainSquare/Challenge.lean),
+  [`RotorAudit/MainDegreeThree/Challenge.lean`](RotorAudit/MainDegreeThree/Challenge.lean),
+  [`RotorAudit/PerturbationsSquare/Challenge.lean`](RotorAudit/PerturbationsSquare/Challenge.lean),
+  [`RotorAudit/PerturbationsDegreeThree/Challenge.lean`](RotorAudit/PerturbationsDegreeThree/Challenge.lean)
   and
-  [`Audit/PendantCounterexample/Challenge.lean`](Audit/PendantCounterexample/Challenge.lean).
+  [`RotorAudit/PendantCounterexample/Challenge.lean`](RotorAudit/PendantCounterexample/Challenge.lean).
   Each challenge states its theorem and ends with one `sorry`, which the
-  corresponding `Solution.lean` fills from the library through the bridges in
-  `Audit/Support/`.  The configurations in `Audit/*/comparator.json` are for
+  corresponding `Solution.lean` fills from the library through its own
+  `SolutionBasic.lean` (a verbatim copy of the challenge's vocabulary) and its
+  own bridge in `RotorAudit/Support/`.  The configurations in
+  `RotorAudit/*/comparator.json` are for
   [`leanprover/comparator`](https://github.com/leanprover/comparator), which
   confirms that the two statements have identical elaborated types and that
   the proof reduces to the three standard axioms.  The comparator passed on
   all five pairs, with the Lean kernel and with the independent nanoda kernel
-  ([`Audit/COMPARATOR_RUNS.md`](Audit/COMPARATOR_RUNS.md)); the
+  ([`RotorAudit/COMPARATOR_RUNS.md`](RotorAudit/COMPARATOR_RUNS.md)); the
   [comparator workflow](.github/workflows/comparator.yml) runs it on request.
-  [`Audit/StatementRegression.lean`](Audit/StatementRegression.lean) checks
-  locally that each solution statement is exactly the challenge statement and
-  mentions no repository constant.  See
-  [`Audit/README.md`](Audit/README.md).
+  The comparator itself checks each solution statement against its challenge
+  and the dependency closure against Mathlib.  See
+  [`RotorAudit/README.md`](RotorAudit/README.md).
 - **Pinned toolchain.**  Lean `v4.32.0`, mathlib at revision
   `81a5d257c8e410db227a6665ed08f64fea08e997`, `PercolationContinuity` at
   commit `795efb86`, and `Lattice-Probability` at commit `9d44b4d4`, recorded
@@ -226,7 +227,7 @@ statements refer to it.
 About 37,000 lines of Lean in 163 modules, of which about 27,500 lines are code
 once comments and blank lines are removed, on top of mathlib, the percolation
 library `PercolationContinuity` and the shared library `Lattice-Probability`.
-The comparator surface under `Audit/` is not counted.
+The comparator surface under `RotorAudit/` is not counted.
 
 ## Building
 
@@ -254,8 +255,7 @@ build jobs, nearly all of them Mathlib's, which the cache supplies.
 
 ```bash
 lake build Rotor.Meta.AxiomsAudit   # print the axioms of the five main theorems
-lake build Audit                    # the comparator challenges and solutions
-lake build Audit.StatementRegression
+lake build RotorAudit               # the comparator challenges and solutions
 ```
 
 To use the library, `import Rotor` pulls in the whole development; the main
@@ -306,7 +306,12 @@ Rotor/
                       the graph G_M, Bernoulli bond percolation, the dual lattice,
                       the events and the exploration of Section 5
 Rotor.lean            the root module (imports the whole library)
-Audit/                the Mathlib-only comparator challenges and solutions
+RotorAudit/           the Mathlib-only comparator challenges and solutions
+  README.md           what each comparator pair checks
+  DESIGN.md           how the pairs are built: vocabulary, bridges
+  COMPARATOR_RUNS.md  the comparator pins and results
+  <Pair>/             Challenge.lean, SolutionBasic.lean, Solution.lean, comparator.json
+  Support/            one bridge per pair, identifying the vocabulary with the library
 ASSUMPTIONS.md        the assumed result, with its Lean statement (generated)
 CORRESPONDENCE.md     paper ↔ Lean, node by node
 CERTIFICATE.md        generated record of the toolchain, the build, each node's
@@ -338,7 +343,7 @@ library `PercolationContinuity` of
 supplies Kesten's `p_c(ℤ²) = 1/2` and the sharpness of the phase transition,
 and the shared library
 [`Lattice-Probability`](https://github.com/nitromannitol/Lattice-Probability);
-the comparator audit in [`Audit/`](Audit) is set up for
+the comparator audit in [`RotorAudit/`](RotorAudit) is set up for
 [`leanprover/comparator`](https://github.com/leanprover/comparator).
 
 ## License

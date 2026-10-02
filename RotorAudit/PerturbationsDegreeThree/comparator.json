@@ -1,0 +1,14 @@
+{
+  "challenge_module": "RotorAudit.PerturbationsDegreeThree.Challenge",
+  "solution_module": "RotorAudit.PerturbationsDegreeThree.Solution",
+  "theorem_names": [
+    "RotorAudit.perturbations_degree_three"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

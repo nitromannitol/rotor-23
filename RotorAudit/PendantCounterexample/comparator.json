@@ -1,0 +1,14 @@
+{
+  "challenge_module": "RotorAudit.PendantCounterexample.Challenge",
+  "solution_module": "RotorAudit.PendantCounterexample.Solution",
+  "theorem_names": [
+    "RotorAudit.pendant_counterexample"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

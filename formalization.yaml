@@ -16,7 +16,7 @@ project:
     formalized; the Liggett-Schonmann-Stacey domination theorem, which the
     paper cites without proof, is an explicit hypothesis of the theorems that
     use it, and the five main theorems are independently checked by the
-    comparator pairs under Audit/.
+    comparator pairs under RotorAudit/.
   authors:
     - "Ahmed Bou-Rabee"
   license: "Apache-2.0"
@@ -84,7 +84,7 @@ status:
     formalized: the open questions of Section 7, the figures, the simulations
     and the survey of related work.  The main theorems are stated in full in
     Rotor/MainTheorems.lean; all five are additionally restated over a
-    Mathlib-only vocabulary for the Lean comparator (Audit/).
+    Mathlib-only vocabulary for the Lean comparator (RotorAudit/).
   sorry_count: 0
   sorry_count_scope: "Rotor production library only"
   comparator_challenge_sorry_count: 5
@@ -98,7 +98,7 @@ status:
       file: "Rotor/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Audit/MainSquare/comparator.json"
+      comparator_config: "RotorAudit/MainSquare/comparator.json"
       literature_dependencies:
         - statement: "Liggett-Schonmann-Stacey domination (Rotor.External.LSS), an explicit hypothesis"
           source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
@@ -106,7 +106,7 @@ status:
       file: "Rotor/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Audit/MainDegreeThree/comparator.json"
+      comparator_config: "RotorAudit/MainDegreeThree/comparator.json"
       literature_dependencies:
         - statement: "Liggett-Schonmann-Stacey domination (Rotor.External.LSS), an explicit hypothesis"
           source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
@@ -114,7 +114,7 @@ status:
       file: "Rotor/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Audit/PerturbationsSquare/comparator.json"
+      comparator_config: "RotorAudit/PerturbationsSquare/comparator.json"
       literature_dependencies:
         - statement: "Liggett-Schonmann-Stacey domination (Rotor.External.LSS), an explicit hypothesis"
           source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
@@ -122,7 +122,7 @@ status:
       file: "Rotor/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Audit/PerturbationsDegreeThree/comparator.json"
+      comparator_config: "RotorAudit/PerturbationsDegreeThree/comparator.json"
       literature_dependencies:
         - statement: "Liggett-Schonmann-Stacey domination (Rotor.External.LSS), an explicit hypothesis"
           source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
@@ -130,45 +130,45 @@ status:
       file: "Rotor/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Audit/PendantCounterexample/comparator.json"
+      comparator_config: "RotorAudit/PendantCounterexample/comparator.json"
       literature_dependencies: []
     - declaration: "RotorAudit.main_square"
-      file: "Audit/MainSquare/Solution.lean"
+      file: "RotorAudit/MainSquare/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Audit/MainSquare/comparator.json"
+      comparator_config: "RotorAudit/MainSquare/comparator.json"
       literature_dependencies:
         - statement: "Liggett-Schonmann-Stacey domination (RotorAudit.External.LSS, the Mathlib-only restatement of Rotor.External.LSS), an explicit hypothesis"
           source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
     - declaration: "RotorAudit.main_degree_three"
-      file: "Audit/MainDegreeThree/Solution.lean"
+      file: "RotorAudit/MainDegreeThree/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Audit/MainDegreeThree/comparator.json"
+      comparator_config: "RotorAudit/MainDegreeThree/comparator.json"
       literature_dependencies:
         - statement: "Liggett-Schonmann-Stacey domination (RotorAudit.External.LSS, the Mathlib-only restatement of Rotor.External.LSS), an explicit hypothesis"
           source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
     - declaration: "RotorAudit.perturbations_square"
-      file: "Audit/PerturbationsSquare/Solution.lean"
+      file: "RotorAudit/PerturbationsSquare/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Audit/PerturbationsSquare/comparator.json"
+      comparator_config: "RotorAudit/PerturbationsSquare/comparator.json"
       literature_dependencies:
         - statement: "Liggett-Schonmann-Stacey domination (RotorAudit.External.LSS, the Mathlib-only restatement of Rotor.External.LSS), an explicit hypothesis"
           source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
     - declaration: "RotorAudit.perturbations_degree_three"
-      file: "Audit/PerturbationsDegreeThree/Solution.lean"
+      file: "RotorAudit/PerturbationsDegreeThree/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Audit/PerturbationsDegreeThree/comparator.json"
+      comparator_config: "RotorAudit/PerturbationsDegreeThree/comparator.json"
       literature_dependencies:
         - statement: "Liggett-Schonmann-Stacey domination (RotorAudit.External.LSS, the Mathlib-only restatement of Rotor.External.LSS), an explicit hypothesis"
           source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
     - declaration: "RotorAudit.pendant_counterexample"
-      file: "Audit/PendantCounterexample/Solution.lean"
+      file: "RotorAudit/PendantCounterexample/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Audit/PendantCounterexample/comparator.json"
+      comparator_config: "RotorAudit/PendantCounterexample/comparator.json"
       literature_dependencies: []
 
 automation:
@@ -200,9 +200,9 @@ automation:
         of every node, a warning-free build, coverage of every statement of the
         paper, a recorded clause-by-clause reading of each statement, quantifier
         order and exponents.  The Lean comparator (leanprover/comparator) was
-        run on all five Audit pairs and every pair passed with the Lean kernel
+        run on all five RotorAudit pairs and every pair passed with the Lean kernel
         and with the independent nanoda kernel; results and reproduction steps
-        are in Audit/COMPARATOR_RUNS.md, and the workflow
+        are in RotorAudit/COMPARATOR_RUNS.md, and the workflow
         .github/workflows/comparator.yml runs it on request.  Proofs were also
         reviewed by other models, whose proposed simplifications were applied,
         and scripted API fan-outs drafted compile-filtered proof candidates for
@@ -225,9 +225,9 @@ automation:
     and Mathlib; the verified library contains no sorry and no custom axiom.
     The one result the paper cites without proof that is not proved here
     enters as an explicit hypothesis, not an axiom.  The Mathlib-only
-    comparator challenge files (Audit/*/Challenge.lean) each contain exactly
+    comparator challenge files (RotorAudit/*/Challenge.lean) each contain exactly
     one intentional statement-level sorry (the theorem body), which is filled
-    by the corresponding Audit/*/Solution.lean.  The percolation dependency
+    by the corresponding RotorAudit/*/Solution.lean.  The percolation dependency
     PercolationContinuity is a separate formalization (by Justin Leder,
     produced with Claude agents), not written for this repository.
 
@@ -266,27 +266,27 @@ alignment:
       lean: "Rotor.main_square"
       module: "Rotor.MainTheorems"
       status: "proved"
-      note: "Certified statement Rotor.Frozen.main_square; hypothesis Rotor.External.LSS. Comparator challenge Audit/MainSquare/."
+      note: "Certified statement Rotor.Frozen.main_square; hypothesis Rotor.External.LSS. Comparator challenge RotorAudit/MainSquare/."
     - source: "Theorem 1.1 (thm:main), doubly periodic graphs of maximum degree three"
       lean: "Rotor.main_degree_three"
       module: "Rotor.MainTheorems"
       status: "proved"
-      note: "Certified statement Rotor.Frozen.main_degree_three; hypothesis Rotor.External.LSS. Comparator challenge Audit/MainDegreeThree/."
+      note: "Certified statement Rotor.Frozen.main_degree_three; hypothesis Rotor.External.LSS. Comparator challenge RotorAudit/MainDegreeThree/."
     - source: "Proposition 1.2 (prop:small-perturbations), the square lattice"
       lean: "Rotor.perturbations_square"
       module: "Rotor.MainTheorems"
       status: "proved"
-      note: "Certified statement Rotor.Frozen.perturbations_square; hypothesis Rotor.External.LSS. Comparator challenge Audit/PerturbationsSquare/."
+      note: "Certified statement Rotor.Frozen.perturbations_square; hypothesis Rotor.External.LSS. Comparator challenge RotorAudit/PerturbationsSquare/."
     - source: "Proposition 1.2 (prop:small-perturbations), doubly periodic graphs of maximum degree three"
       lean: "Rotor.perturbations_degree_three"
       module: "Rotor.MainTheorems"
       status: "proved"
-      note: "Certified statement Rotor.Frozen.perturbations_degree_three; hypothesis Rotor.External.LSS. Comparator challenge Audit/PerturbationsDegreeThree/."
+      note: "Certified statement Rotor.Frozen.perturbations_degree_three; hypothesis Rotor.External.LSS. Comparator challenge RotorAudit/PerturbationsDegreeThree/."
     - source: "Proposition 1.3 (prop:pendant-counterexample)"
       lean: "Rotor.pendant_counterexample"
       module: "Rotor.MainTheorems"
       status: "proved"
-      note: "Certified statement Rotor.Frozen.pendant_counterexample; no hypothesis. Comparator challenge Audit/PendantCounterexample/."
+      note: "Certified statement Rotor.Frozen.pendant_counterexample; no hypothesis. Comparator challenge RotorAudit/PendantCounterexample/."
     - source: "Sections 2 to 6: every lemma and proposition"
       lean: "Rotor.Frozen.*"
       module: "Rotor.Frozen"

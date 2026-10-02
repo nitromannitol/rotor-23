@@ -10,11 +10,11 @@ require mathlib from git
 require «lattice-probability» from git
   "https://github.com/nitromannitol/Lattice-Probability.git" @ "9d44b4d4670df393bb86ac5a4e042f215001cddf"
 
-/-- The comparator audit surface (`Audit/*/Challenge.lean`, `Audit/*/Solution.lean` and
-`Audit/Support/`).  Not a default target: it builds only on demand (`lake build Audit`), so the
-ordinary build of `Rotor` is unchanged. -/
-lean_lib «Audit» where
-  globs := #[.submodules `Audit]
+/-- The comparator audit surface (`RotorAudit/*/Challenge.lean`, `RotorAudit/*/SolutionBasic.lean`,
+`RotorAudit/*/Solution.lean` and `RotorAudit/Support/`).  Not a default target: it builds only on
+demand (`lake build RotorAudit`), so the ordinary build of `Rotor` is unchanged. -/
+lean_lib «RotorAudit» where
+  globs := #[.submodules `RotorAudit]
   leanOptions := #[
     ⟨`autoImplicit, false⟩,
     ⟨`relaxedAutoImplicit, false⟩,

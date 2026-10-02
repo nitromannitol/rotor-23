@@ -1,0 +1,14 @@
+{
+  "challenge_module": "RotorAudit.MainSquare.Challenge",
+  "solution_module": "RotorAudit.MainSquare.Solution",
+  "theorem_names": [
+    "RotorAudit.main_square"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
