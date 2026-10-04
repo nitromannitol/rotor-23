@@ -37,7 +37,7 @@ See [`Rotor.Frozen.perturbations_square`](Rotor/Frozen/Main/PerturbSquare.lean);
 | Paper (`paper/rotor.tex`) SHA-256 | `007634d2d82fddfd902af49c3e85168461a545224b145998100433250895a930` |
 | Build | succeeded, 8864 jobs |
 | Build warnings | 0 |
-| Generated | 2026-09-27 |
+| Generated | 2026-10-04 |
 
 ## Reproducing it
 
@@ -102,7 +102,7 @@ nowhere below.
 | 33 | `prop-pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `prop:pendant-counterexample` | classical only |
 
 33 of 33 nodes depend on nothing beyond the three classical
-axioms.  In `ledger/manifest.yaml`, 32 nodes are `SEALED` (proved) and
+axioms.  In `ledger/manifest.yaml`, 0 nodes are `SEALED` (proved) and
 1 is `FROZEN` (cited hypotheses, no proof obligation here).
 
 ## Frozen statements
