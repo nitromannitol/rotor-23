@@ -194,7 +194,7 @@ exponents are matched against the paper's (`tools/check_exponents.py`).
   the proof reduces to the three standard axioms.  The comparator passed on
   all five pairs, with the Lean kernel and with the independent nanoda kernel
   ([`RotorAudit/COMPARATOR_RUNS.md`](RotorAudit/COMPARATOR_RUNS.md)); the
-  [comparator workflow](.github/workflows/comparator.yml) runs it on request.
+  [comparator workflow](.github/workflows/comparator.yml) runs it on relevant changes to `main` or by manual dispatch.
   The comparator itself checks each solution statement against its challenge
   and the dependency closure against Mathlib.  See
   [`RotorAudit/README.md`](RotorAudit/README.md).
