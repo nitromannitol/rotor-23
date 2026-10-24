@@ -1,4 +1,4 @@
-# rotor-23
+# Eulerian walkers on ℤ² have range exponent 2/3
 
 A machine-checked **Lean 4** formalization of the paper
 
@@ -16,8 +16,8 @@ libraries: the percolation library `PercolationContinuity` of
 shared library
 [`Lattice-Probability`](https://github.com/nitromannitol/Lattice-Probability).
 
-[![CI](https://github.com/nitromannitol/rotor-23/actions/workflows/build.yml/badge.svg)](https://github.com/nitromannitol/rotor-23/actions/workflows/build.yml)
-[![Comparator audit](https://github.com/nitromannitol/rotor-23/actions/workflows/comparator.yml/badge.svg)](https://github.com/nitromannitol/rotor-23/actions/workflows/comparator.yml)
+[![CI](https://github.com/nitromannitol/rotor-23/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/nitromannitol/rotor-23/actions/workflows/build.yml)
+[![Comparator audit](https://github.com/nitromannitol/rotor-23/actions/workflows/comparator.yml/badge.svg?branch=main)](https://github.com/nitromannitol/rotor-23/actions/workflows/comparator.yml)
 
 ## What is proved
 
