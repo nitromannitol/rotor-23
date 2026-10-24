@@ -35,7 +35,7 @@ sources:
       the paper is formalized; see status.scope for the one cited result that
       is carried as a hypothesis and fidelity.divergences for the places where
       a Lean statement is not literally the paper's.
-    license: ""                 # TODO(author): the license under which the paper is posted
+    license: "arXiv non-exclusive distribution license 1.0"
     author_endorsement: "n/a"   # the formalizer is an author of the source
 
 related_formalizations:
