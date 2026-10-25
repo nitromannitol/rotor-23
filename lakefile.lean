@@ -8,7 +8,7 @@ require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git" @ "065356127b1dc0016f66b7283ce0ce2c4055aa55"
 
 require «lattice-probability» from git
-  "https://github.com/nitromannitol/Lattice-Probability.git" @ "7adbd4d73734bf98e294ce78c7db72d2b91e414b"
+  "https://github.com/nitromannitol/Lattice-Probability.git" @ "7ec22b59bbf5fd18fbf1515d24d9912cc850a381"
 
 /-- The comparator audit surface (`RotorAudit/*/Challenge.lean`, `RotorAudit/*/SolutionBasic.lean`,
 `RotorAudit/*/Solution.lean` and `RotorAudit/Support/`).  Not a default target: it builds only on
