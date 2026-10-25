@@ -578,7 +578,7 @@ theorem mLaw_iInter_markedBlockEvent_le (hL : 0 < L) {ε : ℝ}
   have hinc : External.IsIncreasing {ω : ℤ × ℤ → Bool | ∀ z ∈ Z, ω z = true} :=
     fun ω ω' hω hle z hz => hle z (hω z hz)
   have h := hLSS ((mLaw ν s hs).map (blockField π P L))
-    (Measure.isProbabilityMeasure_map (measurable_blockField π P L).aemeasurable)
+    ((Measure.isProbabilityMeasure_map_iff (measurable_blockField π P L).aemeasurable).2 inferInstance)
     (kDependent_blockField π P L ν s hs hL) (fun z => by rw [map_blockField_site]; exact hsite z)
     _ hA hinc
   rw [bernoulliField_all, Measure.map_apply (measurable_blockField π P L) hA] at h

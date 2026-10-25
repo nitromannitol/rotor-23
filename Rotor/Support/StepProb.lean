@@ -91,7 +91,6 @@ theorem sum_pStep {a b : V} (ha : G.Adj b a) :
     intro c
     unfold pStep
     rw [dif_pos ⟨ha, c.2⟩]
-  simp only [h1]
   rw [← Finset.sum_div]
   have h2 := two_mul_sum_card_filter_lt (π.next b) (π.cyclic b) (⟨a, ha⟩ : G.neighborSet b)
   rw [G.card_neighborSet_eq_degree] at h2
