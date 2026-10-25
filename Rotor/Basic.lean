@@ -1,3 +1,5 @@
+module
+
 /-
 Rotor walk on the square lattice: the model.
 
@@ -31,7 +33,9 @@ How the paper's objects are modelled here:
   about `A n` therefore carries `T n < ⊤`, or almost-sure recurrence,
   as a hypothesis.
 -/
-import Mathlib
+public import Mathlib
+
+@[expose] public section
 
 /-!
 # The rotor walk on the square lattice

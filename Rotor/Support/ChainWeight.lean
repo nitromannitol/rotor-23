@@ -1,5 +1,9 @@
-import Rotor.Support.StepProb
-import Rotor.Support.BlockField
+module
+
+public import Rotor.Support.StepProb
+public import Rotor.Support.BlockField
+
+@[expose] public section
 
 /-!
 # Path weights and the live-path probability identity

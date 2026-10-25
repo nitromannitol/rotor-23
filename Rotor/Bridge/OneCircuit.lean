@@ -1,5 +1,9 @@
-import Rotor.External.OneCircuit
-import Rotor.Support.WalkBasics
+module
+
+public import Rotor.External.OneCircuit
+public import Rotor.Support.WalkBasics
+
+@[expose] public section
 
 /-!
 # FLP Lemmas 2.1 and 2.4: one circuit traverses every edge at most once

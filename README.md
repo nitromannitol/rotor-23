@@ -198,8 +198,8 @@ exponents are matched against the paper's (`tools/check_exponents.py`).
   The comparator itself checks each solution statement against its challenge
   and the dependency closure against Mathlib.  See
   [`RotorAudit/README.md`](RotorAudit/README.md).
-- **Pinned toolchain.**  Lean `v4.32.0`, mathlib at revision
-  `81a5d257c8e410db227a6665ed08f64fea08e997`, `PercolationContinuity` at
+- **Pinned toolchain.**  Lean `v4.35.0-rc2`, mathlib at revision
+  `065356127b1dc0016f66b7283ce0ce2c4055aa55`, `PercolationContinuity` at
   commit `795efb86`, and `Lattice-Probability` at commit `9d44b4d4`, recorded
   in [`lean-toolchain`](lean-toolchain) and
   [`lake-manifest.json`](lake-manifest.json).
@@ -233,7 +233,7 @@ The comparator surface under `RotorAudit/` is not counted.
 
 The project uses [`elan`](https://github.com/leanprover/elan) (the Lean
 toolchain manager) and Lake.  The toolchain is pinned in
-[`lean-toolchain`](lean-toolchain) (`leanprover/lean4:v4.32.0`), so `elan`
+[`lean-toolchain`](lean-toolchain) (`leanprover/lean4:v4.35.0-rc2`), so `elan`
 installs the right Lean version automatically.
 
 ```bash
@@ -365,3 +365,12 @@ Comparator configuration to check. It records the dispatched commit and runs wit
 minimum, source-module, Challenge-closure, licensing and metadata requirements before
 dispatch. A passing preflight is advisory; it is separate from submission, editorial
 review and a public registry record.
+
+The selected Palomar preflight checks `RotorAudit/MainDegreeThree/comparator.json`.
+The existing LSS input remains its explicit hypothesis. Comparator Solution and
+bridge import the original frozen degree-three theorem directly and apply exactly
+the theorem used by the public wrapper. This selected closure does not import
+PercolationContinuity; that original dependency stays pinned for other results.
+Module interfaces and existing proof API calls use the supported toolchain. No
+mathematical definitions or frozen statements are changed. Other comparator
+configurations have separate verification scopes.

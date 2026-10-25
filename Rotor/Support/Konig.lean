@@ -1,10 +1,14 @@
+module
+
 /-
 König's lemma for a prefix-closed, finitely branching family of finite
 sequences: if there are arbitrarily long members, there is an infinite
 sequence all of whose finite prefixes are members.  Used in the proof of
 `prop:live-recurrence` (`rotor.tex:955-963`).
 -/
-import Mathlib
+public import Mathlib
+
+@[expose] public section
 
 /-!
 # König's lemma for prefix-closed families of lists

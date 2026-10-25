@@ -1,3 +1,5 @@
+module
+
 /-
 The marked configurations of the proof of `lem:block-live-paths` (`rotor.tex:1252-1262`):
 "Under `P̂`, let the initial rotors be independent with laws `ν̃_x`, and mark each vertex
@@ -5,11 +7,13 @@ independently with probability `s`."  Part one: events determined by finitely ma
 coordinates, independence under a pushforward, the pair space of rotors and marks, and the
 independence of functions of disjoint coordinate sets on it.
 -/
-import Rotor.Support.BlockGeom
-import Rotor.Support.ProductTools
-import Rotor.Support.TVTools
-import Rotor.Events
-import Rotor.External.LSS
+public import Rotor.Support.BlockGeom
+public import Rotor.Support.ProductTools
+public import Rotor.Support.TVTools
+public import Rotor.Events
+public import Rotor.External.LSS
+
+@[expose] public section
 
 open MeasureTheory ProbabilityTheory
 open scoped ENNReal
@@ -442,7 +446,7 @@ open Classical in
 /-- The block field `blockField π P L`, viewed as a function into `ℤ × ℤ → Bool`, is
 measurable. -/
 theorem measurable_blockField : Measurable (blockField π P L) := by
-  refine measurable_pi_lambda _ (fun z => ?_)
+  refine measurable_pi_iff.mpr (fun z => ?_)
   refine measurable_to_countable' (fun b => ?_)
   cases b
   · have : (fun c : MPair G => blockField π P L c z) ⁻¹' {false} =
@@ -484,8 +488,8 @@ theorem kDependent_blockField (hL : 0 < L) :
   classical
   intro I J hIJ
   refine indepFun_map_of _ (measurable_blockField π P L)
-    (measurable_pi_lambda _ (fun i => measurable_pi_apply _))
-    (measurable_pi_lambda _ (fun j => measurable_pi_apply _)) ?_
+    (measurable_pi_iff.mpr (fun i => measurable_pi_apply _))
+    (measurable_pi_iff.mpr (fun j => measurable_pi_apply _)) ?_
   rw [blockField_restrict_eq π P L I, blockField_restrict_eq π P L J]
   have hdisj : Disjoint (I.biUnion (blockPlusFin P L)) (J.biUnion (blockPlusFin P L)) := by
     rw [Finset.disjoint_biUnion_left]

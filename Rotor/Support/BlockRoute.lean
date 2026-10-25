@@ -1,4 +1,8 @@
-import Rotor.Support.FiniteProduct
+module
+
+public import Rotor.Support.FiniteProduct
+
+@[expose] public section
 
 /-!
 # Boundary routes through a fixed block

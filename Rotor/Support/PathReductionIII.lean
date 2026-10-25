@@ -1,3 +1,5 @@
+module
+
 /-
 Proposition 3.1 (iii) (`prop:path-reduction`, `rotor.tex:1023-1035`; proof at
 `rotor.tex:1178-1195`).  Part one: the passage function is bounded below by a multiple of the
@@ -7,9 +9,11 @@ large `n`.  Hence `eq:criterion-passage` gives `P{τ(o,o+nz)/n ≤ b} → 0`.  S
 `τ(o,o+nz)/n → μ(z)` in probability, `μ(z) ≥ b`.  Letting `b ↑ aC⁻¹|z|` gives
 `μ(z) ≥ aC⁻¹|z|`, and homogeneity and continuity extend this to `ℝ²`."
 -/
-import Rotor.Support.PathReductionI
-import Rotor.Support.CircuitShape
-import Rotor.Support.CircuitClock
+public import Rotor.Support.PathReductionI
+public import Rotor.Support.CircuitShape
+public import Rotor.Support.CircuitClock
+
+@[expose] public section
 
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise ENNReal

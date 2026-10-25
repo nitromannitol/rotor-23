@@ -1,3 +1,5 @@
+module
+
 /-
 `prop:live-recurrence` (`rotor.tex:938-970`): no infinite live path implies
 that every boundary routing terminates, every circuit ends, and the walk is
@@ -19,10 +21,12 @@ recurrent.
    infinitely often.  A rotor walk that visits one vertex infinitely often
    visits every vertex infinitely often [Holroyd--Propp, Lemma 6]."
 -/
-import Rotor.Support.Konig
-import Rotor.Support.DecreasingPositionsII
-import Rotor.Events
-import Rotor.External.HolroydPropp
+public import Rotor.Support.Konig
+public import Rotor.Support.DecreasingPositionsII
+public import Rotor.Events
+public import Rotor.External.HolroydPropp
+
+@[expose] public section
 
 open Finset
 

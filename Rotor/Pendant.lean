@@ -1,3 +1,5 @@
+module
+
 /-
 The graph `G_M`: the square lattice with `M` leaves attached to every lattice
 vertex, `rotor.tex:291-299` and Section 6:
@@ -13,7 +15,9 @@ vertex, `rotor.tex:291-299` and Section 6:
   west and north edges of `v`, which makes the drawing injective.  At a
   leaf the mechanism is the identity on its single neighbor.
 -/
-import Rotor.Dual
+public import Rotor.Dual
+
+@[expose] public section
 
 /-!
 # The pendant graph `G_M`

@@ -1,7 +1,11 @@
-import Mathlib
-import Rotor.MainTheorems
-import RotorAudit.PendantCounterexample.SolutionBasic
-import RotorAudit.Support.PendantCounterexampleBridge
+module
+
+public import Mathlib
+public import Rotor.MainTheorems
+public import RotorAudit.PendantCounterexample.SolutionBasic
+public import RotorAudit.Support.PendantCounterexampleBridge
+
+@[expose] public section
 
 /-!
 # Solution: PendantCounterexample

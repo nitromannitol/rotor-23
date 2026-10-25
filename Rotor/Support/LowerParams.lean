@@ -1,4 +1,8 @@
-import Rotor.Support.FiniteProduct
+module
+
+public import Rotor.Support.FiniteProduct
+
+@[expose] public section
 
 /-!
 # Lowering coordinate parameters in a finite product measure

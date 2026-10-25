@@ -1,3 +1,5 @@
+module
+
 /-
 No legal boundary routing traverses a directed edge twice: the first
 assertion of `lem:boundary-routing` (`rotor.tex:747-763`).
@@ -13,7 +15,9 @@ actuations of `u` repeat an out-edge (the cyclic order has `deg u` elements);
 and each actuation of `u` needs a particle, which arrived along a distinct
 in-edge of `u` or sat there initially, one per in-edge from `S`.
 -/
-import Rotor.Support.ParticleCount
+public import Rotor.Support.ParticleCount
+
+@[expose] public section
 
 /-!
 # No repeated directed edges in a legal boundary routing

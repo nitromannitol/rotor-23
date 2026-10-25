@@ -1,5 +1,9 @@
-import Rotor.Support.ExplProb
-import Rotor.Support.DualGuards
+module
+
+public import Rotor.Support.ExplProb
+public import Rotor.Support.DualGuards
+
+@[expose] public section
 
 /-!
 # No open directed dual path contains the pattern

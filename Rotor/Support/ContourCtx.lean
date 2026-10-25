@@ -1,4 +1,8 @@
-import Rotor.Support.ContourPath
+module
+
+public import Rotor.Support.ContourPath
+
+@[expose] public section
 
 /-!
 # Lemma 5.5: the shared contour context

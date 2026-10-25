@@ -1,9 +1,13 @@
+module
+
 /-
 The distance lemmas of `LatticeGeom` without the periodicity of the mechanism: the lattice
 translations are graph automorphisms by definition, which is all that graph distances need.
 Used by `lem:block-live-paths`, whose statement has an arbitrary mechanism.
 -/
-import Rotor.Support.BlockGeom
+public import Rotor.Support.BlockGeom
+
+@[expose] public section
 
 /-!
 # Distance lemmas for a doubly periodic graph, without periodicity of the mechanism

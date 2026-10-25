@@ -1,4 +1,8 @@
-import Rotor.Support.DualGeom
+module
+
+public import Rotor.Support.DualGeom
+
+@[expose] public section
 
 /-!
 # Invariants of the depth-first exploration

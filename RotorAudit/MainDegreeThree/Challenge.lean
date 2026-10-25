@@ -1,4 +1,8 @@
-import Mathlib
+module
+
+public import Mathlib
+
+@[expose] public section
 
 /-!
 # Theorem 1.1 (`thm:main`), doubly periodic graphs of maximum degree three: comparator challenge

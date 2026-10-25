@@ -1,3 +1,5 @@
+module
+
 /-
 `prop:path-reduction` (i) and (ii) (`rotor.tex:1040-1063`):
 
@@ -12,8 +14,10 @@
    failures of the live condition.  The bounded degree of `G`, the criterion,
    and a union bound give (ii)."
 -/
-import Rotor.Support.LiveRecurrence
-import Rotor.Events
+public import Rotor.Support.LiveRecurrence
+public import Rotor.Events
+
+@[expose] public section
 
 /-!
 # Path reduction, parts (i) and (ii)

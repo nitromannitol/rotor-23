@@ -1,3 +1,5 @@
+module
+
 /-
 External input: Kingman's subadditive ergodic theorem, *The ergodic theory of
 subadditive stochastic processes* (1968), Theorems 3 and 5, as used in the
@@ -17,7 +19,9 @@ No longer assumed outright: `Rotor.Bridge.kingman_holds` in
 no manifest node any longer (see ledger node `ext-kingman`, which now points
 at that proof).
 -/
-import Mathlib
+public import Mathlib
+
+@[expose] public section
 
 /-!
 # Kingman's subadditive ergodic theorem

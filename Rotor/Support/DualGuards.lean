@@ -1,3 +1,5 @@
+module
+
 /-
 Computable guards for the dual configuration and the exploration's square
 sides, checked against `rotor.tex:1545-1549` and `rotor.tex:1897-1900`.
@@ -10,7 +12,9 @@ directed east".  When the current edge is the east side, its square's sides
 clockwise (`N, E, S, W` = `0, 1, 2, 3`), so counterclockwise from `E` the
 sides are `N, W, S` = `d - 1, d + 2, d + 1`.
 -/
-import Rotor.Exploration
+public import Rotor.Exploration
+
+@[expose] public section
 
 /-!
 # Dual-edge and square-side identities

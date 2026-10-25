@@ -1,5 +1,9 @@
-import Rotor.Support.CyclicRank
-import Rotor.Law
+module
+
+public import Rotor.Support.CyclicRank
+public import Rotor.Law
+
+@[expose] public section
 
 /-!
 # Transition probabilities of the killed nonbacktracking chain

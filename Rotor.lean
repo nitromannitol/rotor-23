@@ -1,163 +1,167 @@
-import Rotor.Basic
-import Rotor.Law
-import Rotor.Support.Guards
-import Rotor.Model
-import Rotor.Square
-import Rotor.Routing
-import Rotor.Traversal
-import Rotor.External.OneCircuit
-import Rotor.External.Abelian
-import Rotor.External.HolroydPropp
-import Rotor.Frozen.Circuits.OneCircuit
-import Rotor.Frozen.Circuits.LeastAction
-import Rotor.Frozen.Circuits.BoundaryRouting
-import Rotor.Frozen.Circuits.CircuitIterate
-import Rotor.Frozen.Circuits.Monotonicity
-import Rotor.Frozen.Circuits.Passage
-import Rotor.Frozen.Circuits.DecreasingPositions
-import Rotor.Frozen.Circuits.LiveRecurrence
-import Rotor.Periodic
-import Rotor.Events
-import Rotor.External.Kingman
-import Rotor.External.LSS
-import Rotor.External.AngelHolroyd
-import Rotor.Percolation
-import Rotor.External.SubcriticalDecay
-import Rotor.Frozen.Shape.PathReduction
-import Rotor.Frozen.Shape.PassageLimit
-import Rotor.Frozen.Shape.CircuitShape
-import Rotor.Frozen.Shape.CircuitClock
-import Rotor.Frozen.Shape.BlockLivePaths
-import Rotor.Frozen.Main.Square
-import Rotor.Frozen.Main.DegreeThree
-import Rotor.Frozen.Main.PerturbSquare
-import Rotor.Frozen.Main.PerturbDegreeThree
-import Rotor.Frozen.DegreeThree.SubcubicRecurrence
-import Rotor.Frozen.DegreeThree.Passage
-import Rotor.Frozen.Square.Passage
-import Rotor.Pendant
-import Rotor.Exploration
-import Rotor.Frozen.Square.DualPath
-import Rotor.Frozen.Square.ConstrainedBonds
-import Rotor.Frozen.Square.Exploration
-import Rotor.Frozen.Square.ActiveList
-import Rotor.Frozen.Square.ForcedTests
-import Rotor.Frozen.Main.Pendant
-import Rotor.Support.RoutingBasics
-import Rotor.Support.ParticleCount
-import Rotor.Support.DualGuards
-import Rotor.Support.NoRepeat
-import Rotor.Support.OneParticle
-import Rotor.Support.BoundaryRouting
-import Rotor.Support.WalkBasics
-import Rotor.Support.Monotone
-import Rotor.Support.CircuitIterate
-import Rotor.Support.Passage
-import Rotor.Support.EulerPath
-import Rotor.Support.DecreasingPositionsI
-import Rotor.Support.DecreasingPositionsII
-import Rotor.Support.Konig
-import Rotor.Support.LiveRecurrence
-import Rotor.Support.PathReductionI
-import Rotor.Support.Equivariance
-import Rotor.Support.Measurability
-import Rotor.Support.LatticeGeom
-import Rotor.Support.PassageArray
-import Rotor.Support.PlaneExtension
-import Rotor.Support.PassageUniform
-import Rotor.Support.CircuitShape
-import Rotor.Support.CircuitClock
-import Rotor.Support.PathReductionIII
-import Rotor.Support.BlockGeom
-import Rotor.Support.ProductTools
-import Rotor.Support.TVTools
-import Rotor.Support.BlockField
-import Rotor.Support.KingPaths
-import Rotor.Support.PathBlocks
-import Rotor.Support.BlockChain
-import Rotor.Support.Witness
-import Rotor.Support.BlockAssembly
-import Rotor.Support.BlockFinalA
-import Rotor.Support.BlockFinalB
-import Rotor.Support.LatticeGeom0
-import Rotor.Support.BlockFinalC
-import Rotor.Support.CyclicRank
-import Rotor.Support.StepProb
-import Rotor.Support.ChainWeight
-import Rotor.Support.SelfAvoiding
-import Rotor.Support.BallGrowth
-import Rotor.Support.StuckWalk
-import Rotor.Support.DegreeThreePassage
-import Rotor.Support.QueryAtoms
-import Rotor.Support.Exploration4
-import Rotor.Support.FreshTime
-import Rotor.Support.Extinction
-import Rotor.Support.SubcubicRecurrence
-import Rotor.Support.ProductErgodic
-import Rotor.Support.MainShape
-import Rotor.Support.BlockReach
-import Rotor.Support.MainDegreeThree
-import Rotor.Support.SquareBasics
-import Rotor.Support.SquareLattice
-import Rotor.Support.MainSquare
-import Rotor.Support.SquareDual
-import Rotor.Support.PendantBasics
-import Rotor.Support.PendantInduced
-import Rotor.Support.PendantCircuit
-import Rotor.Support.SquareExits
-import Rotor.Support.Boundary
-import Rotor.Support.KingWalks
-import Rotor.Support.WalkMeasurable
-import Rotor.Support.ShiftAut
-import Rotor.Support.Excursion
-import Rotor.Support.PendantProb
-import Rotor.Support.MainPendant
-import Rotor.Support.DualGeom
-import Rotor.Support.ExplInv
-import Rotor.Support.SideCount
-import Rotor.Support.ExplCover
-import Rotor.Support.ExplProb
-import Rotor.Support.ExplorationLemma
-import Rotor.Support.Winding
-import Rotor.Support.DoubledCurve
-import Rotor.Support.Ring
-import Rotor.Support.ExplTree
-import Rotor.Support.ExplChain
-import Rotor.Support.CurveSides
-import Rotor.Support.FrameSector
-import Rotor.Support.Separation
-import Rotor.Support.SectorFacts
-import Rotor.Support.ContourPath
-import Rotor.Support.ContourCtx
-import Rotor.Support.ContourCases
-import Rotor.Support.ActiveListLemma
-import Rotor.Support.HistoryProb
-import Rotor.Support.ForcedCascade
-import Rotor.Support.PatternFree
-import Rotor.Support.BondFinite
-import Rotor.Support.IntervalDomination
-import Rotor.Support.IntervalTree
-import Rotor.Support.IntervalReach
-import Rotor.Support.RootPotential
-import Rotor.Support.ReachBound
-import Rotor.Support.PassageAssembly
-import Rotor.Support.FiniteProduct
-import Rotor.Support.BlockRoute
-import Rotor.Support.Forcing
-import Rotor.Support.LowerParams
-import Rotor.Support.GridBlocks
-import Rotor.Support.MarkedModel
-import Rotor.Support.Surgery
-import Rotor.Support.GridModel
-import Rotor.Support.Assembly53
-import Rotor.Support.ConstrainedBondsProof
-import Rotor.Bridge.SubcriticalDecay
-import Rotor.Bridge.Kingman
-import Rotor.Bridge.Abelian
-import Rotor.Bridge.OneCircuit
-import Rotor.Bridge.HolroydPropp
-import Rotor.Bridge.AngelHolroyd
-import Rotor.MainTheorems
+module
+
+public import Rotor.Basic
+public import Rotor.Law
+public import Rotor.Support.Guards
+public import Rotor.Model
+public import Rotor.Square
+public import Rotor.Routing
+public import Rotor.Traversal
+public import Rotor.External.OneCircuit
+public import Rotor.External.Abelian
+public import Rotor.External.HolroydPropp
+public import Rotor.Frozen.Circuits.OneCircuit
+public import Rotor.Frozen.Circuits.LeastAction
+public import Rotor.Frozen.Circuits.BoundaryRouting
+public import Rotor.Frozen.Circuits.CircuitIterate
+public import Rotor.Frozen.Circuits.Monotonicity
+public import Rotor.Frozen.Circuits.Passage
+public import Rotor.Frozen.Circuits.DecreasingPositions
+public import Rotor.Frozen.Circuits.LiveRecurrence
+public import Rotor.Periodic
+public import Rotor.Events
+public import Rotor.External.Kingman
+public import Rotor.External.LSS
+public import Rotor.External.AngelHolroyd
+public import Rotor.Percolation
+public import Rotor.External.SubcriticalDecay
+public import Rotor.Frozen.Shape.PathReduction
+public import Rotor.Frozen.Shape.PassageLimit
+public import Rotor.Frozen.Shape.CircuitShape
+public import Rotor.Frozen.Shape.CircuitClock
+public import Rotor.Frozen.Shape.BlockLivePaths
+public import Rotor.Frozen.Main.Square
+public import Rotor.Frozen.Main.DegreeThree
+public import Rotor.Frozen.Main.PerturbSquare
+public import Rotor.Frozen.Main.PerturbDegreeThree
+public import Rotor.Frozen.DegreeThree.SubcubicRecurrence
+public import Rotor.Frozen.DegreeThree.Passage
+public import Rotor.Frozen.Square.Passage
+public import Rotor.Pendant
+public import Rotor.Exploration
+public import Rotor.Frozen.Square.DualPath
+public import Rotor.Frozen.Square.ConstrainedBonds
+public import Rotor.Frozen.Square.Exploration
+public import Rotor.Frozen.Square.ActiveList
+public import Rotor.Frozen.Square.ForcedTests
+public import Rotor.Frozen.Main.Pendant
+public import Rotor.Support.RoutingBasics
+public import Rotor.Support.ParticleCount
+public import Rotor.Support.DualGuards
+public import Rotor.Support.NoRepeat
+public import Rotor.Support.OneParticle
+public import Rotor.Support.BoundaryRouting
+public import Rotor.Support.WalkBasics
+public import Rotor.Support.Monotone
+public import Rotor.Support.CircuitIterate
+public import Rotor.Support.Passage
+public import Rotor.Support.EulerPath
+public import Rotor.Support.DecreasingPositionsI
+public import Rotor.Support.DecreasingPositionsII
+public import Rotor.Support.Konig
+public import Rotor.Support.LiveRecurrence
+public import Rotor.Support.PathReductionI
+public import Rotor.Support.Equivariance
+public import Rotor.Support.Measurability
+public import Rotor.Support.LatticeGeom
+public import Rotor.Support.PassageArray
+public import Rotor.Support.PlaneExtension
+public import Rotor.Support.PassageUniform
+public import Rotor.Support.CircuitShape
+public import Rotor.Support.CircuitClock
+public import Rotor.Support.PathReductionIII
+public import Rotor.Support.BlockGeom
+public import Rotor.Support.ProductTools
+public import Rotor.Support.TVTools
+public import Rotor.Support.BlockField
+public import Rotor.Support.KingPaths
+public import Rotor.Support.PathBlocks
+public import Rotor.Support.BlockChain
+public import Rotor.Support.Witness
+public import Rotor.Support.BlockAssembly
+public import Rotor.Support.BlockFinalA
+public import Rotor.Support.BlockFinalB
+public import Rotor.Support.LatticeGeom0
+public import Rotor.Support.BlockFinalC
+public import Rotor.Support.CyclicRank
+public import Rotor.Support.StepProb
+public import Rotor.Support.ChainWeight
+public import Rotor.Support.SelfAvoiding
+public import Rotor.Support.BallGrowth
+public import Rotor.Support.StuckWalk
+public import Rotor.Support.DegreeThreePassage
+public import Rotor.Support.QueryAtoms
+public import Rotor.Support.Exploration4
+public import Rotor.Support.FreshTime
+public import Rotor.Support.Extinction
+public import Rotor.Support.SubcubicRecurrence
+public import Rotor.Support.ProductErgodic
+public import Rotor.Support.MainShape
+public import Rotor.Support.BlockReach
+public import Rotor.Support.MainDegreeThree
+public import Rotor.Support.SquareBasics
+public import Rotor.Support.SquareLattice
+public import Rotor.Support.MainSquare
+public import Rotor.Support.SquareDual
+public import Rotor.Support.PendantBasics
+public import Rotor.Support.PendantInduced
+public import Rotor.Support.PendantCircuit
+public import Rotor.Support.SquareExits
+public import Rotor.Support.Boundary
+public import Rotor.Support.KingWalks
+public import Rotor.Support.WalkMeasurable
+public import Rotor.Support.ShiftAut
+public import Rotor.Support.Excursion
+public import Rotor.Support.PendantProb
+public import Rotor.Support.MainPendant
+public import Rotor.Support.DualGeom
+public import Rotor.Support.ExplInv
+public import Rotor.Support.SideCount
+public import Rotor.Support.ExplCover
+public import Rotor.Support.ExplProb
+public import Rotor.Support.ExplorationLemma
+public import Rotor.Support.Winding
+public import Rotor.Support.DoubledCurve
+public import Rotor.Support.Ring
+public import Rotor.Support.ExplTree
+public import Rotor.Support.ExplChain
+public import Rotor.Support.CurveSides
+public import Rotor.Support.FrameSector
+public import Rotor.Support.Separation
+public import Rotor.Support.SectorFacts
+public import Rotor.Support.ContourPath
+public import Rotor.Support.ContourCtx
+public import Rotor.Support.ContourCases
+public import Rotor.Support.ActiveListLemma
+public import Rotor.Support.HistoryProb
+public import Rotor.Support.ForcedCascade
+public import Rotor.Support.PatternFree
+public import Rotor.Support.BondFinite
+public import Rotor.Support.IntervalDomination
+public import Rotor.Support.IntervalTree
+public import Rotor.Support.IntervalReach
+public import Rotor.Support.RootPotential
+public import Rotor.Support.ReachBound
+public import Rotor.Support.PassageAssembly
+public import Rotor.Support.FiniteProduct
+public import Rotor.Support.BlockRoute
+public import Rotor.Support.Forcing
+public import Rotor.Support.LowerParams
+public import Rotor.Support.GridBlocks
+public import Rotor.Support.MarkedModel
+public import Rotor.Support.Surgery
+public import Rotor.Support.GridModel
+public import Rotor.Support.Assembly53
+public import Rotor.Support.ConstrainedBondsProof
+public import Rotor.Bridge.SubcriticalDecay
+public import Rotor.Bridge.Kingman
+public import Rotor.Bridge.Abelian
+public import Rotor.Bridge.OneCircuit
+public import Rotor.Bridge.HolroydPropp
+public import Rotor.Bridge.AngelHolroyd
+public import Rotor.MainTheorems
+
+@[expose] public section
 
 /-!
 # Directed rotor walk on `ℤ²`: the range exponent `2/3`

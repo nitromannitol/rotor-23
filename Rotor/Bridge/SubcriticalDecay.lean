@@ -1,7 +1,11 @@
-import Rotor.External.SubcriticalDecay
-import Percolation.Literature.KestenTheoremProofs
-import Percolation.Literature.SharpnessDCTProofs
-import Percolation.Literature.BondPercolationSymmetry
+module
+
+public import Rotor.External.SubcriticalDecay
+public import Percolation.Literature.KestenTheoremProofs
+public import Percolation.Literature.SharpnessDCTProofs
+public import Percolation.Literature.BondPercolationSymmetry
+
+@[expose] public section
 
 /-!
 # Kesten's exponential decay from the percolation library

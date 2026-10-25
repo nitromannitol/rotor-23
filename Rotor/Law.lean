@@ -1,3 +1,5 @@
+module
+
 /-
 The law of the initial rotors.
 
@@ -12,8 +14,10 @@ for the resulting product law."  `rotor.tex:1455-1459`: on the square lattice
   product law is Mathlib's countable product `Measure.infinitePi` of the
   one-vertex laws.  Almost-sure statements are `∀ᵐ ρ ∂μ`.  CONFIRMED.
 -/
-import Rotor.Model
-import Rotor.Basic
+public import Rotor.Model
+public import Rotor.Basic
+
+@[expose] public section
 
 /-!
 # The law of the initial rotors

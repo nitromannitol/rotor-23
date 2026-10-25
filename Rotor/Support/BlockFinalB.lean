@@ -1,9 +1,13 @@
+module
+
 /-
 Analytic constants for the block estimate: the criterion follows from an eventual bound
 uniform in the directed edge; the choice of `η` with `s^{-η} (7/8)^{c₁} < 1`
 (`rotor.tex:1274`: "Choosing `η log(1/s) < γ`"); and the geometric decay of the bound.
 -/
-import Rotor.Events
+public import Rotor.Events
+
+@[expose] public section
 
 /-!
 # Analytic constants for the block estimate

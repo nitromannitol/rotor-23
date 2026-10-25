@@ -1,3 +1,5 @@
+module
+
 /-
 The dual configuration on the square lattice, `rotor.tex:1517-1556`
 (Section 5.1, `ssec:faces`):
@@ -17,7 +19,9 @@ The dual configuration on the square lattice, `rotor.tex:1517-1556`
   primalTail f g + dirVec (primalDir f g)`, and it is open when the rank
   of that primal edge is `2` or `3`.
 -/
-import Rotor.Percolation
+public import Rotor.Percolation
+
+@[expose] public section
 
 /-!
 # The dual configuration on the square lattice

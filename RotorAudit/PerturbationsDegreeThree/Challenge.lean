@@ -1,4 +1,8 @@
-import Mathlib
+module
+
+public import Mathlib
+
+@[expose] public section
 
 /-!
 # Proposition 1.2 (`prop:small-perturbations`), doubly periodic graphs of maximum degree three: comparator challenge

@@ -1,3 +1,5 @@
+module
+
 /-
 Lemma 2.1 of rotor.tex, frozen.  `rotor.tex:710-716` (label `lem:one-circuit`):
 
@@ -14,11 +16,13 @@ is the half-line, which the `ℕ∞` comparison expresses.
 The `External.*` hypotheses are the cited results the paper's proof uses, assumed
 here: they are not derived in this repository and the certificate lists them.
 -/
-import Rotor.Traversal
-import Rotor.External.OneCircuit
-import Rotor.External.Abelian
-import Rotor.External.HolroydPropp
-import Rotor.Bridge.OneCircuit
+public import Rotor.Traversal
+public import Rotor.External.OneCircuit
+public import Rotor.External.Abelian
+public import Rotor.External.HolroydPropp
+public import Rotor.Bridge.OneCircuit
+
+@[expose] public section
 
 /-!
 # The one-circuit theorem

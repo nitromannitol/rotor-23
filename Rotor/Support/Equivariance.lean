@@ -1,3 +1,5 @@
+module
+
 /-
 Equivariance of the model under graph automorphisms compatible with the
 mechanism.  The lattice translations of a doubly periodic graph with a doubly
@@ -5,9 +7,11 @@ periodic mechanism are such automorphisms (`rotor.tex:217-227`), and the
 stationarity of the passage-time array in the proof of `prop:passage-limit`
 (`rotor.tex:1096-1113`) is this equivariance.
 -/
-import Rotor.Periodic
-import Rotor.Support.WalkBasics
-import Rotor.Support.Passage
+public import Rotor.Periodic
+public import Rotor.Support.WalkBasics
+public import Rotor.Support.Passage
+
+@[expose] public section
 
 /-!
 # Equivariance under mechanism-compatible automorphisms

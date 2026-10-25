@@ -1,6 +1,10 @@
-import Mathlib
-import Rotor.MainTheorems
-import RotorAudit.PerturbationsDegreeThree.SolutionBasic
+module
+
+public import Mathlib
+public import Rotor.MainTheorems
+public import RotorAudit.PerturbationsDegreeThree.SolutionBasic
+
+@[expose] public section
 
 /-!
 # Bridge for `PerturbationsDegreeThree`: Mathlib-only vocabulary to the repository

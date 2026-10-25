@@ -1,4 +1,8 @@
-import Rotor.Support.ExplInv
+module
+
+public import Rotor.Support.ExplInv
+
+@[expose] public section
 
 /-!
 # Coverage of open dual paths by the exploration

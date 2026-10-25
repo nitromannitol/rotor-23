@@ -1,4 +1,8 @@
-import Rotor.Support.FreshTime
+module
+
+public import Rotor.Support.FreshTime
+
+@[expose] public section
 
 /-!
 # Almost-sure extinction of the exploration

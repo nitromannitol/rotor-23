@@ -1,5 +1,9 @@
-import Rotor.Support.PathBlocks
-import Rotor.Support.BlockGeom
+module
+
+public import Rotor.Support.PathBlocks
+public import Rotor.Support.BlockGeom
+
+@[expose] public section
 
 /-!
 # From the block event to the reach event

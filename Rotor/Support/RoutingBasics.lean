@@ -1,9 +1,13 @@
+module
+
 /-
 Basic facts about routings (Section 2.1), used by the proofs of
 `lem:boundary-routing`, `prop:circuit-iterate`, `prop:monotonicity` and
 `prop:passage`.
 -/
-import Rotor.Traversal
+public import Rotor.Traversal
+
+@[expose] public section
 
 /-!
 # Basic facts about legal routings

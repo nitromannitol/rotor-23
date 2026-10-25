@@ -1,9 +1,13 @@
+module
+
 /-
 Basic facts about the walk of `Rotor/Model.lean`: one step, rotors change only
 at visited vertices, the range grows, and the circuit times `T n` attain their
 defining conditions.
 -/
-import Rotor.Support.BoundaryRouting
+public import Rotor.Support.BoundaryRouting
+
+@[expose] public section
 
 /-!
 # Basic facts about the rotor walk

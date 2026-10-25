@@ -1,3 +1,5 @@
+module
+
 /-
 Lemma 3.5 of rotor.tex, frozen.  `rotor.tex:1246-1257` (label `lem:block-live-paths`):
 
@@ -16,13 +18,15 @@ proof uses LSS domination (`External.LSS`).
 The `External.*` hypotheses are the cited results the paper's proof uses, assumed
 here: they are not derived in this repository and the certificate lists them.
 -/
-import Rotor.Events
-import Rotor.External.OneCircuit
-import Rotor.External.Abelian
-import Rotor.External.HolroydPropp
-import Rotor.External.Kingman
-import Rotor.External.LSS
-import Rotor.Support.BlockFinalC
+public import Rotor.Events
+public import Rotor.External.OneCircuit
+public import Rotor.External.Abelian
+public import Rotor.External.HolroydPropp
+public import Rotor.External.Kingman
+public import Rotor.External.LSS
+public import Rotor.Support.BlockFinalC
+
+@[expose] public section
 
 /-!
 # Lemma 3.5: the block criterion forces a live-path criterion

@@ -1,4 +1,8 @@
-import Rotor.Support.Winding
+module
+
+public import Rotor.Support.Winding
+
+@[expose] public section
 
 /-!
 # The doubled closed walk

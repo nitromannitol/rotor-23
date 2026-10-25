@@ -1,5 +1,9 @@
-import Rotor.Support.HistoryProb
-import Rotor.Support.ActiveListLemma
+module
+
+public import Rotor.Support.HistoryProb
+public import Rotor.Support.ActiveListLemma
+
+@[expose] public section
 
 /-!
 # The cascade of forced tests

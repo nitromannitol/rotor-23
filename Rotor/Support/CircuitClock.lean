@@ -1,3 +1,5 @@
+module
+
 /-
 Proposition 3.4 (`prop:circuit-clock`, `rotor.tex:1148-1176`): converting circuit number
 into time.  Part one, the squeeze `eq:universal-clock-squeeze` and the cubic growth of
@@ -6,8 +8,10 @@ exactly `deg(x)` times from each `x ∈ A_n` and every departure leaves a vertex
 `A_{n+1}`, which is the squeeze; with the second assumed asymptotic, summing gives
 `T(n) = βn³/3 + o(n³)`."
 -/
-import Rotor.Support.Passage
-import Rotor.Periodic
+public import Rotor.Support.Passage
+public import Rotor.Periodic
+
+@[expose] public section
 
 open Rotor Filter Topology
 open scoped Pointwise

@@ -1,7 +1,11 @@
-import Rotor.Support.Equivariance
-import Rotor.Support.ProductErgodic
-import Rotor.Support.WalkMeasurable
-import Rotor.External.AngelHolroyd
+module
+
+public import Rotor.Support.Equivariance
+public import Rotor.Support.ProductErgodic
+public import Rotor.Support.WalkMeasurable
+public import Rotor.External.AngelHolroyd
+
+@[expose] public section
 
 /-!
 # Shift invariance and the zero-one law for recurrence

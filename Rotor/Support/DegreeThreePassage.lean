@@ -1,5 +1,9 @@
-import Rotor.Support.StuckWalk
-import Rotor.Support.BallGrowth
+module
+
+public import Rotor.Support.StuckWalk
+public import Rotor.Support.BallGrowth
+
+@[expose] public section
 
 /-!
 # Exponential decay of live paths on a degree-three graph

@@ -1,10 +1,14 @@
+module
+
 /-
 The coarse path of block indices visited by a path in the graph: consecutive vertices lie in
 the same block or in king-adjacent blocks; removing repetitions and erasing loops gives a
 duplicate-free king path of block indices, in the order of visits, from the block of the first
 vertex to the block of the last, of length at least the sup-distance between them.
 -/
-import Rotor.Support.KingPaths
+public import Rotor.Support.KingPaths
+
+@[expose] public section
 
 /-!
 # Coarse king paths of block indices

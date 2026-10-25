@@ -1,3 +1,5 @@
+module
+
 /-
 Monotonicity of the circuit map, `prop:monotonicity` (`rotor.tex:801-809`):
 "Lemma boundary-routing and Lemma least-action imply monotonicity of the
@@ -9,7 +11,9 @@ from `U` into each vertex, and no edge is traversed twice).  The abelian
 property then makes every complete `U`-routing actuate every vertex outside
 `U` that the `S`-routing actuates.
 -/
-import Rotor.Support.BoundaryRouting
+public import Rotor.Support.BoundaryRouting
+
+@[expose] public section
 
 open Finset
 

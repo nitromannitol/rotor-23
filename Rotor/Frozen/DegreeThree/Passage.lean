@@ -1,3 +1,5 @@
+module
+
 /-
 Proposition 4.2 of rotor.tex, frozen.  `rotor.tex:1404-1419` (label `prop:degree-three-passage`):
 
@@ -11,15 +13,17 @@ Proposition 4.2 of rotor.tex, frozen.  `rotor.tex:1404-1419` (label `prop:degree
 The constants depend on the graph (through the growth of its balls), so they
 are existential.
 -/
-import Rotor.Events
-import Rotor.Percolation
-import Rotor.External.OneCircuit
-import Rotor.External.Abelian
-import Rotor.External.HolroydPropp
-import Rotor.External.Kingman
-import Rotor.External.LSS
-import Rotor.External.SubcriticalDecay
-import Rotor.Support.DegreeThreePassage
+public import Rotor.Events
+public import Rotor.Percolation
+public import Rotor.External.OneCircuit
+public import Rotor.External.Abelian
+public import Rotor.External.HolroydPropp
+public import Rotor.External.Kingman
+public import Rotor.External.LSS
+public import Rotor.External.SubcriticalDecay
+public import Rotor.Support.DegreeThreePassage
+
+@[expose] public section
 
 /-!
 # Degree-three passage probability

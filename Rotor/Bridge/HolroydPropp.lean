@@ -1,5 +1,9 @@
-import Rotor.External.HolroydPropp
-import Rotor.Support.WalkBasics
+module
+
+public import Rotor.External.HolroydPropp
+public import Rotor.Support.WalkBasics
+
+@[expose] public section
 
 /-!
 # Holroyd–Propp Lemma 6: one vertex visited infinitely often visits every vertex

@@ -1,3 +1,5 @@
+module
+
 /-
 The directional limits of the passage time, from Kingman's theorem
 (`rotor.tex:1096-1113`, first half of the proof of `prop:passage-limit`):
@@ -11,8 +13,10 @@ The directional limits of the passage time, from Kingman's theorem
 The limit is made deterministic by the invariance of the law under the whole
 lattice (`rotor.tex:1036-1040`).
 -/
-import Rotor.Support.Measurability
-import Rotor.External.Kingman
+public import Rotor.Support.Measurability
+public import Rotor.External.Kingman
+
+@[expose] public section
 
 open Finset MeasureTheory Filter Topology
 
@@ -58,7 +62,7 @@ omit [DecidableEq V] in
 /-- `P.shiftConfig z` is measurable: each output coordinate factors through the (finite-valued)
 coordinate of `ρ` at the shifted vertex. -/
 theorem measurable_shiftConfig (z : ℤ × ℤ) : Measurable (P.shiftConfig z) := by
-  refine measurable_pi_lambda _ (fun v => ?_)
+  refine measurable_pi_iff.mpr (fun v => ?_)
   -- the coordinate at `v` is a function of the coordinate at `shift (-z) v`
   have : (fun ρ : Config G => P.shiftConfig z ρ v) =
       (fun a : G.neighborSet (P.shift (-z) v) =>

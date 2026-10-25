@@ -1,3 +1,5 @@
+module
+
 /-
 Proposition 3.4 of rotor.tex, frozen.  `rotor.tex:1167-1195` (label `prop:circuit-clock`):
 
@@ -19,14 +21,16 @@ the paper says.  The proof uses `lem:one-circuit`, hence the external input
 The `External.*` hypotheses are the cited results the paper's proof uses, assumed
 here: they are not derived in this repository and the certificate lists them.
 -/
-import Rotor.Events
-import Rotor.External.OneCircuit
-import Rotor.External.Abelian
-import Rotor.External.HolroydPropp
-import Rotor.External.Kingman
-import Rotor.External.LSS
-import Rotor.Bridge.OneCircuit
-import Rotor.Support.CircuitClock
+public import Rotor.Events
+public import Rotor.External.OneCircuit
+public import Rotor.External.Abelian
+public import Rotor.External.HolroydPropp
+public import Rotor.External.Kingman
+public import Rotor.External.LSS
+public import Rotor.Bridge.OneCircuit
+public import Rotor.Support.CircuitClock
+
+@[expose] public section
 
 /-!
 # The circuit-time growth rate and the shape of the range

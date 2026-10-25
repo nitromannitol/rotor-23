@@ -1,6 +1,10 @@
-import Rotor.Support.SquareBasics
-import Mathlib.GroupTheory.IndexNSmul
-import Mathlib.LinearAlgebra.FreeModule.PID
+module
+
+public import Rotor.Support.SquareBasics
+public import Mathlib.GroupTheory.IndexNSmul
+public import Mathlib.LinearAlgebra.FreeModule.PID
+
+@[expose] public section
 
 /-!
 # Finite-index sublattices of the square lattice

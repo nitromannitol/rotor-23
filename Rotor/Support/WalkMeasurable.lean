@@ -1,5 +1,9 @@
-import Rotor.Support.WalkBasics
-import Rotor.Law
+module
+
+public import Rotor.Support.WalkBasics
+public import Rotor.Law
+
+@[expose] public section
 
 /-!
 # Measurability of the rotor walk in the initial configuration

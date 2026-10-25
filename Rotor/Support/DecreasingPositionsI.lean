@@ -1,3 +1,5 @@
+module
+
 /-
 `lem:decreasing-positions` (i) (`rotor.tex:883-928`): a particle of a
 one-particle-at-a-time boundary routing that visits `y` forces a live path
@@ -16,8 +18,10 @@ from `S` to `y`.
    edges out of `x_i` form an initial segment of the cyclic order, so
    `x_i → x_{i+1}` precedes `x_i → x_{i-1}` in that order."
 -/
-import Rotor.Support.EulerPath
-import Rotor.Support.Passage
+public import Rotor.Support.EulerPath
+public import Rotor.Support.Passage
+
+@[expose] public section
 
 /-!
 # Decreasing positions, part (i)

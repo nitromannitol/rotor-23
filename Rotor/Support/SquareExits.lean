@@ -1,6 +1,10 @@
-import Rotor.Support.SquareBasics
-import Rotor.Support.WalkBasics
-import Rotor.Support.Exploration4
+module
+
+public import Rotor.Support.SquareBasics
+public import Rotor.Support.WalkBasics
+public import Rotor.Support.Exploration4
+
+@[expose] public section
 
 /-!
 # Exits of the clockwise rotor walk on the square lattice

@@ -1,4 +1,8 @@
-import Rotor.Support.MarkedModel
+module
+
+public import Rotor.Support.MarkedModel
+
+@[expose] public section
 
 /-!
 # Local surgery making a block's mark pivotal

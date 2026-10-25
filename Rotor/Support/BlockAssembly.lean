@@ -1,11 +1,15 @@
+module
+
 /-
 Assembly of the block estimate: on the cover event, the witness path forces the marked
 block events along a duplicate-free king path of block indices of `m₀` steps
 (`rotor.tex:1263-1273`).
 -/
-import Rotor.Support.Witness
-import Rotor.Support.PathBlocks
-import Rotor.Support.BlockChain
+public import Rotor.Support.Witness
+public import Rotor.Support.PathBlocks
+public import Rotor.Support.BlockChain
+
+@[expose] public section
 
 /-!
 # Assembly of the block estimate

@@ -1,10 +1,14 @@
+module
+
 /-
 The sub-path of a live path that crosses one enlarged block: a path that visits `Q_z` and
 later leaves `Q_z⁺` witnesses the marked block event `E_z` (`rotor.tex:1265-1268`: "forces
 `E_z` along `cR` blocks").
 -/
-import Rotor.Support.BlockField
-import Rotor.Support.KingPaths
+public import Rotor.Support.BlockField
+public import Rotor.Support.KingPaths
+
+@[expose] public section
 
 /-!
 # The sub-path of a live path that crosses one enlarged block

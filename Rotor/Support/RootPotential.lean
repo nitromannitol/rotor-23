@@ -1,4 +1,8 @@
-import Rotor.Support.IntervalReach
+module
+
+public import Rotor.Support.IntervalReach
+
+@[expose] public section
 
 /-!
 # Proposition 5.1, part 6: roots and reach

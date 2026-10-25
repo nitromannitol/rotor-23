@@ -1,5 +1,9 @@
-import Rotor.Support.Extinction
-import Rotor.Support.PathReductionI
+module
+
+public import Rotor.Support.Extinction
+public import Rotor.Support.PathReductionI
+
+@[expose] public section
 
 /-!
 # Proposition 4.1: no infinite live path on a subcubic graph

@@ -1,8 +1,12 @@
-import Rotor.External.AngelHolroyd
-import Rotor.Bridge.Abelian
-import Rotor.Support.CyclicRank
-import Rotor.Support.DecreasingPositionsI
-import Rotor.Support.WalkBasics
+module
+
+public import Rotor.External.AngelHolroyd
+public import Rotor.Bridge.Abelian
+public import Rotor.Support.CyclicRank
+public import Rotor.Support.DecreasingPositionsI
+public import Rotor.Support.WalkBasics
+
+@[expose] public section
 
 /-!
 # Angel–Holroyd Theorem 1: recurrence does not depend on the starting vertex

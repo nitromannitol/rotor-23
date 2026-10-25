@@ -1,4 +1,8 @@
-import Rotor.Support.IntervalTree
+module
+
+public import Rotor.Support.IntervalTree
+
+@[expose] public section
 
 /-!
 # The interval reach bound and gaps between forced tests

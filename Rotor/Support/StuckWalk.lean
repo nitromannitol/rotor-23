@@ -1,4 +1,8 @@
-import Rotor.Support.SelfAvoiding
+module
+
+public import Rotor.Support.SelfAvoiding
+
+@[expose] public section
 
 /-!
 # Existence of a stuck extension within bounded steps

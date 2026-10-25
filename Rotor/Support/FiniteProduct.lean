@@ -1,4 +1,8 @@
-import Rotor.Support.BondFinite
+module
+
+public import Rotor.Support.BondFinite
+
+@[expose] public section
 
 /-!
 # Finite product models with a parameter per coordinate

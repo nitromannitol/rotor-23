@@ -1,3 +1,5 @@
+module
+
 /-
 External input: Kesten, *The critical probability of bond percolation on the
 square lattice equals 1/2* (1980), together with the standard subcritical
@@ -13,7 +15,9 @@ percolation library `PercolationContinuity`; this `Prop` itself carries no
 manifest node any longer (see ledger node `ext-subcritical-decay`, which now
 points at that proof).
 -/
-import Rotor.Percolation
+public import Rotor.Percolation
+
+@[expose] public section
 
 /-!
 # Kesten's exponential decay below the critical bond probability

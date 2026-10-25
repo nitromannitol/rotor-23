@@ -1,3 +1,5 @@
+module
+
 /-
 Rotor walk on a general graph: the model.
 
@@ -39,7 +41,9 @@ How the paper's objects are modelled here:
   unreachable vertices; every statement that uses it assumes `G` is
   connected, so the junk value never arises.
 -/
-import Mathlib
+public import Mathlib
+
+@[expose] public section
 
 /-!
 # The rotor-walk model on a general graph

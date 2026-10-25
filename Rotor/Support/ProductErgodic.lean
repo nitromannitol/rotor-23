@@ -1,6 +1,10 @@
-import Rotor.Support.PassageArray
-import Rotor.Support.ChainWeight
-import Rotor.Support.BlockGeom
+module
+
+public import Rotor.Support.PassageArray
+public import Rotor.Support.ChainWeight
+public import Rotor.Support.BlockGeom
+
+@[expose] public section
 
 /-!
 # Invariance and ergodicity of product laws under the lattice
@@ -64,7 +68,7 @@ theorem productLaw_invariant (ν : ∀ v : V, Measure (G.neighborSet v))
     rw [Function.comp_apply, MeasurableEquiv.coe_piCongrLeft]
     exact P.shiftConfig_eq_piCongrLeft z ρ
   have hf : Measurable (fun ρ : Config G => fun w => P.shiftNbr z (ρ w)) :=
-    measurable_pi_lambda _ (fun w => (P.measurable_shiftNbr z w).comp (measurable_pi_apply w))
+    measurable_pi_iff.mpr (fun w => (P.measurable_shiftNbr z w).comp (measurable_pi_apply w))
   unfold productLaw
   rw [hfun, ← Measure.map_map
     (g := ⇑(MeasurableEquiv.piCongrLeft (fun v => G.neighborSet v) (P.shiftVEquiv z)))

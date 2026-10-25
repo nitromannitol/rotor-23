@@ -1,3 +1,5 @@
+module
+
 /-
 External input: the abelian property, Holroyd--Levine--Mészáros--Peres--Propp--
 Wilson, *Chip-firing and rotor-routing on directed graphs*, Lemma 3.9, as the
@@ -18,7 +20,9 @@ legal routings (the standard diamond-lemma argument for the abelian
 property); this `Prop` itself carries no manifest node any longer (see
 ledger node `ext-abelian`, which now points at that proof).
 -/
-import Rotor.Routing
+public import Rotor.Routing
+
+@[expose] public section
 
 /-!
 # The abelian property for legal routings

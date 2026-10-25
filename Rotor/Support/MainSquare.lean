@@ -1,6 +1,10 @@
-import Rotor.Support.MainDegreeThree
-import Rotor.Support.SquareLattice
-import Rotor.Frozen.Square.Passage
+module
+
+public import Rotor.Support.MainDegreeThree
+public import Rotor.Support.SquareLattice
+public import Rotor.Frozen.Square.Passage
+
+@[expose] public section
 
 /-!
 # Theorem 1.1 and Proposition 1.2 on the square lattice

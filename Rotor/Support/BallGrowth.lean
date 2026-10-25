@@ -1,5 +1,9 @@
-import Rotor.Support.BlockGeom
-import Rotor.Support.PathReductionIII
+module
+
+public import Rotor.Support.BlockGeom
+public import Rotor.Support.PathReductionIII
+
+@[expose] public section
 
 /-!
 # Polynomial ball growth in a doubly periodic graph

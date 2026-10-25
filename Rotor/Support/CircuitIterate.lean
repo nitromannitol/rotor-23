@@ -1,3 +1,5 @@
+module
+
 /-
 The bridge between the walk and the routings: `prop:circuit-iterate`
 (`rotor.tex:774-799`).
@@ -17,9 +19,11 @@ The invariant: after the walk's outside actuations up to time `t`, the
 routing state has the walk's rotors outside `A_n`, and its particles outside
 `A_n` are the boundary edges not yet crossed plus the walker itself.
 -/
-import Rotor.Support.Monotone
-import Rotor.Support.WalkBasics
-import Rotor.External.OneCircuit
+public import Rotor.Support.Monotone
+public import Rotor.Support.WalkBasics
+public import Rotor.External.OneCircuit
+
+@[expose] public section
 
 /-!
 # The circuit-iterate bridge

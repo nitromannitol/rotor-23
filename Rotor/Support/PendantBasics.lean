@@ -1,5 +1,9 @@
-import Rotor.Pendant
-import Rotor.Support.SquareBasics
+module
+
+public import Rotor.Pendant
+public import Rotor.Support.SquareBasics
+
+@[expose] public section
 
 /-!
 # Basic facts on the pendant graph `G_M`

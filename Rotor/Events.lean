@@ -1,3 +1,5 @@
+module
+
 /-
 The events of Sections 3, 4 and 5.
 
@@ -20,7 +22,9 @@ distance exactly `R`"; on a path from `u` this is the same as reaching
 distance at least `R`, since consecutive vertices are at distance at most one
 apart, and the first is the paper's wording in Section 4.
 -/
-import Rotor.Periodic
+public import Rotor.Periodic
+
+@[expose] public section
 
 /-!
 # The path and block events of Sections 3-5

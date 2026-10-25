@@ -1,3 +1,5 @@
+module
+
 /-
 External input: Holroyd--Propp, *Rotor walks and Markov chains*, Lemma 6, as
 the paper uses it in the proof of `prop:live-recurrence` (`rotor.tex:966-969`):
@@ -14,7 +16,9 @@ infinitely-many-visits along a walk between any two vertices of the
 longer (see ledger node `ext-holroyd-propp`, which now points at that
 proof).
 -/
-import Rotor.Model
+public import Rotor.Model
+
+@[expose] public section
 
 /-!
 # Holroyd--Propp Lemma 6 as a proposition

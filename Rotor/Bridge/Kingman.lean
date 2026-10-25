@@ -1,5 +1,9 @@
-import Rotor.External.Kingman
-import LatticeProb.Prob.Kingman
+module
+
+public import Rotor.External.Kingman
+public import LatticeProb.Prob.Kingman
+
+@[expose] public section
 
 /-!
 # Kingman's subadditive ergodic theorem from the library

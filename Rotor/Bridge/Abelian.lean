@@ -1,5 +1,9 @@
-import Rotor.External.Abelian
-import Rotor.Support.RoutingBasics
+module
+
+public import Rotor.External.Abelian
+public import Rotor.Support.RoutingBasics
+
+@[expose] public section
 
 /-!
 # The abelian property of rotor-routing

@@ -1,4 +1,8 @@
-import Mathlib
+module
+
+public import Mathlib
+
+@[expose] public section
 
 /-!
 # Proposition 1.2 (`prop:small-perturbations`), square lattice: comparator challenge

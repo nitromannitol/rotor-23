@@ -1,10 +1,14 @@
+module
+
 /-
 King paths on `ℤ²`: the coarse paths of block indices in the proof of
 `lem:block-live-paths` (`rotor.tex:1268-1273`): "A self-avoiding sequence of block indices
 has at most seven continuations at each step."  Loop erasure of a chain, and the count of
 non-backtracking king sequences.
 -/
-import Rotor.Support.BlockGeom
+public import Rotor.Support.BlockGeom
+
+@[expose] public section
 
 /-!
 # King paths and non-backtracking king sequences

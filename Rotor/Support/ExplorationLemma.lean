@@ -1,5 +1,9 @@
-import Rotor.Support.ExplCover
-import Rotor.Support.ExplProb
+module
+
+public import Rotor.Support.ExplCover
+public import Rotor.Support.ExplProb
+
+@[expose] public section
 
 /-!
 # Duplicate-free tests, full coverage, and the history split

@@ -1,3 +1,5 @@
+module
+
 /-
 The passage time, `prop:passage` (`rotor.tex:833-873`).
 
@@ -9,7 +11,9 @@ The passage time, `prop:passage` (`rotor.tex:833-873`).
    proving the triangle inequality.  Finally, Proposition circuit-iterate gives
    `A_n = Φ^n({o})`, and the definition of `τ` gives the passage-ball identity."
 -/
-import Rotor.Support.CircuitIterate
+public import Rotor.Support.CircuitIterate
+
+@[expose] public section
 
 /-!
 # The passage time

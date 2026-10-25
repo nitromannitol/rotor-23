@@ -1,3 +1,5 @@
+module
+
 /-
 Geometry of the blocks `Q_z` and `Q_z⁺` (`rotor.tex:1216-1222`, `eq:block-definitions`):
 every vertex lies in exactly one block; adjacent vertices lie in blocks whose indices are at
@@ -5,7 +7,9 @@ every vertex lies in exactly one block; adjacent vertices lie in blocks whose in
 uniform in `z`; the enlarged blocks of indices at distance at least three are disjoint.
 Support for `lem:block-live-paths`.
 -/
-import Rotor.Support.PathReductionIII
+public import Rotor.Support.PathReductionIII
+
+@[expose] public section
 
 /-!
 # Geometry of the blocks `Q_z` and `Q_z⁺`

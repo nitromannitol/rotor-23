@@ -1,9 +1,13 @@
-import Rotor.Support.ReachBound
-import Rotor.Support.LiveRecurrence
-import Rotor.Support.SquareBasics
-import Rotor.Frozen.Square.DualPath
-import Rotor.Frozen.Square.Exploration
-import Rotor.Frozen.Square.ConstrainedBonds
+module
+
+public import Rotor.Support.ReachBound
+public import Rotor.Support.LiveRecurrence
+public import Rotor.Support.SquareBasics
+public import Rotor.Frozen.Square.DualPath
+public import Rotor.Frozen.Square.Exploration
+public import Rotor.Frozen.Square.ConstrainedBonds
+
+@[expose] public section
 
 /-!
 # Proposition 5.1: live paths and the reach event

@@ -1,4 +1,8 @@
-import Rotor.Model
+module
+
+public import Rotor.Model
+
+@[expose] public section
 
 /-!
 # The rank function of a cyclic permutation

@@ -1,3 +1,5 @@
+module
+
 /-
 Doubly periodic graphs and mechanisms, and laws invariant under the lattice.
 
@@ -34,7 +36,9 @@ How the paper's objects are modelled here:
 - The total variation distance between two laws on a finite set is
   `sup_s |μ s - ν s|` over all subsets, as a real number.
 -/
-import Rotor.Law
+public import Rotor.Law
+
+@[expose] public section
 
 /-!
 # Doubly periodic graphs and mechanisms

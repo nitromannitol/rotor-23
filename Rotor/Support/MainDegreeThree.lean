@@ -1,9 +1,13 @@
-import Rotor.Support.BlockReach
-import Rotor.Support.MainShape
-import Rotor.Support.ProductErgodic
-import Rotor.Frozen.Shape.BlockLivePaths
-import Rotor.Frozen.Shape.PathReduction
-import Rotor.Frozen.DegreeThree.Passage
+module
+
+public import Rotor.Support.BlockReach
+public import Rotor.Support.MainShape
+public import Rotor.Support.ProductErgodic
+public import Rotor.Frozen.Shape.BlockLivePaths
+public import Rotor.Frozen.Shape.PathReduction
+public import Rotor.Frozen.DegreeThree.Passage
+
+@[expose] public section
 
 /-!
 # Theorem 1.1 and Proposition 1.2, degree-three case

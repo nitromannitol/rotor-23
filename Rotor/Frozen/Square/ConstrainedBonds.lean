@@ -1,3 +1,5 @@
+module
+
 /-
 Lemma 5.3 of rotor.tex, frozen.  `rotor.tex:1696-1711` (label `lem:square-constrained-bonds`):
 
@@ -13,10 +15,12 @@ at `1/2 - ε`), so they are existential.
 The `External.*` hypotheses are the cited results the paper's proof uses, assumed
 here: they are not derived in this repository and the certificate lists them.
 -/
-import Rotor.Dual
-import Rotor.External.SubcriticalDecay
-import Rotor.Bridge.SubcriticalDecay
-import Rotor.Support.ConstrainedBondsProof
+public import Rotor.Dual
+public import Rotor.External.SubcriticalDecay
+public import Rotor.Bridge.SubcriticalDecay
+public import Rotor.Support.ConstrainedBondsProof
+
+@[expose] public section
 
 /-!
 # The constrained-bonds bound (Lemma 5.3)

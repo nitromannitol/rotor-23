@@ -1,6 +1,10 @@
-import Rotor.Support.SquareExits
-import Rotor.Support.Boundary
-import Rotor.Support.KingWalks
+module
+
+public import Rotor.Support.SquareExits
+public import Rotor.Support.Boundary
+public import Rotor.Support.KingWalks
+
+@[expose] public section
 
 /-!
 # The excursion argument for the pendant counterexample

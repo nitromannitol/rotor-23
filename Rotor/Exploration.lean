@@ -1,3 +1,5 @@
+module
+
 /-
 The depth-first exploration of the dual configuration, `rotor.tex:1870-1900`
 (Section 5.3, `ssec:square-exploration`):
@@ -29,7 +31,9 @@ The depth-first exploration of the dual configuration, `rotor.tex:1870-1900`
   the complement of the visited set" is reachability in the subgraph of
   the dual lattice induced on the unvisited faces.
 -/
-import Rotor.Dual
+public import Rotor.Dual
+
+@[expose] public section
 
 /-!
 # The depth-first exploration of the dual configuration

@@ -1,3 +1,5 @@
+module
+
 /-
 Proposition 3.1 of rotor.tex, frozen.  `rotor.tex:1023-1056` (label `prop:path-reduction`):
 
@@ -27,17 +29,19 @@ hence the external inputs of Section 2 and Kingman's theorem.
 The `External.*` hypotheses are the cited results the paper's proof uses, assumed
 here: they are not derived in this repository and the certificate lists them.
 -/
-import Rotor.Events
-import Rotor.External.OneCircuit
-import Rotor.External.Abelian
-import Rotor.External.HolroydPropp
-import Rotor.External.Kingman
-import Rotor.External.LSS
-import Rotor.Bridge.Kingman
-import Rotor.Bridge.Abelian
-import Rotor.Bridge.OneCircuit
-import Rotor.Bridge.HolroydPropp
-import Rotor.Support.PathReductionIII
+public import Rotor.Events
+public import Rotor.External.OneCircuit
+public import Rotor.External.Abelian
+public import Rotor.External.HolroydPropp
+public import Rotor.External.Kingman
+public import Rotor.External.LSS
+public import Rotor.Bridge.Kingman
+public import Rotor.Bridge.Abelian
+public import Rotor.Bridge.OneCircuit
+public import Rotor.Bridge.HolroydPropp
+public import Rotor.Support.PathReductionIII
+
+@[expose] public section
 
 /-!
 # Path reduction to recurrence, linear passage time, and the scaling limit

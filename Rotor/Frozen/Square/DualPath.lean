@@ -1,3 +1,5 @@
+module
+
 /-
 Lemma 5.2 of rotor.tex, frozen.  `rotor.tex:1657-1663` (label `lem:square-dual-path`):
 
@@ -10,8 +12,10 @@ The path is `l = [x_0, …, x_m]` with `m + 1 = l.length ≥ 2`; its first and
 last edges are read off through `l[i]?`.  The dual path has distinct faces
 (`IsOpenDualPath`), as the word "path" requires (`rotor.tex:405-407`).
 -/
-import Rotor.Dual
-import Rotor.Support.SquareDual
+public import Rotor.Dual
+public import Rotor.Support.SquareDual
+
+@[expose] public section
 
 /-!
 # The dual path alongside a live path

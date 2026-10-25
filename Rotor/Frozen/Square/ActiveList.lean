@@ -1,3 +1,5 @@
+module
+
 /-
 Lemma 5.5 of rotor.tex, frozen.  `rotor.tex:1945-1949` (label `lem:square-active-list`):
 
@@ -8,8 +10,10 @@ Lemma 5.5 of rotor.tex, frozen.  `rotor.tex:1945-1949` (label `lem:square-active
 Two sentences, two conjuncts, for every stage `n` at which a current edge `E`
 exists; `sideW` and `sideS` are the sides `W` and `S` of the square of `E`.
 -/
-import Rotor.Exploration
-import Rotor.Support.ActiveListLemma
+public import Rotor.Exploration
+public import Rotor.Support.ActiveListLemma
+
+@[expose] public section
 
 /-!
 # Active list at a current edge's square

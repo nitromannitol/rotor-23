@@ -1,3 +1,5 @@
+module
+
 /-
 Proposition 5.1 of rotor.tex, frozen.  `rotor.tex:1480-1490` (label `prop:square-passage`):
 
@@ -13,16 +15,18 @@ The constants route through the subcritical percolation bound
 The `External.*` hypotheses are the cited results the paper's proof uses, assumed
 here: they are not derived in this repository and the certificate lists them.
 -/
-import Rotor.Events
-import Rotor.Percolation
-import Rotor.External.OneCircuit
-import Rotor.External.Abelian
-import Rotor.External.HolroydPropp
-import Rotor.External.Kingman
-import Rotor.External.LSS
-import Rotor.External.SubcriticalDecay
-import Rotor.Bridge.SubcriticalDecay
-import Rotor.Support.PassageAssembly
+public import Rotor.Events
+public import Rotor.Percolation
+public import Rotor.External.OneCircuit
+public import Rotor.External.Abelian
+public import Rotor.External.HolroydPropp
+public import Rotor.External.Kingman
+public import Rotor.External.LSS
+public import Rotor.External.SubcriticalDecay
+public import Rotor.Bridge.SubcriticalDecay
+public import Rotor.Support.PassageAssembly
+
+@[expose] public section
 
 /-!
 # Exponential decay of long live paths on the square lattice

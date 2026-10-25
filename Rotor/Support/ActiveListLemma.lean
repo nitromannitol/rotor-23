@@ -1,4 +1,8 @@
-import Rotor.Support.ContourCases
+module
+
+public import Rotor.Support.ContourCases
+
+@[expose] public section
 
 /-!
 # The active-list proof term for Lemma 5.5

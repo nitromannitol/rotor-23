@@ -53,7 +53,7 @@ related_formalizations:
     relationship: "builds-on"
     note: >-
       The shared library Lattice-Probability (pinned git dependency at commit
-      9d44b4d4670df393bb86ac5a4e042f215001cddf).  It supplies Kingman's
+      81fad4f28061b5a61ab0d5a190622e8afe95dfe0).  It supplies Kingman's
       subadditive ergodic theorem (LatticeProb.Prob.Kingman).
 
 status:

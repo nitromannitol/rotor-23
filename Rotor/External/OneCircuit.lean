@@ -1,3 +1,5 @@
+module
+
 /-
 External input: Florescu--Levine--Peres, *The range of a rotor walk*,
 Lemmas 2.1 and 2.4, as the paper states them in `lem:one-circuit`
@@ -22,7 +24,9 @@ degree counts at circuit times; this `Prop` itself carries no manifest node
 any longer (see ledger node `ext-one-circuit`, which now points at that
 proof).
 -/
-import Rotor.Traversal
+public import Rotor.Traversal
+
+@[expose] public section
 
 /-!
 # External input: FLP's one-circuit property

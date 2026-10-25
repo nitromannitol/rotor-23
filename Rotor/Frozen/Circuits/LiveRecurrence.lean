@@ -1,3 +1,5 @@
+module
+
 /-
 Proposition 2.8 of rotor.tex, frozen.  `rotor.tex:957-961` (label `prop:live-recurrence`):
 
@@ -16,14 +18,16 @@ here: they are not derived in this repository and the certificate lists them.
 "Throughout this section, `G` is infinite, connected, and locally finite, the rotor
 mechanism and initial rotor configuration are fixed and arbitrary").
 -/
-import Rotor.Traversal
-import Rotor.Support.LiveRecurrence
-import Rotor.External.OneCircuit
-import Rotor.External.Abelian
-import Rotor.External.HolroydPropp
-import Rotor.Bridge.Abelian
-import Rotor.Bridge.OneCircuit
-import Rotor.Bridge.HolroydPropp
+public import Rotor.Traversal
+public import Rotor.Support.LiveRecurrence
+public import Rotor.External.OneCircuit
+public import Rotor.External.Abelian
+public import Rotor.External.HolroydPropp
+public import Rotor.Bridge.Abelian
+public import Rotor.Bridge.OneCircuit
+public import Rotor.Bridge.HolroydPropp
+
+@[expose] public section
 
 /-!
 # Live recurrence

@@ -1,4 +1,8 @@
-import Rotor.MainTheorems
+module
+
+public import Rotor.MainTheorems
+
+@[expose] public section
 
 /-!
 # Axioms audit

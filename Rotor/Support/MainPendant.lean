@@ -1,8 +1,12 @@
-import Rotor.Support.PendantProb
-import Rotor.Support.PendantCircuit
-import Rotor.Support.ShiftAut
-import Rotor.External.OneCircuit
-import Rotor.External.AngelHolroyd
+module
+
+public import Rotor.Support.PendantProb
+public import Rotor.Support.PendantCircuit
+public import Rotor.Support.ShiftAut
+public import Rotor.External.OneCircuit
+public import Rotor.External.AngelHolroyd
+
+@[expose] public section
 
 /-!
 # Assembly of Proposition 1.3, the pendant counterexample

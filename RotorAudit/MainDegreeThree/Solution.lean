@@ -1,7 +1,11 @@
-import Mathlib
-import Rotor.MainTheorems
-import RotorAudit.MainDegreeThree.SolutionBasic
-import RotorAudit.Support.MainDegreeThreeBridge
+module
+
+public import Mathlib
+public import Rotor.Frozen.Main.DegreeThree
+public import RotorAudit.MainDegreeThree.SolutionBasic
+public import RotorAudit.Support.MainDegreeThreeBridge
+
+@[expose] public section
 
 /-!
 # Solution: MainDegreeThree
@@ -9,7 +13,7 @@ import RotorAudit.Support.MainDegreeThreeBridge
 The challenge module `RotorAudit/MainDegreeThree/Challenge.lean` imports only Mathlib and states the
 theorem with one intentional `sorry`.  This solution imports the repository together with
 `RotorAudit.MainDegreeThree.SolutionBasic`, a verbatim copy of the challenge's vocabulary, and
-proves the byte-identical statement from `Rotor.main_degree_three` through the bridge in
+proves the byte-identical statement from `Rotor.Frozen.main_degree_three`, the theorem used by the public wrapper, through the bridge in
 `RotorAudit/Support/MainDegreeThreeBridge.lean`.
 -/
 
@@ -38,7 +42,7 @@ theorem main_degree_three {V : Type u} [DecidableEq V] {G : SimpleGraph V}
           (((t : ℝ) ^ (-(1 / 3 : ℝ))) • ((fun x => P.emb x - P.emb o) '' (R π ρ o t : Set V)))
           (κ • B)) atTop (𝓝 0) ∧
         Tendsto (fun t : ℕ => ((R π ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c) := by
-  have h := _root_.Rotor.main_degree_three
+  have h := _root_.Rotor.Frozen.main_degree_three
     (Bridge.lss hLSS)
     (Bridge.toDP P) (Bridge.toMech π) hG ((Bridge.periodic_iff P π).1 hπ) h3 o
   simp only [Bridge.T_eq, Bridge.A_eq, Bridge.R_eq, Bridge.Recurrent_eq, Bridge.uniformLaw_eq]

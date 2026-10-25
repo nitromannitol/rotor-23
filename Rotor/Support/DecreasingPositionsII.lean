@@ -1,3 +1,5 @@
+module
+
 /-
 `lem:decreasing-positions` (ii) (`rotor.tex:929-936`):
 
@@ -11,7 +13,9 @@
    the inductive path, never on the live path, and possibly once at the
    junction `z`, hence at most `j-1 ≤ n-1` times in all."
 -/
-import Rotor.Support.DecreasingPositionsI
+public import Rotor.Support.DecreasingPositionsI
+
+@[expose] public section
 
 /-!
 # Decreasing positions, part (ii)

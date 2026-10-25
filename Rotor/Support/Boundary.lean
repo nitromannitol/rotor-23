@@ -1,5 +1,9 @@
-import Rotor.Support.SquareDual
-import Rotor.Support.KingPaths
+module
+
+public import Rotor.Support.SquareDual
+public import Rotor.Support.KingPaths
+
+@[expose] public section
 
 /-!
 # The discrete divergence theorem for boundary walks

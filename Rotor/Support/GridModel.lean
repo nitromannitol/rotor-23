@@ -1,5 +1,9 @@
-import Rotor.Support.Surgery
-import Rotor.Support.LowerParams
+module
+
+public import Rotor.Support.Surgery
+public import Rotor.Support.LowerParams
+
+@[expose] public section
 
 /-!
 # The marked block model for the pivotal comparison

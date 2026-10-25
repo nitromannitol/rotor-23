@@ -1,6 +1,10 @@
-import Rotor.Support.GridModel
-import Rotor.Support.Assembly53
-import Rotor.External.SubcriticalDecay
+module
+
+public import Rotor.Support.GridModel
+public import Rotor.Support.Assembly53
+public import Rotor.External.SubcriticalDecay
+
+@[expose] public section
 
 /-!
 # Constrained-bonds decay for the pattern-free crossing event

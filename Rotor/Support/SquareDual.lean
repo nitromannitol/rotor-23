@@ -1,7 +1,11 @@
-import Rotor.Dual
-import Rotor.Support.StepProb
-import Rotor.Support.KingPaths
-import Rotor.Support.DegreeThreePassage
+module
+
+public import Rotor.Dual
+public import Rotor.Support.StepProb
+public import Rotor.Support.KingPaths
+public import Rotor.Support.DegreeThreePassage
+
+@[expose] public section
 
 /-!
 # Coordinate identities for the dual edges of the square lattice

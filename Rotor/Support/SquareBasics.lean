@@ -1,5 +1,9 @@
-import Rotor.Square
-import Rotor.Support.ProductErgodic
+module
+
+public import Rotor.Square
+public import Rotor.Support.ProductErgodic
+
+@[expose] public section
 
 /-!
 # The square lattice with the clockwise mechanism

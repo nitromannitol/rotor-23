@@ -1,5 +1,9 @@
-import Rotor.Support.ExplTree
-import Rotor.Support.Ring
+module
+
+public import Rotor.Support.ExplTree
+public import Rotor.Support.Ring
+
+@[expose] public section
 
 /-!
 # Parent chains, outer heads, and vanishing winding numbers

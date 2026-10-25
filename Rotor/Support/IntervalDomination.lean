@@ -1,6 +1,10 @@
-import Rotor.Support.BondFinite
-import Rotor.Support.HistoryProb
-import Rotor.Support.DualGuards
+module
+
+public import Rotor.Support.BondFinite
+public import Rotor.Support.HistoryProb
+public import Rotor.Support.DualGuards
+
+@[expose] public section
 
 /-!
 # Domination of nonforced tests by Bernoulli percolation

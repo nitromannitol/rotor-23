@@ -1,9 +1,13 @@
+module
+
 /-
 Model guards: computable witnesses that the definitions of `Rotor/Basic.lean`
 say what the paper says.  Each guard pins one value that can be checked by
 hand against the paper.
 -/
-import Rotor.Basic
+public import Rotor.Basic
+
+@[expose] public section
 
 /-!
 # Model guards for the rotor mechanism

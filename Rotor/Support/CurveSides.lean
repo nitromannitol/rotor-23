@@ -1,4 +1,8 @@
-import Rotor.Support.Ring
+module
+
+public import Rotor.Support.Ring
+
+@[expose] public section
 
 /-!
 # Left and right sides of a simple closed curve

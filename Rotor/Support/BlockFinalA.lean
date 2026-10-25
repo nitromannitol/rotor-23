@@ -1,10 +1,14 @@
+module
+
 /-
 Geometric constants for the block estimate: graph distance is at most linear in Euclidean
 distance uniformly in the endpoints, and the sup-distance between the block indices of two
 vertices is at least a positive multiple of their graph distance, minus a constant.
 -/
-import Rotor.Support.PathReductionIII
-import Rotor.Support.LatticeGeom0
+public import Rotor.Support.PathReductionIII
+public import Rotor.Support.LatticeGeom0
+
+@[expose] public section
 
 /-!
 # Geometric constants for the block estimate

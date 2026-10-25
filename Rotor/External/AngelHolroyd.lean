@@ -1,3 +1,5 @@
+module
+
 /-
 External input: Angel--Holroyd, *Recurrent rotor-router configurations*
 (2012), Theorem 1, as the paper uses it (`rotor.tex:968-969`): "recurrence
@@ -10,7 +12,9 @@ Angel--Holroyd's own proof uses, through `Rotor.Bridge.abelian_holds`; this
 `Prop` itself carries no manifest node any longer (see ledger node
 `ext-angel-holroyd`, which now points at that proof).
 -/
-import Rotor.Model
+public import Rotor.Model
+
+@[expose] public section
 
 /-!
 # Angel–Holroyd recurrence-does-not-depend-on-the-vertex statement

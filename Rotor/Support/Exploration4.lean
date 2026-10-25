@@ -1,5 +1,9 @@
-import Rotor.Support.QueryAtoms
-import Rotor.Support.StepProb
+module
+
+public import Rotor.Support.QueryAtoms
+public import Rotor.Support.StepProb
+
+@[expose] public section
 
 /-!
 # The reached-set exploration

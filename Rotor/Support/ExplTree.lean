@@ -1,5 +1,9 @@
-import Rotor.Support.ExplInv
-import Rotor.Support.ExplCover
+module
+
+public import Rotor.Support.ExplInv
+public import Rotor.Support.ExplCover
+
+@[expose] public section
 
 /-!
 # The depth-first tree structure of the exploration

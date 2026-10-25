@@ -1,4 +1,8 @@
-import Rotor.Support.BlockRoute
+module
+
+public import Rotor.Support.BlockRoute
+
+@[expose] public section
 
 /-!
 # Grid blocks and their routing

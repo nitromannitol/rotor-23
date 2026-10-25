@@ -1,4 +1,8 @@
-import Rotor.Support.PathReductionIII
+module
+
+public import Rotor.Support.PathReductionIII
+
+@[expose] public section
 
 /-!
 # Theorem 1.1: the shape conclusions with the sandwich clause

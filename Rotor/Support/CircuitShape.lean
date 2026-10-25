@@ -1,3 +1,5 @@
+module
+
 /-
 Proposition 3.3 (`prop:circuit-shape`, `rotor.tex:1115-1135`): the shape of the passage
 balls.  The paper's proof: "Homogeneity and continuity give `λ|x| ≤ μ(x) ≤ C|x|` with
@@ -6,7 +8,9 @@ and subadditivity makes it convex.  Comparing `τ(o,·)` with `μ` through the u
 and applying the passage-ball identity gives the sandwich for all large `n`, from which the
 Hausdorff convergence follows."
 -/
-import Rotor.Support.PassageUniform
+public import Rotor.Support.PassageUniform
+
+@[expose] public section
 
 open Rotor MeasureTheory Filter Topology
 open scoped Pointwise

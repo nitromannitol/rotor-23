@@ -1,3 +1,5 @@
+module
+
 /-
 Proposition 1.2 of rotor.tex, the degree-three case, frozen.
 `rotor.tex:272-280` (label `prop:small-perturbations`); see
@@ -5,19 +7,21 @@ Proposition 1.2 of rotor.tex, the degree-three case, frozen.
 The `External.*` hypotheses are the cited results the paper's proof uses, assumed
 here: they are not derived in this repository and the certificate lists them.
 -/
-import Rotor.Events
-import Rotor.Percolation
-import Rotor.External.OneCircuit
-import Rotor.External.Abelian
-import Rotor.External.HolroydPropp
-import Rotor.External.Kingman
-import Rotor.External.LSS
-import Rotor.External.SubcriticalDecay
-import Rotor.Bridge.Kingman
-import Rotor.Bridge.Abelian
-import Rotor.Bridge.OneCircuit
-import Rotor.Bridge.HolroydPropp
-import Rotor.Support.MainDegreeThree
+public import Rotor.Events
+public import Rotor.Percolation
+public import Rotor.External.OneCircuit
+public import Rotor.External.Abelian
+public import Rotor.External.HolroydPropp
+public import Rotor.External.Kingman
+public import Rotor.External.LSS
+public import Rotor.External.SubcriticalDecay
+public import Rotor.Bridge.Kingman
+public import Rotor.Bridge.Abelian
+public import Rotor.Bridge.OneCircuit
+public import Rotor.Bridge.HolroydPropp
+public import Rotor.Support.MainDegreeThree
+
+@[expose] public section
 
 /-!
 # Small perturbations of the rotor mechanism on degree-three graphs

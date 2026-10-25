@@ -1,3 +1,5 @@
+module
+
 /-
 Lemma 5.4 of rotor.tex, frozen.  `rotor.tex:1921-1932` (label `lem:square-exploration`):
 
@@ -16,8 +18,10 @@ three cases are three conjuncts: on the event that the first
 `h.length` outcomes are `h`, the current edge `E` is open with probability
 `1`, `0`, or `1/2` of that event.
 -/
-import Rotor.Exploration
-import Rotor.Support.ExplorationLemma
+public import Rotor.Exploration
+public import Rotor.Support.ExplorationLemma
+
+@[expose] public section
 
 /-!
 # Properties of the square-lattice dual exploration process

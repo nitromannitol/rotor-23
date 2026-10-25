@@ -1,5 +1,9 @@
-import Rotor.Support.IntervalTree
-import Rotor.Support.BlockRoute
+module
+
+public import Rotor.Support.IntervalTree
+public import Rotor.Support.BlockRoute
+
+@[expose] public section
 
 namespace Rotor
 

@@ -1,5 +1,9 @@
-import Rotor.Support.CurveSides
-import Rotor.Support.ExplChain
+module
+
+public import Rotor.Support.CurveSides
+public import Rotor.Support.ExplChain
+
+@[expose] public section
 
 /-!
 # The separation lemma behind Lemma 5.5

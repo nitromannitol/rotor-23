@@ -1,4 +1,8 @@
-import Rotor.Support.ChainWeight
+module
+
+public import Rotor.Support.ChainWeight
+
+@[expose] public section
 
 /-!
 # Independence and uniformity of adaptive rotor queries

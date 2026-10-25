@@ -1,9 +1,13 @@
+module
+
 /-
 Traversals and departures of the walk, and the edges traversed by a routing.
 Vocabulary for `lem:one-circuit` (`rotor.tex:691-697`), `lem:boundary-routing`
 (`rotor.tex:747-753`) and Section 6 (`rotor.tex:2246-2252`).
 -/
-import Rotor.Routing
+public import Rotor.Routing
+
+@[expose] public section
 
 /-!
 # Traversals, departures, and traversed edges

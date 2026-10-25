@@ -1,3 +1,5 @@
+module
+
 /-
 Bernoulli bond percolation on `ℤ²`, `rotor.tex:1658-1668`:
 
@@ -11,8 +13,10 @@ Bernoulli bond percolation on `ℤ²`, `rotor.tex:1658-1668`:
   over `Sym2 Site` is Bernoulli bond percolation on the bonds of `ℤ²`
   with independent unused coins elsewhere.
 -/
-import Rotor.Square
-import Rotor.External.LSS
+public import Rotor.Square
+public import Rotor.External.LSS
+
+@[expose] public section
 
 /-!
 # Bernoulli bond percolation on the square lattice

@@ -1,6 +1,10 @@
-import Rotor.Support.FrameSector
-import Rotor.Support.SquareDual
-import Rotor.Support.DualGeom
+module
+
+public import Rotor.Support.FrameSector
+public import Rotor.Support.SquareDual
+public import Rotor.Support.DualGeom
+
+@[expose] public section
 
 /-!
 # Directions for the contour argument

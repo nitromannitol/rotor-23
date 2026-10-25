@@ -1,8 +1,12 @@
-import Rotor.Support.IntervalDomination
-import Rotor.Support.ForcedCascade
-import Rotor.Support.PatternFree
-import Rotor.Support.ExplCover
-import Rotor.Support.FrameSector
+module
+
+public import Rotor.Support.IntervalDomination
+public import Rotor.Support.ForcedCascade
+public import Rotor.Support.PatternFree
+public import Rotor.Support.ExplCover
+public import Rotor.Support.FrameSector
+
+@[expose] public section
 
 /-!
 # The first-visit tree inside an interval

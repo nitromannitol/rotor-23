@@ -1,5 +1,9 @@
-import Rotor.Support.ExplProb
-import Rotor.Dual
+module
+
+public import Rotor.Support.ExplProb
+public import Rotor.Dual
+
+@[expose] public section
 
 /-!
 # Finite-bond percolation events and monotonicity

@@ -1,4 +1,8 @@
-import Rotor.Support.DoubledCurve
+module
+
+public import Rotor.Support.DoubledCurve
+
+@[expose] public section
 
 /-!
 # The ring of eight points around a doubled-lattice vertex

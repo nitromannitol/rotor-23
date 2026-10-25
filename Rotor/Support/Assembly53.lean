@@ -1,4 +1,8 @@
-import Rotor.Support.Surgery
+module
+
+public import Rotor.Support.Surgery
+
+@[expose] public section
 
 open Finset Classical
 

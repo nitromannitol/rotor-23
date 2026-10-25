@@ -1,9 +1,13 @@
+module
+
 /-
 Independence under product laws: the coordinates of `Measure.infinitePi` are independent, and
 functions of disjoint finite sets of coordinates are independent.  Support for
 `lem:block-live-paths` (the `2`-dependence of the block field).
 -/
-import Rotor.Law
+public import Rotor.Law
+
+@[expose] public section
 
 /-!
 # Independence under product measures

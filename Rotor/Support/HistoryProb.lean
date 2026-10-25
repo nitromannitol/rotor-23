@@ -1,6 +1,10 @@
-import Rotor.Support.ExplProb
-import Rotor.Support.ExplCover
-import Rotor.Frozen.Square.Exploration
+module
+
+public import Rotor.Support.ExplProb
+public import Rotor.Support.ExplCover
+public import Rotor.Frozen.Square.Exploration
+
+@[expose] public section
 
 /-!
 # The probability of a history of forced and nonforced tests

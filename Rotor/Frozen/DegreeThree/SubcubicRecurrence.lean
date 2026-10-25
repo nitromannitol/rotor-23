@@ -1,3 +1,5 @@
+module
+
 /-
 Proposition 4.1 of rotor.tex, frozen.  `rotor.tex:1363-1369` (label `prop:subcubic-recurrence`):
 
@@ -5,15 +7,17 @@ Proposition 4.1 of rotor.tex, frozen.  `rotor.tex:1363-1369` (label `prop:subcub
    with an arbitrary rotor mechanism.  If the initial rotors are independent
    and uniform, then almost surely $G$ contains no infinite live path."
 -/
-import Rotor.Events
-import Rotor.Percolation
-import Rotor.External.OneCircuit
-import Rotor.External.Abelian
-import Rotor.External.HolroydPropp
-import Rotor.External.Kingman
-import Rotor.External.LSS
-import Rotor.External.SubcriticalDecay
-import Rotor.Support.SubcubicRecurrence
+public import Rotor.Events
+public import Rotor.Percolation
+public import Rotor.External.OneCircuit
+public import Rotor.External.Abelian
+public import Rotor.External.HolroydPropp
+public import Rotor.External.Kingman
+public import Rotor.External.LSS
+public import Rotor.External.SubcriticalDecay
+public import Rotor.Support.SubcubicRecurrence
+
+@[expose] public section
 
 /-!
 # Subcubic recurrence

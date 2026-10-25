@@ -1,8 +1,12 @@
-import Rotor.Frozen.Main.Square
-import Rotor.Frozen.Main.DegreeThree
-import Rotor.Frozen.Main.PerturbSquare
-import Rotor.Frozen.Main.PerturbDegreeThree
-import Rotor.Frozen.Main.Pendant
+module
+
+public import Rotor.Frozen.Main.Square
+public import Rotor.Frozen.Main.DegreeThree
+public import Rotor.Frozen.Main.PerturbSquare
+public import Rotor.Frozen.Main.PerturbDegreeThree
+public import Rotor.Frozen.Main.Pendant
+
+@[expose] public section
 
 /-!
 # Main results

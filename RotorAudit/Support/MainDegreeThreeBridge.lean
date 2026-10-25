@@ -1,6 +1,10 @@
-import Mathlib
-import Rotor.MainTheorems
-import RotorAudit.MainDegreeThree.SolutionBasic
+module
+
+public import Mathlib
+public import Rotor.Frozen.Main.DegreeThree
+public import RotorAudit.MainDegreeThree.SolutionBasic
+
+@[expose] public section
 
 /-!
 # Bridge for `MainDegreeThree`: Mathlib-only vocabulary to the repository

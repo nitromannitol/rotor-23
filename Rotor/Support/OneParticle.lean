@@ -1,8 +1,12 @@
+module
+
 /-
 Invariants of the one-particle-at-a-time state machine (`rotor.tex:742-753`),
 for `lem:boundary-routing` (2) and (3) and `lem:decreasing-positions` (i).
 -/
-import Rotor.Support.NoRepeat
+public import Rotor.Support.NoRepeat
+
+@[expose] public section
 
 /-!
 # Invariants of the one-particle-at-a-time boundary routing

@@ -1,3 +1,5 @@
+module
+
 /-
 Proposition 2.6 of rotor.tex, frozen.  `rotor.tex:852-866` (label `prop:passage`):
 
@@ -15,13 +17,15 @@ here: they are not derived in this repository and the certificate lists them.
 "Throughout this section, `G` is infinite, connected, and locally finite, the rotor
 mechanism and initial rotor configuration are fixed and arbitrary").
 -/
-import Rotor.Traversal
-import Rotor.Support.Passage
-import Rotor.External.OneCircuit
-import Rotor.External.Abelian
-import Rotor.External.HolroydPropp
-import Rotor.Bridge.Abelian
-import Rotor.Bridge.OneCircuit
+public import Rotor.Traversal
+public import Rotor.Support.Passage
+public import Rotor.External.OneCircuit
+public import Rotor.External.Abelian
+public import Rotor.External.HolroydPropp
+public import Rotor.Bridge.Abelian
+public import Rotor.Bridge.OneCircuit
+
+@[expose] public section
 
 /-!
 # Proposition 2.6: the passage-time description of the range

@@ -1,10 +1,14 @@
+module
+
 /-
 The block estimate, `lem:block-live-paths` (`rotor.tex:1227-1275`), assembled from the
 marked block field, its domination, the coarse king paths, and the constants.
 -/
-import Rotor.Support.BlockAssembly
-import Rotor.Support.BlockFinalA
-import Rotor.Support.BlockFinalB
+public import Rotor.Support.BlockAssembly
+public import Rotor.Support.BlockFinalA
+public import Rotor.Support.BlockFinalB
+
+@[expose] public section
 
 /-!
 # The block-live-paths estimate

@@ -1,3 +1,5 @@
+module
+
 /-
 Geometry of a doubly periodic graph: the graph distance between lattice
 translates grows at most linearly in the sup norm of the lattice vector, the
@@ -5,7 +7,9 @@ lattice vectors embed with comparable Euclidean norm, and the orbit
 representatives lie at bounded distance from any base point.  Support for
 `prop:passage-limit`.
 -/
-import Rotor.Support.Equivariance
+public import Rotor.Support.Equivariance
+
+@[expose] public section
 
 /-!
 # Geometry of a doubly periodic graph

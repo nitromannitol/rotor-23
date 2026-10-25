@@ -1,5 +1,9 @@
-import Rotor.Support.PendantInduced
-import Rotor.Support.Excursion
+module
+
+public import Rotor.Support.PendantInduced
+public import Rotor.Support.Excursion
+
+@[expose] public section
 
 /-!
 # Counting bound for the pendant counterexample

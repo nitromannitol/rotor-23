@@ -1,3 +1,5 @@
+module
+
 /-
 Proposition 3.2 of rotor.tex, frozen.  `rotor.tex:1103-1113` (label `prop:passage-limit`):
 
@@ -16,15 +18,17 @@ writes `μ` for both the law and the function; the function is `f` here.
 The `External.*` hypotheses are the cited results the paper's proof uses, assumed
 here: they are not derived in this repository and the certificate lists them.
 -/
-import Rotor.Events
-import Rotor.External.OneCircuit
-import Rotor.External.Abelian
-import Rotor.External.HolroydPropp
-import Rotor.External.Kingman
-import Rotor.External.LSS
-import Rotor.Bridge.Kingman
-import Rotor.Bridge.Abelian
-import Rotor.Support.PassageUniform
+public import Rotor.Events
+public import Rotor.External.OneCircuit
+public import Rotor.External.Abelian
+public import Rotor.External.HolroydPropp
+public import Rotor.External.Kingman
+public import Rotor.External.LSS
+public import Rotor.Bridge.Kingman
+public import Rotor.Bridge.Abelian
+public import Rotor.Support.PassageUniform
+
+@[expose] public section
 
 /-!
 # Shape theorem for the passage time (Proposition 3.2)

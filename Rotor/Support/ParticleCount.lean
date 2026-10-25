@@ -1,10 +1,14 @@
+module
+
 /-
 Particle counts along a routing: the count at a vertex is its initial count,
 plus the arrivals along traversed edges into it, minus its actuations.  This
 is the bookkeeping behind `lem:boundary-routing` ("Legality would therefore
 require at least `deg(u) + 1` incoming traversals at `u`").
 -/
-import Rotor.Support.RoutingBasics
+public import Rotor.Support.RoutingBasics
+
+@[expose] public section
 
 /-!
 # Particle-count bookkeeping along a routing

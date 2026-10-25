@@ -1,4 +1,8 @@
-import Rotor.Support.Exploration4
+module
+
+public import Rotor.Support.Exploration4
+
+@[expose] public section
 
 /-!
 # The queue length at fresh steps of the exploration

@@ -1,5 +1,9 @@
-import Rotor.Support.RootPotential
-import Rotor.Frozen.Square.ForcedTests
+module
+
+public import Rotor.Support.RootPotential
+public import Rotor.Frozen.Square.ForcedTests
+
+@[expose] public section
 
 /-!
 # Constants for the square-lattice reach bound

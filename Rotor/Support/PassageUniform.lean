@@ -1,3 +1,5 @@
+module
+
 /-
 Uniform convergence of the passage time to the passage function, and the proof of
 `prop:passage-limit` (`rotor.tex:1084-1111`).  The paper: "The usual argument, using the
@@ -8,8 +10,10 @@ extends to the plane (`Support/PlaneExtension`), and for a lattice point `w` at 
 the passage time to `w` is within `O(n)` of the passage time along a direction from a
 finite set, where the directional limit is uniform.
 -/
-import Rotor.Support.PassageArray
-import Rotor.Support.PlaneExtension
+public import Rotor.Support.PassageArray
+public import Rotor.Support.PlaneExtension
+
+@[expose] public section
 
 /-!
 # Uniform convergence to the passage function

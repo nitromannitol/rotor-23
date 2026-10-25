@@ -1,4 +1,8 @@
-import Rotor.Support.ContourCtx
+module
+
+public import Rotor.Support.ContourCtx
+
+@[expose] public section
 
 /-!
 # Lemma 5.5: the `S` and `W` contour cases

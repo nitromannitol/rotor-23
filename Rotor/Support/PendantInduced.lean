@@ -1,5 +1,9 @@
-import Rotor.Support.PendantBasics
-import Rotor.Support.WalkBasics
+module
+
+public import Rotor.Support.PendantBasics
+public import Rotor.Support.WalkBasics
+
+@[expose] public section
 
 /-!
 # The induced walk on `ℤ²` from the walk on `G_M`

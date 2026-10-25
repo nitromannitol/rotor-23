@@ -1,3 +1,5 @@
+module
+
 /-
 Lemma 5.6 of rotor.tex, frozen.  `rotor.tex:2077-2084` (label `lem:square-forced-tests`):
 
@@ -8,8 +10,10 @@ The constants are explicit: the proof gives
 $\P_0\{K\geq3k+1\}\leq(3/4)^k$, hence $\P_0\{K\geq m\}\leq(4/3)(3/4)^{m/3}$,
 that is $C = 4/3$ and $e^{-c} = (3/4)^{1/3}$.
 -/
-import Rotor.Exploration
-import Rotor.Support.ForcedCascade
+public import Rotor.Exploration
+public import Rotor.Support.ForcedCascade
+
+@[expose] public section
 
 open Rotor MeasureTheory
 

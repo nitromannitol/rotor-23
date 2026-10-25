@@ -1,5 +1,9 @@
-import Rotor.Support.GridBlocks
-import Rotor.Support.Forcing
+module
+
+public import Rotor.Support.GridBlocks
+public import Rotor.Support.Forcing
+
+@[expose] public section
 
 /-!
 # Windows, path traversal, and the marked model

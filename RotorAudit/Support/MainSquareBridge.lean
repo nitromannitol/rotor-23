@@ -1,6 +1,10 @@
-import Mathlib
-import Rotor.MainTheorems
-import RotorAudit.MainSquare.SolutionBasic
+module
+
+public import Mathlib
+public import Rotor.MainTheorems
+public import RotorAudit.MainSquare.SolutionBasic
+
+@[expose] public section
 
 /-!
 # Bridge for `MainSquare`: Mathlib-only vocabulary to the repository

@@ -1,7 +1,11 @@
-import Rotor.Support.Separation
-import Rotor.Support.SectorFacts
-import Rotor.Support.ExplCover
-import Rotor.Support.ExplChain
+module
+
+public import Rotor.Support.Separation
+public import Rotor.Support.SectorFacts
+public import Rotor.Support.ExplCover
+public import Rotor.Support.ExplChain
+
+@[expose] public section
 
 /-!
 # The closed curve and open path of the active list

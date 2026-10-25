@@ -1,6 +1,10 @@
-import Rotor.Support.ExplInv
-import Rotor.Support.SideCount
-import Rotor.Support.ChainWeight
+module
+
+public import Rotor.Support.ExplInv
+public import Rotor.Support.SideCount
+public import Rotor.Support.ChainWeight
+
+@[expose] public section
 
 /-!
 # Conditional probability of a test outcome

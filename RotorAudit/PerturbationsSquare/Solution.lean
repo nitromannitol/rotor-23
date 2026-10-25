@@ -1,7 +1,11 @@
-import Mathlib
-import Rotor.MainTheorems
-import RotorAudit.PerturbationsSquare.SolutionBasic
-import RotorAudit.Support.PerturbationsSquareBridge
+module
+
+public import Mathlib
+public import Rotor.MainTheorems
+public import RotorAudit.PerturbationsSquare.SolutionBasic
+public import RotorAudit.Support.PerturbationsSquareBridge
+
+@[expose] public section
 
 /-!
 # Solution: PerturbationsSquare

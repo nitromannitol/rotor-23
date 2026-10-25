@@ -1,3 +1,5 @@
+module
+
 /-
 A path from a set to a vertex of excess in-degree, in a finite set of directed
 edges.  This is the combinatorial core of the proof of
@@ -13,7 +15,9 @@ out-degree, then some path `x₀, …, x_m = y` with `x₀ ∈ S`, `x_i ∉ S` f
 `i ≥ 1`, and all `(x_i, x_{i+1}) ∈ E`, exists.  Induction on `|E|`: an in-edge
 `(u, y)` with `u ∉ S` is removed, moving the excess to `u`.
 -/
-import Mathlib
+public import Mathlib
+
+@[expose] public section
 
 /-!
 # A path to a vertex of excess in-degree

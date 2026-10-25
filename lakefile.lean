@@ -5,10 +5,10 @@ open Lake DSL
 package «rotor23» where
 
 require mathlib from git
-  "https://github.com/leanprover-community/mathlib4.git" @ "81a5d257c8e410db227a6665ed08f64fea08e997"
+  "https://github.com/leanprover-community/mathlib4.git" @ "065356127b1dc0016f66b7283ce0ce2c4055aa55"
 
 require «lattice-probability» from git
-  "https://github.com/nitromannitol/Lattice-Probability.git" @ "9d44b4d4670df393bb86ac5a4e042f215001cddf"
+  "https://github.com/nitromannitol/Lattice-Probability.git" @ "81fad4f28061b5a61ab0d5a190622e8afe95dfe0"
 
 /-- The comparator audit surface (`RotorAudit/*/Challenge.lean`, `RotorAudit/*/SolutionBasic.lean`,
 `RotorAudit/*/Solution.lean` and `RotorAudit/Support/`).  Not a default target: it builds only on

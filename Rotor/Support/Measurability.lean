@@ -1,3 +1,5 @@
+module
+
 /-
 Measurability of the routing-derived events and of the passage time.  Every
 such event depends on the rotors at finitely many vertices, hence is a
@@ -6,9 +8,11 @@ intersections over lists and finite sets of vertices then keep
 measurability.  `rotor.tex:810-813`: "As `G` is countable, the event that
 the boundary routing of every nonempty finite set terminates is measurable."
 -/
-import Rotor.Support.Equivariance
-import Rotor.Support.PathReductionI
-import Rotor.Law
+public import Rotor.Support.Equivariance
+public import Rotor.Support.PathReductionI
+public import Rotor.Law
+
+@[expose] public section
 
 open Finset MeasureTheory
 
@@ -28,7 +32,7 @@ def restr (F : Finset V) (ρ : Config G) : ∀ v : F, G.neighborSet v := fun v =
 omit [DecidableEq V] in
 /-- The restriction map `restr F` is measurable. -/
 theorem measurable_restr (F : Finset V) : Measurable (restr (G := G) F) :=
-  measurable_pi_lambda _ (fun v => measurable_pi_apply v.1)
+  measurable_pi_iff.mpr (fun v => measurable_pi_apply v.1)
 
 omit [DecidableEq V] in
 /-- A function of the rotors at finitely many vertices is measurable. -/

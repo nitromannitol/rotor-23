@@ -1,5 +1,9 @@
-import Rotor.Support.SquareExits
-import Rotor.Support.SquareDual
+module
+
+public import Rotor.Support.SquareExits
+public import Rotor.Support.SquareDual
+
+@[expose] public section
 
 /-!
 # The finite computation behind Lemma 5.4(iii)

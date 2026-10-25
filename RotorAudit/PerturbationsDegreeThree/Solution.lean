@@ -1,7 +1,11 @@
-import Mathlib
-import Rotor.MainTheorems
-import RotorAudit.PerturbationsDegreeThree.SolutionBasic
-import RotorAudit.Support.PerturbationsDegreeThreeBridge
+module
+
+public import Mathlib
+public import Rotor.MainTheorems
+public import RotorAudit.PerturbationsDegreeThree.SolutionBasic
+public import RotorAudit.Support.PerturbationsDegreeThreeBridge
+
+@[expose] public section
 
 /-!
 # Solution: PerturbationsDegreeThree

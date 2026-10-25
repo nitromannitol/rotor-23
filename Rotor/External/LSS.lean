@@ -1,3 +1,5 @@
+module
+
 /-
 External input: Liggett--Schonmann--Stacey, *Domination by product measures*
 (1997), Theorem 0.0(ii), in the instance the paper uses in the proof of
@@ -11,7 +13,9 @@ Domination is stated through increasing events: every increasing measurable
 event has no larger probability under the field than under the product of
 Bernoulli(1/8) laws.
 -/
-import Mathlib
+public import Mathlib
+
+@[expose] public section
 
 /-!
 # The Liggett--Schonmann--Stacey domination input

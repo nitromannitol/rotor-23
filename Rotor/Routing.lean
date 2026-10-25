@@ -1,3 +1,5 @@
+module
+
 /-
 Boundary routings and the circuit map, `rotor.tex:700-810` (Section 2.1).
 
@@ -55,7 +57,9 @@ How the paper's objects are modelled here:
   is nonempty (`prop:passage`, `eq:passage-upper`), so the junk value
   never arises.
 -/
-import Rotor.Model
+public import Rotor.Model
+
+@[expose] public section
 
 /-!
 # Boundary routings and the circuit map

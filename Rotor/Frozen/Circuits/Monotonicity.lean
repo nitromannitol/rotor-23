@@ -1,3 +1,5 @@
+module
+
 /-
 Proposition 2.5 of rotor.tex, frozen.  `rotor.tex:820-826` (label `prop:monotonicity`):
 
@@ -12,12 +14,14 @@ here: they are not derived in this repository and the certificate lists them.
 "Throughout this section, `G` is infinite, connected, and locally finite, the rotor
 mechanism and initial rotor configuration are fixed and arbitrary").
 -/
-import Rotor.Traversal
-import Rotor.Support.Monotone
-import Rotor.External.OneCircuit
-import Rotor.External.Abelian
-import Rotor.External.HolroydPropp
-import Rotor.Bridge.Abelian
+public import Rotor.Traversal
+public import Rotor.Support.Monotone
+public import Rotor.External.OneCircuit
+public import Rotor.External.Abelian
+public import Rotor.External.HolroydPropp
+public import Rotor.Bridge.Abelian
+
+@[expose] public section
 
 /-!
 # Monotonicity of the traversal set

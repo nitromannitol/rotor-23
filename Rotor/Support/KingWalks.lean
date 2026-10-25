@@ -1,4 +1,8 @@
-import Rotor.Support.KingPaths
+module
+
+public import Rotor.Support.KingPaths
+
+@[expose] public section
 
 /-!
 # Counting lattice animals via closed king walks

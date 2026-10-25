@@ -1,3 +1,5 @@
+module
+
 /-
 Extension of a subadditive function on the lattice `ℤ²` to a continuous, subadditive,
 positively homogeneous function on the plane.  This is the "usual argument" of the proof
@@ -5,7 +7,9 @@ of `prop:passage-limit` (`rotor.tex:1108-1110`): the limit along the integer mul
 of the coordinate vector of a point exists by Fekete's lemma, the floor errors are bounded,
 and the resulting function is Lipschitz.
 -/
-import Rotor.Support.LatticeGeom
+public import Rotor.Support.LatticeGeom
+
+@[expose] public section
 
 /-!
 # Extending a subadditive lattice function to the plane

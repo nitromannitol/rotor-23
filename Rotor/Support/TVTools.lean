@@ -1,10 +1,14 @@
+module
+
 /-
 Total variation and product laws: changing the law of one coordinate of a finite product
 changes the probability of any event by at most the total variation distance of that
 coordinate, and changing all coordinates changes it by at most the sum.  Support for
 `lem:block-live-paths` (the perturbation `δ` of the one-vertex laws).
 -/
-import Rotor.Periodic
+public import Rotor.Periodic
+
+@[expose] public section
 
 /-!
 # Total variation and product laws

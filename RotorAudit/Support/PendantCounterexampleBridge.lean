@@ -1,6 +1,10 @@
-import Mathlib
-import Rotor.MainTheorems
-import RotorAudit.PendantCounterexample.SolutionBasic
+module
+
+public import Mathlib
+public import Rotor.MainTheorems
+public import RotorAudit.PendantCounterexample.SolutionBasic
+
+@[expose] public section
 
 /-!
 # Bridge for `PendantCounterexample`: Mathlib-only vocabulary to the repository

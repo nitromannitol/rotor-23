@@ -1,3 +1,5 @@
+module
+
 /-
 The second and third assertions of `lem:boundary-routing` (`rotor.tex:747-763`),
 from the state-machine invariants and the abelian property:
@@ -6,8 +8,10 @@ from the state-machine invariants and the abelian property:
    boundary routing of `S` terminates.  If so, each is complete and has the
    same actuation counts as every complete boundary routing."
 -/
-import Rotor.Support.OneParticle
-import Rotor.External.Abelian
+public import Rotor.Support.OneParticle
+public import Rotor.External.Abelian
+
+@[expose] public section
 
 /-!
 # Boundary routings and one-particle-at-a-time routings

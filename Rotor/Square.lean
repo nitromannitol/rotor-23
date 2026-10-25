@@ -1,3 +1,5 @@
+module
+
 /-
 The square lattice with the clockwise rotor mechanism, as an instance of the
 general model of `Rotor/Model.lean`.
@@ -7,9 +9,11 @@ cyclic order `N, E, S, W`."  The concrete encoding of `Rotor/Basic.lean`
 (directions `Fin 4`, `0 = N, 1 = E, 2 = S, 3 = W`, clockwise `= +1`) is
 transported to the neighbor sets of the lattice graph.
 -/
-import Rotor.Model
-import Rotor.Basic
-import Rotor.Periodic
+public import Rotor.Model
+public import Rotor.Basic
+public import Rotor.Periodic
+
+@[expose] public section
 
 /-!
 # The square lattice as an instance of the general rotor model

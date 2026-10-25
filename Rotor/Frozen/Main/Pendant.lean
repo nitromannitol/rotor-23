@@ -1,3 +1,5 @@
+module
+
 /-
 Proposition 1.3 of rotor.tex, frozen.  `rotor.tex:309-314` (label `prop:pendant-counterexample`):
 
@@ -19,11 +21,13 @@ Both cited results are proved rather than assumed: `External.OneCircuit` by
 `Rotor.Bridge.recurrentOfRecurrent_holds`, so neither appears as a hypothesis
 of the frozen statement below.
 -/
-import Rotor.Pendant
-import Rotor.External.OneCircuit
-import Rotor.Bridge.OneCircuit
-import Rotor.Bridge.AngelHolroyd
-import Rotor.Support.MainPendant
+public import Rotor.Pendant
+public import Rotor.External.OneCircuit
+public import Rotor.Bridge.OneCircuit
+public import Rotor.Bridge.AngelHolroyd
+public import Rotor.Support.MainPendant
+
+@[expose] public section
 
 /-!
 # The pendant counterexample: transience

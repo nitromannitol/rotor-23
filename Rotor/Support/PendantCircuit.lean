@@ -1,5 +1,9 @@
-import Rotor.Support.PendantInduced
-import Rotor.Frozen.Circuits.OneCircuit
+module
+
+public import Rotor.Support.PendantInduced
+public import Rotor.Frozen.Circuits.OneCircuit
+
+@[expose] public section
 
 /-!
 # The first return of the induced walk

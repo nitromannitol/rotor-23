@@ -1,6 +1,10 @@
-import Rotor.Exploration
-import Rotor.Support.SquareDual
-import Rotor.Support.Boundary
+module
+
+public import Rotor.Exploration
+public import Rotor.Support.SquareDual
+public import Rotor.Support.Boundary
+
+@[expose] public section
 
 /-!
 # Geometry of the dual edges of the exploration

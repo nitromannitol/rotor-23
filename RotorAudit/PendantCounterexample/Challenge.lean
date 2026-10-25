@@ -1,4 +1,8 @@
-import Mathlib
+module
+
+public import Mathlib
+
+@[expose] public section
 
 /-!
 # Proposition 1.3 (`prop:pendant-counterexample`): comparator challenge

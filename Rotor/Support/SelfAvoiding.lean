@@ -1,4 +1,8 @@
-import Rotor.Support.ChainWeight
+module
+
+public import Rotor.Support.ChainWeight
+
+@[expose] public section
 
 /-!
 # Self-avoiding extensions and the killed chain's weight

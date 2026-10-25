@@ -1,3 +1,5 @@
+module
+
 /-
 The almost-live paths whose failures are all marked (`rotor.tex:1263-1266`): "On
 `L_η(u → v, R)`, choose the first witnessing path in a fixed ordering.  Marking all its
@@ -6,7 +8,9 @@ pointwise inside the lower bound of the section, so no measurable selection is n
 event that some witness has all its failures marked is measurable as a countable union over
 lists, and its section at almost-live rotors contains the marks covering one witness.
 -/
-import Rotor.Support.BlockField
+public import Rotor.Support.BlockField
+
+@[expose] public section
 
 /-!
 # Marking the failures of an almost-live witness
