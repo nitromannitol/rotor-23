@@ -19,6 +19,8 @@ project:
     comparator pairs under RotorAudit/.
   authors:
     - "Ahmed Bou-Rabee"
+  responsible_maintainers:
+    - "Ahmed Bou-Rabee"
   license: "Apache-2.0"
 
 sources:
@@ -294,3 +296,6 @@ acknowledgements: >-
   The paper is joint work with Yuval Peres.  Built on Lean 4, Mathlib, Lake,
   the percolation library PercolationContinuity of anthropics/formal-math, the
   shared library Lattice-Probability, and leanprover/comparator.
+
+classification:
+  arxiv: ["math.PR"]
