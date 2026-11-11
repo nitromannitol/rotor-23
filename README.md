@@ -201,8 +201,9 @@ and in the docstrings of the frozen statements refer to it.
 
 ## Guarantees
 
-- **No `sorry`.** The library has none, and `tools/check_manifest.py` rejects any `sorry`,
-  `admit` or `axiom` token that is not registered. The 5 comparator challenges under
+- **No `sorry`.** The library has none, and `tools/check_manifest.py`, which CI runs, rejects
+  any `axiom`, `admit` or `sorryAx` token under `Rotor/` and any `sorry` outside a registered
+  `DRAFT_SORRY` node (there are none). The 5 comparator challenges under
   [`RotorAudit/`](RotorAudit/) each contain one intentional statement-level `sorry`, which the
   corresponding solution file proves.
 - **Standard axioms only.** The axiom report of each of the 5 main theorems lists exactly
