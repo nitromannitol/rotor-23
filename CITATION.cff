@@ -1,8 +1,10 @@
 cff-version: 1.2.0
 message: "If you use this formalization, please cite it as below."
-title: "rotor-23: a Lean 4 formalization of Eulerian walkers on Z^2 have range exponent 2/3"
+title: "Eulerian walkers on Z^2 have range exponent 2/3"
+type: software
+repository-code: "https://github.com/nitromannitol/rotor-23"
 abstract: >-
-  A machine-checked Lean 4 / mathlib formalization of the paper "Eulerian
+  A machine-checked Lean 4 and Mathlib formalization of the paper "Eulerian
   walkers on Z^2 have range exponent 2/3" (Bou-Rabee and Peres): recurrence,
   the limit shape and the range exponent 2/3 of the rotor walk with
   independent uniform initial rotors on the square lattice and on doubly
@@ -12,8 +14,8 @@ abstract: >-
   result the paper cites without proof, the Liggett-Schonmann-Stacey
   domination theorem, is an explicit hypothesis of the theorems that use it;
   the other six cited results are proved in the repository.  The development
-  contains no sorry and no custom axiom.
-type: software
+  contains no sorry and no custom axiom, and each of the five main theorems
+  has a Mathlib-only comparator challenge.
 authors:
   - family-names: Bou-Rabee
     given-names: Ahmed
@@ -25,7 +27,6 @@ keywords:
   - rotor-router
   - probability
 license: Apache-2.0
-repository-code: "https://github.com/nitromannitol/rotor-23"
 references:
   - type: article
     title: "Eulerian walkers on Z^2 have range exponent 2/3"
@@ -38,4 +39,4 @@ references:
     identifiers:
       - type: other
         value: "arXiv:2608.23545"
-    notes: "The paper formalized by this repository."
+    notes: "The paper formalized by this repository (arXiv:2608.23545). Its source is in paper/."
