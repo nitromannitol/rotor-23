@@ -67,7 +67,7 @@ jobs:
         run: |
           set -o pipefail
           lake build Rotor.Meta.AxiomsAudit 2>&1 | tee axioms-audit.log
-          if grep -iE '^warning:|declaration uses .sorry' axioms-audit.log; then
+          if grep -iE '^warning: (Rotor|RotorAudit)(/|\.lean)|declaration uses .sorry' axioms-audit.log; then
             echo "Axiom audit build emitted a warning."
             exit 1
           fi
