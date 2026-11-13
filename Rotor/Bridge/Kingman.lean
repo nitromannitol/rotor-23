@@ -44,7 +44,7 @@ theorem kingman_holds : External.Kingman
 -- FROZEN-STATEMENT-END
 := by
   intro Ω _ μ hμ θ hθ X hXm hXi hXnn hXstat hXsub _hXbound
-  haveI := hμ
+  have := hμ
   have hgm : ∀ n, Measurable (fun x => X 0 n x) := fun n => hXm 0 n
   have hg1 : Integrable (fun x => X 0 1 x) μ := hXi 0 1
   have hgnn : ∀ n y, 1 ≤ n → 0 ≤ (fun x => X 0 n x) y := fun n y _ => hXnn 0 n y

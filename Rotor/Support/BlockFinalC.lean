@@ -62,7 +62,7 @@ theorem block_live_paths_proof (hLSS : External.LSS) [Infinite V] (hG : G.Connec
             ∀ (ν' : ∀ v : V, Measure (G.neighborSet v)) [∀ v, IsProbabilityMeasure (ν' v)],
               (∀ v, tvDist (ν' v) (ν v) ≤ δ) → Criterion π (productLaw ν') η := by
   classical
-  haveI : Countable V := countable_of_connected hG
+  have : Countable V := countable_of_connected hG
   obtain ⟨ε₀, hε₀, hLSS'⟩ := hLSS
   obtain ⟨K, hK0, hK⟩ := P.exists_coord_adj_bound
   refine ⟨ε₀, hε₀, K.toNat + 1, by omega, ?_⟩

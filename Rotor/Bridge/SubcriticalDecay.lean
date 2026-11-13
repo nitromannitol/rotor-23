@@ -1,13 +1,14 @@
 import Rotor.External.SubcriticalDecay
-import Percolation.Literature.KestenTheoremProofs
-import Percolation.Literature.SharpnessDCTProofs
-import Percolation.Literature.BondPercolationSymmetry
+import LatticeProb.Vendor.FormalMathPercolation.Literature.KestenTheoremProofs
+import LatticeProb.Vendor.FormalMathPercolation.Literature.SharpnessDCTProofs
+import LatticeProb.Vendor.FormalMathPercolation.Literature.BondPercolationSymmetry
 
 /-!
 # Kesten's exponential decay from the percolation library
 
 `External.SubcriticalDecay` proved from the percolation library
-(`anthropics/formal-math`, subdirectory `percolation`, commit 795efb86): Kesten's
+(`anthropics/formal-math`, subdirectory `percolation`, commit 795efb86, vendored as
+`LatticeProb.Vendor.FormalMathPercolation`): Kesten's
 `p_c(ℤ²) = 1/2` (`kesten_criticalProb_Z2_holds`) and the sharpness of the phase transition
 (`perc_sharpness_holds`).  The bridge identifies our bond field `Sym2 (ℤ × ℤ) → Bool` under
 `bondLaw p` with the library's `bondPercolation (zdGraph 2) p` on `Set (Sym2 (Fin 2 → ℤ))`,
@@ -103,7 +104,7 @@ theorem pairEquiv_symm_pair (u v : Site) :
 `squareGraph` and the bond `s(u, v)` is open in `ω`. -/
 theorem mem_toConfig (ω : Rotor.BondConfig) (u v : Site) :
     s(siteEquiv u, siteEquiv v) ∈ toConfig ω ↔ squareGraph.Adj u v ∧ ω s(u, v) = true := by
-  simp only [toConfig, toProp, Set.mem_setOf_eq, SimpleGraph.mem_edgeSet, zd_adj_iff,
+  simp only [toConfig, toProp, Set.mem_ofPred_eq, SimpleGraph.mem_edgeSet, zd_adj_iff,
     pairEquiv_symm_pair]
 
 /-- A `Prop`-valued edge indicator is measurable. -/
@@ -121,11 +122,11 @@ theorem measurable_andEq {α : Type*} [MeasurableSpace α] (P : Prop) (f : α �
 /-- `toProp` is measurable, since each coordinate `e ↦ e ∈ (zdGraph 2).edgeSet ∧
 ω (pairEquiv.symm e) = true` is. -/
 theorem measurable_toProp : Measurable toProp := by
-  exact measurable_pi_lambda _ (fun e => measurable_andEq _ _ (measurable_pi_apply _))
+  exact Measurable.of_eval (fun e => measurable_andEq _ _ (measurable_pi_apply _))
 
 /-- `toConfig` is measurable, as the set-builder map composed with the measurable `toProp`. -/
 theorem measurable_toConfig : Measurable toConfig := by
-  rw [toConfig_eq]; exact measurable_setOf.comp measurable_toProp
+  rw [toConfig_eq]; exact measurable_setOfPred.comp measurable_toProp
 
 /-! ### The one-coordinate laws -/
 
@@ -153,6 +154,7 @@ theorem map_bern (p : NNReal) (hp : p ≤ 1) (P : Prop) :
     Measure.map_smul, Measure.map_dirac' Measurable.of_discrete,
     Measure.map_dirac' Measurable.of_discrete]
   simp
+  all_goals exact Measurable.of_discrete.aemeasurable
 
 /-- The parameter as a point of the unit interval. -/
 def toI (p : NNReal) (hp : p ≤ 1) : unitInterval := ⟨p, p.2, by exact_mod_cast hp⟩
@@ -176,16 +178,16 @@ percolation measure `bondPercolation (zdGraph 2) (toI p hp)`. -/
 theorem map_toConfig (p : NNReal) (hp : p ≤ 1) :
     (bondLaw p hp).map toConfig = bondPercolation (zdGraph 2) (toI p hp) := by
   unfold bondPercolation
-  rw [setBernoulli_eq_map, toConfig_eq, ← Measure.map_map measurable_setOf measurable_toProp]
+  rw [setBernoulli_eq_map, toConfig_eq, ← Measure.map_map measurable_setOfPred measurable_toProp]
   congr 1
   have hstep : toProp = (fun χ : Sym2 (LatticeModels.Site 2) → Bool =>
       fun e => (fun b : Bool => e ∈ (zdGraph 2).edgeSet ∧ b = true) (χ e)) ∘
       (fun ω : Sym2 Site → Bool => fun e => ω (pairEquiv.symm e)) := rfl
   have hm1 : Measurable (fun χ : Sym2 (LatticeModels.Site 2) → Bool =>
       fun e => (fun b : Bool => e ∈ (zdGraph 2).edgeSet ∧ b = true) (χ e)) :=
-    measurable_pi_lambda _ (fun e => measurable_andEq _ _ (measurable_pi_apply e))
+    Measurable.of_eval (fun e => measurable_andEq _ _ (measurable_pi_apply e))
   have hm2 : Measurable (fun ω : Sym2 Site → Bool => fun e => ω (pairEquiv.symm e)) :=
-    measurable_pi_lambda _ (fun e => measurable_pi_apply _)
+    Measurable.of_eval (fun e => measurable_pi_apply _)
   rw [hstep, ← Measure.map_map hm1 hm2]
   have hre : (fun ω : Sym2 Site → Bool => fun e => ω (pairEquiv.symm e)) =
       ⇑(MeasurableEquiv.piCongrLeft (fun _ : Sym2 (LatticeModels.Site 2) => Bool) pairEquiv) := by
@@ -202,7 +204,7 @@ theorem map_toConfig (p : NNReal) (hp : p ≤ 1) :
   rw [hpi]
   congr 1
   funext e
-  rw [map_bern, toNNReal_toI, toNNReal_symm_toI]
+  rw [map_bern, bernoulliMeasure_def, toNNReal_toI, toNNReal_symm_toI]
 
 /-! ### Translation and the one-arm event -/
 

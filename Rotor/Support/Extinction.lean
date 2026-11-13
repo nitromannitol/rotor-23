@@ -114,13 +114,13 @@ theorem piece_subset_atomE (j : ℕ) (h : History G) : piece π o x j h ⊆ atom
 /-- When `h.length = j`, `piece π o x j h` reduces to the atom `atomE π o x h`. -/
 theorem piece_of_length_eq {j : ℕ} {h : History G} (hh : h.length = j) :
     piece π o x j h = atomE π o x h := by
-  unfold piece; rw [if_pos hh]
+  unfold piece; rw [ite_eq_left hh]
 
 /-- When `h.length < j`, `piece π o x j h` is the atom `atomE π o x h`
 intersected with the event that the walk fails to reach step `h.length + 1`. -/
 theorem piece_of_length_lt {j : ℕ} {h : History G} (hh : h.length < j) :
     piece π o x j h = atomE π o x h ∩ {ρ | ¬ Reach π o x (h.length + 1) ρ} := by
-  unfold piece; rw [if_neg hh.ne]
+  unfold piece; rw [ite_eq_right hh.ne]
 
 /-- The pieces `piece π o x j h` over histories `h` of length at most `j` cover
 the whole configuration space: `exists_max_reach` supplies, for each `ρ`, the
@@ -192,7 +192,7 @@ theorem measurableSet_reach (j : ℕ) : MeasurableSet {ρ : Config G | Reach π 
   have : {ρ : Config G | Reach π o x j ρ} = ⋃ h : {h : History G // h.length = j},
       atomE π o x h.1 := by
     ext ρ
-    simp only [Set.mem_setOf_eq, Set.mem_iUnion]
+    simp only [Set.mem_ofPred_eq, Set.mem_iUnion]
     constructor
     · intro hr
       exact ⟨⟨histOf π o x j ρ, length_histOf hr⟩, mem_atomE_histOf _ _⟩
@@ -227,7 +227,7 @@ theorem measurable_of_const_on_pieces (j : ℕ) (F : Config G → ℕ)
         rw [hcov]; exact Set.mem_univ ρ
       obtain ⟨h, hh⟩ := Set.mem_iUnion.1 this
       refine ⟨h, ?_⟩
-      rw [if_pos ⟨ρ, hh, hρ⟩]
+      rw [ite_eq_left ⟨ρ, hh, hρ⟩]
       exact hh
     · rintro ⟨h, hh⟩
       split_ifs at hh with hex
@@ -281,7 +281,7 @@ theorem Z_succ_of_stopped {j : ℕ} {ρ : Config G} (hs : ∃ i ≤ j, N ≤ Y �
     exact ⟨⟨(Nat.find_spec hs).1.trans (Nat.le_succ j), (Nat.find_spec hs).2⟩,
       fun n hn hn' => Nat.find_min hs hn ⟨(Nat.find_spec hs).1.trans' hn.le, hn'.2⟩⟩
   unfold Z
-  rw [dif_pos hs, dif_pos hs', hfind]
+  rw [dite_eq_left hs, dite_eq_left hs', hfind]
 
 /-- If the queue has not yet reached level `N` by step `j`, then
 `Z π o x N j ρ = Y π o x j ρ` and `Z π o x N (j + 1) ρ = Y π o x (j + 1) ρ`,
@@ -289,7 +289,7 @@ whether or not level `N` is reached exactly at step `j + 1`. -/
 theorem Z_succ_of_not_stopped {j : ℕ} {ρ : Config G} (hs : ¬ ∃ i ≤ j, N ≤ Y π o x i ρ) :
     Z π o x N (j + 1) ρ = Y π o x (j + 1) ρ ∧ Z π o x N j ρ = Y π o x j ρ := by
   classical
-  refine ⟨?_, by unfold Z; rw [dif_neg hs]⟩
+  refine ⟨?_, by unfold Z; rw [dite_eq_right hs]⟩
   unfold Z
   split_ifs with h
   · congr 1
@@ -320,7 +320,7 @@ theorem stopped_iff {j : ℕ} {ρ : Config G} : (∃ i ≤ j, N ≤ Y π o x i �
   constructor
   · intro hs
     unfold Z
-    rw [dif_pos hs]
+    rw [dite_eq_left hs]
     exact (Nat.find_spec hs).2
   · intro hZ
     by_contra hs
@@ -344,14 +344,14 @@ theorem Z_const_on_piece {j : ℕ} {h : History G} (hh : h.length ≤ j) {ρ ρ'
   unfold Z
   by_cases hs : ∃ i ≤ j, N ≤ Y π o x i ρ
   · have hs' := hiff.1 hs
-    rw [dif_pos hs, dif_pos hs']
+    rw [dite_eq_left hs, dite_eq_left hs']
     have hfind : Nat.find hs = Nat.find hs' := by
       rw [Nat.find_eq_iff]
       refine ⟨⟨(Nat.find_spec hs').1,
           by rw [hY _ (Nat.find_spec hs').1]; exact (Nat.find_spec hs').2⟩,
         fun n hn hn' => Nat.find_min hs' hn ⟨hn'.1, by rw [← hY n hn'.1]; exact hn'.2⟩⟩
     rw [hfind, hY _ (Nat.find_spec hs').1]
-  · rw [dif_neg hs, dif_neg (fun h' => hs (hiff.2 h')), hY j le_rfl]
+  · rw [dite_eq_right hs, dite_eq_right (fun h' => hs (hiff.2 h')), hY j le_rfl]
 
 variable [Countable V]
 
@@ -537,7 +537,7 @@ holds depends only on `Reach` and `Y` at steps `j` and `j + 1`, which are
 constant on such a piece. -/
 theorem levelMeas_drop (j : ℕ) : LevelMeas π o x (j + 1) (Drop π o x j) := by
   intro h hh ρ hρ ρ' hρ' hD
-  simp only [Drop, Set.mem_setOf_eq] at hD ⊢
+  simp only [Drop, Set.mem_ofPred_eq] at hD ⊢
   rw [← reach_const_on_piece hh le_rfl hρ hρ', ← Y_const_on_piece hh le_rfl hρ hρ',
     ← Y_const_on_piece hh (Nat.le_succ j) hρ hρ']
   exact hD
@@ -564,7 +564,7 @@ theorem measurableSet_of_levelMeas {j : ℕ} {E : Set (Config G)} (hE : LevelMea
       have hmem : ρ ∈ ⋃ h : {h : History G // h.length ≤ j}, piece π o x j h.1 := by
         rw [iUnion_piece]; exact Set.mem_univ ρ
       obtain ⟨h, hh⟩ := Set.mem_iUnion.1 hmem
-      exact ⟨h, by rw [if_pos ⟨ρ, hh, hρ⟩]; exact hh⟩
+      exact ⟨h, by rw [ite_eq_left ⟨ρ, hh, hρ⟩]; exact hh⟩
     · rintro ⟨h, hh⟩
       split_ifs at hh with hex
       · obtain ⟨ρ', hρ', hE'⟩ := hex
@@ -817,7 +817,7 @@ theorem mem_bad_of_forall {N : ℕ} {ρ : Config G} (hr : ∀ j, Reach π o x j 
     | succ i ih =>
       intro hi
       have hd := hD i (by omega)
-      simp only [Drop, Set.mem_setOf_eq] at hd
+      simp only [Drop, Set.mem_ofPred_eq] at hd
       rcases hd with hd | hd
       · exact absurd (hr _) hd
       · have := ih (by omega)

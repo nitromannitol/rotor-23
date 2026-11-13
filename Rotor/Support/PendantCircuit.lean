@@ -95,7 +95,7 @@ theorem latTime_lt_T_one {r : ℕ} (hr : ∀ s, 1 ≤ s → s < r → Ysq M ρ o
   obtain ⟨-, hvis⟩ := hmem
   rw [pendantGraph_degree_inl, mul_one] at hvis
   have ht : (T (pendantMech M) ρ (.inl o) 1).toNat ≤ latTime M ρ o (r - 1) :=
-    ENat.toNat_le_of_le_coe hle
+    ENat.toNat_le_of_le_natCast hle
   have := visits_le_of_no_return M ρ o hr (t := (T (pendantMech M) ρ (.inl o) 1).toNat) (by omega)
   omega
 

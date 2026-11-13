@@ -44,9 +44,9 @@ theorem oneVisits_of_mem_acted (S : Finset V) (ρ : Config G) (es : List (V × V
     cases htr : s.tracked with
     | some p =>
       by_cases hp : p ∈ S
-      · simp only [oneStep, htr, hp, if_true] at h
+      · simp only [oneStep, htr, hp, ite_true] at h
         exact ih h
-      · simp only [oneStep, htr, hp, if_false, List.mem_cons] at h
+      · simp only [oneStep, htr, hp, ite_false, List.mem_cons] at h
         rcases h with rfl | h
         · have := route_head π S ρ es n y htr
           exact ⟨n, List.mem_of_mem_head? this⟩

@@ -80,16 +80,16 @@ theorem run_σ_eq (S : Finset V) (ξ : RState G) (vs : List V) (x : V) (hx : x �
       have hne' : ¬ (x = (π.next x (ξ.ρ x)).1 ∧ (π.next x (ξ.ρ x)).1 ∉ S) := fun h => hne h.1.symm
       have h1 : ((ξ.σ x - 1 : ℕ) : ℤ) = (ξ.σ x : ℤ) - 1 := by
         rw [Nat.cast_sub (by omega)]; simp
-      simp only [if_true, hne, hne', if_false, h1, decide_eq_true_eq, beq_self_eq_true]
+      simp only [ite_true, hne, hne', ite_false, h1, decide_eq_true_eq, beq_self_eq_true]
       ring
     · have hvx : (v == x) = false := by
         simpa using Ne.symm hxv
-      simp only [hxv, if_false, hvx, decide_eq_true_eq]
+      simp only [hxv, ite_false, hvx, decide_eq_true_eq]
       by_cases hh : (π.next v (ξ.ρ v)).1 = x
-      · simp only [hh, hx, not_false_eq_true, and_self, if_true, Bool.false_eq_true, if_false]
+      · simp only [hh, hx, not_false_eq_true, and_self, ite_true, Bool.false_eq_true, ite_false]
         ring
       · have hh' : ¬ (x = (π.next v (ξ.ρ v)).1 ∧ (π.next v (ξ.ρ v)).1 ∉ S) := fun h => hh h.1.symm
-        simp only [hh, hh', if_false, Bool.false_eq_true]
+        simp only [hh, hh', ite_false, Bool.false_eq_true]
         ring
 
 end Rotor

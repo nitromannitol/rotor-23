@@ -58,7 +58,7 @@ theorem sum_fpw {par : ι → ℝ} : ∑ ω, fpw par ω = 1 := by
   have h := Finset.prod_univ_sum (t := fun _ : ι => (Finset.univ : Finset Bool))
     (f := fun i b => if b = true then par i else 1 - par i)
   rw [Fintype.piFinset_univ] at h
-  simp only [Fintype.sum_bool, if_true, Bool.false_eq_true, if_false, add_sub_cancel,
+  simp only [Fintype.sum_bool, ite_true, Bool.false_eq_true, ite_false, add_sub_cancel,
     Finset.prod_const_one] at h
   unfold fpw
   exact h.symm
@@ -112,7 +112,7 @@ theorem fpr_affine (par : ι → ℝ) (i : ι) (A : Set (ι → Bool)) :
         then fpwE par i τ else 0) := by
   unfold fpr
   rw [← (Equiv.piSplitAt i (fun _ => Bool)).symm.sum_comp, Fintype.sum_prod_type, Fintype.sum_bool]
-  simp only [fpw_symm, if_true, Bool.false_eq_true, if_false, Finset.mul_sum]
+  simp only [fpw_symm, ite_true, Bool.false_eq_true, ite_false, Finset.mul_sum]
   congr 1 <;> refine Finset.sum_congr rfl (fun τ _ => ?_) <;> split_ifs <;> ring
 
 /-- `i` is pivotal for `A`. -/
@@ -136,7 +136,7 @@ theorem fpr_piv (par : ι → ℝ) (i : ι) {A : Set (ι → Bool)} (hA : IncrEv
       ((Equiv.piSplitAt i (fun _ => Bool)).symm (true, τ) ∈ A ∧
         (Equiv.piSplitAt i (fun _ => Bool)).symm (false, τ) ∉ A) := by
     intro b τ
-    simp only [Pivot, Set.mem_setOf_eq, update_symm]
+    simp only [Pivot, Set.mem_ofPred_eq, update_symm]
   have hincr : ∀ τ, (Equiv.piSplitAt i (fun _ => Bool)).symm (false, τ) ∈ A →
       (Equiv.piSplitAt i (fun _ => Bool)).symm (true, τ) ∈ A := by
     intro τ h
@@ -243,7 +243,7 @@ theorem card_agree_le (J : Finset ι) (S : Set (ι → Bool)) (φ : (ι → Bool
   have hinj : Set.InjOn (fun ω : ι → Bool => fun j : ↥J => ω j.1)
       ↑(Finset.univ.filter (fun ω => ω ∈ S ∧ φ ω = ω')) := by
     intro ω hω ω₂ hω₂ heq
-    simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq] at hω hω₂
+    simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_ofPred_eq] at hω hω₂
     funext j
     by_cases hj : j ∈ J
     · exact congrFun heq ⟨j, hj⟩
@@ -270,7 +270,7 @@ theorem fpw_le_of_agree {par : ι → ℝ} (hpar : IsParam par) (J : Finset ι) 
   have hin : ∏ j ∈ J, (if ω j then par j else 1 - par j) ≤
       ρ ^ J.card * ∏ j ∈ J, (if ω' j then par j else 1 - par j) := by
     rw [← Finset.prod_const, ← Finset.prod_mul_distrib]
-    refine Finset.prod_le_prod
+    refine Finset.prod_le_prod₀
       (fun j _ => by split_ifs; exacts [(hpar j).1, by linarith [(hpar j).2]])
       (fun j hj => ?_)
     obtain ⟨h1, h2⟩ := hlow j hj
@@ -315,7 +315,7 @@ theorem fpw_le_of_par {par par' : ι → ℝ} (hpar : IsParam par) (hpar' : IsPa
   have hin : ∏ j ∈ J, (if ω j then par j else 1 - par j) ≤
       ρ ^ J.card * ∏ j ∈ J, (if ω j then par' j else 1 - par' j) := by
     rw [← Finset.prod_const, ← Finset.prod_mul_distrib]
-    refine Finset.prod_le_prod
+    refine Finset.prod_le_prod₀
       (fun j _ => by split_ifs; exacts [(hpar j).1, by linarith [(hpar j).2]])
       (fun j hj => ?_)
     obtain ⟨h1, h2⟩ := hrat j hj
@@ -397,7 +397,7 @@ theorem bondLaw_toReal_eq_fpr (p : NNReal) (hp : p ≤ 1) (F : Finset (Sym2 Site
     · simp)]
   unfold fpr fpw
   refine Finset.sum_congr rfl (fun ξ _ => ?_)
-  simp only [Set.mem_setOf_eq]
+  simp only [Set.mem_ofPred_eq]
   split_ifs with h
   · rw [ENNReal.toReal_prod]
     refine Fintype.prod_congr _ _ (fun b => ?_)

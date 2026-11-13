@@ -20,6 +20,7 @@ import Rotor.Periodic
 import Rotor.Events
 import Rotor.External.Kingman
 import Rotor.External.LSS
+import Rotor.External.LSSProved
 import Rotor.External.AngelHolroyd
 import Rotor.Percolation
 import Rotor.External.SubcriticalDecay
@@ -158,6 +159,7 @@ import Rotor.Bridge.OneCircuit
 import Rotor.Bridge.HolroydPropp
 import Rotor.Bridge.AngelHolroyd
 import Rotor.MainTheorems
+import Rotor.MainTheoremsUnconditional
 
 /-!
 # Directed rotor walk on `ℤ²`: the range exponent `2/3`

@@ -41,7 +41,7 @@ theorem intervalStart_forced (f d : Site) (h₁ : List Bool) {t r : Site}
   unfold IntervalStart
   rw [replay_append, explStepWith_cons he]
   refine ⟨by simp, fun e he' => ?_⟩
-  simp only [if_true, List.append_nil, List.mem_filter, continuations_eq, List.mem_cons,
+  simp only [ite_true, List.append_nil, List.mem_filter, continuations_eq, List.mem_cons,
     List.not_mem_nil, or_false] at he'
   rcases he'.1 with rfl | rfl | rfl <;> rfl
 
@@ -114,7 +114,7 @@ theorem intInv_step (f : Site) {d : Site} (hd : IsUnit d) {h₀ : List Bool} {r 
       · rcases o with _ | _
         · simp at h1
         · right
-          simp only [continuations_eq, if_true, List.mem_cons, List.not_mem_nil, or_false] at h1
+          simp only [continuations_eq, ite_true, List.mem_cons, List.not_mem_nil, or_false] at h1
           have : e'.1 = g := by rcases h1 with rfl | rfl | rfl <;> rfl
           rw [this, hvis]
           exact ⟨Finset.mem_insert_self _ _, hgV0⟩
@@ -140,7 +140,7 @@ theorem intInv_step (f : Site) {d : Site} (hd : IsUnit d) {h₀ : List Bool} {r 
       · -- the new face `g`
         rcases o with _ | _
         · exact absurd hg' hold
-        simp only [if_true, Finset.mem_insert] at hg'
+        simp only [ite_true, Finset.mem_insert] at hg'
         rcases hg' with rfl | hg'
         · rcases hI.tails (a, g') hmem with ha | ⟨haV, haV0⟩
           · -- chain `[r, g']`
@@ -181,7 +181,7 @@ theorem intInv_step (f : Site) {d : Site} (hd : IsUnit d) {h₀ : List Bool} {r 
               exact List.mem_append_right _ (List.mem_singleton_self _)
             · intro y hy
               rw [hvis]
-              simp only [if_true]
+              simp only [ite_true]
               rw [List.mem_append, List.mem_singleton] at hy
               rcases hy with hy | rfl
               · exact Finset.mem_insert_of_mem (h5 y hy)

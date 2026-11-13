@@ -125,14 +125,14 @@ theorem T_mem (ρ : Config G) (o : V) (n : ℕ) (h : T π ρ o n < ⊤) :
   have hge : ((Nat.find hex : ℕ) : ℕ∞) ≤ T π ρ o n := by
     rw [T_eq]
     exact le_iInf₂ (fun t ht => by exact_mod_cast Nat.find_min' hex ht)
-  rw [le_antisymm hle hge, ENat.toNat_coe]
+  rw [le_antisymm hle hge, ENat.toNat_natCast]
   exact hmem
 
 /-- `T n` is the least element of its defining set. -/
 theorem T_min (ρ : Config G) (o : V) (n : ℕ) {t : ℕ} (ht : t ∈ circuitSet π ρ o n) :
     (T π ρ o n).toNat ≤ t := by
   have := T_le_of_mem π ρ o n ht
-  exact ENat.toNat_le_of_le_coe this
+  exact ENat.toNat_le_of_le_natCast this
 
 /-- At time `T n`, the walk is at `o`. -/
 theorem X_T (ρ : Config G) (o : V) (n : ℕ) (h : T π ρ o n < ⊤) :

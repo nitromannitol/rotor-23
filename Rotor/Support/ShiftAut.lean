@@ -55,7 +55,7 @@ theorem shiftConfig_preimage_recurrent [Infinite V] (hG : G.Connected)
     (hAH : External.RecurrentOfRecurrent G) (hπ : P.Periodic π) (z : ℤ × ℤ) (o : V) :
     P.shiftConfig z ⁻¹' {ρ | Recurrent π ρ o} = {ρ | Recurrent π ρ o} := by
   ext ρ
-  simp only [Set.mem_preimage, Set.mem_setOf_eq]
+  simp only [Set.mem_preimage, Set.mem_ofPred_eq]
   constructor
   · intro h
     exact (P.recurrent_shiftConfig hπ z ρ o).1 (hAH π inferInstance hG _ _ _ h)

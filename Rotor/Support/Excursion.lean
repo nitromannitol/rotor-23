@@ -88,7 +88,7 @@ theorem deps_mono (v : Site) {a b : ℕ} (hab : a ≤ b) : deps σ o v a ≤ dep
 theorem deps_lt_of_eq (v : Site) {a b : ℕ} (hab : a < b) (ha : Y a = v) :
     deps σ o v a < deps σ o v b := by
   have h1 := deps_succ σ o v a
-  rw [if_pos ha] at h1
+  rw [ite_eq_left ha] at h1
   have h2 := deps_mono σ o v (show a + 1 ≤ b by omega)
   omega
 
@@ -125,7 +125,7 @@ theorem exists_deps_eq {v : Site} {j : ℕ} (hj : j < kOut σ o r v) :
     have : a ≤ r' := Nat.find_min' hex (by rw [← hr']; exact hj)
     omega
   · by_contra hne
-    rw [if_neg hne] at hs
+    rw [ite_eq_right hne] at hs
     omega
   · split_ifs at hs with hv
     · omega

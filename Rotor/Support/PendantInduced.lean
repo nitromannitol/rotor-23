@@ -217,7 +217,7 @@ theorem latDir_succ (k : Fin (M + 4)) (hk : (k : ℕ) ≤ 2 ∨ (k : ℕ) = M + 
     have h4 : (k : ℕ) < 4 := by omega
     have h5 : (k : ℕ) + 1 < 4 := by omega
     apply Fin.ext
-    simp only [latDir, h1, dif_pos h4, dif_pos h5, Fin.val_add, Fin.val_one]
+    simp only [latDir, h1, dite_eq_left h4, dite_eq_left h5, Fin.val_add, Fin.val_one]
     omega
   · have h1 : ((k + 1 : Fin (M + 4)) : ℕ) = 0 := by
       rw [hk1, hk, show M + 3 + 1 = M + 4 by ring, Nat.mod_self]
@@ -452,7 +452,7 @@ initial leaf phase, hence finitely often. -/
 theorem visits_subset_of_no_return (h : ∀ s, 1 ≤ s → Ysq M ρ o s ≠ o) :
     {t | Xpend M ρ o t = .inl o} ⊆ Set.Iic (latTime M ρ o 0) := by
   intro t ht
-  simp only [Set.mem_setOf_eq] at ht
+  simp only [Set.mem_ofPred_eq] at ht
   by_contra hlt
   simp only [Set.mem_Iic, not_le] at hlt
   obtain ⟨s, hs1, hs2⟩ := exists_between M ρ o t hlt

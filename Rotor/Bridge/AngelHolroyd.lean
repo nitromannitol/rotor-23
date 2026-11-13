@@ -76,7 +76,7 @@ theorem rot_eq_pow_visitCount (π : Mechanism G) (ρ : Config G) (o v : V) (n : 
         rw [show Finset.range (n + 1) = insert n (Finset.range n) by
           ext s; simp only [Finset.mem_insert, Finset.mem_range]; omega]
         rw [Finset.filter_insert]
-        simp only [if_true]
+        simp only [ite_true]
         have hnmem : n ∉ (Finset.range n).filter
             (fun s => X π ρ o s = X π ρ o n) := by
           simp only [Finset.mem_filter, Finset.mem_range]
@@ -203,7 +203,7 @@ theorem recurrent_of_infinite_visits (π : Mechanism G) (_hV : Infinite V)
     (hG : G.Connected) (ρ : Config G) (o : V)
     (ha : Set.Infinite {t : ℕ | X π ρ o t = o}) :
     Recurrent π ρ o := by
-  letI : G.LocallyFinite := locallyFinite_of_mechanism π
+  let : G.LocallyFinite := locallyFinite_of_mechanism π
   have hstep : ∀ {u v : V}, G.Adj u v →
       Set.Infinite {t : ℕ | X π ρ o t = u} →
       Set.Infinite {t : ℕ | X π ρ o t = v} := by
@@ -400,9 +400,9 @@ theorem sourceList_eq_powers (π : Mechanism G) (ρ : Config G)
   | succ n ih =>
       rw [sourceList_succ]
       by_cases h : X π ρ o n = x
-      · rw [if_pos h]
+      · rw [ite_eq_left h]
         have hc := visitCount_succ π ρ o x n
-        rw [if_pos h] at hc
+        rw [ite_eq_left h] at hc
         rw [hc]
         have hnext : X π ρ o (n + 1) =
             (((π.next x) ^
@@ -414,7 +414,7 @@ theorem sourceList_eq_powers (π : Mechanism G) (ρ : Config G)
             (visitCount π ρ o x n).succ by omega]
         rw [List.range_succ, List.map_append]
         simp
-      · rw [if_neg h, visitCount_succ, if_neg h, ih]
+      · rw [ite_eq_right h, visitCount_succ, ite_eq_right h, ih]
         simp
 
 /-- Every time before `n` is recorded by exactly one of `deletedList` or `visitCount`, so their
@@ -429,9 +429,9 @@ theorem deletedList_length_add_visitCount (π : Mechanism G) (ρ : Config G)
       rw [deletedList_succ,
         visitCount_succ]
       by_cases h : X π ρ o n = x
-      · rw [if_pos h, if_pos h]
+      · rw [ite_eq_left h, ite_eq_left h]
         omega
-      · rw [if_neg h, if_neg h]
+      · rw [ite_eq_right h, ite_eq_right h]
         simp only [List.length_append, List.length_cons, List.length_nil]
         omega
 
@@ -488,7 +488,7 @@ theorem isComplete_of_return (π : Mechanism G) [G.LocallyFinite]
         · have hD' : D (n + 1) = D n := by
             simpa [D, hnx] using deletedList_succ π ρ x x n
           have hS' := sourceList_succ π ρ x x n
-          rw [if_pos hnx] at hS'
+          rw [ite_eq_left hnx] at hS'
           have hnextx : X π ρ x (n + 1) ≠ x := by
             intro heq
             have hadj := adj_X_succ π ρ x n
@@ -506,24 +506,24 @@ theorem isComplete_of_return (π : Mechanism G) [G.LocallyFinite]
             have hfalse : ¬(X π ρ x n = v ∧ v ≠ x) := by
               intro h
               exact h.2 (h.1.symm.trans hnx)
-            rw [if_neg hfalse] at hs
+            rw [ite_eq_right hfalse] at hs
             by_cases hnv : X π ρ x (n + 1) = v
             · have hcond : X π ρ x (n + 1) = v ∧ v ≠ x := by
                 exact ⟨hnv, by intro hvx; exact hnextx (hvx ▸ hnv)⟩
-              rw [if_pos hcond]
+              rw [ite_eq_left hcond]
               have hsplus := congrArg (fun q => q + 1) hs
               simp [List.count_append, hnv] at hsplus ⊢
               omega
             · have hcond : ¬(X π ρ x (n + 1) = v ∧ v ≠ x) := by
                 intro h
                 exact hnv h.1
-              rw [if_neg hcond]
+              rw [ite_eq_right hcond]
               simpa [List.count_append, List.count_singleton, hcond, hnv] using hs
         · have hD' : D (n + 1) = D n ++ [X π ρ x n] := by
             simpa [D, hnx] using deletedList_succ π ρ x x n
           have hS' : sourceList π ρ x x (n + 1) =
               sourceList π ρ x x n := by
-            rw [sourceList_succ, if_neg hnx]
+            rw [sourceList_succ, ite_eq_right hnx]
           have huR : X π ρ x n ∈ R₀ := hR hnle
           have huK : X π ρ x n ∉ K := by
             intro hmem
@@ -599,8 +599,8 @@ theorem isComplete_of_return (π : Mechanism G) [G.LocallyFinite]
                   X π ρ x n ≠ x) := by
                 intro h
                 exact hne h.1
-              rw [if_pos (rfl : X π ρ x n = X π ρ x n),
-                if_neg hnoarr, if_neg hright]
+              rw [ite_eq_left (rfl : X π ρ x n = X π ρ x n),
+                ite_eq_right hnoarr, ite_eq_right hright]
               omega
             · have hs' : (run π K ξ (D n)).σ v +
                   (sourceList π ρ x x n).count v =
@@ -620,7 +620,7 @@ theorem isComplete_of_return (π : Mechanism G) [G.LocallyFinite]
                 have hrightv : ¬(X π ρ x (n + 1) = v ∧ v ≠ x) := by
                   intro h
                   exact h.2 hvx
-                rw [if_neg hfirst, if_neg hnoarrv, if_neg hrightv]
+                rw [ite_eq_right hfirst, ite_eq_right hnoarrv, ite_eq_right hrightv]
                 exact hs'
               · by_cases hvnext : X π ρ x (n + 1) = v
                 · have hnotK : v ∉ K := by
@@ -649,7 +649,7 @@ theorem isComplete_of_return (π : Mechanism G) [G.LocallyFinite]
     calc
       v = X π ρ x t := h.1.symm
       _ = x := ht
-  simp only [hcur, if_false] at hs
+  simp only [hcur, ite_false] at hs
   change (run π K ξ (D t)).σ v = 0
   omega
 
@@ -660,7 +660,7 @@ theorem recurrent_of_adjacent (π : Mechanism G) (hV : Infinite V) (hG : G.Conne
     (ρ : Config G) (x y : V) (hxy : G.Adj x y) (hx : Recurrent π ρ x) :
     Recurrent π ρ y := by
   classical
-  letI : G.LocallyFinite := locallyFinite_of_mechanism π
+  let : G.LocallyFinite := locallyFinite_of_mechanism π
   let p : Equiv.Perm (G.neighborSet x) := π.next x
   let d := Fintype.card (G.neighborSet x)
   have hd : 0 < d := by
@@ -783,7 +783,7 @@ theorem recurrent_of_adjacent (π : Mechanism G) (hV : Infinite V) (hG : G.Conne
         (L m).count v := by simpa [hsrc'] using hcount
     by_cases hv : v = y
     · subst v
-      simp only [beq_self_eq_true, if_true]
+      simp only [beq_self_eq_true, ite_true]
       omega
     · simp [Ne.symm hv]
       exact hcount'.trans (Nat.le_add_left _ _)
@@ -871,18 +871,18 @@ theorem recurrent_of_adjacent (π : Mechanism G) (hV : Infinite V) (hG : G.Conne
               have hfalse : ¬(X π ρ y n = v ∧ v ≠ x) := by
                 intro h
                 exact h.2 (h.1.symm.trans hnx)
-              rw [if_neg hfalse] at hs
+              rw [ite_eq_right hfalse] at hs
               by_cases hnv : X π ρ y (n + 1) = v
               · have hcond : X π ρ y (n + 1) = v ∧ v ≠ x :=
                   ⟨hnv, by intro hvx; exact hnextx (hvx ▸ hnv)⟩
-                rw [if_pos hcond]
+                rw [ite_eq_left hcond]
                 have hsplus := congrArg (fun q => q + 1) hs
                 simp [List.count_append, hnv] at hsplus ⊢
                 omega
               · have hcond : ¬(X π ρ y (n + 1) = v ∧ v ≠ x) := by
                   intro h
                   exact hnv h.1
-                rw [if_neg hcond]
+                rw [ite_eq_right hcond]
                 simpa [List.count_append, hnv] using hs
           · have hE' : E (n + 1) = E n ++ [X π ρ y n] := by
               simpa [E, hnx] using deletedList_succ π ρ y x n
@@ -936,8 +936,8 @@ theorem recurrent_of_adjacent (π : Mechanism G) (hV : Infinite V) (hG : G.Conne
                     X π ρ y (n + 1) ∉ K) := by
                   intro h
                   exact hne h.1
-                rw [if_pos (rfl : X π ρ y n = X π ρ y n),
-                  if_neg hnoarr, if_neg hright]
+                rw [ite_eq_left (rfl : X π ρ y n = X π ρ y n),
+                  ite_eq_right hnoarr, ite_eq_right hright]
                 have hs' : (run π K ξ (E n)).σ (X π ρ y n) +
                     (U n).count (X π ρ y n) = P.count (X π ρ y n) + 1 := by
                   simpa [hnx] using hs
@@ -956,7 +956,7 @@ theorem recurrent_of_adjacent (π : Mechanism G) (hV : Infinite V) (hG : G.Conne
                       exact hu')
                   have hright : ¬(X π ρ y (n + 1) = v ∧ v ≠ x) :=
                     fun h => h.2 hvx
-                  rw [if_neg hfirst, if_neg hnoarr, if_neg hright]
+                  rw [ite_eq_right hfirst, ite_eq_right hnoarr, ite_eq_right hright]
                   simpa [hvx] using hs
                 · by_cases hvnext : X π ρ y (n + 1) = v
                   · have hvK : v ∉ K := by
@@ -1216,7 +1216,7 @@ theorem recurrent_of_adjacent (π : Mechanism G) (hV : Infinite V) (hG : G.Conne
         omega
       have hE' : E s₀ = E (s₀ - 1) ++ [u] := by
         have hdel := deletedList_succ π ρ y x (s₀ - 1)
-        rw [if_neg hprevx] at hdel
+        rw [ite_eq_right hprevx] at hdel
         have hsuc : s₀ - 1 + 1 = s₀ := by omega
         rw [hsuc] at hdel
         simpa [E, u] using hdel

@@ -45,13 +45,13 @@ theorem intReach_subset (f : Site) {d : Site} (hd : IsUnit d) {h₀ : List Bool}
       ⋃ h' : {h' // MinWit f d h₀ (rootOf f d h₀) s h'},
         {ρ | history ρ f d h'.1.length = h'.1} := by
   rintro ρ ⟨hρ0, n, hI, g, hg, hg0, hdist⟩
-  simp only [Set.mem_setOf_eq] at hρ0
+  simp only [Set.mem_ofPred_eq] at hρ0
   set h' := history ρ f d n with hh'
   have hρ' : history ρ f d h'.length = h' := ((history_eq_iff ρ f d n h').1 hh'.symm).1
   have hex : explore ρ f d h'.length = replay f d h' := by rw [explore_eq_replay, hρ']
   have hg' : g ∈ (replay f d h').visited := by rw [← explore_eq_replay]; exact hg
   obtain ⟨h'', -, hp, hmin⟩ := exists_minWit f hd hs0 hI hex hg' hg0 hs hdist
-  simp only [Set.mem_iUnion, Set.mem_setOf_eq]
+  simp only [Set.mem_iUnion, Set.mem_ofPred_eq]
   exact ⟨⟨h'', hmin⟩, history_of_prefix f d hp hρ'⟩
 
 /-- The interval reach bound, from the constrained-crossing constants `c, C`. -/
@@ -104,7 +104,7 @@ theorem intervalHist_of_minF (f d : Site) {j : ℕ} {h₀ h' : List Bool}
   have h1 : (replay f d (h'.take (i + 1))).forced = (replay f d (h'.take i)).forced + 1 := by
     rw [List.take_add_one, List.getElem?_eq_getElem (by omega)]
     simp only [Option.toList_some]
-    rw [forced_append_cons f d _ he, if_pos hW]
+    rw [forced_append_cons f d _ he, ite_eq_left hW]
   have h2 := forced_take_ge f d hp hi
   have h3 := hm1.2 (i + 1) (by omega)
   omega
@@ -125,7 +125,7 @@ theorem sum_minF_succ_le (f : Site) {d : Site} (hd : IsUnit d) {j : ℕ} {h₀ :
     simp only [Set.mem_iUnion, exists_prop] at hρ
     obtain ⟨h', hh', hρ'⟩ := hρ
     obtain ⟨hm1, hp, g, hg, hg0, hdist⟩ := hF h' hh'
-    simp only [Set.mem_setOf_eq] at hρ'
+    simp only [Set.mem_ofPred_eq] at hρ'
     refine ⟨history_of_prefix f d hp hρ', h'.length - 1, ?_, g, ?_, hg0, hdist⟩
     · have hd' : history ρ f d (h'.length - 1) = h'.dropLast := by
         have := history_of_prefix f d (List.dropLast_prefix h') hρ'

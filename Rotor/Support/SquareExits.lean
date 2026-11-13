@@ -42,7 +42,7 @@ theorem rot_eq_deps (v : Site) : ∀ t : ℕ,
     by_cases h : X clockwise σ o t = v
     · subst h
       rw [Function.update_self, rot_eq_deps _ t]
-      simp only [if_true]
+      simp only [ite_true]
       show turnAt _ _ = _
       rw [turnAt_nbr]
       congr 1

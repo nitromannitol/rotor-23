@@ -20,7 +20,7 @@ variable {V : Type*} [DecidableEq V] {G : SimpleGraph V} [G.LocallyFinite] (π :
 /-- Proposition 4.1. -/
 theorem subcubic_recurrence_proof (hG : G.Connected) (h3 : ∀ v : V, G.degree v ≤ 3) :
     ∀ᵐ ρ ∂(uniformLaw π), ¬ HasInfLivePath π ρ := by
-  haveI := countable_of_connected hG
+  have := countable_of_connected hG
   rw [ae_iff]
   simp only [not_not]
   refine measure_mono_null (t := ⋃ e : V × V,

@@ -79,7 +79,7 @@ theorem mem_block_iff {L : ℕ} (hL : 0 < L) (z : ℤ × ℤ) (v : V) :
       have h1 : b * L ≤ a := (Int.le_ediv_iff_mul_le hL').1 h.ge
       have h2 : a < (b + 1) * L := (Int.ediv_lt_iff_lt_mul hL').1 (by omega)
       constructor <;> linarith
-  simp only [DoublyPeriodic.block, blockIndex, Set.mem_setOf_eq, Prod.ext_iff]
+  simp only [DoublyPeriodic.block, blockIndex, Set.mem_ofPred_eq, Prod.ext_iff]
   rw [key, key]
 
 omit [DecidableEq V] [G.LocallyFinite] in
@@ -87,7 +87,7 @@ omit [DecidableEq V] [G.LocallyFinite] in
 at most one from `z`. -/
 theorem mem_blockPlus_iff {L : ℕ} (hL : 0 < L) (z : ℤ × ℤ) (v : V) :
     v ∈ P.blockPlus L z ↔ linf (P.blockIndex L v - z) ≤ 1 := by
-  simp only [DoublyPeriodic.blockPlus, Set.mem_iUnion, Set.mem_setOf_eq, exists_prop]
+  simp only [DoublyPeriodic.blockPlus, Set.mem_iUnion, Set.mem_ofPred_eq, exists_prop]
   constructor
   · rintro ⟨w, hw, hv⟩
     rw [P.mem_block_iff hL] at hv
@@ -223,7 +223,7 @@ theorem block_finite (L : ℕ) (z : ℤ × ℤ) : (P.block L z).Finite := by
   have hsub : P.block L z ⊆ (fun p : (ℤ × ℤ) × V => P.shift p.1 p.2) ''
       (Set.Icc (L * z.1, L * z.2) (L * z.1 + L, L * z.2 + L) ×ˢ Set.range P.rep) := by
     intro v hv
-    simp only [DoublyPeriodic.block, Set.mem_setOf_eq, Set.mem_Ico] at hv
+    simp only [DoublyPeriodic.block, Set.mem_ofPred_eq, Set.mem_Ico] at hv
     refine ⟨(P.coord v, P.rep v), ?_, P.shift_coord_rep v⟩
     simp only [Set.mem_prod, Set.mem_Icc, Set.mem_range]
     exact ⟨⟨⟨by linarith [hv.1.1], by linarith [hv.2.1]⟩,
@@ -236,7 +236,7 @@ theorem blockPlus_finite (L : ℕ) (z : ℤ × ℤ) : (P.blockPlus L z).Finite :
   unfold DoublyPeriodic.blockPlus
   refine Set.Finite.biUnion ?_ (fun w _ => P.block_finite L w)
   refine (Set.finite_Icc (z.1 - 1, z.2 - 1) (z.1 + 1, z.2 + 1)).subset (fun w hw => ?_)
-  simp only [Set.mem_setOf_eq] at hw
+  simp only [Set.mem_ofPred_eq] at hw
   rw [max_le_iff, abs_le, abs_le] at hw
   simp only [Set.mem_Icc, Prod.le_def]
   omega

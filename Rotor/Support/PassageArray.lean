@@ -58,7 +58,7 @@ omit [DecidableEq V] in
 /-- `P.shiftConfig z` is measurable: each output coordinate factors through the (finite-valued)
 coordinate of `ρ` at the shifted vertex. -/
 theorem measurable_shiftConfig (z : ℤ × ℤ) : Measurable (P.shiftConfig z) := by
-  refine measurable_pi_lambda _ (fun v => ?_)
+  refine Measurable.of_eval (fun v => ?_)
   -- the coordinate at `v` is a function of the coordinate at `shift (-z) v`
   have : (fun ρ : Config G => P.shiftConfig z ρ v) =
       (fun a : G.neighborSet (P.shift (-z) v) =>
@@ -136,7 +136,7 @@ connectedness. -/
 theorem measurable_arr (hAb : External.Abelian G) [Infinite V] (hG : G.Connected)
     (o : V) (z : ℤ × ℤ) (m n : ℕ) :
     Measurable (fun ρ => arr π P ρ o z m n) := by
-  haveI := countable_of_connected hG
+  have := countable_of_connected hG
   exact measurable_from_nat.comp (measurable_τ π hAb hG _ _)
 
 /-- Each passage-array entry is integrable under a finite measure, since it is

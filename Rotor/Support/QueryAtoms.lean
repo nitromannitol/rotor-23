@@ -135,7 +135,7 @@ def Nxt (h : History G) (v : V) : Set (Config G) :=
 theorem atomF_nil : Q.atomF ([] : History G) = Set.univ := by
   ext ρ
   simp only [atomF, verts, List.map_nil, List.not_mem_nil, false_implies, implies_true,
-    and_true, Set.mem_setOf_eq, Set.mem_univ, iff_true]
+    and_true, Set.mem_ofPred_eq, Set.mem_univ, iff_true]
   exact ⟨0, by simp [Q.hist_init]⟩
 
 /-- Membership in `Q.atomF h` is determined by the coordinates in `verts h`, using
@@ -201,7 +201,7 @@ theorem atomF_inter_Nxt_determined [DecidableEq V] (h : History G) (v : V) :
 theorem atomF_append (h : History G) (v : V) (a : G.neighborSet v) :
     Q.atomF (h ++ [⟨v, a⟩]) = (Q.atomF h ∩ Q.Nxt h v) ∩ (fun ρ : Config G => ρ v) ⁻¹' {a} := by
   ext ρ
-  simp only [atomF, Nxt, verts, List.map_append, List.map_cons, List.map_nil, Set.mem_setOf_eq,
+  simp only [atomF, Nxt, verts, List.map_append, List.map_cons, List.map_nil, Set.mem_ofPred_eq,
     Set.mem_inter_iff, List.mem_append, List.mem_singleton, Set.mem_preimage,
     Set.mem_singleton_iff]
   constructor

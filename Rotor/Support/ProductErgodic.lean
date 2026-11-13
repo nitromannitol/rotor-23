@@ -31,6 +31,7 @@ omit [DecidableEq V] [G.LocallyFinite] in
 /-- The equivalence `shiftVEquiv z` acts on a vertex the same way as `shift z`. -/
 theorem shiftVEquiv_apply (z : ℤ × ℤ) (v : V) : P.shiftVEquiv z v = P.shift z v := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 omit [DecidableEq V] [G.LocallyFinite] in
 /-- Shifting a configuration by `z` agrees with transporting the pointwise-shifted family
 `fun w => shiftNbr z (ρ w)` along the vertex relabeling `shiftVEquiv z`. -/
@@ -50,6 +51,7 @@ omit [DecidableEq V] [G.LocallyFinite] in
 theorem measurable_shiftNbr (z : ℤ × ℤ) (v : V) : Measurable (P.shiftNbr z (v := v)) :=
   measurable_from_top
 
+set_option backward.isDefEq.respectTransparency.types false in
 omit [DecidableEq V] in
 /-- A product law with invariant marginals is invariant. -/
 theorem productLaw_invariant (ν : ∀ v : V, Measure (G.neighborSet v))
@@ -64,7 +66,7 @@ theorem productLaw_invariant (ν : ∀ v : V, Measure (G.neighborSet v))
     rw [Function.comp_apply, MeasurableEquiv.coe_piCongrLeft]
     exact P.shiftConfig_eq_piCongrLeft z ρ
   have hf : Measurable (fun ρ : Config G => fun w => P.shiftNbr z (ρ w)) :=
-    measurable_pi_lambda _ (fun w => (P.measurable_shiftNbr z w).comp (measurable_pi_apply w))
+    Measurable.of_eval (fun w => (P.measurable_shiftNbr z w).comp (measurable_pi_apply w))
   unfold productLaw
   rw [hfun, ← Measure.map_map
     (g := ⇑(MeasurableEquiv.piCongrLeft (fun v => G.neighborSet v) (P.shiftVEquiv z)))
@@ -99,8 +101,8 @@ omit [DecidableEq V] in
 /-- The uniform one-vertex laws are invariant. -/
 theorem uniformAt_invariantMarginals (π : Mechanism G) : P.InvariantMarginals (uniformAt π) := by
   intro z v
-  haveI := π.nonempty v
-  haveI := π.nonempty (P.shift z v)
+  have := π.nonempty v
+  have := π.nonempty (P.shift z v)
   refine Measure.ext_iff_singleton.2 (fun a => ?_)
   rw [Measure.map_apply (P.measurable_shiftNbr z v) (measurableSet_singleton a)]
   have hpre : P.shiftNbr z ⁻¹' {a} = {(P.shiftNbrEquiv z v).symm a} := by

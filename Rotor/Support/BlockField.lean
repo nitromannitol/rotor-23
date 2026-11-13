@@ -442,7 +442,7 @@ open Classical in
 /-- The block field `blockField π P L`, viewed as a function into `ℤ × ℤ → Bool`, is
 measurable. -/
 theorem measurable_blockField : Measurable (blockField π P L) := by
-  refine measurable_pi_lambda _ (fun z => ?_)
+  refine Measurable.of_eval (fun z => ?_)
   refine measurable_to_countable' (fun b => ?_)
   cases b
   · have : (fun c : MPair G => blockField π P L c z) ⁻¹' {false} =
@@ -484,8 +484,8 @@ theorem kDependent_blockField (hL : 0 < L) :
   classical
   intro I J hIJ
   refine indepFun_map_of _ (measurable_blockField π P L)
-    (measurable_pi_lambda _ (fun i => measurable_pi_apply _))
-    (measurable_pi_lambda _ (fun j => measurable_pi_apply _)) ?_
+    (Measurable.of_eval (fun i => measurable_pi_apply _))
+    (Measurable.of_eval (fun j => measurable_pi_apply _)) ?_
   rw [blockField_restrict_eq π P L I, blockField_restrict_eq π P L J]
   have hdisj : Disjoint (I.biUnion (blockPlusFin P L)) (J.biUnion (blockPlusFin P L)) := by
     rw [Finset.disjoint_biUnion_left]
@@ -574,7 +574,7 @@ theorem mLaw_iInter_markedBlockEvent_le (hL : 0 < L) {ε : ℝ}
   have hinc : External.IsIncreasing {ω : ℤ × ℤ → Bool | ∀ z ∈ Z, ω z = true} :=
     fun ω ω' hω hle z hz => hle z (hω z hz)
   have h := hLSS ((mLaw ν s hs).map (blockField π P L))
-    (Measure.isProbabilityMeasure_map (measurable_blockField π P L).aemeasurable)
+    inferInstance
     (kDependent_blockField π P L ν s hs hL) (fun z => by rw [map_blockField_site]; exact hsite z)
     _ hA hinc
   rw [bernoulliField_all, Measure.map_apply (measurable_blockField π P L) hA] at h

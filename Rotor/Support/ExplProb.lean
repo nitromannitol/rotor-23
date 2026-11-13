@@ -118,23 +118,22 @@ theorem history_event (f d : Site) : ∀ (h : List Bool),
     have hne : (replay f d h).active ≠ [] := by
       have := hpre h.length (by simp)
       rwa [List.take_left'] at this
-      rfl
     have ih' := ih (fun i hi => by
       have := hpre i (by simp; omega)
       rwa [List.take_append_of_le_length hi.le] at this)
     ext ρ
-    simp only [Set.mem_setOf_eq, List.length_append, List.length_singleton]
+    simp only [Set.mem_ofPred_eq, List.length_append, List.length_singleton]
     rw [history_append_iff ρ f d h o hne]
     have hmem : ρ ∈ {ρ | history ρ f d h.length = h} ↔ ρ ∈ testEvent (replay f d h).tested := by
       rw [ih']
-    simp only [Set.mem_setOf_eq] at hmem
+    simp only [Set.mem_ofPred_eq] at hmem
     rw [hmem, replay_append]
     rcases hh : (replay f d h).active with _ | ⟨e, rest⟩
     · exact absurd hh hne
     rw [explStepWith_cons hh]
     have hout : outcome ρ f d h = decide (DualOpen ρ e.1 e.2) := by rw [outcome, curEdge_eq hh]
     rw [hout]
-    simp only [testEvent, Set.mem_setOf_eq, List.mem_append, List.mem_singleton]
+    simp only [testEvent, Set.mem_ofPred_eq, List.mem_append, List.mem_singleton]
     constructor
     · rintro ⟨h1, h2⟩ t ht
       rcases ht with ht | rfl
@@ -154,7 +153,7 @@ theorem testEvent_split (C : List (Site × Site × Bool)) (v : Site) :
     testEvent C = testEvent (C.filter (fun t => tailOf t = v)) ∩
       testEvent (C.filter (fun t => tailOf t ≠ v)) := by
   ext ρ
-  simp only [testEvent, Set.mem_setOf_eq, Set.mem_inter_iff, List.mem_filter, decide_eq_true_eq,
+  simp only [testEvent, Set.mem_ofPred_eq, Set.mem_inter_iff, List.mem_filter, decide_eq_true_eq,
     and_imp]
   constructor
   · intro h
@@ -182,7 +181,7 @@ theorem testEvent_at (C : List (Site × Site × Bool)) (v : Site)
     testEvent C = (fun ρ : Config squareGraph => ρ v) ⁻¹'
       {x | ∀ t ∈ C, openAt (primalDir t.1 t.2.1) ((nbr v).symm x) = t.2.2} := by
   ext ρ
-  simp only [testEvent, Set.mem_setOf_eq, Set.mem_preimage]
+  simp only [testEvent, Set.mem_ofPred_eq, Set.mem_preimage]
   refine forall₂_congr (fun t ht => ?_)
   have h1 := dualOpen_iff_openAt' ρ (hadj t ht)
   rw [hC t ht] at h1
@@ -261,7 +260,7 @@ theorem testEvent_inter_open (C : List (Site × Site × Bool))
   have hopen : {ρ : Config squareGraph | DualOpen ρ e.1 e.2} =
       (fun ρ : Config squareGraph => ρ v) ⁻¹' {x | openAt a ((nbr v).symm x) = true} := by
     ext ρ
-    simp only [Set.mem_setOf_eq, Set.mem_preimage]
+    simp only [Set.mem_ofPred_eq, Set.mem_preimage]
     rw [hev, dualOpen_iff_openAt]
     rfl
   have hsplit : testEvent C = (fun ρ : Config squareGraph => ρ v) ⁻¹' {x | Q ((nbr v).symm x)} ∩
@@ -276,7 +275,7 @@ theorem testEvent_inter_open (C : List (Site × Site × Bool))
         (fun ρ : Config squareGraph => ρ v) ⁻¹' {x | openAt a ((nbr v).symm x) = true} =
         (fun ρ : Config squareGraph => ρ v) ⁻¹'
           {x | Q ((nbr v).symm x) ∧ openAt a ((nbr v).symm x) = true} ∩ testEvent Cr := by
-      ext ρ; simp only [Set.mem_inter_iff, Set.mem_preimage, Set.mem_setOf_eq]; tauto
+      ext ρ; simp only [Set.mem_inter_iff, Set.mem_preimage, Set.mem_ofPred_eq]; tauto
     rw [this]
     exact infinitePi_eval_inter (μ := uniformAt clockwise) v _ _ hvT hdet
   have key2 : uniformLaw clockwise (testEvent C) =
@@ -296,7 +295,7 @@ theorem testEvent_inter_open (C : List (Site × Site × Bool))
     congr 1
     congr 1
     ext x
-    simp only [Set.mem_setOf_eq, and_iff_left_iff_imp]
+    simp only [Set.mem_ofPred_eq, and_iff_left_iff_imp]
     intro hx
     have := hx _ (hW false hWc)
     simp only [dualEdge, primalDir_dual] at this
@@ -308,7 +307,7 @@ theorem testEvent_inter_open (C : List (Site × Site × Bool))
     have : {x : squareGraph.neighborSet v |
         Q ((nbr v).symm x) ∧ openAt a ((nbr v).symm x) = true} = ∅ := by
       ext x
-      simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false, not_and]
+      simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false, not_and]
       intro hx
       have := hx _ (hW true hWo)
       simp only [dualEdge, primalDir_dual] at this
@@ -382,11 +381,11 @@ theorem testEvent_inter_open (C : List (Site × Site × Bool))
         {x | (sideOK m₁t m₁f (openAt (a - 1) ((nbr v).symm x)) ∧
           sideOK m₂t m₂f (openAt (a + 1) ((nbr v).symm x))) ∧
             openAt a ((nbr v).symm x) = true} := by
-      ext x; simp only [Set.mem_setOf_eq, hQ']
+      ext x; simp only [Set.mem_ofPred_eq, hQ']
     have hs2 : {x : squareGraph.neighborSet v | Q ((nbr v).symm x)} =
         {x | sideOK m₁t m₁f (openAt (a - 1) ((nbr v).symm x)) ∧
           sideOK m₂t m₂f (openAt (a + 1) ((nbr v).symm x))} := by
-      ext x; simp only [Set.mem_setOf_eq, hQ']
+      ext x; simp only [Set.mem_ofPred_eq, hQ']
     rw [hs1, hs2, uniformAt_dir v (fun dd => (sideOK m₁t m₁f (openAt (a - 1) dd) ∧
       sideOK m₂t m₂f (openAt (a + 1) dd)) ∧ openAt a dd = true),
       uniformAt_dir v (fun dd => sideOK m₁t m₁f (openAt (a - 1) dd) ∧

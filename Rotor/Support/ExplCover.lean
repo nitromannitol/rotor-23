@@ -186,7 +186,7 @@ theorem explCov_step (ρ : Config squareGraph) (f : Site) {s : ExplState} (hinv 
             simp
           · left
             rw [hv', ho']
-            simp only [if_true]
+            simp only [ite_true]
             exact mem_insert_self _ _
         · rcases hfilter (x, y) (List.mem_append_right _ hy) with hc | hc | hc
           · exact Or.inl hc
@@ -198,7 +198,7 @@ theorem explCov_step (ρ : Config squareGraph) (f : Site) {s : ExplState} (hinv 
         rw [hv'] at hx
         rcases ho' : o with _ | _
         · rw [ho'] at hx; simp at hx; exact absurd hx hxold
-        · rw [ho'] at hx; simp only [if_true, mem_insert] at hx
+        · rw [ho'] at hx; simp only [ite_true, mem_insert] at hx
           rcases hx with hx | hx
           · exact ⟨hx, rfl⟩
           · exact absurd hx hxold

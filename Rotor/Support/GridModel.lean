@@ -41,7 +41,7 @@ def GEvent : Set (GIdx x y r → Bool) :=
 /-- On a bond `b` of the box, `bondsOf` just reads off the `Sum.inl` coordinate of `ω`. -/
 theorem bondsOf_apply (ω : GIdx x y r → Bool) (b : ↥(Fset x y r)) :
     bondsOf x y r ω b.1 = ω (Sum.inl b) := by
-  unfold bondsOf extF; rw [dif_pos b.2]
+  unfold bondsOf extF; rw [dite_eq_left b.2]
 
 /-- `GEvent x y r` is an increasing event: opening more bonds and marks preserves the
 existence of a valid path. -/
@@ -53,7 +53,7 @@ theorem gEvent_incr : IncrEvent (GEvent x y r) := by
     exact hle _ h
   · have := hm z hz hT
     unfold marksOf at this ⊢
-    rw [dif_pos hz] at this ⊢
+    rw [dite_eq_left hz] at this ⊢
     exact hle _ this
 
 /-- Updating the `Sum.inl b` coordinate of `ω` updates exactly the bond `b.1` of
@@ -67,12 +67,12 @@ theorem bondsOf_update_inl (ω : GIdx x y r → Bool) (b : ↥(Fset x y r)) (v :
   · rw [Function.update_of_ne hb]
     unfold bondsOf extF
     by_cases h : b' ∈ Fset x y r
-    · rw [dif_pos h, dif_pos h]
+    · rw [dite_eq_left h, dite_eq_left h]
       show Function.update ω (Sum.inl b) v (Sum.inl ⟨b', h⟩) = ω (Sum.inl ⟨b', h⟩)
       rw [Function.update_of_ne]
       intro heq
       exact hb (congrArg Subtype.val (Sum.inl.inj heq))
-    · rw [dif_neg h, dif_neg h]
+    · rw [dite_eq_right h, dite_eq_right h]
 
 /-- Updating a bond coordinate of `ω` does not change the marks read off it, since `marksOf`
 depends only on the `Sum.inr` coordinates. -/
@@ -104,7 +104,7 @@ theorem marksOf_update_inr (ω : GIdx x y r → Bool) (z : ↥(Zset r)) (v : Boo
   by_cases hz : z' = z.1
   · rw [hz, Function.update_self]
     unfold marksOf
-    rw [dif_pos z.2]
+    rw [dite_eq_left z.2]
     exact Function.update_self (Sum.inr z) v ω
   · rw [Function.update_of_ne hz]
     unfold marksOf
@@ -323,38 +323,38 @@ theorem gridPar_insert (ε : ℝ) (W : Finset (ℤ × ℤ)) {z : ℤ × ℤ} (hz
   funext j
   rcases j with b | z'
   · have hne : (Sum.inl b : GIdx x y r) ≠ Sum.inr ⟨z, hz⟩ := Sum.inl_ne_inr
-    simp only [gridPar, Sum.elim_inl, if_neg hne]
+    simp only [gridPar, Sum.elim_inl, ite_eq_right hne]
     by_cases hE : Sum.inl b ∈ newSet x y r W z
-    · rw [if_pos hE]
+    · rw [ite_eq_left hE]
       unfold newSet at hE; rw [mem_filter] at hE
       obtain ⟨-, b', hbb', hin, hnot⟩ := hE
       have hb' : b' = b := (Sum.inl.inj hbb').symm
       subst hb'
-      rw [if_pos ⟨z, mem_insert_self _ _, hin⟩, if_neg hnot]
-    · rw [if_neg hE]
+      rw [ite_eq_left ⟨z, mem_insert_self _ _, hin⟩, ite_eq_right hnot]
+    · rw [ite_eq_right hE]
       unfold newSet at hE; rw [mem_filter] at hE
       by_cases hW : ∃ z' ∈ W, Inside x y z' b.1
-      · rw [if_pos hW]
+      · rw [ite_eq_left hW]
         obtain ⟨z', hz', hin⟩ := hW
-        rw [if_pos ⟨z', mem_insert_of_mem hz', hin⟩]
-      · rw [if_neg hW]
+        rw [ite_eq_left ⟨z', mem_insert_of_mem hz', hin⟩]
+      · rw [ite_eq_right hW]
         have hnin : ¬ Inside x y z b.1 := fun hin => hE ⟨mem_univ _, b, rfl, hin, hW⟩
-        rw [if_neg]
+        rw [ite_eq_right]
         rintro ⟨z', hz', hin⟩
         rw [mem_insert] at hz'
         rcases hz' with rfl | hz'
         · exact hnin hin
         · exact hW ⟨z', hz', hin⟩
   · simp only [gridPar, Sum.elim_inr]
-    rw [if_neg (inr_notMem_newSet x y r W z z')]
+    rw [ite_eq_right (inr_notMem_newSet x y r W z z')]
     by_cases hzz : z'.1 = z
     · have hz' : z' = ⟨z, hz⟩ := Subtype.ext hzz
-      rw [if_pos (show (Sum.inr z' : GIdx x y r) = Sum.inr ⟨z, hz⟩ by rw [hz']),
-        if_pos (show z'.1 ∈ insert z W by rw [hzz]; exact mem_insert_self _ _)]
-    · rw [if_neg (fun h => hzz (congrArg Subtype.val (Sum.inr.inj h)))]
+      rw [ite_eq_left (show (Sum.inr z' : GIdx x y r) = Sum.inr ⟨z, hz⟩ by rw [hz']),
+        ite_eq_left (show z'.1 ∈ insert z W by rw [hzz]; exact mem_insert_self _ _)]
+    · rw [ite_eq_right (fun h => hzz (congrArg Subtype.val (Sum.inr.inj h)))]
       by_cases hW : z'.1 ∈ W
-      · rw [if_pos (mem_insert_of_mem hW), if_pos hW]
-      · rw [if_neg (show ¬ z'.1 ∈ insert z W by rw [mem_insert]; tauto), if_neg hW]
+      · rw [ite_eq_left (mem_insert_of_mem hW), ite_eq_left hW]
+      · rw [ite_eq_right (show ¬ z'.1 ∈ insert z W by rw [mem_insert]; tauto), ite_eq_right hW]
 
 /-- Processing one more block does not decrease the probability of the marked event. -/
 theorem gridPar_step {ε : ℝ} (hε : 0 < ε) (hε' : ε ≤ 1 / 4)
@@ -374,9 +374,9 @@ theorem gridPar_step {ε : ℝ} (hε : 0 < ε) (hε' : ε ≤ 1 / 4)
   · intro j hj
     unfold newSet at hj; rw [mem_filter] at hj
     obtain ⟨-, b, rfl, -, hnot⟩ := hj
-    simp only [gridPar, Sum.elim_inl, if_neg hnot]
+    simp only [gridPar, Sum.elim_inl, ite_eq_right hnot]
     constructor <;> linarith
-  · simp only [gridPar, Sum.elim_inr, if_neg hzW]
+  · simp only [gridPar, Sum.elim_inr, ite_eq_right hzW]
   · intro j hj
     unfold newSet at hj; rw [mem_filter] at hj
     obtain ⟨-, b, rfl, hin, -⟩ := hj
@@ -425,7 +425,7 @@ theorem gridPar_full (ε : ℝ) :
   funext j
   rcases j with b | z
   · simp only [gridPar, Sum.elim_inl]
-    rw [if_pos]
+    rw [ite_eq_left]
     obtain ⟨u, w, hu, hw, hadj, hb⟩ := mem_Fset.1 b.2
     obtain ⟨z, hz, hzu, hzw⟩ := exists_block_of_adj hu hw hadj
     refine ⟨z, hz, fun v hv => ?_⟩
@@ -433,7 +433,7 @@ theorem gridPar_full (ε : ℝ) :
     rcases Sym2.mem_iff.1 hv with rfl | rfl
     · exact hzu
     · exact hzw
-  · simp only [gridPar, Sum.elim_inr, if_pos z.2]
+  · simp only [gridPar, Sum.elim_inr, ite_eq_left z.2]
 
 end GridModel
 

@@ -29,7 +29,7 @@ theorem measurableSet_dualOpen {a b : Site} (h : squareGraph.Adj a b) :
       (fun ρ : Config squareGraph => ρ (primalTail a b)) ⁻¹'
         {x | openAt (primalDir a b) ((nbr (primalTail a b)).symm x) = true} := by
     ext ρ
-    simp only [Set.mem_setOf_eq, Set.mem_preimage]
+    simp only [Set.mem_ofPred_eq, Set.mem_preimage]
     have := dualOpen_iff_openAt ρ (primalTail a b) (primalDir a b)
     rw [dualEdge_primal h] at this
     rw [this]
@@ -49,7 +49,7 @@ theorem measurableSet_testEvent (C : List (Site × Site × Bool))
     have hsplit : testEvent (t :: C) =
         {ρ | decide (DualOpen ρ t.1 t.2.1) = t.2.2} ∩ testEvent C := by
       ext ρ
-      simp only [testEvent, Set.mem_setOf_eq, List.mem_cons, Set.mem_inter_iff]
+      simp only [testEvent, Set.mem_ofPred_eq, List.mem_cons, Set.mem_inter_iff]
       constructor
       · intro h; exact ⟨h t (Or.inl rfl), fun t' ht' => h t' (Or.inr ht')⟩
       · rintro ⟨h1, h2⟩ t' ht'
@@ -161,7 +161,7 @@ theorem measurableSet_history_len (f : Site) {d : Site} (hd : IsUnit d) (h : Lis
     obtain ⟨i, hi, hstuck⟩ := hpre
     have : {ρ : Config squareGraph | history ρ f d h.length = h} = ∅ := by
       ext ρ
-      simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+      simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false]
       intro hρ
       have hpre' := history_prefix ρ f d hi.le
       rw [hρ] at hpre'
@@ -201,12 +201,12 @@ theorem measurableSet_history (f : Site) {d : Site} (hd : IsUnit d) (n : ℕ) (h
   have : {ρ : Config squareGraph | history ρ f d n = h} =
       {ρ | history ρ f d h.length = h} ∩
         {ρ | h.length = n ∨ (h.length < n ∧ (replay f d h).active = [])} := by
-    ext ρ; simp only [Set.mem_setOf_eq, Set.mem_inter_iff]; exact history_eq_iff ρ f d n h
+    ext ρ; simp only [Set.mem_ofPred_eq, Set.mem_inter_iff]; exact history_eq_iff ρ f d n h
   rw [this]
   refine (measurableSet_history_len f hd h).inter ?_
   by_cases hc : h.length = n ∨ (h.length < n ∧ (replay f d h).active = [])
-  · simp only [hc, Set.setOf_true]; exact MeasurableSet.univ
-  · simp only [hc, Set.setOf_false]; exact MeasurableSet.empty
+  · simp only [hc, Set.ofPred_true]; exact MeasurableSet.univ
+  · simp only [hc, Set.ofPred_false]; exact MeasurableSet.empty
 
 /-! ### The probability of a history -/
 
@@ -252,7 +252,7 @@ theorem Pm_stuck (f d : Site) (h : List Bool) (hs : (replay f d h).active = []) 
   unfold Pm
   have : {ρ : Config squareGraph | history ρ f d (h ++ [o]).length = h ++ [o]} = ∅ := by
     ext ρ
-    simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+    simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false]
     intro hρ
     have hm := history_of_append ρ f d h o hρ
     have hs' : (explore ρ f d h.length).active = [] := by rw [explore_eq_replay, hm]; exact hs
@@ -272,7 +272,7 @@ theorem history_append_eq (f d : Site) (h : List Bool) {e : Site × Site}
     {ρ : Config squareGraph | history ρ f d (h ++ [o]).length = h ++ [o]} =
       {ρ | history ρ f d h.length = h} ∩ {ρ | decide (DualOpen ρ e.1 e.2) = o} := by
   ext ρ
-  simp only [Set.mem_setOf_eq, Set.mem_inter_iff, List.length_append, List.length_singleton]
+  simp only [Set.mem_ofPred_eq, Set.mem_inter_iff, List.length_append, List.length_singleton]
   rw [history_append_iff ρ f d h o (by rw [he]; exact List.cons_ne_nil _ _), outcome,
     curEdge_eq he]
 
@@ -561,7 +561,7 @@ theorem K_event_eq (f d : Site) {N : ℕ} (hN : 1 ≤ N) :
     {ρ : Config squareGraph | (N : ℕ∞) ≤ forcedCount ρ f d} =
       ⋃ h : {h : List Bool // MinF f d N h}, {ρ | history ρ f d h.1.length = h.1} := by
   ext ρ
-  simp only [Set.mem_setOf_eq, Set.mem_iUnion]
+  simp only [Set.mem_ofPred_eq, Set.mem_iUnion]
   constructor
   · intro hρ
     obtain ⟨h, hm, hh⟩ := minF_exists f d hN hρ
@@ -579,7 +579,7 @@ theorem K_event_inter_eq (f d : Site) {N : ℕ} (hN : 1 ≤ N) (M : ℕ) (hNM : 
       ⋃ h : {h : List Bool // MinF f d N h},
         ({ρ | history ρ f d h.1.length = h.1} ∩ {ρ | (M : ℕ∞) ≤ forcedCount ρ f d}) := by
   ext ρ
-  simp only [Set.mem_setOf_eq, Set.mem_iUnion, Set.mem_inter_iff]
+  simp only [Set.mem_ofPred_eq, Set.mem_iUnion, Set.mem_inter_iff]
   constructor
   · intro hρ
     have hρN : (N : ℕ∞) ≤ forcedCount ρ f d := le_trans (by exact_mod_cast hNM) hρ
@@ -609,7 +609,7 @@ theorem measurableSet_K (f : Site) {d : Site} (hd : IsUnit d) (N : ℕ) :
       ⋃ n : ℕ, ⋃ h : {h : List Bool // N ≤ (replay f d h).forced},
         {ρ | history ρ f d n = h.1} := by
     ext ρ
-    simp only [Set.mem_setOf_eq, Set.mem_iUnion, le_forcedCount_iff]
+    simp only [Set.mem_ofPred_eq, Set.mem_iUnion, le_forcedCount_iff]
     constructor
     · rintro ⟨n, hn⟩
       exact ⟨n, ⟨history ρ f d n, by rw [← forced_explore]; exact hn⟩, rfl⟩
@@ -656,7 +656,7 @@ theorem escape (f : Site) {d : Site} (hd : IsUnit d) {h h' : List Bool} (hp : h 
     · exact history_of_prefix f d hp hρ
   · rw [Set.disjoint_left]
     rintro ρ ⟨-, hK⟩ hρ
-    simp only [Set.mem_setOf_eq] at hK
+    simp only [Set.mem_ofPred_eq] at hK
     rw [forcedCount_eq_of_stuck f d hρ hs] at hK
     have : N ≤ (replay f d h').forced := by exact_mod_cast hK
     omega

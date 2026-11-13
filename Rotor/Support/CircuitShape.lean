@@ -165,7 +165,7 @@ of points `x, y` with `f x, f y ≤ 1`. -/
 theorem pf_convex : Convex ℝ {x : Plane | f x ≤ 1} := by
   rw [convex_iff_forall_pos]
   intro x hx y hy a b ha hb hab
-  simp only [Set.mem_setOf_eq] at hx hy ⊢
+  simp only [Set.mem_ofPred_eq] at hx hy ⊢
   calc f (a • x + b • y) ≤ f (a • x) + f (b • y) := hfadd _ _
     _ = a * f x + b * f y := by rw [hfsmul a ha.le, hfsmul b hb.le]
     _ ≤ a * 1 + b * 1 := by gcongr

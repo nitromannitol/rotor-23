@@ -40,7 +40,7 @@ theorem boxCrossing_of_path {ω : BondConfig} {x : Site} {r : ℕ} {l : List Sit
       have := linfDist_adj_le (r := x) hadj
       omega
   refine ⟨l.take (k + 1), isOpenPath_take hl (k + 1), ?_, ?_, ?_⟩
-  · rw [List.head?_eq_getElem?, List.getElem?_take, if_pos (by omega), hx0]
+  · rw [List.head?_eq_getElem?, List.getElem?_take, ite_eq_left (by omega), hx0]
   · intro v hv
     obtain ⟨i, hi⟩ := List.mem_iff_getElem?.1 hv
     rw [List.getElem?_take] at hi
@@ -51,7 +51,7 @@ theorem boxCrossing_of_path {ω : BondConfig} {x : Site} {r : ℕ} {l : List Sit
       rw [← Option.some.inj hi, hwr']
   · refine ⟨w, ?_, hwr'⟩
     rw [List.getLast?_eq_getElem?, List.length_take, Nat.min_eq_left (by omega),
-      Nat.add_sub_cancel, List.getElem?_take, if_pos (by omega)]
+      Nat.add_sub_cancel, List.getElem?_take, ite_eq_left (by omega)]
     exact hw
 
 /-! ### The sphere -/

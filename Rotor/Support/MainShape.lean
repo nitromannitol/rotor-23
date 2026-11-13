@@ -43,7 +43,7 @@ theorem shape_sandwich_proof (hFLP : External.OneCircuit G) (hAb : External.Abel
             Metric.hausdorffDist (((t : ℝ) ^ (-(1 / 3 : ℝ))) •
               ((fun x => P.emb x - P.emb o) '' (R π ρ o t : Set V))) (κ • B)) atTop (𝓝 0) ∧
           Tendsto (fun t : ℕ => ((R π ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c) := by
-  haveI : Countable V := countable_of_connected hG
+  have : Countable V := countable_of_connected hG
   have hi := path_reduction_i π hFLP hAb hHP hG μ η hη hcrit
   obtain ⟨a, ha, hii⟩ := path_reduction_ii π hFLP hAb hHP hG hdeg μ η hη hcrit
   obtain ⟨f, hfc, hf0, hfadd, hfsmul, hunif⟩ := passage_limit_proof π P hK hπ hAb hG μ hinv herg

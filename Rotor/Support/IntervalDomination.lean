@@ -108,7 +108,7 @@ theorem intervalCyl_append_cons (f d : Site) {h₀ h' : List Bool} (hp : h₀ <+
       intervalCyl f d h₀ h' ∩ {ω | ω (bond (e.1, e.2)) = o} := by
   ext ω
   simp only [intervalCyl, intervalTests_append_cons f d hp he o, List.mem_append,
-    List.mem_singleton, Set.mem_setOf_eq, Set.mem_inter_iff]
+    List.mem_singleton, Set.mem_ofPred_eq, Set.mem_inter_iff]
   constructor
   · intro h; exact ⟨fun t ht => h t (Or.inl ht), h _ (Or.inr rfl)⟩
   · rintro ⟨h1, h2⟩ t (ht | rfl)
@@ -168,7 +168,7 @@ theorem intervalCyl_eq_cylBonds (f : Site) {d : Site} (hd : IsUnit d) (h₀ h' :
         (outcomeOf (intervalTests f d h₀ h')) := by
   have hnd := intervalTests_nodup f hd h₀ h'
   ext ω
-  simp only [intervalCyl, cylBonds, Set.mem_setOf_eq, List.mem_toFinset, List.mem_map]
+  simp only [intervalCyl, cylBonds, Set.mem_ofPred_eq, List.mem_toFinset, List.mem_map]
   constructor
   · rintro h b ⟨t, ht, rfl⟩
     rw [h t ht, outcomeOf_mem hnd ht]
@@ -240,13 +240,13 @@ theorem intPot_step (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) (F₀
     congr 1
     refine (Set.inter_eq_left.2 ?_).symm
     intro ω _
-    simp only [Set.mem_union, Set.mem_setOf_eq]
+    simp only [Set.mem_union, Set.mem_ofPred_eq]
     rcases ω (bond (e₁, e₂)) with _ | _ <;> simp
   have hdisj : Disjoint (A ∩ intervalCyl f d h₀ (h' ++ [true]))
       (A ∩ intervalCyl f d h₀ (h' ++ [false])) := by
     rw [hCt, hCf, Set.disjoint_left]
     rintro ω ⟨-, -, h1⟩ ⟨-, -, h2⟩
-    simp only [Set.mem_setOf_eq] at h1 h2
+    simp only [Set.mem_ofPred_eq] at h1 h2
     rw [h1] at h2; exact Bool.noConfusion h2
   have hmeasA := measurableSet_of_determined F₀ hA
   have hmu : bondLaw (1 / 2) half_le_one (A ∩ intervalCyl f d h₀ h') =
@@ -273,7 +273,7 @@ theorem intPot_step (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) (F₀
         (fun c hc => hωω' c (Finset.mem_union.2 (Or.inl (Finset.mem_union.2 (Or.inl hc)))))
       have hC : ω ∈ intervalCyl f d h₀ (h' ++ [o]) ↔ ω' ∈ intervalCyl f d h₀ (h' ++ [o]) := by
         simp only [intervalCyl, intervalTests_append_cons f d hp he o, List.mem_append,
-          List.mem_singleton, Set.mem_setOf_eq]
+          List.mem_singleton, Set.mem_ofPred_eq]
         have hc : ∀ t ∈ intervalTests f d h₀ h', ω (bond (t.1, t.2.1)) = ω' (bond (t.1, t.2.1)) :=
           fun t ht => hωω' _ (Finset.mem_union.2 (Or.inl (Finset.mem_union.2 (Or.inr
             (List.mem_toFinset.2 (List.mem_map.2 ⟨t, ht, rfl⟩))))))

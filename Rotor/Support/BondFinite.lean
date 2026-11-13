@@ -154,7 +154,7 @@ theorem bondLaw_half_le_of_flip (F : Finset (Sym2 Site)) {E₁ E₂ : Set BondCo
   refine Finset.card_le_card_of_injOn
     (fun ξ : ↥F → Bool => Function.update ξ (⟨b, hb⟩ : ↥F) true) ?_ ?_
   · intro ξ hξ
-    simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq] at hξ ⊢
+    simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_ofPred_eq] at hξ ⊢
     have := hflip _ hξ
     have hext : extF F (Function.update ξ ⟨b, hb⟩ true) = Function.update (extF F ξ) b true := by
       funext c
@@ -168,7 +168,7 @@ theorem bondLaw_half_le_of_flip (F : Finset (Sym2 Site)) {E₁ E₂ : Set BondCo
         · simp [extF, hc, Function.update_of_ne hcb]
     rw [hext]; exact this
   · intro ξ hξ ξ' hξ' heq
-    simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq] at hξ hξ'
+    simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_ofPred_eq] at hξ hξ'
     have hξb : ξ ⟨b, hb⟩ = false := by
       have := hclosed _ hξ; simpa [extF, hb] using this
     have hξ'b : ξ' ⟨b, hb⟩ = false := by

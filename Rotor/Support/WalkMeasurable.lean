@@ -37,7 +37,7 @@ theorem measurableSet_X_rot : ∀ t : ℕ,
           ⋃ v : V, ⋃ a : G.neighborSet v, ⋃ (_ : (π.next v a).1 = x),
             ({ρ | X π ρ o t = v} ∩ {ρ | rot π ρ o t v = a}) := by
         ext ρ
-        simp only [X_succ, Set.mem_setOf_eq, Set.mem_iUnion, Set.mem_inter_iff, exists_prop]
+        simp only [X_succ, Set.mem_ofPred_eq, Set.mem_iUnion, Set.mem_inter_iff, exists_prop]
         constructor
         · intro h
           exact ⟨X π ρ o t, rot π ρ o t (X π ρ o t), h, rfl, rfl⟩
@@ -52,12 +52,12 @@ theorem measurableSet_X_rot : ∀ t : ℕ,
           ({ρ | X π ρ o t = v} ∩ {ρ | rot π ρ o t v = (π.next v).symm a}) ∪
             ({ρ | X π ρ o t = v}ᶜ ∩ {ρ | rot π ρ o t v = a}) := by
         ext ρ
-        simp only [rot_succ, Set.mem_setOf_eq, Set.mem_union, Set.mem_inter_iff, Set.mem_compl_iff]
+        simp only [rot_succ, Set.mem_ofPred_eq, Set.mem_union, Set.mem_inter_iff, Set.mem_compl_iff]
         by_cases h : X π ρ o t = v
         · subst h
           rw [Function.update_self]
           simp only [true_and, not_true_eq_false, false_and, or_false]
-          exact Equiv.apply_eq_iff_eq_symm_apply _
+          exact (Equiv.eq_symm_apply _).symm
         · rw [Function.update_of_ne (Ne.symm h)]
           simp [h]
       rw [this]
@@ -73,7 +73,7 @@ theorem measurableSet_recurrent : MeasurableSet {ρ : Config G | Recurrent π ρ
   have : {ρ : Config G | Recurrent π ρ o} =
       ⋂ x : V, ⋂ N : ℕ, ⋃ t : ℕ, ⋃ (_ : N ≤ t), {ρ | X π ρ o t = x} := by
     ext ρ
-    simp only [Recurrent, Set.mem_setOf_eq, Set.mem_iInter, Set.mem_iUnion, exists_prop]
+    simp only [Recurrent, Set.mem_ofPred_eq, Set.mem_iInter, Set.mem_iUnion, exists_prop]
     refine forall_congr' fun x => ?_
     rw [← Nat.frequently_atTop_iff_infinite, Filter.frequently_atTop]
   rw [this]

@@ -48,7 +48,7 @@ theorem le_hist_length_τf {j : ℕ} {ρ : Config G} (hj : Reach π o x j ρ) :
     j ≤ (St π o x ρ (τf π o x j ρ)).hist.length := by
   classical
   unfold τf
-  rw [dif_pos hj]
+  rw [dite_eq_left hj]
   exact Nat.find_spec hj
 
 /-- `τf π o x j ρ` is the least time at which `j` vertices are reached, so it is at most any
@@ -57,7 +57,7 @@ theorem τf_le {j : ℕ} {ρ : Config G} (hj : Reach π o x j ρ) {t : ℕ}
     (ht : j ≤ (St π o x ρ t).hist.length) : τf π o x j ρ ≤ t := by
   classical
   unfold τf
-  rw [dif_pos hj]
+  rw [dite_eq_left hj]
   exact Nat.find_min' hj ht
 
 /-- Exactly `j` vertices, no more, have been reached at the `j`-th fresh time. -/
@@ -84,12 +84,12 @@ theorem hist_length_τf {j : ℕ} {ρ : Config G} (hj : Reach π o x j ρ) :
 theorem Y_of_reach {j : ℕ} {ρ : Config G} (hj : Reach π o x j ρ) :
     Y π o x j ρ = (St π o x ρ (τf π o x j ρ)).queue.length := by
   unfold Y
-  rw [if_pos hj]
+  rw [ite_eq_left hj]
 
 /-- `Y` is `0` on the branch where the `j`-th vertex is never reached. -/
 theorem Y_of_not_reach {j : ℕ} {ρ : Config G} (hj : ¬ Reach π o x j ρ) : Y π o x j ρ = 0 := by
   unfold Y
-  rw [if_neg hj]
+  rw [ite_eq_right hj]
 
 /-- The `0`-th vertex is always reached, at time `0`. -/
 theorem reach_zero (ρ : Config G) : Reach π o x 0 ρ := ⟨0, Nat.zero_le _⟩
@@ -405,7 +405,7 @@ omit [DecidableEq V] in
 `uniformAt π v`. -/
 theorem uniformAt_singleton (v : V) (a : G.neighborSet v) :
     uniformAt π v {a} = (G.degree v : ENNReal)⁻¹ := by
-  haveI := π.nonempty v
+  have := π.nonempty v
   unfold uniformAt
   rw [PMF.toMeasure_apply_singleton _ _ (measurableSet_singleton a), PMF.uniformOfFintype_apply,
     G.card_neighborSet_eq_degree]

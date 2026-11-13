@@ -122,18 +122,18 @@ theorem walkInv_step (S : Finset V) (t₀ t : ℕ) (ht : t₀ ≤ t) (h : WalkIn
     · rw [ho, crossings_succ π ρ o S t₀ t ht]
       have h0 : X π ρ o t ≠ x := fun h => hx (h ▸ hXt)
       have := hcount x hx
-      simp only [hXt, true_and, h0, if_false, add_zero] at this ⊢
+      simp only [hXt, true_and, h0, ite_false, add_zero] at this ⊢
       omega
   · -- the walker is outside `S`: it actuates its vertex
     have ho : outs π ρ o S t₀ (t + 1) = outs π ρ o S t₀ t ++ [X π ρ o t] := by
-      rw [outs_succ π ρ o S t₀ t ht, if_neg hXt]
+      rw [outs_succ π ρ o S t₀ t ht, ite_eq_right hXt]
     set ξ := run π S (boundaryInit S ρ) (outs π ρ o S t₀ t) with hξ
     have hhead : (π.next (X π ρ o t) (ξ.ρ (X π ρ o t))).1 = X π ρ o (t + 1) := by
       rw [X_succ, hrot _ hXt]
     have hσv : 0 < ξ.σ (X π ρ o t) := by
       have := hcount _ hXt
       have hb' := hb hXt
-      simp only [if_true] at this
+      simp only [ite_true] at this
       omega
     refine ⟨fun x hx => ?_, fun x hx => ?_, ?_⟩
     · rw [ho, run_append, run_cons, run_nil, ← hξ, rot_succ]
@@ -142,22 +142,22 @@ theorem walkInv_step (S : Finset V) (t₀ t : ℕ) (ht : t₀ ≤ t) (h : WalkIn
       · rw [actuate_ρ_of_ne π S ξ _ x hxv, Function.update_of_ne hxv, hrot x hx]
     · rw [ho, run_append, run_cons, run_nil, ← hξ, actuate_σ, hhead,
         crossings_succ π ρ o S t₀ t ht]
-      simp only [hXt, false_and, if_false, add_zero]
+      simp only [hXt, false_and, ite_false, add_zero]
       have hc := hcount x hx
       by_cases hxv : x = X π ρ o t
       · rw [hxv] at hc ⊢
-        simp only [if_true] at hc ⊢
+        simp only [ite_true] at hc ⊢
         have hne : X π ρ o (t + 1) ≠ X π ρ o t := by
           rw [← hhead]; exact next_head_ne π ξ _
-        simp only [hne, if_false, add_zero, hne.symm, false_and]
+        simp only [hne, ite_false, add_zero, hne.symm, false_and]
         omega
       · have hxv' : X π ρ o t ≠ x := Ne.symm hxv
-        simp only [hxv, hxv', if_false, add_zero] at hc ⊢
+        simp only [hxv, hxv', ite_false, add_zero] at hc ⊢
         by_cases hh : X π ρ o (t + 1) = x
-        · simp only [hh, hx, not_false_eq_true, and_self, if_true]
+        · simp only [hh, hx, not_false_eq_true, and_self, ite_true]
           omega
         · have hh' : ¬ (x = X π ρ o (t + 1) ∧ X π ρ o (t + 1) ∉ S) := fun h => hh h.1.symm
-          simp only [hh, hh', if_false, add_zero]
+          simp only [hh, hh', ite_false, add_zero]
           omega
     · rw [ho, isLegal_append]
       exact ⟨hleg, hXt, hσv, trivial⟩
@@ -169,7 +169,7 @@ variable [G.LocallyFinite]
 
 /-- `T n` as a natural number, when finite. -/
 theorem coe_toNat_T (n : ℕ) (hn : T π ρ o n < ⊤) : ((T π ρ o n).toNat : ℕ∞) = T π ρ o n :=
-  ENat.coe_toNat hn.ne
+  ENat.natCast_toNat hn.ne
 
 /-- Before `T(n+1)`, the crossings from `A_n` into `x` never exceed the in-edges
 of `x` from `A_n`: distinct crossing times give distinct traversals
@@ -181,11 +181,11 @@ theorem crossings_le (hFLP : External.OneCircuit G) (hG : G.Connected) (n : ℕ)
   unfold crossings inEdges
   refine Finset.card_le_card_of_injOn (fun s => X π ρ o s) ?_ ?_
   · intro s hs
-    simp only [Finset.coe_filter, Finset.mem_Ico, Set.mem_setOf_eq] at hs
-    simp only [Finset.coe_filter, Set.mem_setOf_eq]
+    simp only [Finset.coe_filter, Finset.mem_Ico, Set.mem_ofPred_eq] at hs
+    simp only [Finset.coe_filter, Set.mem_ofPred_eq]
     exact ⟨hs.2.1, hs.2.2 ▸ adj_X_succ π ρ o s⟩
   · intro s hs s' hs' heq
-    simp only [Finset.coe_filter, Finset.mem_Ico, Set.mem_setOf_eq] at hs hs'
+    simp only [Finset.coe_filter, Finset.mem_Ico, Set.mem_ofPred_eq] at hs hs'
     by_contra hne
     have key : ∀ a b : ℕ, a < b → (T π ρ o n).toNat ≤ a → b < t →
         X π ρ o a = X π ρ o b → X π ρ o (a + 1) = x → X π ρ o (b + 1) = x → False := by
@@ -223,7 +223,7 @@ theorem inEdges_le_crossings (hFLP : External.OneCircuit G) (hG : G.Connected) (
   unfold inEdges crossings
   refine Finset.card_le_card_of_surjOn (fun s => X π ρ o s) ?_
   intro s₀ hs₀
-  simp only [Finset.coe_filter, Set.mem_setOf_eq] at hs₀
+  simp only [Finset.coe_filter, Set.mem_ofPred_eq] at hs₀
   obtain ⟨hs₀S, hadj⟩ := hs₀
   have hdep := (hFLP π hG ρ o n hn).2 hn1 s₀ hs₀S
   unfold departures at hdep
@@ -259,7 +259,7 @@ theorem inEdges_le_crossings (hFLP : External.OneCircuit G) (hG : G.Connected) (
     (by rw [SimpleGraph.mem_neighborFinset]; exact hadj)
   rw [Finset.mem_filter] at hs
   refine ⟨s, ?_, hs.2⟩
-  simp only [Finset.coe_filter, Set.mem_setOf_eq]
+  simp only [Finset.coe_filter, Set.mem_ofPred_eq]
   exact ⟨hs.1, hs.2 ▸ hs₀S, hsx.symm⟩
 
 /-- Since `T` is monotone and `T(n + 1)` is finite, `T(n).toNat ≤ T(n + 1).toNat`. -/
@@ -287,7 +287,7 @@ theorem complete_of_T_lt (hFLP : External.OneCircuit G) (hG : G.Connected) (n : 
   have hge := inEdges_le_crossings π ρ o hFLP hG n hn hn1 x
   have hne : X π ρ o (T π ρ o (n + 1)).toNat ≠ x := by
     rw [X_T π ρ o (n + 1) hn1]; exact fun h => hx (h ▸ o_mem_A π ρ o n)
-  simp only [hne, if_false, add_zero] at hc
+  simp only [hne, ite_false, add_zero] at hc
   omega
 
 /-- When `T(n + 1) < ∞`, the outside actuations of the circuit witness that the boundary
@@ -318,7 +318,7 @@ theorem R_eq_union_outs (t₀ t : ℕ) (ht : t₀ ≤ t) :
     simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton, List.toFinset_append,
       List.mem_toFinset]
     by_cases hXt : X π ρ o t ∈ R π ρ o t₀
-    · simp only [hXt, if_true, List.not_mem_nil]
+    · simp only [hXt, ite_true, List.not_mem_nil]
       constructor
       · rintro (rfl | (h | h) | rfl)
         · exact Or.inr rfl
@@ -330,7 +330,7 @@ theorem R_eq_union_outs (t₀ t : ℕ) (ht : t₀ ≤ t) :
         · exact Or.inr (Or.inl (Or.inr h))
         · exact h.elim
         · exact Or.inl rfl
-    · simp only [hXt, if_false, List.mem_singleton]
+    · simp only [hXt, ite_false, List.mem_singleton]
       constructor
       · rintro (rfl | (h | h) | rfl)
         · exact Or.inr rfl
@@ -388,7 +388,7 @@ theorem length_outs (S : Finset V) (t₀ t : ℕ) (ht : t₀ ≤ t) :
     rw [hI, Finset.filter_insert]
     by_cases h : X π ρ o t ∈ S
     · simp [h]
-    · rw [if_neg h, if_pos h, Finset.card_insert_of_notMem (by simp)]
+    · rw [ite_eq_right h, ite_eq_left h, Finset.card_insert_of_notMem (by simp)]
       simp
 
 /-- Before `T(n+1)`, the departures from `A_n` during `[T(n), t)` are at most
@@ -403,12 +403,12 @@ theorem inside_le (hFLP : External.OneCircuit G) (hG : G.Connected) (n : ℕ)
       ≤ ((A π ρ o n).biUnion (fun v => (G.neighborFinset v).image (fun w => (v, w)))).card := by
         refine Finset.card_le_card_of_injOn (fun s => traversal π ρ o s) ?_ ?_
         · intro s hs
-          simp only [Finset.coe_filter, Finset.mem_Ico, Set.mem_setOf_eq] at hs
+          simp only [Finset.coe_filter, Finset.mem_Ico, Set.mem_ofPred_eq] at hs
           simp only [Finset.coe_biUnion, Set.mem_iUnion, Finset.mem_coe, Finset.mem_image,
             SimpleGraph.mem_neighborFinset, exists_prop]
           exact ⟨X π ρ o s, hs.2, X π ρ o (s + 1), adj_X_succ π ρ o s, rfl⟩
         · intro s hs s' hs' heq
-          simp only [Finset.coe_filter, Finset.mem_Ico, Set.mem_setOf_eq] at hs hs'
+          simp only [Finset.coe_filter, Finset.mem_Ico, Set.mem_ofPred_eq] at hs hs'
           by_contra hne
           have key : ∀ a b : ℕ, a < b → (T π ρ o n).toNat ≤ a → b < t →
               traversal π ρ o a = traversal π ρ o b → False := by

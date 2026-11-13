@@ -151,9 +151,9 @@ theorem card_kingSeqs (a : ℤ × ℤ) (m : ℕ) : (kingSeqs a m).card ≤ 8 * 7
       refine Finset.card_image_le.trans ?_
       obtain ⟨hlen, hchain⟩ := mem_kingSeqs a m hp
       rcases m with _ | m
-      · simp only [if_true]
+      · simp only [ite_true]
         exact Finset.card_filter_le _ _ |>.trans (card_kingNbrs _).le
-      · simp only [Nat.succ_ne_zero, if_false]
+      · simp only [Nat.succ_ne_zero, ite_false]
         -- `p = ℓ :: c :: q` with `KingStep ℓ c`, and the filter excludes `c`
         rcases p with _ | ⟨ℓ, q⟩
         · simp at hlen
@@ -179,7 +179,7 @@ theorem card_kingSeqs (a : ℤ × ℤ) (m : ℕ) : (kingSeqs a m).card ≤ 8 * 7
       _ ≤ 8 * 7 ^ (m + 1) := by
           rcases m with _ | m
           · simp [kingSeqs]
-          · simp only [Nat.succ_ne_zero, if_false]
+          · simp only [Nat.succ_ne_zero, ite_false]
             rw [pow_succ]
             nlinarith [ih]
 

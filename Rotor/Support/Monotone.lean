@@ -113,16 +113,16 @@ theorem run_σ_add_count_ge (S : Finset V) (ξ : RState G) (vs : List V) (x : V)
     · subst hxv
       have hne : (π.next x (ξ.ρ x)).1 ≠ x := next_head_ne π ξ x
       have hne' : ¬ (x = (π.next x (ξ.ρ x)).1 ∧ (π.next x (ξ.ρ x)).1 ∉ S) := fun h => hne h.1.symm
-      simp only [if_true, hne', if_false, add_zero, decide_eq_true_eq, hne, beq_self_eq_true,
-        if_true] at h ⊢
+      simp only [ite_true, hne', ite_false, add_zero, decide_eq_true_eq, hne, beq_self_eq_true,
+        ite_true] at h ⊢
       omega
     · have hvx : (v == x) = false := by simpa using Ne.symm hxv
-      simp only [hxv, if_false, hvx, Bool.false_eq_true, add_zero, decide_eq_true_eq] at h ⊢
+      simp only [hxv, ite_false, hvx, Bool.false_eq_true, add_zero, decide_eq_true_eq] at h ⊢
       by_cases hh : (π.next v (ξ.ρ v)).1 = x
-      · simp only [hh, hx, not_false_eq_true, and_self, if_true] at h ⊢
+      · simp only [hh, hx, not_false_eq_true, and_self, ite_true] at h ⊢
         omega
       · have hh' : ¬ (x = (π.next v (ξ.ρ v)).1 ∧ (π.next v (ξ.ρ v)).1 ∉ S) := fun h => hh h.1.symm
-        simp only [hh, hh', if_false, add_zero] at h ⊢
+        simp only [hh, hh', ite_false, add_zero] at h ⊢
         omega
 
 /-! ### Counting the arrivals from `U ∖ S` -/

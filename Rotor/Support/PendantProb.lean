@@ -50,10 +50,11 @@ lattice vertices of `A`. -/
 theorem nonWestOn_eq (A : Finset Site) :
     nonWestOn M A = Set.pi ↑(A.image (Sum.inl : Site → PVertex M)) (nonWestSet M) := by
   ext ρ
-  simp only [nonWestOn, Set.mem_setOf_eq, Set.mem_pi, coe_image, Set.mem_image, mem_coe,
+  simp only [nonWestOn, Set.mem_ofPred_eq, Set.mem_pi, coe_image, Set.mem_image, mem_coe,
     forall_exists_index, and_imp, forall_apply_eq_imp_iff₂]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Exactly `3` of the neighbours of a lattice vertex `.inl v` have neighbour index `≤ 2`,
 transferring the count along the equivalence `pendantNbrLattice`. -/
 theorem card_filter_nbrIdx_le_two (v : Site) :

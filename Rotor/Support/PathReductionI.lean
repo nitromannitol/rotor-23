@@ -142,8 +142,8 @@ union, over the darts `e`, of the events `InfLiveFrom π ρ e.fst e.snd`, each o
 `measure_infLiveFrom_eq_zero`. -/
 theorem ae_no_infLivePath [G.LocallyFinite] (hG : G.Connected) (μ : Measure (Config G))
     (η : ℝ) (hη : 0 < η) (hcrit : Criterion π μ η) : ∀ᵐ ρ ∂μ, ¬ HasInfLivePath π ρ := by
-  haveI := countable_of_connected hG
-  haveI : Countable G.Dart := SimpleGraph.Dart.toProd_injective.countable
+  have := countable_of_connected hG
+  have : Countable G.Dart := SimpleGraph.Dart.toProd_injective.countable
   rw [ae_iff]
   simp only [not_not]
   have hsub : {ρ | HasInfLivePath π ρ} ⊆ ⋃ e : G.Dart, {ρ | InfLiveFrom π ρ e.fst e.snd} := by

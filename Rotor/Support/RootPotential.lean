@@ -38,7 +38,7 @@ theorem minF_structure (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d)) {j
     omega
   have hforced : TestedAs (replay f d h₁).tested (sideW g.1 g.2) false := by
     by_contra hnf
-    rw [forced_append_cons f d h₁ hact, if_neg hnf] at hN'
+    rw [forced_append_cons f d h₁ hact, ite_eq_right hnf] at hN'
     omega
   have ho : o = true := by
     rcases o with _ | _
@@ -344,7 +344,7 @@ theorem rootPrefix_isRoot (f d : Site) {j : ℕ} {h' : List Bool} (hr : IsRoot f
   have hex : ∃ m, m ≤ h'.length ∧ (replay f d (h'.take m)).forced = j :=
     exists_take_forced_eq f d h' j (by rw [hr.1]; omega)
   unfold rootPrefix rootLen
-  rw [dif_pos hex]
+  rw [dite_eq_left hex]
   obtain ⟨hm, hmj⟩ := Nat.find_spec hex
   cases j with
   | zero =>
@@ -375,7 +375,7 @@ theorem rootPrefix_eq (f d : Site) {j : ℕ} {h₀ h' : List Bool} (hr0 : IsRoot
   have hex : ∃ m, m ≤ h'.length ∧ (replay f d (h'.take m)).forced = j :=
     exists_take_forced_eq f d h' j (by rw [hr1.1]; omega)
   unfold rootPrefix rootLen
-  rw [dif_pos hex]
+  rw [dite_eq_left hex]
   have hp' := hp
   rw [List.prefix_iff_eq_take] at hp'
   have hspec : h₀.length ≤ h'.length ∧ (replay f d (h'.take h₀.length)).forced = j := by
@@ -545,7 +545,7 @@ theorem exists_root_of_stage (f d : Site) (ρ : Config squareGraph) (n : ℕ) :
       have h1 : (explore ρ f d (i + 1)).forced = (explore ρ f d i).forced + 1 := by
         rw [forced_explore, forced_explore,
           history_succ_cons ρ f d i (by rw [explore_eq_replay]; exact he)]
-        rw [forced_append_cons f d _ he, if_pos hW]
+        rw [forced_append_cons f d _ he, ite_eq_left hW]
       have h2 : (explore ρ f d h₀.length).forced ≤ (explore ρ f d i).forced :=
         forced_explore_mono ρ f d hi
       have h3 : (explore ρ f d (i + 1)).forced ≤ j :=
@@ -596,14 +596,14 @@ theorem reachEvent_subset (f : Site) {d : Site} (hd : squareGraph.Adj f (f + d))
     rw [← hj] at hr
     by_cases hpos : Pm f d h₀ = 0
     · left; left; right
-      simp only [Set.mem_iUnion, Finset.mem_range, Set.mem_setOf_eq, exists_prop]
+      simp only [Set.mem_iUnion, Finset.mem_range, Set.mem_ofPred_eq, exists_prop]
       exact ⟨j, hjn, ⟨h₀, hr, hpos⟩, hρ0⟩
     by_cases hbig : R / 2 ≤ reachN f d h₀
     · left; right
-      simp only [Set.mem_iUnion, Finset.mem_range, Set.mem_setOf_eq, exists_prop]
+      simp only [Set.mem_iUnion, Finset.mem_range, Set.mem_ofPred_eq, exists_prop]
       exact ⟨j, hjn, ⟨h₀, hr, hbig⟩, hρ0⟩
     · right
-      simp only [Set.mem_iUnion, Finset.mem_range, Set.mem_inter_iff, Set.mem_setOf_eq, exists_prop]
+      simp only [Set.mem_iUnion, Finset.mem_range, Set.mem_inter_iff, Set.mem_ofPred_eq, exists_prop]
       refine ⟨j, hjn, ⟨h₀, hr⟩, hρ0, n, hI, g, hg, ?_, ?_⟩
       · show g ∉ (replay f d h₀).visited
         intro hg0
@@ -682,7 +682,8 @@ theorem reachEvent_measure_le (f : Site) {d : Site} (hd : squareGraph.Adj f (f +
           ENNReal.tsum_comp_le_tsum_of_injective
             (f := fun x : {h₀ // IsRoot f d j h₀ ∧ R / 2 ≤ reachN f d h₀} =>
               (⟨x.1, x.2.1⟩ : {h₀ // IsRoot f d j h₀}))
-            (fun x y h => Subtype.ext (by simp only [Subtype.mk.injEq] at h; exact h)) _
+            (fun x y h => Subtype.ext (by simp only [Subtype.mk.injEq] at h; exact h))
+            (fun y : {h₀ // IsRoot f d j h₀} => Pm f d y.1 * a ^ reachN f d y.1)
       _ ≤ (a * Mconst a c C) ^ j := Tpot_le f hd hCB ha j
   -- the interval part
   have hint : ∀ j, uniformLaw clockwise (⋃ h₀ : {h₀ // IsRoot f d j h₀},

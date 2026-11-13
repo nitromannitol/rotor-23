@@ -187,7 +187,7 @@ omit [G.LocallyFinite] in
 /-- `r_v(u)` is always at least `1` for adjacent `v`, `u`, since it is a cyclic rank. -/
 theorem rankOf_pos {v u : V} (h : G.Adj v u) : 1 ≤ rankOf π ρ v u := by
   unfold rankOf
-  rw [dif_pos h, rank_eq_cycRank]
+  rw [dite_eq_left h, rank_eq_cycRank]
   exact cycRank_pos _ (π.cyclic v) _ _
 
 /-- `r_v(u)` is at most the degree of `v`, since it is a rank among the neighbors of `v`. -/
@@ -202,7 +202,7 @@ omit [G.LocallyFinite] in
 /-- Unfolds `rankOf` at an adjacent pair to the underlying `rank`. -/
 theorem rankOf_eq {v u : V} (h : G.Adj v u) : rankOf π ρ v u = rank π ρ v ⟨u, h⟩ := by
   unfold rankOf
-  rw [dif_pos h]
+  rw [dite_eq_left h]
 
 /-- By induction on `t`, every edge ever in the queue joins adjacent vertices. -/
 theorem queue_adj (hox : G.Adj o x) : ∀ t : ℕ, ∀ e ∈ (St π o x ρ t).queue, G.Adj e.1 e.2
@@ -246,23 +246,23 @@ theorem mem_hist_iff_M_pos (hox : G.Adj o x) : ∀ (t : ℕ) (v : V),
       by_cases hv : v = v'
       · subst hv
         by_cases hmem : v ∈ (St π o x ρ t).hist
-        · rw [if_pos hmem]
+        · rw [ite_eq_left hmem]
           by_cases hle : rankOf π ρ v u ≤ (St π o x ρ t).M v
-          · rw [if_pos hle]; exact ih v
-          · rw [if_neg hle, Function.update_self]; exact ⟨fun _ => hr, fun _ => hmem⟩
-        · rw [if_neg hmem, List.mem_append, List.mem_singleton]
+          · rw [ite_eq_left hle]; exact ih v
+          · rw [ite_eq_right hle, Function.update_self]; exact ⟨fun _ => hr, fun _ => hmem⟩
+        · rw [ite_eq_right hmem, List.mem_append, List.mem_singleton]
           by_cases hle : rankOf π ρ v u ≤ (St π o x ρ t).M v
-          · rw [if_pos hle]; exact ⟨fun _ => lt_of_lt_of_le hr hle, fun _ => Or.inr rfl⟩
-          · rw [if_neg hle, Function.update_self]; exact ⟨fun _ => hr, fun _ => Or.inr rfl⟩
+          · rw [ite_eq_left hle]; exact ⟨fun _ => lt_of_lt_of_le hr hle, fun _ => Or.inr rfl⟩
+          · rw [ite_eq_right hle, Function.update_self]; exact ⟨fun _ => hr, fun _ => Or.inr rfl⟩
       · by_cases hmem : v' ∈ (St π o x ρ t).hist
-        · rw [if_pos hmem]
+        · rw [ite_eq_left hmem]
           by_cases hle : rankOf π ρ v' u ≤ (St π o x ρ t).M v'
-          · rw [if_pos hle]; exact ih v
-          · rw [if_neg hle, Function.update_of_ne hv]; exact ih v
-        · rw [if_neg hmem, List.mem_append, List.mem_singleton, or_iff_left hv]
+          · rw [ite_eq_left hle]; exact ih v
+          · rw [ite_eq_right hle, Function.update_of_ne hv]; exact ih v
+        · rw [ite_eq_right hmem, List.mem_append, List.mem_singleton, or_iff_left hv]
           by_cases hle : rankOf π ρ v' u ≤ (St π o x ρ t).M v'
-          · rw [if_pos hle]; exact ih v
-          · rw [if_neg hle, Function.update_of_ne hv]; exact ih v
+          · rw [ite_eq_left hle]; exact ih v
+          · rw [ite_eq_right hle, Function.update_of_ne hv]; exact ih v
 
 /-- At most `r - m - 1` edges are added when processing an entry of rank `r` into `v` with
 current `M_v = m`, since the ranks added lie strictly between `m` and `r`. -/
@@ -366,7 +366,7 @@ theorem exists_added (hox : G.Adj o x) {a b : V} (hne : a ≠ o) :
           simp only at h1 hab hlt
           subst h1
           refine ⟨s, lt_add_one s, hab, ?_⟩
-          rw [St_succ, qStep_M_cons π o ρ hq, if_neg hle, Function.update_self]
+          rw [St_succ, qStep_M_cons π o ρ hq, ite_eq_right hle, Function.update_self]
           exact hlt
 
 /-- The invariant behind `rotor.tex:1338-1341`: every exit `v → w` with `w ≠ o` and
@@ -405,7 +405,7 @@ theorem inv_added (hox : G.Adj o x) : ∀ (t : ℕ) (v w : V) (hvw : G.Adj v w),
           · rcases lt_or_eq_of_le hle with h2 | h2
             · left
               refine ⟨t + 1, le_rfl, ?_⟩
-              rw [St_succ, qStep_queue_cons π o ρ hq, if_neg hle', List.mem_append]
+              rw [St_succ, qStep_queue_cons π o ρ hq, ite_eq_right hle', List.mem_append]
               exact Or.inr ((mem_newEdges π o ρ).2 ⟨rfl, hvw, hwo, h1, h2⟩)
             · right
               have hadj : G.Adj v u :=

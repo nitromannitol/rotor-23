@@ -727,7 +727,7 @@ theorem oneCircuit_holds : Rotor.External.OneCircuit G
   constructor
   · intro s t hst hlt ht
     have has : a ≤ s := by
-      simpa [a] using ENat.toNat_le_of_le_coe hst
+      simpa [a] using ENat.toNat_le_of_le_natCast hst
     have hat : a ≤ t := has.trans (Nat.le_of_lt hlt)
     have htr := Aux.no_repeat π ρ o n a t hat ha hvis ht
     have hs : s ∈ Ico a (t + 1) := Finset.mem_Ico.2 ⟨has, by omega⟩
@@ -747,7 +747,7 @@ theorem oneCircuit_holds : Rotor.External.OneCircuit G
       simpa [a, b] using hnat
     have hbT : (b : ℕ∞) = T π ρ o (n + 1) := by
       dsimp [b]
-      exact ENat.coe_toNat hn1.ne
+      exact ENat.natCast_toNat hn1.ne
     have htr := Aux.interval_inj π ρ o n a b hab ha hvis hbT hn1
     have hdo : departures π ρ o o a b = G.degree o := by
       have hv := Aux.visits_add_departures π ρ o a b hab

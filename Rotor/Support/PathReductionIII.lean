@@ -112,7 +112,7 @@ theorem norm_sub_le_dist (hG : G.Connected) {ℓ : ℝ}
 /-- The event `{τ(x, y) ≤ a d_G(x, y)}` is measurable. -/
 theorem measurableSet_fast (hAb : External.Abelian G) [Infinite V] (hG : G.Connected) (a : ℝ)
     (x y : V) : MeasurableSet {ρ : Config G | (τ π ρ x y : ℝ) ≤ a * G.dist x y} := by
-  haveI : Countable V := countable_of_connected hG
+  have : Countable V := countable_of_connected hG
   exact measurableSet_le
     ((measurable_from_nat (f := (Nat.cast : ℕ → ℝ))).comp (measurable_τ π hAb hG x y))
     measurable_const
@@ -441,7 +441,7 @@ theorem card_fiber_eq (ρ : Config G) (o r : V) (hr : P.rep r = r) (n : ℕ) :
   rw [← Set.ncard_coe_finset, ← Set.ncard_image_of_injective _ hinj]
   congr 1
   ext x
-  simp only [Finset.coe_filter, Set.mem_setOf_eq, Set.mem_image]
+  simp only [Finset.coe_filter, Set.mem_ofPred_eq, Set.mem_image]
   constructor
   · rintro ⟨hx, hrx⟩
     refine ⟨P.coord x, ?_, ?_⟩
@@ -456,7 +456,7 @@ include hfsmul in
 theorem mem_scaled_ball_iff {θ : ℝ} (hθ : 0 < θ) {n : ℕ} (hn : 0 < n) (x : Plane) :
     x ∈ (n : ℝ) • (θ • {y : Plane | f y ≤ 1}) ↔ f x ≤ n * θ := by
   have hnθ : (0 : ℝ) < (n : ℝ) * θ := by positivity
-  rw [smul_smul, Set.mem_smul_set_iff_inv_smul_mem₀ hnθ.ne', Set.mem_setOf_eq,
+  rw [smul_smul, Set.mem_smul_set_iff_inv_smul_mem₀ hnθ.ne', Set.mem_ofPred_eq,
     hfsmul _ (inv_nonneg.2 hnθ.le), inv_mul_le_iff₀ hnθ, mul_one]
 
 include hfadd hfsmul in
@@ -481,7 +481,7 @@ theorem fiber_sandwich (ρ : Config G) (o r : V) {C : ℝ} (hC : ∀ x, f x ≤ 
     linarith
   constructor
   · intro z hz
-    rw [Set.mem_setOf_eq, mem_scaled_ball_iff hfsmul (by linarith) hn0] at hz
+    rw [Set.mem_ofPred_eq, mem_scaled_ball_iff hfsmul (by linarith) hn0] at hz
     show P.shift z r ∈ A π ρ o n
     apply hn.1
     rw [hemb]
@@ -489,7 +489,7 @@ theorem fiber_sandwich (ρ : Config G) (o r : V) {C : ℝ} (hC : ∀ x, f x ≤ 
     rw [add_sub_cancel_left] at this
     linarith
   · intro z hz
-    rw [Set.mem_setOf_eq, mem_scaled_ball_iff hfsmul (by linarith) hn0]
+    rw [Set.mem_ofPred_eq, mem_scaled_ball_iff hfsmul (by linarith) hn0]
     have h1 := hn.2 _ hz
     rw [hemb] at h1
     have := pf_lip hfadd hC (P.latVec z) (P.latVec z + (P.emb r - P.emb o))
@@ -707,7 +707,7 @@ theorem isDirLimit_of_uniform [Infinite V] (hG : G.Connected)
     (hunif : ∀ o : V, ∀ᵐ ρ ∂μ, ∀ ε : ℝ, 0 < ε → ∃ R₀ : ℝ, ∀ x : V, R₀ ≤ ‖P.emb x - P.emb o‖ →
       |(τ π ρ o x : ℝ) - f (P.emb x - P.emb o)| ≤ ε * ‖P.emb x - P.emb o‖)
     (z : ℤ × ℤ) : IsDirLimit π P μ z (f (P.latVec z)) := by
-  haveI : Countable V := countable_of_connected hG
+  have : Countable V := countable_of_connected hG
   rw [IsDirLimit, ae_all_iff]
   intro o
   filter_upwards [hunif o] with ρ hρ
@@ -777,7 +777,7 @@ theorem path_reduction_iii_proof (hFLP : External.OneCircuit G) (hAb : External.
             Metric.hausdorffDist (((t : ℝ) ^ (-(1 / 3 : ℝ))) •
               ((fun x => P.emb x - P.emb o) '' (R π ρ o t : Set V))) (κ • B)) atTop (𝓝 0) ∧
           Tendsto (fun t : ℕ => ((R π ρ o t).card : ℝ) / (t : ℝ) ^ (2 / 3 : ℝ)) atTop (𝓝 c) := by
-  haveI : Countable V := countable_of_connected hG
+  have : Countable V := countable_of_connected hG
   have hi := path_reduction_i π hFLP hAb hHP hG μ η hη hcrit
   obtain ⟨a, ha, hii⟩ := path_reduction_ii π hFLP hAb hHP hG hdeg μ η hη hcrit
   obtain ⟨f, hfc, hf0, hfadd, hfsmul, hunif⟩ := passage_limit_proof π P hK hπ hAb hG μ hinv herg

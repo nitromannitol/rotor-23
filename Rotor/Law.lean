@@ -60,7 +60,7 @@ noncomputable def uniformAt (π : Mechanism G) (v : V) : Measure (G.neighborSet 
 /-- `uniformAt π v` is a probability measure, inherited from the uniform distribution on a
 nonempty finite type. -/
 instance (π : Mechanism G) (v : V) : IsProbabilityMeasure (uniformAt π v) := by
-  haveI := π.nonempty v
+  have := π.nonempty v
   unfold uniformAt; infer_instance
 
 /-- The law of independent uniform initial rotors, `rotor.tex:228-233`. -/

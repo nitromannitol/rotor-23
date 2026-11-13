@@ -99,7 +99,7 @@ theorem after_forced_open {s : ExplState} (hinv : ExplInv s) (hout : ExplOuter s
     · exact h1
   refine ⟨?_, hclosed, ?_, ?_, ?_⟩
   · rw [explStepWith_cons he]
-    simp only [if_true, List.append_nil, continuations_eq]
+    simp only [ite_true, List.append_nil, continuations_eq]
     have hzin : w + rotL (w - t) ∈ insert w s.visited := Finset.mem_insert_of_mem hz
     set P : Site × Site → Bool := fun g =>
       decide ¬(g.2 ∈ insert w s.visited ∨ InFiniteComponent (insert w s.visited) g.2) with hP
@@ -117,7 +117,7 @@ theorem after_forced_open {s : ExplState} (hinv : ExplInv s) (hout : ExplOuter s
   · rw [explStepWith_cons he]
   · rw [explStepWith_cons he]
     simp only
-    rw [if_pos hW]
+    rw [ite_eq_left hW]
 
 /-- A sublist of a two-element list `[a, b]` is `[]`, `[a]`, `[b]`, or `[a, b]`. -/
 theorem sublist_pair {α : Type*} {a b : α} {l : List α} (h : l <+ [a, b]) :
@@ -185,7 +185,7 @@ theorem close_sole {h : List Bool} {e : Site × Site} (he : (replay f d h).activ
     Pm f d h ≤ 2 * Pm f d (h ++ [false]) := by
   refine ⟨?_, ?_, Pm_nonforced f d hd h he hW⟩
   · rw [replay_append, explStepWith_cons he]; simp
-  · rw [forced_append_cons f d h he, if_neg hW]
+  · rw [forced_append_cons f d h he, ite_eq_right hW]
 
 /-- From a stage `(t, w)`, either the exploration already terminates after the forced open
 test (with the active list dropping to `[]` and the recorded probability and forced-count
@@ -249,7 +249,7 @@ theorem stage_analysis {h₀ : List Bool} {t w : Site} (st : Stage f d h₀ t w)
           exact ⟨hinv₁.active_head g hg', hout₁ g hg'⟩)]
       have hf1 : (replay f d (h₀ ++ [true] ++ [false])).forced =
           (replay f d (h₀ ++ [true])).forced := by
-        rw [forced_append_cons f d _ hact, if_neg hWe]
+        rw [forced_append_cons f d _ hact, ite_eq_right hWe]
       have hP1 : Pm f d (h₀ ++ [true]) ≤ 2 * Pm f d (h₀ ++ [true] ++ [false]) :=
         Pm_nonforced f d hd _ hact hWe
       have hpos1 : Pm f d (h₀ ++ [true] ++ [false]) ≠ 0 := by
@@ -311,14 +311,14 @@ theorem cascade {h₀ : List Bool} {t w : Site} (st : Stage f d h₀ t w) :
   · exact ⟨h', hp, hs, by omega, hPm⟩
   have hf1 : (replay f d (h₀ ++ [true] ++ [true])).forced =
       (replay f d (h₀ ++ [true])).forced + 1 := by
-    rw [forced_append_cons f d _ st₁.active, if_pos st₁.forced]
+    rw [forced_append_cons f d _ st₁.active, ite_eq_left st₁.forced]
   have hP1 : Pm f d (h₀ ++ [true] ++ [true]) = Pm f d (h₀ ++ [true]) :=
     (Pm_forced f d hd _ st₁.active st₁.forced).1
   rcases stage_analysis hd st₁ with ⟨h', hp, hs, hf, hPm⟩ | ⟨st₂, -⟩
   · exact ⟨h', (List.prefix_append _ _).trans hp, hs, by omega, by rw [← hP1]; exact hPm⟩
   have hf2 : (replay f d (h₀ ++ [true] ++ [true] ++ [true])).forced =
       (replay f d (h₀ ++ [true] ++ [true])).forced + 1 := by
-    rw [forced_append_cons f d _ st₂.active, if_pos st₂.forced]
+    rw [forced_append_cons f d _ st₂.active, ite_eq_left st₂.forced]
   have hP2 : Pm f d (h₀ ++ [true] ++ [true] ++ [true]) = Pm f d (h₀ ++ [true] ++ [true]) :=
     (Pm_forced f d hd _ st₂.active st₂.forced).1
   obtain ⟨h', hp, hs, hf, hPm⟩ := stage_third hd st st₁ st₂
@@ -352,7 +352,7 @@ theorem minF_bound {N : ℕ} (hN : 1 ≤ N) {h : List Bool} (hm : MinF f d N h) 
     omega
   have hforced : TestedAs (replay f d h₀).tested (sideW g.1 g.2) false := by
     by_contra hnf
-    rw [forced_append_cons f d h₀ hact, if_neg hnf] at hN'
+    rw [forced_append_cons f d h₀ hact, ite_eq_right hnf] at hN'
     omega
   have ho : o = true := by
     rcases o with _ | _
@@ -424,7 +424,7 @@ theorem square_forced_tests_proof (f d : Site) (hd : squareGraph.Adj f (f + d)) 
   calc uniformLaw clockwise {ρ | (m : ℕ∞) ≤ forcedCount ρ f d}
       ≤ uniformLaw clockwise {ρ | ((3 * k + 1 : ℕ) : ℕ∞) ≤ forcedCount ρ f d} :=
         measure_mono (fun ρ hρ => by
-          simp only [Set.mem_setOf_eq] at hρ ⊢
+          simp only [Set.mem_ofPred_eq] at hρ ⊢
           exact le_trans (by exact_mod_cast h1) hρ)
     _ ≤ (3 / 4 : ℝ≥0∞) ^ k := K_bound hd k
     _ = ENNReal.ofReal ((3 / 4 : ℝ) ^ k) := by

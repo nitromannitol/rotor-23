@@ -66,7 +66,7 @@ theorem oneInv_init (S : Finset V) (ρ : Config G) (es : List (V × V))
   queue_suffix := List.suffix_refl es
   count x hx := by
     classical
-    simp only [boundaryInit, hx, if_false, reduceCtorEq, add_zero]
+    simp only [boundaryInit, hx, ite_false, reduceCtorEq, add_zero]
     exact (countP_boundaryOrder S es hes x hx).symm
 
 /-- The invariant is preserved by one move. -/
@@ -77,13 +77,13 @@ theorem oneInv_step (S : Finset V) (ρ : Config G) (es : List (V × V)) (s : One
   | some p =>
     by_cases hp : p ∈ S
     · -- the particle has entered `S`: it is dropped
-      simp only [oneStep, htr, hp, if_true]
+      simp only [oneStep, htr, hp, ite_true]
       refine ⟨hrun, hleg, hsuf, fun x hx => ?_⟩
       rw [hcount x hx, htr]
       have : ¬ (some p = some x) := fun h => hx (Option.some_inj.1 h ▸ hp)
       simp [this]
     · -- the particle is routed one step
-      simp only [oneStep, htr, hp, if_false]
+      simp only [oneStep, htr, hp, ite_false]
       have hσ : 0 < s.ξ.σ p := by rw [hcount p hp, htr]; simp
       refine ⟨?_, ?_, hsuf, fun x hx => ?_⟩
       · rw [List.reverse_cons, run_append, ← hrun]; rfl
@@ -97,7 +97,7 @@ theorem oneInv_step (S : Finset V) (ρ : Config G) (es : List (V × V)) (s : One
             fun h => hne h.1.symm
           simp [hne, hne']
         · have hpx : ¬ (some p = some x) := fun h => hxp (Option.some_inj.1 h).symm
-          simp only [hxp, if_false, hpx, add_zero]
+          simp only [hxp, ite_false, hpx, add_zero]
           by_cases hh : (π.next p (s.ξ.ρ p)).1 = x
           · simp [hh, hx]
           · have hh' : ¬ (x = (π.next p (s.ξ.ρ p)).1 ∧ (π.next p (s.ξ.ρ p)).1 ∉ S) :=
@@ -174,7 +174,7 @@ theorem pot_step (S : Finset V) (ρ : Config G) (es : List (V × V)) (hes : IsBo
   | some p =>
     by_cases hp : p ∈ S
     · simp [oneStep, htr, hp, pot, trackedIn]
-    · simp only [oneStep, htr, hp, if_false, pot, List.length_cons, trackedIn]
+    · simp only [oneStep, htr, hp, ite_false, pot, List.length_cons, trackedIn]
       push_cast
       split_ifs <;> linarith
   | none =>

@@ -100,7 +100,7 @@ theorem run_pos_of_not_mem (π : Mechanism G) (S : Finset V) (ξ : RState G)
       simp [h]
     have hstep : 0 < (actuate π S ξ v).σ w := by
       rw [actuate_σ]
-      simp only [if_false, hwv]
+      simp only [ite_false, hwv]
       omega
     apply ih (actuate π S ξ v) hstep
     · intro hwl
@@ -155,7 +155,7 @@ theorem isLegal_cons_run_eq_of_not_mem (π : Mechanism G) (S : Finset V) (ξ : R
       simp [h]
     have hw' : 0 < (actuate π S ξ v).σ w := by
       rw [actuate_σ]
-      simp only [if_false, hwv]
+      simp only [ite_false, hwv]
       omega
     have hnot' : w ∉ l := by
       intro hwl
@@ -163,7 +163,7 @@ theorem isLegal_cons_run_eq_of_not_mem (π : Mechanism G) (S : Finset V) (ξ : R
     obtain ⟨hleg', heq'⟩ := ih (actuate π S ξ v) hw' hnot' hleg
     have hv' : 0 < (actuate π S ξ w).σ v := by
       rw [actuate_σ]
-      simp only [if_false, Ne.symm hwv]
+      simp only [ite_false, Ne.symm hwv]
       omega
     have hpair :
         actuate π S (actuate π S ξ w) v = actuate π S (actuate π S ξ v) w :=

@@ -49,7 +49,7 @@ theorem mem_Φ_of_adj (ρ : Config G) (S : Finset V) (hT : Terminates π S ρ) (
   rw [Φ_of_terminates π ρ S hT, Finset.mem_union, List.mem_toFinset]
   right
   refine mem_of_complete_of_init_pos π S ρ _ (Classical.choose_spec hT) y hy ?_
-  simp only [boundaryInit, hy, if_false]
+  simp only [boundaryInit, hy, ite_false]
   exact Finset.card_pos.2 ⟨s, Finset.mem_filter.2 ⟨hs, hadj⟩⟩
 
 /-! ### Iterates of `Φ` -/

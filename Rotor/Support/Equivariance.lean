@@ -178,7 +178,7 @@ theorem recurrent_act (ρ : Config G) (o : V) :
     simpa [X_act, φ.σ.injective.eq_iff] using this
   · intro h x
     have := h (φ.σ.symm x)
-    simpa [X_act, Equiv.apply_eq_iff_eq_symm_apply] using this
+    simpa [X_act, ← Equiv.eq_symm_apply] using this
 
 /-! ### Routings -/
 
@@ -345,7 +345,7 @@ theorem Φ_act (hAb : External.Abelian G) [Infinite V] [G.LocallyFinite] (hG : G
   · have hT' : ¬ Terminates π (S.map φ.σ.toEmbedding) (φ.act ρ) :=
       fun h => hT ((φ.terminates_act S ρ).1 h)
     unfold Φ
-    rw [dif_neg hT, dif_neg hT']
+    rw [dite_eq_right hT, dite_eq_right hT']
 
 /-- By induction on `n` via `Φ_act`, the `n`-fold iterate of `Φ` is equivariant. -/
 theorem Φ_iterate_act (hAb : External.Abelian G) [Infinite V] [G.LocallyFinite] (hG : G.Connected)
@@ -386,7 +386,7 @@ theorem τ_act (hAb : External.Abelian G) [Infinite V] [G.LocallyFinite] (hG : G
     congr 1
     ext n
     have h1 : ({φ.σ x} : Finset V) = ({x} : Finset V).map φ.σ.toEmbedding := by simp
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     rw [h1, Φ_iterate_act φ hAb hG ρ {x} (by simp) n, mem_map_iff φ]
   · have hall' : ¬ AllTerminate π (φ.act ρ) := fun h => hall ((φ.allTerminate_act ρ).1 h)
     rw [τ_of_not_allTerminate π _ hall', τ_of_not_allTerminate π ρ hall, dist_act φ hG]

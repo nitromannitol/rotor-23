@@ -28,7 +28,7 @@ def restr (F : Finset V) (ρ : Config G) : ∀ v : F, G.neighborSet v := fun v =
 omit [DecidableEq V] in
 /-- The restriction map `restr F` is measurable. -/
 theorem measurable_restr (F : Finset V) : Measurable (restr (G := G) F) :=
-  measurable_pi_lambda _ (fun v => measurable_pi_apply v.1)
+  Measurable.of_eval (fun v => measurable_pi_apply v.1)
 
 omit [DecidableEq V] in
 /-- A function of the rotors at finitely many vertices is measurable. -/
@@ -147,7 +147,7 @@ theorem measurableSet_mem_Φ (hAb : External.Abelian G) [Infinite V] (hG : G.Con
   have : {ρ : Config G | y ∈ Φ π ρ S} =
       {ρ | y ∈ S} ∪ ⋃ vs : List V, {ρ | IsComplete π S (boundaryInit S ρ) vs ∧ y ∈ vs} := by
     ext ρ
-    simp only [Set.mem_setOf_eq, Set.mem_union, Set.mem_iUnion]
+    simp only [Set.mem_ofPred_eq, Set.mem_union, Set.mem_iUnion]
     constructor
     · intro h
       rcases mem_Φ_imp π ρ S y h with h | ⟨ws, hws, hy⟩
@@ -177,7 +177,7 @@ theorem measurableSet_iterate_eq (hAb : External.Abelian G) [Infinite V] (hG : G
     have : {ρ : Config G | (Φ π ρ)^[n + 1] {x} = S} =
         ⋃ S' : Finset V, {ρ | (Φ π ρ)^[n] {x} = S'} ∩ ⋂ y : V, {ρ | y ∈ Φ π ρ S' ↔ y ∈ S} := by
       ext ρ
-      simp only [Set.mem_setOf_eq, Set.mem_iUnion, Set.mem_inter_iff, Set.mem_iInter,
+      simp only [Set.mem_ofPred_eq, Set.mem_iUnion, Set.mem_inter_iff, Set.mem_iInter,
         Function.iterate_succ_apply']
       constructor
       · intro h
@@ -218,7 +218,7 @@ theorem measurableSet_mem_iterate (hAb : External.Abelian G) [Infinite V] (hG : 
     (x y : V) (n : ℕ) : MeasurableSet {ρ : Config G | y ∈ (Φ π ρ)^[n] {x}} := by
   have : {ρ : Config G | y ∈ (Φ π ρ)^[n] {x}} =
       ⋃ S : Finset V, ⋃ (_ : y ∈ S), {ρ | (Φ π ρ)^[n] {x} = S} := by
-    ext ρ; simp only [Set.mem_setOf_eq, Set.mem_iUnion]
+    ext ρ; simp only [Set.mem_ofPred_eq, Set.mem_iUnion]
     constructor
     · intro h; exact ⟨_, h, rfl⟩
     · rintro ⟨S, hy, hS⟩; rw [hS]; exact hy
@@ -236,7 +236,7 @@ theorem measurable_τ (hAb : External.Abelian G) [Infinite V] (hG : G.Connected)
       ({ρ | AllTerminate π ρ}ᶜ ∩ {ρ | G.dist x y = n}) := by
     ext ρ
     simp only [Set.mem_preimage, Set.mem_singleton_iff, Set.mem_union, Set.mem_inter_iff,
-      Set.mem_setOf_eq, Set.mem_iInter, Set.mem_compl_iff]
+      Set.mem_ofPred_eq, Set.mem_iInter, Set.mem_compl_iff]
     by_cases hall : AllTerminate π ρ
     · simp only [hall, true_and, not_true_eq_false, false_and, or_false]
       rw [τ_of_allTerminate π ρ hall]

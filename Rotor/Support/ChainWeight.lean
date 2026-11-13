@@ -81,7 +81,8 @@ theorem wt_nonneg : ∀ l : List V, 0 ≤ wt π l
 theorem wt_le_one : ∀ l : List V, wt π l ≤ 1
   | c :: b :: a :: rest => by
     rw [wt_cons₃]
-    exact mul_le_one₀ (pStep_le_one π a b c) (wt_nonneg π _) (wt_le_one (b :: a :: rest))
+    exact (mul_le_mul (pStep_le_one π a b c) (wt_le_one (b :: a :: rest)) (wt_nonneg π _)
+      zero_le_one).trans_eq (one_mul _)
   | [] => le_rfl
   | [_] => le_rfl
   | [_, _] => le_rfl
@@ -161,12 +162,12 @@ theorem uniformAt_liveSet (a b c : V) :
   by_cases h : G.Adj b a ∧ G.Adj b c
   · have : liveSet π a b c = ↑(stepSet π b ⟨a, h.1⟩ ⟨c, h.2⟩) := by
       ext x
-      simp only [liveSet, Set.mem_setOf_eq, Finset.mem_coe]
+      simp only [liveSet, Set.mem_ofPred_eq, Finset.mem_coe]
       exact ⟨fun ⟨_, hx⟩ => hx, fun hx => ⟨h, hx⟩⟩
     rw [this, uniformAt_stepSet π h]
   · have : liveSet π a b c = ∅ := by
       ext x
-      simp only [liveSet, Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+      simp only [liveSet, Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false]
       rintro ⟨h', _⟩
       exact h h'
     rw [this, measure_empty, pStep_of_not_adj π h, ENNReal.ofReal_zero]
@@ -179,7 +180,7 @@ theorem uniformLaw_liveRevSet : ∀ l : List V, l.Nodup →
     have hsplit : liveRevSet π (c :: b :: a :: rest)
         = (fun ρ : Config G => ρ b) ⁻¹' liveSet π a b c ∩ liveRevSet π (b :: a :: rest) := by
       ext ρ
-      simp only [liveRevSet, Set.mem_setOf_eq, liveRev_cons₃, Set.mem_inter_iff, Set.mem_preimage,
+      simp only [liveRevSet, Set.mem_ofPred_eq, liveRev_cons₃, Set.mem_inter_iff, Set.mem_preimage,
         liveAt_iff_mem_liveSet]
     have hb : b ∉ (internals (b :: a :: rest)).toFinset := by
       rw [List.mem_toFinset]

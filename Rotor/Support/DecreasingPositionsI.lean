@@ -52,7 +52,7 @@ theorem route_head (S : Finset V) (ρ : Config G) (es : List (V × V)) (n : ℕ)
     | some q =>
       by_cases hq : q ∈ S
       · simp [oneStep, htr, hq] at h
-      · simp only [oneStep, htr, hq, if_false, Option.some.injEq] at h
+      · simp only [oneStep, htr, hq, ite_false, Option.some.injEq] at h
         simp [oneStep, htr, hq, h]
     | none =>
       cases hqe : s.queue with
@@ -76,9 +76,9 @@ theorem tracked_of_first_visit (S : Finset V) (ρ : Config G) (es : List (V × V
     cases htr : s.tracked with
     | some q =>
       by_cases hq : q ∈ S
-      · simp only [oneStep, htr, hq, if_true] at hn
+      · simp only [oneStep, htr, hq, ite_true] at hn
         exact absurd hn hprev
-      · simp only [oneStep, htr, hq, if_false, List.mem_cons] at hn
+      · simp only [oneStep, htr, hq, ite_false, List.mem_cons] at hn
         rcases hn with rfl | hn
         · simp [oneStep, htr, hq]
         · exact absurd hn hprev
@@ -201,7 +201,7 @@ theorem indeg_eq_outdeg_add [G.LocallyFinite] (S : Finset V) (ρ : Config G) (es
   rw [← hrun] at hσ
   have hc := hcount v hv
   have hinit : (boundaryInit S ρ).σ v = es.countP (fun e => decide (e.2 = v)) := by
-    simp only [boundaryInit, hv, if_false]
+    simp only [boundaryInit, hv, ite_false]
     exact (countP_boundaryOrder S es hes v hv).symm
   rw [← hpre, List.countP_append] at hinit
   unfold arrivals at hσ
@@ -372,13 +372,13 @@ theorem decreasing_positions_i' [G.LocallyFinite] (S : Finset V) (ρ : Config G)
     have := survive_balance π S ρ es hes _ pre hpre v hv
     rw [htr] at this
     have hne : ¬ (some y = some v) := fun h => hvy (Option.some_inj.1 h).symm
-    simp only [hne, if_false, add_zero] at this
+    simp only [hne, ite_false, add_zero] at this
     omega
   have hexc : outdeg (survive (travSet π S ρ pre (oneRouting π S ρ es (Nat.find hex)))) y <
       indeg (survive (travSet π S ρ pre (oneRouting π S ρ es (Nat.find hex)))) y := by
     have := survive_balance π S ρ es hes _ pre hpre y hy
     rw [htr] at this
-    simp only [if_true] at this
+    simp only [ite_true] at this
     omega
   obtain ⟨l, hl⟩ := exists_epath _ S y hy hbal hexc
   refine ⟨l, ⟨hl.nodup, ?_⟩, ?_, hl.two_le, hl.head_mem, hl.tail_not_mem, hl.last,

@@ -23,7 +23,7 @@ theorem window_iff {l w : List Site} {i n : ℕ} (hw : w.length = n) :
     (l.drop i).take n = w ↔ ∀ j < n, l[i + j]? = w[j]? := by
   constructor
   · intro h j hj
-    rw [← h, List.getElem?_take, List.getElem?_drop, if_pos hj]
+    rw [← h, List.getElem?_take, List.getElem?_drop, ite_eq_left hj]
   · intro h
     apply List.ext_getElem?
     intro k
@@ -251,14 +251,14 @@ noncomputable def surgeryConfig (ω : BondConfig) (q : List Site) (e : Sym2 Site
 /-- Every bond of the route `q` is opened by the surgery configuration. -/
 theorem surgeryConfig_of_qbond {ω : BondConfig} {q : List Site} {e b : Sym2 Site}
     (h : QBond q b) : surgeryConfig ω q e b = true := by
-  unfold surgeryConfig; rw [if_pos h]
+  unfold surgeryConfig; rw [ite_eq_left h]
 
 /-- Away from the bonds of `q`, the bonds touching an internal vertex of `q`, and `e`, the surgery
 configuration agrees with `ω`. -/
 theorem surgeryConfig_eq_of_not {ω : BondConfig} {q : List Site} {e b : Sym2 Site}
     (h1 : ¬ QBond q b) (h2 : ¬ TouchesInternal q b) (h3 : b ≠ e) :
     surgeryConfig ω q e b = ω b := by
-  unfold surgeryConfig; rw [if_neg h1, if_neg (by tauto)]
+  unfold surgeryConfig; rw [ite_eq_right h1, ite_eq_right (by tauto)]
 
 /-- `surgeryConfig ω q e` is `true` at `b` iff `b` is a bond of `q`, or `b` neither touches an
 internal vertex of `q` nor equals `e` and was already open in `ω`. -/
@@ -292,10 +292,10 @@ theorem forcedPath_surgery (ω : BondConfig) {q : List Site} (hq : q.Nodup) (e :
   rw [surgeryConfig_true_iff] at hop
   rcases hop with ⟨j, u', v', hj, hj', hb⟩ | ⟨hnt, -, -⟩
   · rcases Sym2.eq_iff.1 hb with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
-    · have : i = j := (List.getElem?_inj (by omega) hq).1 (hu.trans hj.symm)
+    · have : i = j := (List.Nodup.getElem?_inj (by omega) hq).1 (hu.trans hj.symm)
       subst this
       exact Or.inr hj'
-    · have : i = j + 1 := (List.getElem?_inj (by omega) hq).1 (hu.trans hj'.symm)
+    · have : i = j + 1 := (List.Nodup.getElem?_inj (by omega) hq).1 (hu.trans hj'.symm)
       subst this
       exact Or.inl (by simpa using hj)
   · exact absurd ⟨i, hi, hi', u, hu, Sym2.mem_mk_left _ _⟩ hnt

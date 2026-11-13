@@ -155,12 +155,12 @@ theorem exists_spanning_walk (o : ℤ × ℤ) : ∀ (n : ℕ) (U : Finset (ℤ �
     let f : ℤ × ℤ → ℕ := fun v => if h : v ∈ U then Nat.find (hK.2 v h) else 0
     have hf : ∀ v (hv : v ∈ U), ∃ p ∈ kingWalks o (f v), (∀ q ∈ p, q ∈ U) ∧ p.headD o = v := by
       intro v hv
-      simp only [f, dif_pos hv]
+      simp only [f, dite_eq_left hv]
       exact Nat.find_spec (hK.2 v hv)
     have hf_le : ∀ v (hv : v ∈ U) (m : ℕ), (∃ p ∈ kingWalks o m, (∀ q ∈ p, q ∈ U) ∧ p.headD o = v) →
         f v ≤ m := by
       intro v hv m hm
-      simp only [f, dif_pos hv]
+      simp only [f, dite_eq_left hv]
       exact Nat.find_le hm
     have hne : (U.erase o).Nonempty := by
       rw [← Finset.card_pos, Finset.card_erase_of_mem hK.1, hU]

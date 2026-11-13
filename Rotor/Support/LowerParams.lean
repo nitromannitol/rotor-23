@@ -50,7 +50,7 @@ theorem fpr_lower_set {par : ι → ℝ} (hpar : IsParam par) {A : Set (ι → B
       refine fpw_le_of_par hparE_param hpar E (by norm_num) (fun j hj => by simp [hj])
         (fun j hj => ?_) ω
       have := hE' j hj; have := hpar j
-      simp only [hj, if_true]
+      simp only [hj, ite_true]
       constructor <;> linarith
     have hpiv0 : 0 ≤ fpr par (Pivot i A) := fpr_nonneg hpar _
     have hsum0 : 0 ≤ ∑ j ∈ E, fpr par (Pivot j A) := sum_nonneg (fun j _ => fpr_nonneg hpar _)
@@ -85,7 +85,7 @@ theorem fpr_block_step {par : ι → ℝ} (hpar : IsParam par) {A : Set (ι → 
   have hagree : ∀ j, j ≠ m →
       (fun j => if j = m then 1 else if j ∈ E then par j - ε else par j) j =
       (fun j => if j ∈ E then par j - ε else par j) j := by
-    intro j hj; simp only [hj, if_false]
+    intro j hj; simp only [hj, ite_false]
   have hchange := fpr_change (par := fun j => if j ∈ E then par j - ε else par j)
     (par' := fun j => if j = m then 1 else if j ∈ E then par j - ε else par j) m hagree hA
   have hm' : (fun j => if j ∈ E then par j - ε else par j) m -
@@ -98,7 +98,7 @@ theorem fpr_block_step {par : ι → ℝ} (hpar : IsParam par) {A : Set (ι → 
     refine fpw_le_of_par hpar hparE_param E (by norm_num) (fun j hj => by simp [hj])
       (fun j hj => ?_) ω
     have := hE j hj; have := hpar j
-    simp only [hj, if_true]
+    simp only [hj, ite_true]
     constructor <;> linarith
   have hsum : ∑ j ∈ E, fpr par (Pivot j A) ≤ E.card * (K * fpr par (Pivot m A)) := by
     calc ∑ j ∈ E, fpr par (Pivot j A) ≤ ∑ j ∈ E, K * fpr par (Pivot m A) := sum_le_sum hcomp
@@ -150,8 +150,8 @@ theorem fpr_inl {ι₁ ι₂ : Type*} [Fintype ι₁] [Fintype ι₂] [Decidable
         {ω : ι₁ ⊕ ι₂ → Bool | (fun i => ω (Sum.inl i)) ∈ E}) ↔ f ∈ E := by
     intro g; simp [Equiv.sumArrowEquivProdArrow]
   by_cases hf : f ∈ E
-  · simp only [hmem, hf, if_true]
+  · simp only [hmem, hf, ite_true]
     rw [← Finset.mul_sum, sum_fpw, mul_one]
-  · simp only [hmem, hf, if_false, Finset.sum_const_zero]
+  · simp only [hmem, hf, ite_false, Finset.sum_const_zero]
 
 end Rotor

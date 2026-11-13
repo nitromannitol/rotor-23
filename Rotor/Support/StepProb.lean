@@ -75,8 +75,9 @@ theorem pStep_self (a b : V) : pStep π a b a = 0 := by
 `pStep`'s definition. -/
 theorem pStep_of_not_adj {a b c : V} (h : ¬ (G.Adj b a ∧ G.Adj b c)) : pStep π a b c = 0 := by
   unfold pStep
-  rw [dif_neg h]
+  rw [dite_eq_right h]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- `eq:mean-continuations`. -/
 theorem sum_pStep {a b : V} (ha : G.Adj b a) :
     ∑ c ∈ G.neighborFinset b, pStep π a b c = ((G.degree b : ℝ) - 1) / 2 := by
@@ -86,7 +87,7 @@ theorem sum_pStep {a b : V} (ha : G.Adj b a) :
       ((stepSet π b ⟨a, ha⟩ c).card : ℝ) / G.degree b := by
     intro c
     unfold pStep
-    rw [dif_pos ⟨ha, c.2⟩]
+    rw [dite_eq_left ⟨ha, c.2⟩]
   simp only [h1]
   rw [← Finset.sum_div]
   have h2 := two_mul_sum_card_filter_lt (π.next b) (π.cyclic b) (⟨a, ha⟩ : G.neighborSet b)
@@ -112,7 +113,7 @@ strictly smaller rank always places `a` itself in `stepSet`. -/
 theorem one_div_degree_le_pStep {a b c : V} (ha : G.Adj b a) (hc : G.Adj b c) (hne : c ≠ a) :
     1 / (G.degree b : ℝ) ≤ pStep π a b c := by
   unfold pStep
-  rw [dif_pos ⟨ha, hc⟩]
+  rw [dite_eq_left ⟨ha, hc⟩]
   have hd : (0 : ℝ) < G.degree b := by
     rw [← G.card_neighborSet_eq_degree]
     exact_mod_cast (Fintype.card_pos_iff (α := G.neighborSet b)).2 ⟨⟨a, ha⟩⟩
@@ -138,7 +139,7 @@ theorem liveAt_iff (ρ : Config G) (a b c : V) :
 theorem uniformAt_stepSet {a b c : V} (h : G.Adj b a ∧ G.Adj b c) :
     uniformAt π b ↑(stepSet π b ⟨a, h.1⟩ ⟨c, h.2⟩) = ENNReal.ofReal (pStep π a b c) := by
   unfold uniformAt pStep
-  rw [dif_pos h, PMF.toMeasure_apply_finset]
+  rw [dite_eq_left h, PMF.toMeasure_apply_finset]
   simp only [PMF.uniformOfFintype_apply, sum_const, nsmul_eq_mul, G.card_neighborSet_eq_degree]
   have hd : (0 : ℝ) < G.degree b := by
     rw [← G.card_neighborSet_eq_degree]

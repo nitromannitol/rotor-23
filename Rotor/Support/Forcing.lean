@@ -57,7 +57,7 @@ theorem forced_forward (hq : ForcedPath ω q) (hp : IsOpenPath ω p) (he : EndsO
     · exfalso
       rw [show j + m + 1 - 1 = j + m by omega] at h
       have : i + m = i + m + 1 + 1 :=
-        (List.getElem?_inj (by omega) hp.1.1).1 (e0.trans (h.trans hw.symm))
+        (List.Nodup.getElem?_inj (by omega) hp.1.1).1 (e0.trans (h.trans hw.symm))
       omega
     · exact ⟨hlt, e1, hw.trans h.symm⟩
 
@@ -95,7 +95,7 @@ theorem forced_backward (hq : ForcedPath ω q) (hp : IsOpenPath ω p) (he : Ends
         exact e0
     · exfalso
       have : i - m - 1 = i - m + 1 :=
-        (List.getElem?_inj (by omega) hp.1.1).1 (hw.trans (h.symm.trans e1.symm))
+        (List.Nodup.getElem?_inj (by omega) hp.1.1).1 (hw.trans (h.symm.trans e1.symm))
       omega
 
 /-- Combining `forced_forward` and `forced_backward`: once `p` agrees with `q` on two consecutive
