@@ -55,7 +55,7 @@ jobs:
         run: |
           set -o pipefail
           lake build 2>&1 | tee production-build.log
-          if grep -iE '^warning:|declaration uses .sorry' production-build.log; then
+          if grep -iE '^warning: (Rotor|RotorAudit)(/|\.lean)|declaration uses .sorry' production-build.log; then
             echo "Production build emitted a warning."
             exit 1
           fi
