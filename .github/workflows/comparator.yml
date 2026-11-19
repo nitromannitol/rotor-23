@@ -133,7 +133,8 @@ jobs:
         run: |
           set -euo pipefail
           fail=0
-          for X in MainSquare MainDegreeThree PerturbationsSquare PerturbationsDegreeThree \
+          for X in MainSquareUnconditional MainDegreeThreeUnconditional PerturbationsSquareUnconditional PerturbationsDegreeThreeUnconditional \
+                   MainSquare MainDegreeThree PerturbationsSquare PerturbationsDegreeThree \
                    PendantCounterexample; do
             echo "::group::$X"
             if lake env ~/tools/comparator/.lake/build/bin/comparator "RotorAudit/$X/comparator.json" \

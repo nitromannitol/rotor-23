@@ -1,0 +1,14 @@
+{
+  "challenge_module": "RotorAudit.MainDegreeThreeUnconditional.Challenge",
+  "solution_module": "RotorAudit.MainDegreeThreeUnconditional.Solution",
+  "theorem_names": [
+    "RotorAudit.main_degree_three_unconditional"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
