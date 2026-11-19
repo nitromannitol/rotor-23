@@ -1,3 +1,8 @@
+import Rotor.Frozen.Unconditional.BlockLivePaths
+import Rotor.Frozen.Unconditional.MainSquareUnconditional
+import Rotor.Frozen.Unconditional.MainDegreeThreeUnconditional
+import Rotor.Frozen.Unconditional.PerturbationsSquareUnconditional
+import Rotor.Frozen.Unconditional.PerturbationsDegreeThreeUnconditional
 import Rotor.MainTheoremsUnconditional
 
 /-!
@@ -25,3 +30,9 @@ does on every push.
 #print axioms Rotor.main_degree_three_unconditional
 #print axioms Rotor.perturbations_square_unconditional
 #print axioms Rotor.perturbations_degree_three_unconditional
+
+#print axioms Rotor.Frozen.block_live_paths_unconditional
+#print axioms Rotor.Frozen.main_square_unconditional
+#print axioms Rotor.Frozen.main_degree_three_unconditional
+#print axioms Rotor.Frozen.perturbations_square_unconditional
+#print axioms Rotor.Frozen.perturbations_degree_three_unconditional

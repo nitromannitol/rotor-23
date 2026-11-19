@@ -63,17 +63,6 @@ jobs:
           restore-keys: |
             lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
 
-      - name: Fetch the pinned percolation dependency
-        shell: bash
-        run: |
-          DIR=.lake/packages/PercolationContinuity
-          REV=795efb86f191735c5481675763537cfb4ff37e55
-          mkdir -p .lake/packages
-          lake update PercolationContinuity >/dev/null 2>&1 || true
-          [ -d "$DIR/.git" ] || git clone -q https://github.com/anthropics/formal-math "$DIR"
-          git -C "$DIR" fetch -q origin "$REV"
-          git -C "$DIR" checkout -q "$REV"
-
       - name: Get Mathlib cache
         run: lake exe cache get
 
@@ -133,7 +122,7 @@ jobs:
         run: |
           set -euo pipefail
           fail=0
-          for X in MainSquareUnconditional MainDegreeThreeUnconditional PerturbationsSquareUnconditional PerturbationsDegreeThreeUnconditional \
+          for X in PendantCounterexampleUnconditional MainSquareUnconditional MainDegreeThreeUnconditional PerturbationsSquareUnconditional PerturbationsDegreeThreeUnconditional \
                    MainSquare MainDegreeThree PerturbationsSquare PerturbationsDegreeThree \
                    PendantCounterexample; do
             echo "::group::$X"
