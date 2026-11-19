@@ -131,8 +131,9 @@ noncomputable def uniformAt (π : Mechanism G) (v : V) : Measure (G.neighborSet 
   haveI := π.nonempty v
   (PMF.uniformOfFintype (G.neighborSet v)).toMeasure
 
+set_option linter.style.haveILetI false in
 instance (π : Mechanism G) (v : V) : IsProbabilityMeasure (uniformAt π v) := by
-  have := π.nonempty v
+  haveI := π.nonempty v
   unfold uniformAt; infer_instance
 
 /-- The law of independent uniform initial rotors. -/
