@@ -379,3 +379,58 @@ nodes:
     provider: Rotor.Frozen.pendant_counterexample
     approved: "2026-09-26"
 
+
+  - id: thm-main-square-unconditional
+    version: 1
+    kind: theorem
+    source: "rotor.tex:237-259 (label thm:main, the square-lattice case); Kingman and subcritical-decay hypotheses dropped, now discharged internally by Rotor.Bridge.kingman_holds and Rotor.Bridge.subcriticalDecay_holds; Abelian hypothesis also dropped, now discharged internally by Rotor.Bridge.abelian_holds; OneCircuit hypothesis also dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds; VisitsAllOfVisitsOne hypothesis also dropped, now discharged internally by Rotor.Bridge.visitsAllOfVisitsOne_holds; cited inputs discharged"
+    file: Rotor/Frozen/Unconditional/MainSquareUnconditional.lean
+    export: Rotor.Frozen.main_square_unconditional
+    state: PROVED
+    frozen_sha256: e26c18e38ec5e7c4cfed3b098bd974c799174c4c04bfec886f0c1348de1dae66
+    provider: Rotor.main_square_unconditional
+    approved: "2026-11-19"
+
+  - id: thm-main-degree-three-unconditional
+    version: 1
+    kind: theorem
+    source: "rotor.tex:237-259 (label thm:main, the degree-three case); Kingman hypothesis dropped, now discharged internally by Rotor.Bridge.kingman_holds; Abelian hypothesis also dropped, now discharged internally by Rotor.Bridge.abelian_holds; OneCircuit hypothesis also dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds; VisitsAllOfVisitsOne hypothesis also dropped, now discharged internally by Rotor.Bridge.visitsAllOfVisitsOne_holds; cited inputs discharged"
+    file: Rotor/Frozen/Unconditional/MainDegreeThreeUnconditional.lean
+    export: Rotor.Frozen.main_degree_three_unconditional
+    state: PROVED
+    frozen_sha256: 0bb1977652967f2b8111117b003d382be4771e9de53c801d0628b4a590526470
+    provider: Rotor.main_degree_three_unconditional
+    approved: "2026-11-19"
+
+  - id: prop-perturbations-square-unconditional
+    version: 1
+    kind: theorem
+    source: "rotor.tex:272-280 (label prop:small-perturbations, the square-lattice case); Kingman and subcritical-decay hypotheses dropped, now discharged internally by Rotor.Bridge.kingman_holds and Rotor.Bridge.subcriticalDecay_holds; Abelian hypothesis also dropped, now discharged internally by Rotor.Bridge.abelian_holds; OneCircuit hypothesis also dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds; VisitsAllOfVisitsOne hypothesis also dropped, now discharged internally by Rotor.Bridge.visitsAllOfVisitsOne_holds; cited inputs discharged"
+    file: Rotor/Frozen/Unconditional/PerturbationsSquareUnconditional.lean
+    export: Rotor.Frozen.perturbations_square_unconditional
+    state: PROVED
+    frozen_sha256: 4e2b9bf4c1088063f3b770bc9b95e13620eab0f72f3d8b9633641aa86ca1128e
+    provider: Rotor.perturbations_square_unconditional
+    approved: "2026-11-19"
+
+  - id: prop-perturbations-degree-three-unconditional
+    version: 1
+    kind: theorem
+    source: "rotor.tex:272-280 (label prop:small-perturbations, the degree-three case); Kingman hypothesis dropped, now discharged internally by Rotor.Bridge.kingman_holds; Abelian hypothesis also dropped, now discharged internally by Rotor.Bridge.abelian_holds; OneCircuit hypothesis also dropped, now discharged internally by Rotor.Bridge.oneCircuit_holds; VisitsAllOfVisitsOne hypothesis also dropped, now discharged internally by Rotor.Bridge.visitsAllOfVisitsOne_holds; cited inputs discharged"
+    file: Rotor/Frozen/Unconditional/PerturbationsDegreeThreeUnconditional.lean
+    export: Rotor.Frozen.perturbations_degree_three_unconditional
+    state: PROVED
+    frozen_sha256: d9cca43670164cf6a76e86087dc53679a716e92a25a200961941378df0315bb3
+    provider: Rotor.perturbations_degree_three_unconditional
+    approved: "2026-11-19"
+
+  - id: lem-block-live-paths-unconditional
+    version: 1
+    kind: theorem
+    source: "rotor.tex:1246-1257 (label lem:block-live-paths); domination input discharged"
+    file: Rotor/Frozen/Unconditional/BlockLivePaths.lean
+    export: Rotor.Frozen.block_live_paths_unconditional
+    state: PROVED
+    frozen_sha256: f1902886a6b3473536629fc7a110b68fe5211573e40dd74e2f71fabed92ae3c0
+    provider: Rotor.Frozen.block_live_paths_unconditional
+    approved: "2026-11-19"
