@@ -3,7 +3,7 @@
 This document maps the certified statement surface of the formalization to the
 paper *Eulerian walkers on `ℤ²` have range exponent `2/3`* (Bou-Rabee–Peres,
 arXiv:2608.23545), so a reader of the paper can locate where each result is
-proved, and which results are assumed rather than proved.
+proved, including the witnesses for cited inputs.
 
 **Conventions.**
 - Lean names are given in full; file paths are relative to the repository
@@ -11,34 +11,26 @@ proved, and which results are assumed rather than proved.
 - The **Source** column gives the line range in `paper/rotor.tex` and the
   paper's own `\label`, never an equation numeral.  The paper is pinned by the
   SHA-256 recorded in `ledger/manifest.yaml`.
-- **Status**: `proved`, formalized and proved as stated (manifest state
-  `SEALED`); `assumed`, a result the paper cites without proof, stated as a
-  proposition in `Rotor/External/` and taken as an explicit hypothesis by the
-  statements whose proofs use it (manifest state `FROZEN`).  The **Node**
-  column is the statement's id in `ledger/manifest.yaml`.
+- **Status**: `PROVED` records a theorem; `FROZEN` records a cited proposition.
+  Its proof witness is identified separately. The **Node** column gives its manifest id.
 - The bytes between `-- FROZEN-STATEMENT-BEGIN` and `-- FROZEN-STATEMENT-END`
   are the contract.  `python3 tools/check_manifest.py` is the authority on the
   hash recipe.
-- The main results are additionally exposed, stated in full, in
-  [`Rotor/MainTheorems.lean`](Rotor/MainTheorems.lean), and all five are
-  restated over a Mathlib-only vocabulary for the comparator (see
-  [`RotorAudit/`](RotorAudit/)).
+- Unconditional main results are in [`Rotor/MainTheoremsUnconditional.lean`](Rotor/MainTheoremsUnconditional.lean)
+  and [`Rotor/MainTheorems.lean`](Rotor/MainTheorems.lean).
 
 ## Main results
 
 | Source | Main theorem | Certified statement | Comparator |
 |---|---|---|---|
-| Theorem 1.1, `thm:main`, square lattice | `Rotor.main_square` | `Rotor.Frozen.main_square` | `RotorAudit/MainSquare/` |
-| Theorem 1.1, `thm:main`, degree three | `Rotor.main_degree_three` | `Rotor.Frozen.main_degree_three` | `RotorAudit/MainDegreeThree/` |
-| Proposition 1.2, `prop:small-perturbations`, square lattice | `Rotor.perturbations_square` | `Rotor.Frozen.perturbations_square` | `RotorAudit/PerturbationsSquare/` |
-| Proposition 1.2, `prop:small-perturbations`, degree three | `Rotor.perturbations_degree_three` | `Rotor.Frozen.perturbations_degree_three` | `RotorAudit/PerturbationsDegreeThree/` |
-| Proposition 1.3, `prop:pendant-counterexample` | `Rotor.pendant_counterexample` | `Rotor.Frozen.pendant_counterexample` | `RotorAudit/PendantCounterexample/` |
+| Theorem 1.1, `thm:main`, square lattice | `Rotor.main_square_unconditional` | `Rotor.Frozen.main_square_unconditional` | `RotorAudit/MainSquareUnconditional/` |
+| Theorem 1.1, `thm:main`, degree three | `Rotor.main_degree_three_unconditional` | `Rotor.Frozen.main_degree_three_unconditional` | `RotorAudit/MainDegreeThreeUnconditional/` |
+| Proposition 1.2, `prop:small-perturbations`, square lattice | `Rotor.perturbations_square_unconditional` | `Rotor.Frozen.perturbations_square_unconditional` | `RotorAudit/PerturbationsSquareUnconditional/` |
+| Proposition 1.2, `prop:small-perturbations`, degree three | `Rotor.perturbations_degree_three_unconditional` | `Rotor.Frozen.perturbations_degree_three_unconditional` | `RotorAudit/PerturbationsDegreeThreeUnconditional/` |
+| Proposition 1.3, `prop:pendant-counterexample` | `Rotor.pendant_counterexample` | `Rotor.Frozen.pendant_counterexample` | `RotorAudit/PendantCounterexampleUnconditional/` |
 
-Each main theorem of `Rotor/MainTheorems.lean` has exactly the statement of its
-certified counterpart.  The four theorems about Theorem 1.1 and Proposition 1.2
-carry one hypothesis, `Rotor.External.LSS`; `Rotor.pendant_counterexample`
-carries none.  The other six cited results are proved in `Rotor/Bridge/` and
-supplied in the proofs of the certified statements.
+The older `Rotor/MainTheorems.lean` forms retain the explicit LSS hypothesis. The
+unconditional forms apply `Rotor.External.lss_holds` and preserve the other hypotheses.
 
 ## Small perturbations on the square lattice
 
@@ -61,11 +53,8 @@ See [`Rotor.Frozen.perturbations_square`](Rotor/Frozen/Main/PerturbSquare.lean);
 
 ## Cited results
 
-Every cited result the paper uses without proof is a `Prop` in
-`Rotor/External/`, registered and pinned like a statement.  Six of the seven
-are proved in `Rotor/Bridge/`; the seventh, `ext-lss`, is an explicit
-hypothesis of the nodes whose proofs use it.  [`ASSUMPTIONS.md`](ASSUMPTIONS.md)
-gives its Lean statement.
+The cited propositions are recorded in `Rotor/External/` and have proofs. In particular,
+`Rotor.External.lss_holds` supplies the domination input in the unconditional results.
 
 | Node | Cited result | Lean | Where the paper uses it | Status |
 |---|---|---|---|---|
@@ -74,7 +63,7 @@ gives its Lean statement.
 | `ext-holroyd-propp` | Holroyd–Propp, Lemma 6 | `Rotor.External.VisitsAllOfVisitsOne` | `prop-live-recurrence` | proved in `Rotor/Bridge/HolroydPropp.lean` |
 | `ext-angel-holroyd` | Angel–Holroyd 2012, Theorem 1 | `Rotor.External.RecurrentOfRecurrent` | `prop-pendant-counterexample` | proved in `Rotor/Bridge/AngelHolroyd.lean` |
 | `ext-kingman` | Kingman 1968, Theorems 3 and 5 | `Rotor.External.Kingman` | `prop-passage-limit` | proved in `Rotor/Bridge/Kingman.lean` |
-| `ext-lss` | Liggett–Schonmann–Stacey, Theorem 0.0(ii) | `Rotor.External.LSS` | `lem-block-live-paths` | assumed |
+| `ext-lss` | Liggett–Schonmann–Stacey, Theorem 0.0(ii) | `Rotor.External.LSS` | `lem-block-live-paths` | proved by `Rotor.External.lss_holds` |
 | `ext-subcritical-decay` | Kesten 1980 with Grimmett, Theorem 3.4 | `Rotor.External.SubcriticalDecay` | `lem-square-constrained-bonds` | proved in `Rotor/Bridge/SubcriticalDecay.lean` |
 
 ## Where a Lean statement is not literally the paper's
@@ -91,8 +80,8 @@ gives its Lean statement.
 
 | Node | Source | Lean declaration | File | Status |
 |---|---|---|---|---|
-| `ext-lss` | external input, Liggett-Schonmann-Stacey Theorem 0.0(ii), used in the proof of lem:block-live-paths | `Rotor.External.LSS` | `Rotor/External/LSS.lean` | assumed |
-| `ext-subcritical-decay` | external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail; proved from the percolation library PercolationContinuity (Kesten's p_c(Z^2)=1/2 and DCT-16 phase-transition sharpness) | `Rotor.Bridge.subcriticalDecay_holds` | `Rotor/Bridge/SubcriticalDecay.lean` | proved in `Rotor/Bridge/SubcriticalDecay.lean` |
+| `ext-lss` | external input, Liggett-Schonmann-Stacey Theorem 0.0(ii), used in the proof of lem:block-live-paths | `Rotor.External.LSS` | `Rotor/External/LSS.lean` | proved by `Rotor.External.lss_holds` |
+| `ext-subcritical-decay` | external input, Kesten 1980 with Grimmett Theorem 3.4, eq:square-subcritical-tail; proved from percolation results vendored in Lattice-Probability | `Rotor.Bridge.subcriticalDecay_holds` | `Rotor/Bridge/SubcriticalDecay.lean` | proved in `Rotor/Bridge/SubcriticalDecay.lean` |
 | `lem-block-live-paths` | `rotor.tex:1246-1257`, `lem:block-live-paths` | `Rotor.Frozen.block_live_paths` | `Rotor/Frozen/Shape/BlockLivePaths.lean` | PROVED |
 | `prop-subcubic-recurrence` | `rotor.tex:1363-1369`, `prop:subcubic-recurrence` | `Rotor.Frozen.subcubic_recurrence` | `Rotor/Frozen/DegreeThree/SubcubicRecurrence.lean` | PROVED |
 | `prop-degree-three-passage` | `rotor.tex:1404-1419`, `prop:degree-three-passage` | `Rotor.Frozen.degree_three_passage` | `Rotor/Frozen/DegreeThree/Passage.lean` | PROVED |
@@ -124,5 +113,10 @@ gives its Lean statement.
 | `prop-perturbations-degree-three` | `rotor.tex:272-280`, `prop:small-perturbations` | `Rotor.Frozen.perturbations_degree_three` | `Rotor/Frozen/Main/PerturbDegreeThree.lean` | PROVED |
 | `ext-angel-holroyd` | external input, Angel-Holroyd 2012 Theorem 1, cited in the proof of prop:live-recurrence; proved by propagating recurrence along adjacency and then along a connecting walk, via Rotor.Bridge.abelian_holds | `Rotor.Bridge.recurrentOfRecurrent_holds` | `Rotor/Bridge/AngelHolroyd.lean` | proved in `Rotor/Bridge/AngelHolroyd.lean` |
 | `prop-pendant-counterexample` | `rotor.tex:309-314`, `prop:pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `Rotor/Frozen/Main/Pendant.lean` | PROVED |
+| `thm-main-square-unconditional` | `rotor.tex:237-259`, `thm:main` | `Rotor.Frozen.main_square_unconditional` | `Rotor/Frozen/Unconditional/MainSquareUnconditional.lean` | PROVED |
+| `thm-main-degree-three-unconditional` | `rotor.tex:237-259`, `thm:main` | `Rotor.Frozen.main_degree_three_unconditional` | `Rotor/Frozen/Unconditional/MainDegreeThreeUnconditional.lean` | PROVED |
+| `prop-perturbations-square-unconditional` | `rotor.tex:272-280`, `prop:small-perturbations` | `Rotor.Frozen.perturbations_square_unconditional` | `Rotor/Frozen/Unconditional/PerturbationsSquareUnconditional.lean` | PROVED |
+| `prop-perturbations-degree-three-unconditional` | `rotor.tex:272-280`, `prop:small-perturbations` | `Rotor.Frozen.perturbations_degree_three_unconditional` | `Rotor/Frozen/Unconditional/PerturbationsDegreeThreeUnconditional.lean` | PROVED |
+| `lem-block-live-paths-unconditional` | `rotor.tex:1246-1257`, `lem:block-live-paths` | `Rotor.Frozen.block_live_paths_unconditional` | `Rotor/Frozen/Unconditional/BlockLivePaths.lean` | PROVED |
 
 <!-- FROZEN-SURFACE-END -->

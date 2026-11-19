@@ -13,10 +13,9 @@ project:
     1.2), and a doubly periodic plane graph, the square lattice with many
     leaves attached to every vertex, carries a transient rotor walk
     (Proposition 1.3).  Every theorem, lemma and proposition of the paper is
-    formalized; the Liggett-Schonmann-Stacey domination theorem, which the
-    paper cites without proof, is an explicit hypothesis of the theorems that
-    use it, and the five main theorems are independently checked by the
-    comparator pairs under RotorAudit/.
+    formalized; the cited Liggett-Schonmann-Stacey domination theorem is
+    proved and used in the unconditional results. Mathlib-only comparator
+    pairs are provided under RotorAudit/.
   authors:
     - "Ahmed Bou-Rabee"
   license: "Apache-2.0"
@@ -32,26 +31,18 @@ sources:
     relationship: "formalizes"
     note: >-
       The paper under formalization.  Every theorem, lemma and proposition of
-      the paper is formalized; see status.scope for the one cited result that
-      is carried as a hypothesis and fidelity.divergences for the places where
+      the paper is formalized; see status.scope for cited inputs and
+      fidelity.divergences for the places where
       a Lean statement is not literally the paper's.
     license: "arXiv non-exclusive distribution license 1.0"
     author_endorsement: "n/a"   # the formalizer is an author of the source
 
 related_formalizations:
-  - id: "https://github.com/anthropics/formal-math"
-    relationship: "builds-on"
-    note: >-
-      The percolation library PercolationContinuity (subdirectory percolation,
-      pinned git dependency at commit 795efb86f191735c5481675763537cfb4ff37e55),
-      a separate formalization by Justin Leder, produced with Claude agents.
-      It supplies Kesten's p_c(Z^2) = 1/2 and the sharpness of the phase
-      transition, from which subcritical exponential decay is proved here.
   - id: "https://github.com/nitromannitol/Lattice-Probability"
     relationship: "builds-on"
     note: >-
       The shared library Lattice-Probability (pinned git dependency at commit
-      9d44b4d4670df393bb86ac5a4e042f215001cddf).  It supplies Kingman's
+      d36783565c4de41cce5cf079ddd5ace3efe6a8ff).  It supplies Kingman's
       subadditive ergodic theorem (LatticeProb.Prob.Kingman).
 
 status:
@@ -63,113 +54,126 @@ status:
     plane graphs of maximum degree three (Theorem 1.1), the extension to
     independent rotor laws close to uniform in total variation (Proposition
     1.2), the transient pendant graph G_M (Proposition 1.3), and the lemmas and
-    propositions of Sections 2 to 6.  SCOPE BOUNDARY: seven results the paper
-    cites from the literature are stated as propositions in Rotor/External/.
-    Six of them are proved in Rotor/Bridge/: subcritical exponential decay
-    for Bernoulli bond percolation on Z^2, from the percolation library
-    PercolationContinuity (anthropics/formal-math), Kingman's subadditive
-    ergodic theorem, from the shared library Lattice-Probability
-    (LatticeProb.Prob.Kingman), the abelian property of rotor-routing
-    (HLMPPW Lemma 3.9), by induction on legal routings, the one-circuit
-    property of a rotor walk (Florescu-Levine-Peres, Lemmas 2.1 and 2.4), by
-    an injectivity argument on traversed edges together with incoming/outgoing
-    degree counts at circuit times, Holroyd-Propp's Lemma 6 (a rotor walk
-    that visits one vertex infinitely often visits every vertex infinitely
-    often), by propagating infinitely-many-visits along a walk between any
-    two vertices, and Angel-Holroyd's theorem that recurrence does not depend
-    on the starting vertex, by the same propagation combined with the abelian
-    property.  The seventh, Liggett-Schonmann-Stacey domination, is not
-    proved here and is an explicit hypothesis of every theorem whose proof
-    uses it; ASSUMPTIONS.md lists it with its Lean statement.  Not
-    formalized: the open questions of Section 7, the figures, the simulations
-    and the survey of related work.  The main theorems are stated in full in
-    Rotor/MainTheorems.lean; all five are additionally restated over a
-    Mathlib-only vocabulary for the Lean comparator (RotorAudit/).
+    propositions of Sections 2 to 6. The cited inputs, including LSS domination,
+    are proved. The older main statements retain an explicit LSS hypothesis;
+    Rotor/MainTheoremsUnconditional.lean applies its proof. The open questions,
+    figures, simulations and survey are not formalized. Mathlib-only comparator
+    pairs are provided for the unconditional statements.
   sorry_count: 0
   sorry_count_scope: "Rotor production library only"
-  comparator_challenge_sorry_count: 5
+  comparator_challenge_sorry_count: 10
   sorry_in_definitions: 0
   axioms:
     - "propext"
     - "Classical.choice"
     - "Quot.sound"
   main_results:
-    - declaration: "Rotor.main_square"
-      file: "Rotor/MainTheorems.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "RotorAudit/MainSquare/comparator.json"
-      literature_dependencies:
-        - statement: "Liggett-Schonmann-Stacey domination (Rotor.External.LSS), an explicit hypothesis"
-          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
-    - declaration: "Rotor.main_degree_three"
-      file: "Rotor/MainTheorems.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "RotorAudit/MainDegreeThree/comparator.json"
-      literature_dependencies:
-        - statement: "Liggett-Schonmann-Stacey domination (Rotor.External.LSS), an explicit hypothesis"
-          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
-    - declaration: "Rotor.perturbations_square"
-      file: "Rotor/MainTheorems.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "RotorAudit/PerturbationsSquare/comparator.json"
-      literature_dependencies:
-        - statement: "Liggett-Schonmann-Stacey domination (Rotor.External.LSS), an explicit hypothesis"
-          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
-    - declaration: "Rotor.perturbations_degree_three"
-      file: "Rotor/MainTheorems.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "RotorAudit/PerturbationsDegreeThree/comparator.json"
-      literature_dependencies:
-        - statement: "Liggett-Schonmann-Stacey domination (Rotor.External.LSS), an explicit hypothesis"
-          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
-    - declaration: "Rotor.pendant_counterexample"
-      file: "Rotor/MainTheorems.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "RotorAudit/PendantCounterexample/comparator.json"
-      literature_dependencies: []
-    - declaration: "RotorAudit.main_square"
-      file: "RotorAudit/MainSquare/Solution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "RotorAudit/MainSquare/comparator.json"
-      literature_dependencies:
-        - statement: "Liggett-Schonmann-Stacey domination (RotorAudit.External.LSS, the Mathlib-only restatement of Rotor.External.LSS), an explicit hypothesis"
-          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
-    - declaration: "RotorAudit.main_degree_three"
-      file: "RotorAudit/MainDegreeThree/Solution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "RotorAudit/MainDegreeThree/comparator.json"
-      literature_dependencies:
-        - statement: "Liggett-Schonmann-Stacey domination (RotorAudit.External.LSS, the Mathlib-only restatement of Rotor.External.LSS), an explicit hypothesis"
-          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
-    - declaration: "RotorAudit.perturbations_square"
-      file: "RotorAudit/PerturbationsSquare/Solution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "RotorAudit/PerturbationsSquare/comparator.json"
-      literature_dependencies:
-        - statement: "Liggett-Schonmann-Stacey domination (RotorAudit.External.LSS, the Mathlib-only restatement of Rotor.External.LSS), an explicit hypothesis"
-          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
-    - declaration: "RotorAudit.perturbations_degree_three"
-      file: "RotorAudit/PerturbationsDegreeThree/Solution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "RotorAudit/PerturbationsDegreeThree/comparator.json"
-      literature_dependencies:
-        - statement: "Liggett-Schonmann-Stacey domination (RotorAudit.External.LSS, the Mathlib-only restatement of Rotor.External.LSS), an explicit hypothesis"
-          source: "Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)"
-    - declaration: "RotorAudit.pendant_counterexample"
-      file: "RotorAudit/PendantCounterexample/Solution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "RotorAudit/PendantCounterexample/comparator.json"
-      literature_dependencies: []
+  - declaration: Rotor.main_square_unconditional
+    file: Rotor/MainTheoremsUnconditional.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: RotorAudit/MainSquareUnconditional/comparator.json
+    literature_dependencies:
+    - statement: Liggett-Schonmann-Stacey domination, proved as Rotor.External.lss_holds
+      source: Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)
+  - declaration: Rotor.main_degree_three_unconditional
+    file: Rotor/MainTheoremsUnconditional.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: RotorAudit/MainDegreeThreeUnconditional/comparator.json
+    literature_dependencies:
+    - statement: Liggett-Schonmann-Stacey domination, proved as Rotor.External.lss_holds
+      source: Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)
+  - declaration: Rotor.perturbations_square_unconditional
+    file: Rotor/MainTheoremsUnconditional.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: RotorAudit/PerturbationsSquareUnconditional/comparator.json
+    literature_dependencies:
+    - statement: Liggett-Schonmann-Stacey domination, proved as Rotor.External.lss_holds
+      source: Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)
+  - declaration: Rotor.perturbations_degree_three_unconditional
+    file: Rotor/MainTheoremsUnconditional.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: RotorAudit/PerturbationsDegreeThreeUnconditional/comparator.json
+    literature_dependencies:
+    - statement: Liggett-Schonmann-Stacey domination, proved as Rotor.External.lss_holds
+      source: Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)
+  - declaration: Rotor.pendant_counterexample
+    file: Rotor/MainTheorems.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: RotorAudit/PendantCounterexampleUnconditional/comparator.json
+    literature_dependencies: []
+  - declaration: RotorAudit.main_square_unconditional
+    file: RotorAudit/MainSquareUnconditional/Solution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: RotorAudit/MainSquareUnconditional/comparator.json
+    literature_dependencies:
+    - statement: Liggett-Schonmann-Stacey domination, proved as Rotor.External.lss_holds
+      source: Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)
+  - declaration: RotorAudit.main_degree_three_unconditional
+    file: RotorAudit/MainDegreeThreeUnconditional/Solution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: RotorAudit/MainDegreeThreeUnconditional/comparator.json
+    literature_dependencies:
+    - statement: Liggett-Schonmann-Stacey domination, proved as Rotor.External.lss_holds
+      source: Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)
+  - declaration: RotorAudit.perturbations_square_unconditional
+    file: RotorAudit/PerturbationsSquareUnconditional/Solution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: RotorAudit/PerturbationsSquareUnconditional/comparator.json
+    literature_dependencies:
+    - statement: Liggett-Schonmann-Stacey domination, proved as Rotor.External.lss_holds
+      source: Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)
+  - declaration: RotorAudit.perturbations_degree_three_unconditional
+    file: RotorAudit/PerturbationsDegreeThreeUnconditional/Solution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: RotorAudit/PerturbationsDegreeThreeUnconditional/comparator.json
+    literature_dependencies:
+    - statement: Liggett-Schonmann-Stacey domination, proved as Rotor.External.lss_holds
+      source: Liggett, Schonmann and Stacey, Domination by product measures (1997), Theorem 0.0(ii)
+  - declaration: RotorAudit.pendant_counterexample_unconditional
+    file: RotorAudit/PendantCounterexampleUnconditional/Solution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: RotorAudit/PendantCounterexampleUnconditional/comparator.json
+    literature_dependencies: []
 
 automation:
   methods:
@@ -206,9 +210,8 @@ fidelity:
     inner and outer bounds on A_n; coordinates are centered at the start
     vertex; Proposition 1.3 carries the explicit threshold M >= 50331645; on
     the square lattice, Proposition 1.2 takes invariance of the marginals under
-    any finite-index translation subgroup.  The one cited result that is not
-    proved enters as a hypothesis whose Lean statement is in ASSUMPTIONS.md;
-    that it renders the cited theorem faithfully is a reading, not a check.
+    any finite-index translation subgroup. The cited domination proposition is
+    proved as Rotor.External.lss_holds and applied in the unconditional forms.
 
 review:
   status: "author-verified"
@@ -222,75 +225,77 @@ review:
     not external peer review.
 
 alignment:
-  namespace: "Rotor"
+  namespace: Rotor
   statements:
-    - source: "Theorem 1.1 (thm:main), the square lattice"
-      lean: "Rotor.main_square"
-      module: "Rotor.MainTheorems"
-      status: "proved"
-      note: "Certified statement Rotor.Frozen.main_square; hypothesis Rotor.External.LSS. Comparator challenge RotorAudit/MainSquare/."
-    - source: "Theorem 1.1 (thm:main), doubly periodic graphs of maximum degree three"
-      lean: "Rotor.main_degree_three"
-      module: "Rotor.MainTheorems"
-      status: "proved"
-      note: "Certified statement Rotor.Frozen.main_degree_three; hypothesis Rotor.External.LSS. Comparator challenge RotorAudit/MainDegreeThree/."
-    - source: "Proposition 1.2 (prop:small-perturbations), the square lattice"
-      lean: "Rotor.perturbations_square"
-      module: "Rotor.MainTheorems"
-      status: "proved"
-      note: "Certified statement Rotor.Frozen.perturbations_square; hypothesis Rotor.External.LSS. Comparator challenge RotorAudit/PerturbationsSquare/."
-    - source: "Proposition 1.2 (prop:small-perturbations), doubly periodic graphs of maximum degree three"
-      lean: "Rotor.perturbations_degree_three"
-      module: "Rotor.MainTheorems"
-      status: "proved"
-      note: "Certified statement Rotor.Frozen.perturbations_degree_three; hypothesis Rotor.External.LSS. Comparator challenge RotorAudit/PerturbationsDegreeThree/."
-    - source: "Proposition 1.3 (prop:pendant-counterexample)"
-      lean: "Rotor.pendant_counterexample"
-      module: "Rotor.MainTheorems"
-      status: "proved"
-      note: "Certified statement Rotor.Frozen.pendant_counterexample; no hypothesis. Comparator challenge RotorAudit/PendantCounterexample/."
-    - source: "Sections 2 to 6: every lemma and proposition"
-      lean: "Rotor.Frozen.*"
-      module: "Rotor.Frozen"
-      status: "proved"
-      note: "One registered statement per paper statement; the full map is CORRESPONDENCE.md."
-    - source: "Cited result: Liggett-Schonmann-Stacey domination, Theorem 0.0(ii)"
-      lean: "Rotor.External.LSS"
-      module: "Rotor.External.LSS"
-      status: "literature-dependency"
-      note: "Explicit hypothesis of the theorems that use it; listed in ASSUMPTIONS.md."
-    - source: "Cited result: subcritical exponential decay for Bernoulli bond percolation on Z^2"
-      lean: "Rotor.Bridge.subcriticalDecay_holds"
-      module: "Rotor.Bridge.SubcriticalDecay"
-      status: "proved"
-      note: "Proved from the percolation library PercolationContinuity."
-    - source: "Cited result: Kingman's subadditive ergodic theorem"
-      lean: "Rotor.Bridge.kingman_holds"
-      module: "Rotor.Bridge.Kingman"
-      status: "proved"
-      note: "Proved from the shared library Lattice-Probability (LatticeProb.Prob.Kingman)."
-    - source: "Cited result: the abelian property of rotor-routing (HLMPPW Lemma 3.9)"
-      lean: "Rotor.Bridge.abelian_holds"
-      module: "Rotor.Bridge.Abelian"
-      status: "proved"
-      note: "Proved by induction on legal routings (the diamond-lemma argument)."
-    - source: "Cited result: the one-circuit property of a rotor walk (Florescu-Levine-Peres, Lemmas 2.1 and 2.4)"
-      lean: "Rotor.Bridge.oneCircuit_holds"
-      module: "Rotor.Bridge.OneCircuit"
-      status: "proved"
-      note: "Proved by an injectivity argument on traversed edges together with incoming/outgoing degree counts at circuit times."
-    - source: "Cited result: Holroyd-Propp Lemma 6 (a rotor walk that visits one vertex infinitely often visits every vertex infinitely often)"
-      lean: "Rotor.Bridge.visitsAllOfVisitsOne_holds"
-      module: "Rotor.Bridge.HolroydPropp"
-      status: "proved"
-      note: "Proved by propagating infinitely-many-visits along a walk between any two vertices of the (preconnected) graph."
-    - source: "Cited result: Angel-Holroyd 2012, Theorem 1 (recurrence does not depend on the starting vertex)"
-      lean: "Rotor.Bridge.recurrentOfRecurrent_holds"
-      module: "Rotor.Bridge.AngelHolroyd"
-      status: "proved"
-      note: "Proved by propagating recurrence along adjacency and then along a connecting walk, via Rotor.Bridge.abelian_holds."
+  - source: Theorem 1.1 (thm:main), the square lattice
+    lean: Rotor.main_square_unconditional
+    module: Rotor.MainTheoremsUnconditional
+    status: proved
+    note: Registered unconditional statement Rotor.Frozen.main_square_unconditional.
+  - source: Theorem 1.1 (thm:main), doubly periodic graphs of maximum degree three
+    lean: Rotor.main_degree_three_unconditional
+    module: Rotor.MainTheoremsUnconditional
+    status: proved
+    note: Registered unconditional statement Rotor.Frozen.main_degree_three_unconditional.
+  - source: Proposition 1.2 (prop:small-perturbations), the square lattice
+    lean: Rotor.perturbations_square_unconditional
+    module: Rotor.MainTheoremsUnconditional
+    status: proved
+    note: Registered unconditional statement Rotor.Frozen.perturbations_square_unconditional.
+  - source: Proposition 1.2 (prop:small-perturbations), doubly periodic graphs of maximum degree three
+    lean: Rotor.perturbations_degree_three_unconditional
+    module: Rotor.MainTheoremsUnconditional
+    status: proved
+    note: Registered unconditional statement Rotor.Frozen.perturbations_degree_three_unconditional.
+  - source: Proposition 1.3 (prop:pendant-counterexample)
+    lean: Rotor.pendant_counterexample
+    module: Rotor.MainTheorems
+    status: proved
+    note: Certified statement Rotor.Frozen.pendant_counterexample; no hypothesis. Comparator challenge RotorAudit/PendantCounterexampleUnconditional/.
+  - source: 'Sections 2 to 6: every lemma and proposition'
+    lean: Rotor.Frozen.*
+    module: Rotor.Frozen
+    status: proved
+    note: One registered statement per paper statement; the full map is CORRESPONDENCE.md.
+  - source: 'Cited result: Liggett-Schonmann-Stacey domination, Theorem 0.0(ii)'
+    lean: Rotor.External.lss_holds
+    module: Rotor.External.LSSProved
+    status: proved
+    note: Proves Rotor.External.LSS from Lattice-Probability.
+  - source: 'Cited result: subcritical exponential decay for Bernoulli bond percolation on Z^2'
+    lean: Rotor.Bridge.subcriticalDecay_holds
+    module: Rotor.Bridge.SubcriticalDecay
+    status: proved
+    note: Proved from percolation results vendored in Lattice-Probability.
+  - source: 'Cited result: Kingman''s subadditive ergodic theorem'
+    lean: Rotor.Bridge.kingman_holds
+    module: Rotor.Bridge.Kingman
+    status: proved
+    note: Proved from the shared library Lattice-Probability (LatticeProb.Prob.Kingman).
+  - source: 'Cited result: the abelian property of rotor-routing (HLMPPW Lemma 3.9)'
+    lean: Rotor.Bridge.abelian_holds
+    module: Rotor.Bridge.Abelian
+    status: proved
+    note: Proved by induction on legal routings (the diamond-lemma argument).
+  - source: 'Cited result: the one-circuit property of a rotor walk (Florescu-Levine-Peres, Lemmas 2.1 and 2.4)'
+    lean: Rotor.Bridge.oneCircuit_holds
+    module: Rotor.Bridge.OneCircuit
+    status: proved
+    note: Proved by an injectivity argument on traversed edges together with incoming/outgoing degree counts at
+      circuit times.
+  - source: 'Cited result: Holroyd-Propp Lemma 6 (a rotor walk that visits one vertex infinitely often visits every
+      vertex infinitely often)'
+    lean: Rotor.Bridge.visitsAllOfVisitsOne_holds
+    module: Rotor.Bridge.HolroydPropp
+    status: proved
+    note: Proved by propagating infinitely-many-visits along a walk between any two vertices of the (preconnected)
+      graph.
+  - source: 'Cited result: Angel-Holroyd 2012, Theorem 1 (recurrence does not depend on the starting vertex)'
+    lean: Rotor.Bridge.recurrentOfRecurrent_holds
+    module: Rotor.Bridge.AngelHolroyd
+    status: proved
+    note: Proved by propagating recurrence along adjacency and then along a connecting walk, via Rotor.Bridge.abelian_holds.
 
 acknowledgements: >-
   The paper is joint work with Yuval Peres.  Built on Lean 4, Mathlib, Lake,
-  the percolation library PercolationContinuity of anthropics/formal-math, the
-  shared library Lattice-Probability, and leanprover/comparator.
+  the shared library Lattice-Probability, and leanprover/comparator.

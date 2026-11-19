@@ -83,6 +83,8 @@ DISCHARGED = {
 
 
 def status_cell(n: dict) -> str:
+    if n.get("proved_by"):
+        return f"proved by `{n['proved_by']}`"
     if n["id"] in DISCHARGED:
         return f"proved in `{DISCHARGED[n['id']]}`"
     return STATUS_WORD.get(n["state"], n["state"])
@@ -111,12 +113,11 @@ def status_block(nodes: list[dict]) -> str:
             f"whose statement is frozen and whose proof is a registered `sorry`.")
     else:
         body = (
-            "Every node's proof is machine-checked: no `sorry`, no axiom added by\n"
+            "The registered theorems have machine-checked proofs: no `sorry`, no axiom added by\n"
             "this development, and every axiom closure is exactly Lean's three\n"
             "standard axioms `propext`, `Classical.choice` and `Quot.sound`.  The\n"
-            "`FROZEN` nodes are results cited from the literature, stated as\n"
-            "hypotheses rather than proved here; theorems that use them are proved\n"
-            "conditional on them, and the rest are unconditional.")
+            "`FROZEN` nodes record cited propositions; proof witnesses are recorded\n"
+            "in the manifest and used by the unconditional results.")
     return (
         f"Status: **{len(nodes)} registered statements: {parts}.**  {body}  Run\n"
         f"`python3 tools/check_axioms.py` to confirm.  These counts are generated\n"

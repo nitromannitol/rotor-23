@@ -6,18 +6,11 @@ A machine-checked **Lean 4** formalization of the paper
 > *Eulerian walkers on `ℤ²` have range exponent `2/3`*,
 > [arXiv:2608.23545](https://arxiv.org/abs/2608.23545).
 
-The paper's source is included under [`paper/`](paper/). The 5 main theorems of the paper are
-proved, in the form in which its introduction states them: Theorem 1.1 and Proposition 1.2,
-each for the square lattice and for doubly periodic graphs of maximum degree three, and
-Proposition 1.3. The first four are proved from one result cited from the literature,
-Liggett–Schonmann–Stacey domination, which enters as an explicit hypothesis; Proposition 1.3
-is unconditional. See [Assumed literature inputs](#assumed-literature-inputs).
-
-The development is built on [mathlib](https://github.com/leanprover-community/mathlib4) and on
-two public libraries: the percolation library `PercolationContinuity` of
-[`anthropics/formal-math`](https://github.com/anthropics/formal-math), and the shared library
-[Lattice-Probability](https://github.com/nitromannitol/Lattice-Probability), a library of
-lattice probability and potential theory.
+The paper's source is included under [`paper/`](paper/). The five main results are
+proved without unproved literature hypotheses. The Liggett–Schonmann–Stacey domination
+input is proved as `Rotor.External.lss_holds` using
+[Lattice-Probability](https://github.com/nitromannitol/Lattice-Probability).
+The development uses Mathlib and Lattice-Probability, including its vendored percolation results.
 
 [![CI](https://github.com/nitromannitol/rotor-23/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/nitromannitol/rotor-23/actions/workflows/build.yml)
 [![Comparator audit](https://github.com/nitromannitol/rotor-23/actions/workflows/comparator.yml/badge.svg?branch=main)](https://github.com/nitromannitol/rotor-23/actions/workflows/comparator.yml)
@@ -39,20 +32,20 @@ square lattice with `M` leaves attached to every vertex, on which the walk is tr
 large `M`. The model is stated precisely in
 [Standing assumptions and scope](#standing-assumptions-and-scope).
 
-The 5 main results, formalized as stated in the introduction of the paper, are collected in
-[`Rotor/MainTheorems.lean`](Rotor/MainTheorems.lean). Each is proved by direct application of
-its certified counterpart in [`Rotor/Frozen/Main/`](Rotor/Frozen/Main), so the statements
-displayed there are byte-faithful to the certified ones.
+The unconditional results are in [`Rotor/MainTheoremsUnconditional.lean`](Rotor/MainTheoremsUnconditional.lean)
+and `Rotor.pendant_counterexample` is in [`Rotor/MainTheorems.lean`](Rotor/MainTheorems.lean).
+The original conditional declarations remain available there. The ledger also registers
+unconditional statements in [`Rotor/Frozen/Unconditional/`](Rotor/Frozen/Unconditional/).
 
 | Paper | Lean declaration | Content |
 | --- | --- | --- |
-| Theorem 1.1, square lattice | `Rotor.main_square` | recurrence, limit shape and range exponent of the clockwise rotor walk on `ℤ²` |
-| Theorem 1.1, degree three | `Rotor.main_degree_three` | the same on a doubly periodic graph of maximum degree three |
-| Proposition 1.2, square lattice | `Rotor.perturbations_square` | recurrence, and the limit shape under periodic marginals, for rotor laws close to uniform |
-| Proposition 1.2, degree three | `Rotor.perturbations_degree_three` | the same on a doubly periodic graph of maximum degree three |
+| Theorem 1.1, square lattice | `Rotor.main_square_unconditional` | recurrence, limit shape and range exponent of the clockwise rotor walk on `ℤ²` |
+| Theorem 1.1, degree three | `Rotor.main_degree_three_unconditional` | the same on a doubly periodic graph of maximum degree three |
+| Proposition 1.2, square lattice | `Rotor.perturbations_square_unconditional` | recurrence, and the limit shape under periodic marginals, for rotor laws close to uniform |
+| Proposition 1.2, degree three | `Rotor.perturbations_degree_three_unconditional` | the same on a doubly periodic graph of maximum degree three |
 | Proposition 1.3 | `Rotor.pendant_counterexample` | the walk on the square lattice with `M` leaves at every vertex is almost surely not recurrent for large `M` |
 
-**Theorem 1.1, square lattice (`Rotor.main_square`).** On `ℤ²` with the clockwise mechanism
+**Theorem 1.1, square lattice (`Rotor.main_square_unconditional`).** On `ℤ²` with the clockwise mechanism
 and independent uniform initial rotors, there are a compact convex `B` with the origin in its
 interior and constants `κ, c > 0` such that almost surely:
 
@@ -62,17 +55,16 @@ interior and constants `κ, c > 0` such that almost surely:
    on `A_n` hold eventually.
 3. *Range exponent.* `|R_t| / t^{2/3} → c`.
 
-Hypothesis: Liggett–Schonmann–Stacey.
+The domination input is proved as `Rotor.External.lss_holds`.
 
-**Theorem 1.1, degree three (`Rotor.main_degree_three`).** The same conclusions on a
+**Theorem 1.1, degree three (`Rotor.main_degree_three_unconditional`).** The same conclusions on a
 connected infinite graph of maximum degree three with a doubly periodic drawing
-`P : DoublyPeriodic G` and a doubly periodic mechanism, in the coordinates `P.emb`. Same
-hypothesis.
+`P : DoublyPeriodic G` and a doubly periodic mechanism, in the coordinates `P.emb`.
 
-**Proposition 1.2 (`Rotor.perturbations_square`, `Rotor.perturbations_degree_three`).** There
+**Proposition 1.2 (`Rotor.perturbations_square_unconditional`, `Rotor.perturbations_degree_three_unconditional`).** There
 is one `δ > 0` such that for independent rotor laws within total variation `δ` of uniform at
 every vertex the walk is almost surely recurrent from every start, and, when the marginals are
-invariant under the translation lattice, the conclusions of Theorem 1.1 hold. Same hypothesis.
+invariant under the translation lattice, the conclusions of Theorem 1.1 hold. The domination input is proved.
 
 <!-- SQUARE-PERTURBATIONS-BEGIN (generated by tools/sync_docs.py) -->
 
@@ -115,9 +107,8 @@ three, Proposition 1.3, and the results of Sections 2 to 6.
    not fields of `P`.
 2. **Axioms and incomplete proofs.** The library contains no `sorry`, no `admit`, no
    `native_decide` and no new `axiom`. The axiom report of each main theorem consists of
-   exactly `propext`, `Classical.choice` and `Quot.sound`. The main theorems take 1 cited
-   result as an explicit hypothesis, listed under
-   [Assumed literature inputs](#assumed-literature-inputs); nothing else is assumed.
+   exactly `propext`, `Classical.choice` and `Quot.sound`. The unconditional results
+   use the proved literature inputs listed in [Literature inputs](#literature-inputs).
 3. **What is not formalized.** The open questions of Section 7, the figures, the simulations,
    and the survey of related work in Section 1.3.
 4. **Modelling conventions.**
@@ -150,26 +141,14 @@ three, Proposition 1.3, and the results of Sections 2 to 6.
    (`tools/check_constants.py`), and its exponents are matched against the paper's
    (`tools/check_exponents.py`).
 
-## Assumed literature inputs
+## Literature inputs
 
-The paper quotes seven results from the literature without proof. Each is stated in Lean as a
-proposition in [`Rotor/External/`](Rotor/External), and every theorem whose proof uses one
-takes it as an explicit hypothesis, so the statement shows exactly which of them it rests on.
-Six of the seven are proved in [`Rotor/Bridge/`](Rotor/Bridge): subcritical exponential decay
-for Bernoulli bond percolation on `ℤ²`, from the percolation library; Kingman's subadditive
-ergodic theorem, from the shared library Lattice-Probability; the abelian property of
-rotor-routing (Holroyd–Levine–Mészáros–Peres–Propp–Wilson), by induction on legal routings;
-Florescu–Levine–Peres' one-circuit property, by an injectivity argument on the walk's
-traversed edges together with incoming/outgoing degree counts at circuit times;
-Holroyd–Propp's Lemma 6 (a rotor walk that visits one vertex infinitely often visits every
-vertex infinitely often), by propagating infinitely-many-visits along a walk between any two
-vertices; and Angel–Holroyd's theorem that recurrence does not depend on the starting vertex,
-by the same propagation combined with the abelian property. The remaining one is **not proved
-here**; [`ASSUMPTIONS.md`](ASSUMPTIONS.md) lists it with its verbatim Lean statement.
-
-| Hypothesis | Content | Source | Used by |
-| --- | --- | --- | --- |
-| `Rotor.External.LSS` (`hLSS`) | there is `ε > 0` such that every `2`-dependent `{0,1}`-field on `ℤ²` with one-site probabilities at most `2ε` is dominated, on increasing events, by independent Bernoulli(`1/8`) variables | Liggett, Schonmann and Stacey, *Domination by product measures* (1997), Theorem 0.0(ii), used in the proof of `lem:block-live-paths` | `Rotor.main_square`, `Rotor.main_degree_three`, `Rotor.perturbations_square`, `Rotor.perturbations_degree_three` |
+The paper cites results stated as propositions under [`Rotor/External/`](Rotor/External/).
+All inputs used by the main results are proved. In particular, Liggett–Schonmann–Stacey
+domination is `Rotor.External.lss_holds` in [`Rotor/External/LSSProved.lean`](Rotor/External/LSSProved.lean).
+The other cited results are supplied by the bridge modules. The older conditional forms carry
+`Rotor.External.LSS` explicitly; the unconditional forms apply its proof. See
+[`ASSUMPTIONS.md`](ASSUMPTIONS.md) for the recorded proposition and witness.
 
 ## Registered statements
 
@@ -180,16 +159,15 @@ result. A registered statement's text between the lines `-- FROZEN-STATEMENT-BEG
 [`ledger/manifest.yaml`](ledger/manifest.yaml), together with the paper `\label` and line
 range it transcribes; the proof after the end marker may be rewritten freely. In the manifest,
 a registered statement is `PROVED` when it is proved with an axiom closure of exactly the
-three standard axioms, and `FROZEN` when it is a cited result assumed rather than proved.
+three standard axioms, and `FROZEN` for a cited proposition; its proof is recorded separately.
 
 <!-- STATUS-BEGIN (generated by tools/sync_docs.py) -->
 
-Status: **33 registered statements: 1 `FROZEN`, 32 `PROVED`.**  Every node's proof is machine-checked: no `sorry`, no axiom added by
+Status: **38 registered statements: 1 `FROZEN`, 37 `PROVED`.**  The registered theorems have machine-checked proofs: no `sorry`, no axiom added by
 this development, and every axiom closure is exactly Lean's three
 standard axioms `propext`, `Classical.choice` and `Quot.sound`.  The
-`FROZEN` nodes are results cited from the literature, stated as
-hypotheses rather than proved here; theorems that use them are proved
-conditional on them, and the rest are unconditional.  Run
+`FROZEN` nodes record cited propositions; proof witnesses are recorded
+in the manifest and used by the unconditional results.  Run
 `python3 tools/check_axioms.py` to confirm.  These counts are generated
 from `ledger/manifest.yaml` by `python3 tools/sync_docs.py`.
 
@@ -203,7 +181,7 @@ and in the docstrings of the frozen statements refer to it.
 
 - **No `sorry`.** The library has none, and `tools/check_manifest.py`, which CI runs, rejects
   any `axiom`, `admit` or `sorryAx` token under `Rotor/` and any `sorry` outside a registered
-  `DRAFT_SORRY` node (there are none). The 5 comparator challenges under
+  `DRAFT_SORRY` node (there are none). The comparator challenges under
   [`RotorAudit/`](RotorAudit/) each contain one intentional statement-level `sorry`, which the
   corresponding solution file proves.
 - **Standard axioms only.** The axiom report of each of the 5 main theorems lists exactly
@@ -211,17 +189,15 @@ and in the docstrings of the frozen statements refer to it.
   [`Rotor/Meta/AxiomsAudit.lean`](Rotor/Meta/AxiomsAudit.lean) prints the reports, and the
   axiom-audit step of the CI workflow builds it and fails on any warning, a `sorry` warning
   included. [`CERTIFICATE.md`](CERTIFICATE.md) records the axiom closure of every registered
-  statement. The assumed result is a hypothesis, not an axiom.
-- **Builds from a clean checkout.** In continuous integration, `lake build` of a fresh
-  checkout completes 8,864 jobs without error, and the build fails on any warning or `sorry`
-  warning.
+  statement. The cited proposition is proved and supplied to the unconditional forms.
+- **Builds from a clean checkout.** Continuous integration builds the library and rejects warnings from its own files.
 - **Independent check of the statements.** The 5 main theorems are restated in
   [`RotorAudit/`](RotorAudit/) using mathlib alone, one challenge file per theorem
-  ([`MainSquare`](RotorAudit/MainSquare/Challenge.lean),
-  [`MainDegreeThree`](RotorAudit/MainDegreeThree/Challenge.lean),
-  [`PerturbationsSquare`](RotorAudit/PerturbationsSquare/Challenge.lean),
-  [`PerturbationsDegreeThree`](RotorAudit/PerturbationsDegreeThree/Challenge.lean) and
-  [`PendantCounterexample`](RotorAudit/PendantCounterexample/Challenge.lean)). Each challenge
+  ([`MainSquare`](RotorAudit/MainSquareUnconditional/Challenge.lean),
+  [`MainDegreeThree`](RotorAudit/MainDegreeThreeUnconditional/Challenge.lean),
+  [`PerturbationsSquare`](RotorAudit/PerturbationsSquareUnconditional/Challenge.lean),
+  [`PerturbationsDegreeThree`](RotorAudit/PerturbationsDegreeThreeUnconditional/Challenge.lean) and
+  [`PendantCounterexample`](RotorAudit/PendantCounterexampleUnconditional/Challenge.lean)). Each challenge
   rebuilds the model from mathlib primitives (the rotor walk on a locally finite graph, its
   range, circuit times and circuit ranges, recurrence, particle routings, the product law of
   the initial rotors, total variation, doubly periodic graphs, the square lattice with its
@@ -232,20 +208,13 @@ and in the docstrings of the frozen statements refer to it.
   is proved, with only the three standard axioms, through independent implementations of the
   Lean kernel. See [`RotorAudit/README.md`](RotorAudit/README.md) and
   [`RotorAudit/COMPARATOR_RUNS.md`](RotorAudit/COMPARATOR_RUNS.md).
-- **Pinned toolchain and dependencies.** Lean `v4.32.0`; mathlib at revision
-  `81a5d257c8e410db227a6665ed08f64fea08e997`, `PercolationContinuity` at commit
-  `795efb86f191735c5481675763537cfb4ff37e55` and Lattice-Probability at commit
-  `9d44b4d4670df393bb86ac5a4e042f215001cddf`, recorded in [`lean-toolchain`](lean-toolchain)
-  and [`lake-manifest.json`](lake-manifest.json) (see [Building](#building)).
+- **Pinned toolchain and dependencies.** Lean `v4.35.0-rc2`; mathlib
+  `065356127b1dc0016f66b7283ce0ce2c4055aa55` and Lattice-Probability
+  `d36783565c4de41cce5cf079ddd5ace3efe6a8ff`, as recorded in
+  [`lean-toolchain`](lean-toolchain) and [`lake-manifest.json`](lake-manifest.json).
 - **The paper is part of the repository.** The statement map refers to the version in
   [`paper/`](paper/), pinned to the SHA-256
   `007634d2d82fddfd902af49c3e85168461a545224b145998100433250895a930` of `paper/rotor.tex`.
-
-## Size
-
-The library contains 163 Lean files with 37,226 physical lines, on top of mathlib,
-`PercolationContinuity` and Lattice-Probability. The comparator sources (20 files, 6,154
-lines) are counted separately.
 
 ## Building
 
@@ -253,31 +222,12 @@ Install [elan](https://github.com/leanprover/elan). The toolchain is pinned in
 [`lean-toolchain`](lean-toolchain).
 
 ```bash
-# from the repository root, the first time
-./bootstrap.sh       # fetch the pinned percolation dependency, lake exe cache get, lake build
-# afterwards
-lake build           # compile the project
+./bootstrap.sh       # fetch the Mathlib cache and build the project
 ```
 
-`bootstrap.sh` is needed because `lake update` cannot check out the percolation dependency by
-itself: the pinned commit `795efb86f191735c5481675763537cfb4ff37e55` of
-`anthropics/formal-math` is not reachable from any branch tip of that repository, so Lake's
-clone does not contain it and the checkout fails with `fatal: reference is not a tree`. The
-script fetches that object by hash and then runs `lake exe cache get` and `lake build`; the CI
-workflow does the same fetch. `lake exe cache get` requires the committed
-[`lake-manifest.json`](lake-manifest.json), which pins the exact dependency revisions. The 2
-source dependencies, `PercolationContinuity` and Lattice-Probability, have no prebuilt cache,
-so the first build compiles them as well as the library. `import Rotor` loads the whole
-development, and `import Rotor.MainTheorems` loads the main theorems and what they use.
-
-The dependencies are pinned to exact commits in [`lake-manifest.json`](lake-manifest.json):
-
-- mathlib: `https://github.com/leanprover-community/mathlib4` at
-  `81a5d257c8e410db227a6665ed08f64fea08e997`.
-- PercolationContinuity: the `percolation` subdirectory of
-  `https://github.com/anthropics/formal-math` at `795efb86f191735c5481675763537cfb4ff37e55`.
-- Lattice-Probability: `https://github.com/nitromannitol/Lattice-Probability` at
-  `9d44b4d4670df393bb86ac5a4e042f215001cddf`.
+The pinned dependencies are mathlib at `065356127b1dc0016f66b7283ce0ce2c4055aa55`
+and Lattice-Probability at `d36783565c4de41cce5cf079ddd5ace3efe6a8ff`.
+`import Rotor.MainTheoremsUnconditional` loads the unconditional limit theorems.
 
 To reproduce the axiom reports and build the comparator libraries:
 
@@ -366,14 +316,14 @@ RotorAudit/               the mathlib-only restatements and their solutions
   COMPARATOR_RUNS.md      the comparator pins and results
   <Pair>/                 Challenge.lean, SolutionBasic.lean, Solution.lean, comparator.json
   Support/                one bridge per pair, identifying the vocabulary with the library
-ASSUMPTIONS.md            the assumed result, with its Lean statement (generated)
+ASSUMPTIONS.md            the cited input and its proof (generated)
 CORRESPONDENCE.md         paper to Lean, node by node
 CERTIFICATE.md            generated record of the toolchain, the build, each node's axiom
                           closure and the SHA-256 of each frozen statement
 ledger/manifest.yaml      one row per registered statement: hash, paper label, state
 paper/rotor.tex           the paper, pinned by the SHA-256 in ledger/manifest.yaml
 tools/                    the checkers and generators listed under Building
-bootstrap.sh              first-time setup (the percolation dependency)
+bootstrap.sh              first-time setup
 formalization.yaml        machine-readable metadata: sources, models, tooling, review
 CITATION.cff              citation metadata
 CONTRIBUTING.md           building notes and the elaboration policy for new files
@@ -396,14 +346,10 @@ arXiv:2608.23545, is joint work of Ahmed Bou-Rabee and Yuval Peres.  To cite the
 formalization, use the metadata in [`CITATION.cff`](CITATION.cff).
 
 This formalization is built on [Lean 4](https://lean-lang.org),
-[Mathlib](https://github.com/leanprover-community/mathlib4), the percolation
-library `PercolationContinuity` of
-[`anthropics/formal-math`](https://github.com/anthropics/formal-math), which
-supplies Kesten's `p_c(ℤ²) = 1/2` and the sharpness of the phase transition,
-and the shared library
-[`Lattice-Probability`](https://github.com/nitromannitol/Lattice-Probability);
-the comparator audit in [`RotorAudit/`](RotorAudit) is set up for
-[`leanprover/comparator`](https://github.com/leanprover/comparator).
+[Mathlib](https://github.com/leanprover-community/mathlib4), and
+[Lattice-Probability](https://github.com/nitromannitol/Lattice-Probability), which includes
+the percolation results used by the development. The comparator challenges are in
+[`RotorAudit/`](RotorAudit/).
 
 ## License
 

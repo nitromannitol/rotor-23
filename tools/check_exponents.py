@@ -43,7 +43,7 @@ def paper_path() -> Path:
 # Superscripts that are not exponents of a quantity: set names like `ℤ^d`, the
 # inverse in `Δ^{-1}`, the summation limits, and the `θ`-expressions of lem:exp,
 # which Lean writes with `Real.exp` rather than with `^`.
-NOISE = {"2", "+", "-1", "\Z", "\R", "\infty", "\ast", "\star", "j", "n", "m", "k", "i"}
+NOISE = {"2", "+", "-1", r"\Z", r"\R", r"\infty", r"\ast", r"\star", "j", "n", "m", "k", "i"}
 
 # Per node: exponents present in the paper's line range but legitimately absent
 # from this node's Lean statement, with the reason.
@@ -55,6 +55,10 @@ EXPECTED_ABSENT: dict[str, dict[str, str]] = {
     "lem-square-constrained-bonds": {"-cr": "notation: the paper's e^{-cr} is Lean's Real.exp (-c * r)"},
     "lem-square-forced-tests": {"-cm": "notation: the paper's e^{-cm} is Lean's explicit (3/4)^(m/3)"},
 }
+
+
+for base in ("thm-main-square", "thm-main-degree-three"):
+    EXPECTED_ABSENT[base + "-unconditional"] = EXPECTED_ABSENT[base]
 
 
 def balanced(s: str, i: int, op: str, cl: str) -> str | None:

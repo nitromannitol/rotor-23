@@ -7,13 +7,10 @@ edit it by hand.
 
 ## What is claimed
 
-Every theorem, lemma and proposition of the paper is stated in Lean 4 and
-proved.  One result the paper cites without proof enters only as an explicit
-hypothesis, a frozen `Prop` in `Rotor/External/` (the `FROZEN` node below,
-`ext-lss`); the other six are proved in `Rotor/Bridge/`: Kingman's subadditive
-ergodic theorem, the abelian property of rotor-routing, the one-circuit lemma,
-Holroyd-Propp's Lemma 6, Angel-Holroyd's Theorem 1, and subcritical exponential
-decay for percolation.  No statement rests on an added axiom or a `sorry`.
+The paper's registered statements are proved in Lean. The older forms
+record LSS as a hypothesis; Rotor.External.lss_holds proves that input,
+and the registered unconditional forms apply it. No added axioms or
+proof placeholders occur in the production library.
 
 Proposition 1.2 on the square lattice gives one `δ > 0` for all independent
 rotor laws whose marginal at every vertex has total variation distance less
@@ -32,12 +29,12 @@ See [`Rotor.Frozen.perturbations_square`](Rotor/Frozen/Main/PerturbSquare.lean);
 
 | | |
 |---|---|
-| Lean toolchain | `leanprover/lean4:v4.32.0` |
-| Mathlib revision | `81a5d257c8e410db227a6665ed08f64fea08e997` |
+| Lean toolchain | `leanprover/lean4:v4.35.0-rc2` |
+| Mathlib revision | `065356127b1dc0016f66b7283ce0ce2c4055aa55` |
 | Paper (`paper/rotor.tex`) SHA-256 | `007634d2d82fddfd902af49c3e85168461a545224b145998100433250895a930` |
-| Build | succeeded, 8864 jobs |
+| Build | succeeded, 9185 jobs |
 | Build warnings | 0 |
-| Generated | 2026-10-04 |
+| Generated | 2026-11-19 |
 
 ## Reproducing it
 
@@ -100,10 +97,15 @@ nowhere below.
 | 31 | `prop-perturbations-degree-three` | `Rotor.Frozen.perturbations_degree_three` | `prop:small-perturbations` | classical only |
 | 32 | `ext-angel-holroyd` | `Rotor.Bridge.recurrentOfRecurrent_holds` | — | classical only |
 | 33 | `prop-pendant-counterexample` | `Rotor.Frozen.pendant_counterexample` | `prop:pendant-counterexample` | classical only |
+| 34 | `thm-main-square-unconditional` | `Rotor.Frozen.main_square_unconditional` | `thm:main` | classical only |
+| 35 | `thm-main-degree-three-unconditional` | `Rotor.Frozen.main_degree_three_unconditional` | `thm:main` | classical only |
+| 36 | `prop-perturbations-square-unconditional` | `Rotor.Frozen.perturbations_square_unconditional` | `prop:small-perturbations` | classical only |
+| 37 | `prop-perturbations-degree-three-unconditional` | `Rotor.Frozen.perturbations_degree_three_unconditional` | `prop:small-perturbations` | classical only |
+| 38 | `lem-block-live-paths-unconditional` | `Rotor.Frozen.block_live_paths_unconditional` | `lem:block-live-paths` | classical only |
 
-33 of 33 nodes depend on nothing beyond the three classical
-axioms.  In `ledger/manifest.yaml`, 0 nodes are `SEALED` (proved) and
-1 is `FROZEN` (cited hypotheses, no proof obligation here).
+38 of 38 nodes depend on nothing beyond the three classical
+axioms.  In `ledger/manifest.yaml`, 37 theorem nodes are `SEALED` or `PROVED` and
+1 is `FROZEN` (cited propositions with recorded proof witnesses).
 
 ## Frozen statements
 
@@ -145,6 +147,11 @@ verifies these hashes; the recipe is in `CORRESPONDENCE.md`.
 | `prop-perturbations-degree-three` | `929f869370b902dabb3d38b0d36e9a452f9dea26b92a3a88977813504418af48` |
 | `ext-angel-holroyd` | `406747bfc1b9179d21c3ebc24b407c6c4c8eeb9e039f69f3f3bfc130d4f709d2` |
 | `prop-pendant-counterexample` | `dfa44b011cb5d114c692409a42efe0ca4ccf2dec774a1678ec43b06fc4799ec2` |
+| `thm-main-square-unconditional` | `e26c18e38ec5e7c4cfed3b098bd974c799174c4c04bfec886f0c1348de1dae66` |
+| `thm-main-degree-three-unconditional` | `0bb1977652967f2b8111117b003d382be4771e9de53c801d0628b4a590526470` |
+| `prop-perturbations-square-unconditional` | `4e2b9bf4c1088063f3b770bc9b95e13620eab0f72f3d8b9633641aa86ca1128e` |
+| `prop-perturbations-degree-three-unconditional` | `d9cca43670164cf6a76e86087dc53679a716e92a25a200961941378df0315bb3` |
+| `lem-block-live-paths-unconditional` | `f1902886a6b3473536629fc7a110b68fe5211573e40dd74e2f71fabed92ae3c0` |
 
 ## What is not claimed
 

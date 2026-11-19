@@ -122,6 +122,12 @@ REVIEWED: dict[str, str] = {
 }
 
 
+# The same conclusions with the proved domination input supplied in the proof.
+for base in ("lem-block-live-paths", "thm-main-square", "thm-main-degree-three",
+             "prop-perturbations-square", "prop-perturbations-degree-three"):
+    REVIEWED[base + "-unconditional"] = REVIEWED[base] + "; LSS is supplied by lss_holds"
+
+
 def paper_path() -> Path:
     """The paper: the copy pinned in this repository, or `$ROTOR_PAPER`."""
     env = os.environ.get("ROTOR_PAPER")

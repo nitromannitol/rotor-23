@@ -17,18 +17,25 @@ three, and Proposition 1.3.  Each comparator lives in its own subdirectory:
 Each `Challenge.lean` imports only `Mathlib`, rebuilds from scratch every
 definition needed to read the theorem, states the theorem, and ends with one
 `sorry`, the proof being checked.  The definitions form one vocabulary block,
-between `-- VOCABULARY-BEGIN` and `-- VOCABULARY-END`, byte-identical in all
-five challenges: the rotor walk on a locally finite graph (mechanisms,
+between `-- VOCABULARY-BEGIN` and `-- VOCABULARY-END`, byte-identical within each challenge and its vocabulary copy: the rotor walk on a locally finite graph (mechanisms,
 configurations, the step rule, `X_t`, `R_t`, the circuit times `T(n)`, the
 circuit ranges `A_n`, recurrence), particle-and-rotor routings, the product law
 of the initial rotors and total variation, doubly periodic graphs in the plane,
 the square lattice with its clockwise mechanism, the graph `G_M` of
 Proposition 1.3 with its mechanism, and the five cited results.
 
+## Unconditional pairs
+
+Each main result also has a `*Unconditional/` pair. These challenges carry no cited
+literature input as a hypothesis, and the solutions apply the unconditional library
+results. The original pairs documented below remain available. The vocabulary blocks
+are checked against each pair's `SolutionBasic.lean`; the solutions use the existing
+bridges for the corresponding original pair.
+
 ## What Is Checked
 
-The theorems are conditional on results the paper cites without proof, and so
-are the challenges: each carries, as explicit hypotheses, the cited results
+Some original theorems are conditional on results the paper cites without proof, and so
+are the original challenges: each carries, as explicit hypotheses, the cited results
 its library theorem uses, restated in the vocabulary.
 
 | Directory | Cited results carried as hypotheses |
@@ -45,8 +52,7 @@ Angel–Holroyd's theorem that recurrence does not depend on the starting vertex
 are proved in `Rotor/Bridge/Kingman.lean`, `Rotor/Bridge/SubcriticalDecay.lean`,
 `Rotor/Bridge/Abelian.lean`, `Rotor/Bridge/OneCircuit.lean`,
 `Rotor/Bridge/HolroydPropp.lean` and `Rotor/Bridge/AngelHolroyd.lean` (from the
-shared library `Lattice-Probability`, the percolation library
-`PercolationContinuity`, by induction on legal routings, by an injectivity
+shared library `Lattice-Probability`, the percolation results vendored in `Lattice-Probability`, by induction on legal routings, by an injectivity
 argument on traversed edges together with incoming/outgoing degree counts at
 circuit times, by propagating infinitely-many-visits along a walk between any
 two vertices, and by that same propagation combined with the abelian property,
