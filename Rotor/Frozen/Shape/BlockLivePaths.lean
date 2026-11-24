@@ -13,8 +13,9 @@ mechanism, `ν` the one-vertex laws, `ℙ_0` their product.  Quantifier order
 as in the paper: `ε, L₀` first, then `L` and the block hypothesis, then `η`,
 then `δ`; `ε, L₀` are bound before `ν`, which the proof supports.  The
 proof uses LSS domination (`External.LSS`).
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed
-here: they are not derived in this repository and the certificate lists them.
+The `External.*` hypotheses are the cited results the paper's proof uses; each is
+proved in this repository (`Rotor/Bridge/`, `Rotor/External/LSSProved.lean`), as
+`ASSUMPTIONS.md` and `CORRESPONDENCE.md` record.
 -/
 import Rotor.Events
 import Rotor.External.OneCircuit

@@ -142,9 +142,9 @@ COMPARATOR_LANDRUN=<landrun> COMPARATOR_LEAN4EXPORT=<lean4export> COMPARATOR_NAN
   lake env <comparator>/.lake/build/bin/comparator RotorAudit/<Pair>/comparator.json
 ```
 
-**Status.**  All five solutions build.  `leanprover/comparator` passes on all five pairs,
-with the Lean kernel and again with the independent nanoda kernel.
-[`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md) records the pins, the results and
-the reproduction steps.  The workflow
+**Status.**  All ten solutions build.  The workflow
 [`.github/workflows/comparator.yml`](../.github/workflows/comparator.yml) runs
-it on request.
+`leanprover/comparator` on all ten pairs, with the Lean kernel and again with the
+independent nanoda kernel, whenever a Lean source or a dependency pin changes on
+`main`; [`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md) records the pins, the earlier
+local runs of the five conditional pairs, and the reproduction steps.

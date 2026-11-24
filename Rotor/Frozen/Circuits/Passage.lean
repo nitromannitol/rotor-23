@@ -9,8 +9,9 @@ Proposition 2.6 of rotor.tex, frozen.  `rotor.tex:852-866` (label `prop:passage`
 Three displays, three conjuncts.  The third asserts `T n < ⊤` alongside the
 set identity, so that `A n` is never read at its junk value.
 The proof uses `prop:monotonicity` and `prop:circuit-iterate`.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed
-here: they are not derived in this repository and the certificate lists them.
+The `External.*` hypotheses are the cited results the paper's proof uses; each is
+proved in this repository (`Rotor/Bridge/`, `Rotor/External/LSSProved.lean`), as
+`ASSUMPTIONS.md` and `CORRESPONDENCE.md` record.
 `[Infinite V]` and `hG` are the standing assumptions of Section 2 (`rotor.tex:678-680`:
 "Throughout this section, `G` is infinite, connected, and locally finite, the rotor
 mechanism and initial rotor configuration are fixed and arbitrary").

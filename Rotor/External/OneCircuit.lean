@@ -15,12 +15,10 @@ uses `lem:one-circuit` on "a connected locally finite graph", so infinitude is
 not assumed here; the node `lem-one-circuit` adds Section 2's standing
 assumption `[Infinite V]` when it restates the lemma.
 
-No longer assumed outright: `Rotor.Bridge.oneCircuit_holds` in
-`Rotor/Bridge/OneCircuit.lean` proves it unconditionally, by an injectivity
-argument on the walk's traversed edges together with incoming/outgoing
-degree counts at circuit times; this `Prop` itself carries no manifest node
-any longer (see ledger node `ext-one-circuit`, which now points at that
-proof).
+`Rotor.Bridge.oneCircuit_holds` in `Rotor/Bridge/OneCircuit.lean` proves it
+unconditionally, by an injectivity argument on the walk's traversed edges
+together with incoming/outgoing degree counts at circuit times; the ledger
+node `ext-one-circuit` registers that proof.
 -/
 import Rotor.Traversal
 

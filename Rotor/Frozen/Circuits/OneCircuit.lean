@@ -11,8 +11,9 @@ external input `External.OneCircuit` is its hypothesis.  The
 standing assumptions of Section 2 (`rotor.tex:678-680`) are the binders
 `[Infinite V]` and `hG`.  "During `T(n) ≤ t < T(n+1)`" with `T(n+1) = ∞`
 is the half-line, which the `ℕ∞` comparison expresses.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed
-here: they are not derived in this repository and the certificate lists them.
+The `External.*` hypotheses are the cited results the paper's proof uses; each is
+proved in this repository (`Rotor/Bridge/`, `Rotor/External/LSSProved.lean`), as
+`ASSUMPTIONS.md` and `CORRESPONDENCE.md` record.
 -/
 import Rotor.Traversal
 import Rotor.External.OneCircuit

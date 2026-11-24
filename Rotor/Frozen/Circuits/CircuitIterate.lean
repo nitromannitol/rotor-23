@@ -9,8 +9,9 @@ Proposition 2.4 of rotor.tex, frozen.  `rotor.tex:793-801` (label `prop:circuit-
 `ρ`, as the paper's boundary routing is ("with the fixed initial rotors on
 `V ∖ S`", `rotor.tex:717-719`).  The proof uses `lem:one-circuit`,
 `lem:boundary-routing` and `lem:least-action`.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed
-here: they are not derived in this repository and the certificate lists them.
+The `External.*` hypotheses are the cited results the paper's proof uses; each is
+proved in this repository (`Rotor/Bridge/`, `Rotor/External/LSSProved.lean`), as
+`ASSUMPTIONS.md` and `CORRESPONDENCE.md` record.
 `[Infinite V]` and `hG` are the standing assumptions of Section 2 (`rotor.tex:678-680`:
 "Throughout this section, `G` is infinite, connected, and locally finite, the rotor
 mechanism and initial rotor configuration are fixed and arbitrary").

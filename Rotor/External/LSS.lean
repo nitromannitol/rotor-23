@@ -18,10 +18,10 @@ import Mathlib
 
 Sets up the Bernoulli product measure on `(ℤ × ℤ → Bool)`, the notions of an increasing event and
 of `k`-dependence needed to state Liggett--Schonmann--Stacey's domination theorem, and records
-that theorem, in the instance used by the paper, as the assumed proposition
+that theorem, in the instance used by the paper, as the proposition
 `Rotor.External.LSS`: some `ε > 0` makes every `2`-dependent field with one-site probabilities at
-most `2ε` dominated, on increasing events, by an independent Bernoulli(`1/8`) field. This result
-is cited, not proved, here.
+most `2ε` dominated, on increasing events, by an independent Bernoulli(`1/8`) field. It is proved
+as `Rotor.External.lss_holds` in `Rotor/External/LSSProved.lean`.
 -/
 
 open MeasureTheory ProbabilityTheory

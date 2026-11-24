@@ -12,11 +12,10 @@ paper states it in `lem:least-action` (`rotor.tex:727-741`):
 A routing is its initial state and its list of actuated vertices; `n` and `m`
 are the lengths of those lists and actuation counts are `List.count`.
 
-No longer assumed outright: `Rotor.Bridge.abelian_holds` in
-`Rotor/Bridge/Abelian.lean` proves it unconditionally by induction on
-legal routings (the standard diamond-lemma argument for the abelian
-property); this `Prop` itself carries no manifest node any longer (see
-ledger node `ext-abelian`, which now points at that proof).
+`Rotor.Bridge.abelian_holds` in `Rotor/Bridge/Abelian.lean` proves it
+unconditionally by induction on legal routings (the standard diamond-lemma
+argument for the abelian property); the ledger node `ext-abelian` registers
+that proof.
 -/
 import Rotor.Routing
 

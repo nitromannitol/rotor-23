@@ -14,8 +14,9 @@ The passage function is a parameter `f` carrying the conclusion of
 `prop:passage`'s third conjunct almost surely; `min_{|u|=1} μ(u) > 0` is a
 positive lower bound on the unit sphere.  Sets are drawn through `P.emb`
 relative to `o`.  Two set limits and three properties of `B`.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed
-here: they are not derived in this repository and the certificate lists them.
+The `External.*` hypotheses are the cited results the paper's proof uses; each is
+proved in this repository (`Rotor/Bridge/`, `Rotor/External/LSSProved.lean`), as
+`ASSUMPTIONS.md` and `CORRESPONDENCE.md` record.
 -/
 import Rotor.Events
 import Rotor.External.OneCircuit

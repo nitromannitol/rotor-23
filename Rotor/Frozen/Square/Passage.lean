@@ -10,8 +10,9 @@ Proposition 5.1 of rotor.tex, frozen.  `rotor.tex:1480-1490` (label `prop:square
 
 The constants route through the subcritical percolation bound
 (`External.SubcriticalDecay`), so they are existential.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed
-here: they are not derived in this repository and the certificate lists them.
+The `External.*` hypotheses are the cited results the paper's proof uses; each is
+proved in this repository (`Rotor/Bridge/`, `Rotor/External/LSSProved.lean`), as
+`ASSUMPTIONS.md` and `CORRESPONDENCE.md` record.
 -/
 import Rotor.Events
 import Rotor.Percolation

@@ -15,35 +15,29 @@ same two cases, and Proposition 1.3 (`prop:pendant-counterexample`).
 
 Each theorem below restates its certified counterpart in `Rotor/Frozen/Main/`
 and is proved by direct application of it, so the statements displayed in this
-file are byte-faithful to the certified ones.  None of the five carries
-Florescu–Levine–Peres' one-circuit property (Lemmas 2.1 and 2.4) as a
-hypothesis any longer: it is proved in this repository,
-`Rotor.Bridge.oneCircuit_holds`, by an injectivity argument on the walk's
-traversed edges together with incoming/outgoing degree counts at circuit
-times.  Nor do the four theorems below that used to carry
-Holroyd–Propp's Lemma 6 (a rotor walk that visits one vertex infinitely often
-visits every vertex infinitely often) any longer: it is proved in this
-repository, `Rotor.Bridge.visitsAllOfVisitsOne_holds`, by propagating
-infinitely-many-visits along a walk between any two vertices of the graph.
-Nor does any of the four square/degree-three theorems carry the
-abelian property of rotor-routing (HLMPPW Lemma 3.9) as a hypothesis any
-longer: it is proved in this repository, `Rotor.Bridge.abelian_holds`, by
-induction on legal routings.  Nor does `Rotor.pendant_counterexample` carry
-Angel–Holroyd's independence-of-start property for recurrence
-(`External.RecurrentOfRecurrent`) as a hypothesis any longer: it is proved in
-this repository, `Rotor.Bridge.recurrentOfRecurrent_holds`, by propagating
-recurrence along adjacency and then along a connecting walk between any two
-vertices.  On the square lattice, the certified statements
-`Rotor.Frozen.main_square` and `Rotor.Frozen.perturbations_square` likewise no
-longer carry Kingman's subadditive ergodic theorem or subcritical exponential
-decay for Bernoulli bond percolation as hypotheses: both are proved in this
-repository, `Rotor.Bridge.kingman_holds` from the shared library
-`Lattice-Probability` and `Rotor.Bridge.subcriticalDecay_holds` from the
-percolation library `PercolationContinuity`.  Each is discharged by
-instantiating the corresponding bridge theorem directly.  The remaining
-hypotheses named `External.*` are results the paper cites without proof; they
-are assumed, not proved, and are listed with their statements in
-`ASSUMPTIONS.md`.
+file are byte-faithful to the certified ones.  The cited results the paper's
+proof uses are proved in this repository: Florescu–Levine–Peres' one-circuit
+property (Lemmas 2.1 and 2.4) as `Rotor.Bridge.oneCircuit_holds`, by an
+injectivity argument on the walk's traversed edges together with
+incoming/outgoing degree counts at circuit times; Holroyd–Propp's Lemma 6 (a
+rotor walk that visits one vertex infinitely often visits every vertex
+infinitely often) as `Rotor.Bridge.visitsAllOfVisitsOne_holds`, by propagating
+infinitely-many-visits along a walk between any two vertices of the graph; the
+abelian property of rotor-routing (HLMPPW Lemma 3.9) as
+`Rotor.Bridge.abelian_holds`, by induction on legal routings; Angel–Holroyd's
+independence-of-start property for recurrence (`External.RecurrentOfRecurrent`)
+as `Rotor.Bridge.recurrentOfRecurrent_holds`, by propagating recurrence along
+adjacency and then along a connecting walk between any two vertices; Kingman's
+subadditive ergodic theorem as `Rotor.Bridge.kingman_holds`, from the shared
+library `Lattice-Probability`; and subcritical exponential decay for Bernoulli
+bond percolation as `Rotor.Bridge.subcriticalDecay_holds`, from the percolation
+library `PercolationContinuity`.  The certified statements apply these theorems,
+and none of them is a hypothesis of the five theorems below.  The one cited
+result that remains a hypothesis, of the four theorems on the square lattice and
+on graphs of maximum degree three, is the Liggett--Schonmann--Stacey domination
+`External.LSS`; it is proved as `External.lss_holds` from the shared library,
+and `Rotor/MainTheoremsUnconditional.lean` states those four theorems without
+it.  `ASSUMPTIONS.md` lists its statement and proof.
 
 * `Rotor.main_square`: Theorem 1.1 on `ℤ²` with the clockwise mechanism and
   independent uniform initial rotors.  Almost surely the walk is recurrent,

@@ -23,8 +23,9 @@ asserted so that `A_n` is never its junk value; (ii) is frozen both as
 Hausdorff limits and as the sandwich of `prop:circuit-shape`; the
 lattice is drawn by `squareEmb` relative to `o`.  The external inputs are
 those of Sections 2, 3 and 5.
-The `External.*` hypotheses are the cited results the paper's proof uses, assumed
-here: they are not derived in this repository and the certificate lists them.
+The `External.*` hypotheses are the cited results the paper's proof uses; each is
+proved in this repository (`Rotor/Bridge/`, `Rotor/External/LSSProved.lean`), as
+`ASSUMPTIONS.md` and `CORRESPONDENCE.md` record.
 -/
 import Rotor.Events
 import Rotor.Percolation

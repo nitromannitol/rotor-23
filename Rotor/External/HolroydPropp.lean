@@ -7,22 +7,20 @@ the paper uses it in the proof of `prop:live-recurrence` (`rotor.tex:966-969`):
 
 With the standing assumptions of Section 2.
 
-No longer assumed outright: `Rotor.Bridge.visitsAllOfVisitsOne_holds` in
-`Rotor/Bridge/HolroydPropp.lean` proves it unconditionally, by propagating
-infinitely-many-visits along a walk between any two vertices of the
-(preconnected) graph; this `Prop` itself carries no manifest node any
-longer (see ledger node `ext-holroyd-propp`, which now points at that
-proof).
+`Rotor.Bridge.visitsAllOfVisitsOne_holds` in `Rotor/Bridge/HolroydPropp.lean`
+proves it unconditionally, by propagating infinitely-many-visits along a walk
+between any two vertices of the (preconnected) graph; the ledger node
+`ext-holroyd-propp` registers that proof.
 -/
 import Rotor.Model
 
 /-!
 # Holroyd--Propp Lemma 6 as a proposition
 
-States the external input `Rotor.External.VisitsAllOfVisitsOne`: on a connected, infinite,
-locally finite graph, a rotor walk that visits one vertex infinitely often is recurrent. The
-docstring above records that this input is no longer assumed outright: it is now proved
-unconditionally elsewhere by propagating infinitely-many-visits along the graph.
+States the external input `Rotor.External.VisitsAllOfVisitsOne`: on a connected, infinite, locally
+finite graph, a rotor walk that visits one vertex infinitely often is recurrent. It is proved
+unconditionally in `Rotor/Bridge/HolroydPropp.lean` by propagating infinitely-many-visits along the
+graph.
 -/
 
 open Rotor
